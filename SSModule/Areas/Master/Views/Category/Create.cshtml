@@ -1,0 +1,84 @@
+﻿@model SSRepository.Models.CategoryModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .f-ctrl {
+        display: block !important;
+    }
+
+    .form-control {
+        height: 25px;
+        line-height: 1;
+        padding: 0px;
+        border-radius: 0;
+        border: none !important;
+        border-bottom: solid 1px #ced4da !important;
+        box-shadow: inherit;
+        font-family: 'Roboto', sans-serif !important;
+    }
+
+    label {
+        display: inline-block;
+        margin-bottom: 0;
+        color: #ce07c1;
+        text-transform: uppercase;
+        font-size: 12px;
+    }
+
+</style>
+<div class="p-3">
+    <form asp-action="Create" class="g-3" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PkCategoryId" />
+ 
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Category </label>
+                    <select asp-for="FkCategoryId" asp-items="@(new SelectList(ViewBag.CategoryList,"PkCategoryId","CategoryName"))" class="form-control" id="FkCategoryId">
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Category Name</label>
+                    <input asp-for="CategoryName" class="form-control" />
+                    <span asp-validation-for="CategoryName" class="text-danger"></span>
+                </div>
+            </div>
+          
+        </div>
+       
+    </form>
+</div>
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+<script>
+       $(document).ready(function(){
+            $('#btnServerSave').click(function (e) {
+                e.preventDefault();
+                $("form").submit();
+            });
+       })
+        UploadImage = (id) => {
+            var file = document.querySelector('input[id="file_' + id + '"]').files[0];
+            // $("#FileName").val(file.name);
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                //console.log(reader.result);
+                $("#" + id).val(reader.result);
+                $("#dummyimage_" + id).attr("src", reader.result);
+                $("#dummyimage_" + id).show();
+                //   $("#myImage").hide();
+
+            };
+        }
+</script>
+                }

@@ -1,0 +1,82 @@
+﻿    using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
+namespace SSRepository.Data
+{
+    public partial class AppDbContext : DbContext
+    {
+        public AppDbContext()
+        {
+        }
+
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options)
+        {
+        }
+
+        public virtual DbSet<TblBranchMas> TblBranchMas { get; set; } = null!;
+        public virtual DbSet<TblCompany> TblCompanies { get; set; } = null!;
+        public virtual DbSet<TblEmployeeMas> TblEmployeeMas { get; set; } = null!;
+        public virtual DbSet<TblUserMas> TblUserMas { get; set; } = null!;
+        public virtual DbSet<TblCustomerMas> TblCustomerMas { get; set; } = null!;
+        public virtual DbSet<TblVendorMas> TblVendorMas { get; set; } = null!;
+        public virtual DbSet<TblFormMas> TblFormMas { get; set; } = null!;
+        public virtual DbSet<TblGridStructer> TblGridStructer { get; set; } = null!;
+        public virtual DbSet<TblCategoryMas> TblCategoryMas { get; set; } = null!;
+        public virtual DbSet<TblProductMas> TblProductMas { get; set; } = null!;
+        public virtual DbSet<TblBankMas> TblBankMas { get; set; } = null!;
+        public virtual DbSet<TblSeriesMas> TblSeriesMas { get; set; } = null!;
+        public virtual DbSet<TblErrorLog> TblErrorLog { get; set; } = null!;
+        public virtual DbSet<TblSalesOrdertrn> TblSalesOrdertrn { get; set; } = null!;
+        public virtual DbSet<TblSalesOrderdtl> TblSalesOrderdtl { get; set; } = null!;
+        public virtual DbSet<TblSalesInvoicetrn> TblSalesInvoicetrn { get; set; } = null!;
+        public virtual DbSet<TblSalesInvoicedtl> TblSalesInvoicedtl { get; set; } = null!;
+        public virtual DbSet<TblPurchaseOrdertrn> TblPurchaseOrdertrn { get; set; } = null!;
+        public virtual DbSet<TblPurchaseOrderdtl> TblPurchaseOrderdtl { get; set; } = null!;
+        public virtual DbSet<TblPurchaseInvoicetrn> TblPurchaseInvoicetrn { get; set; } = null!;
+        public virtual DbSet<TblPurchaseInvoicedtl> TblPurchaseInvoicedtl { get; set; } = null!;
+        public virtual DbSet<TblSalesChallantrn> TblSalesChallantrn { get; set; } = null!;
+        public virtual DbSet<TblSalesChallandtl> TblSalesChallandtl { get; set; } = null!;
+        public virtual DbSet<TblProdLotDtl> TblProdLotDtl { get; set; } = null!;
+        public virtual DbSet<TblProdStockDtl> TblProdStockDtl { get; set; } = null!;
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                // optionsBuilder.UseSqlServer("server=DESKTOP-OM06UCD\\SQLEXPRESS;database=POSdb;Trusted_Connection=True;TrustServerCertificate=True");
+               optionsBuilder.UseSqlServer("Data Source=154.61.77.18;database=jaipursoftdata;uid=jaipurdatauser;pwd=btof5zxmgjlyusvnehdc;TrustServerCertificate=True");
+            }
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            //base.OnModelCreating(modelBuilder);
+            //modelBuilder.Ignore<TblBranchMas>();
+            //modelBuilder.Ignore<TblCompany>();
+            //modelBuilder.Ignore<TblEmployeeMas>();
+            //modelBuilder.Ignore<TblUserMas>();
+            //modelBuilder.Ignore<TblCustomerMas>();
+            //modelBuilder.Ignore<TblVendorMas>();
+            //modelBuilder.Ignore<TblFormMas>();
+            //modelBuilder.Ignore<TblGridStructer>();
+            //modelBuilder.Ignore<TblCategoryMas>();
+            //modelBuilder.Ignore<TblProductMas>();
+            //modelBuilder.Ignore<TblBankMas>();
+            //modelBuilder.Ignore<TblSeriesMas>();
+            //modelBuilder.Ignore<TblErrorLog>();
+            //modelBuilder.Ignore<TblSalesOrdertrn>();
+            //modelBuilder.Ignore<TblSalesOrderdtl>();
+            //modelBuilder.Ignore<TblSalesInvoicetrn>();
+            //modelBuilder.Ignore<TblSalesInvoicedtl>();
+            //modelBuilder.Ignore<TblPurchaseOrdertrn>();
+            //modelBuilder.Ignore<TblPurchaseOrderdtl>();
+            //modelBuilder.Ignore<TblPurchaseInvoicetrn>();
+            //modelBuilder.Ignore<TblPurchaseInvoicedtl>();
+            //modelBuilder.Ignore<TblSalesChallantrn>();
+            //modelBuilder.Ignore<TblSalesChallandtl>();
+            //modelBuilder.Ignore<TblProdLotDtl>();
+            //modelBuilder.Ignore<TblProdStockDtl>();
+
+        }
+    }
+}

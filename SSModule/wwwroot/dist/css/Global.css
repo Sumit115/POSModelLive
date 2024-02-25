@@ -1,0 +1,12 @@
+﻿html, body {
+    height: 100%;
+    font-family: 'Poppins', sans-serif;
+    background: #fff;
+    color: #333f50;
+    overflow-x: hidden;
+}
+
+body {
+    background: url(../../image/inner-bg.jpg) left top no-repeat;
+    background-size: cover;
+}

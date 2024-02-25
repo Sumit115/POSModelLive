@@ -1,0 +1,69 @@
+﻿@model SSRepository.Models.TranModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<input type="hidden" id="hdFormId" value="@ViewBag.FormId" />
+<input type="hidden" id="hdTranType" value="Purchase" />
+<style>
+    .f-ctrl {
+        display: block !important;
+    }
+
+    .form-control {
+        height: 25px;
+        line-height: 1;
+        padding: 0px;
+        border-radius: 0;
+        border: none !important;
+        border-bottom: solid 1px #ced4da !important;
+        box-shadow: inherit;
+        font-family: 'Roboto', sans-serif !important;
+    }
+
+    label {
+        display: inline-block;
+        margin-bottom: 0;
+        color: #ce07c1;
+        text-transform: uppercase; 
+        font-size: 12px;
+    }
+
+ 
+    #WUCFee .r6 {
+        background: #ccfff5;
+    }
+
+    #WUCManage .r13 {
+        background: #ccfff5;
+    }
+
+    #WUCManage .slick-header-column.ui-state-default {
+        height: 39px;
+    }
+
+    .sobc {
+        background: silver;
+    }
+ 
+</style>
+<div class="p-3">
+    <form class="row g-3 form" id="loginform1">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PkId" />
+        <input type="hidden" id="hdData" value="@ViewBag.Data" />
+        <input type="hidden" id="hdControllerName" value="PurchaseInvoice" />
+        <partial name="~/Views/Shared/Transactions/_tranHeader.cshtml" />
+        <partial name="~/Views/Shared/Transactions/_tranGrid.cshtml" />
+        <partial name="~/Views/Shared/Transactions/_tranFooter.cshtml" />
+    </form>
+</div>
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/js/transaction/transaction.js"></script>
+   
+}

@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>:: Bulk Outstanding Demand ::</title>
+    <link rel="stylesheet" href="../../Master/SlickGrid/slick.grid.css" type="text/css" />
+    <link rel="stylesheet" href="../../CompuOfficeV2/css/AllSoft.css" type="text/css" />
+    <style type="text/css">
+        #WUCHM1 .l6{
+            cursor: pointer;
+            color: green;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="tax">
+    <header>
+        <table width="100%" border="0" cellspacing="0px" cellpadding="0px">
+            <tr>
+                <td style="width: 25%;">
+                    <span id="PartyInfo"></span>
+                </td>
+                <td align="center" class="pagetitle" style="width: 50%;">
+                    :: Bulk Outstanding Demand ::
+                </td>
+                <td style="width: 100px;text-align:right;">
+                    <input type="submit" class="btn btn-exit" value="" onclick="window.location.href='Default.aspx'" />
+                </td>
+            </tr>
+        </table>
+    </header>
+    <div class="contener">
+        <div class="row">
+            <div style="float: right;">
+                <input type="button" class="btn" value="Proceed" onclick="page.process()"  style="display:none;"/>
+
+            </div>
+        </div>
+        <div class="row">
+            <div id="WUCHM1" class="WUC">
+            </div>
+        </div>
+        <div class="row">
+            No. of Record(s) <span id="records"></span>            
+        </div>
+        
+    </div>
+
+    <script type="text/javascript" src="../../CompuOfficeV2/js/jQueryAndExtended.js"></script>
+
+    <script type="text/javascript" src="../../CompuOfficeV2/js/CommonV2.js"></script>
+
+    <script type="text/javascript" src="../../Master/script/StringEncryption.js"></script>
+
+     <script type="text/javascript" src="../../Master/SlickGrid/slick.cogrid.js"></script>
+
+    <script type="text/javascript" src="../../Master/SlickGrid/slick.cofreezgrid.js"></script>
+
+    <script type="text/javascript" src="../../Master/SlickGrid/slick.coeditors.js"></script>
+
+    <script type="text/javascript"  src="../../Master/SlickGrid/lib/firebugx.js"></script>
+
+    <script type="text/javascript"  src="../../Master/SlickGrid/lib/jquery-ui-1.11.3.min.js"></script>
+
+    <script type="text/javascript"  src="../../Master/SlickGrid/lib/jquery.event.drag-2.2.js"></script>
+
+    <script type="text/javascript"  src="../../Master/SlickGrid/plugins/slick.cellrangedecorator.js"></script>
+
+    <script type="text/javascript"  src="../../Master/SlickGrid/plugins/slick.cellrangeselector.js"></script>
+
+    <script type="text/javascript"  src="../../Master/SlickGrid/plugins/slick.cellselectionmodel.js"></script>
+
+    <script type="text/javascript"  src="../../Master/SlickGrid/plugins/slick.rowselectionmodel.js"></script>
+
+    <script type="text/javascript"  src="../../Master/SlickGrid/slick.dataview.js"></script>
+
+    <script type="text/javascript"  src="../../Master/SlickGrid/slick.core.js"></script>
+
+    <script type="text/javascript"  src="../../Master/SlickGrid/slick.formatters.js"></script>
+
+    <script type="text/javascript"  src="../../Master/SlickGrid/slick.editors.js"></script>
+
+    <script type="text/javascript"  src="../../Master/SlickGrid/slick.grid.js"></script>
+
+    <script type="text/javascript"  src="../../Master/SlickGrid/JsSlickGrd.js"></script>
+
+    <script type="text/javascript">
+        Handler.CU = "OfficeAssistance.ashx?pg=T&";
+        var UDI = null;
+        $(document).ready(function () {           
+            page = new fnPage();
+            page.Load();
+        });
+        function fnPage() {
+            this.Load = function () {               
+                $('#WUCHM1').empty();
+                Handler.ajax('APD', '', "", "", "", function (res) {
+                    Handler.hide();
+                    if (res.status == "success") {
+                        $("#records").text(res.data.length);
+                        bindGrid(res.data);
+                    }
+                    else if (res.status == "warning") {
+                        alert(res.msg);
+                    }
+                });
+
+
+            };
+            /////////////// /////////////// /////////////// /////////////// ///////////////
+            var bindGrid = function (data) {
+                var cg = new coGrid("#WUCHM1");
+                UDI = cg;
+                cg.setColumnHeading("Sr.~~Code No~Name~PAN~Outstanding~View");
+                cg.setColumnWidthPer("5~3~20~20~20~20~10", 1200);
+                cg.setColumnFields("sr~tick~codeno~name~paccno~Demand~V");
+                cg.setAlign("C~C~L~L~L~C~C");
+                cg.setCtrlType("~B~~~~~");
+                cg.defaultHeight = "" + ($(".contener").height() -70) + "px";
+                cg.setSearchType("0~0~1~1~1~1~1");
+                cg.setSearchableColumns("codeno~name~paccno~Demand");
+                cg.setSortableColumns("codeno~name~paccno~Demand", "sr");
+                cg.setCheckAllCheckboxColumns("tick");
+                cg.setIdProperty("sr");
+                cg.bind(data);
+                cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
+
+                /*---------------    ---------------   ---------------   ---------------*/
+                cg.outGrid.onClick.subscribe(function (e, args) {
+                    if (args.cell != undefined) {
+                        var CodeNo = args.grid.getDataItem(args.row)["codeno"];
+                        var View = args.grid.getDataItem(args.row)["V"];    
+                        if (args.cell == 6 && View != "") {
+                            Handler.ajax('PWD', '&codeno=' + CodeNo + '','', '', '', function (res) {
+                                Handler.hide();
+                                if (res.status == "warning")
+                                    alert(res.msg);
+                                else
+                                {
+                                     Handler.popUp(htmDemand(res.data), { "width": "850px", "height": "450px" }, null);
+                                }
+                            });
+                        }
+                    }
+                });
+            };
+            /////////////// /////////////// /////////////// /////////////// ///////////////
+            this.process = function () {
+                var Lists = [];
+                Slick.GlobalEditorLock.commitCurrentEdit();
+                var view = $(UDI.getData()).filterArray("[tick=true]");
+                for (var i = 0, l = view.length; i < l; i++) {
+                    var item = view[i];
+                    var obj = {};
+                    obj["codeno"] = item["codeno"];
+                    Lists.push(obj);
+                }
+                if (Lists.length > 0) {
+                    Handler.driver({
+                        soft: "tax",
+                        action: "BOD",//Bulk Outstanding Demand
+                        param: "&forYear=2020",
+                        file: [{ "name": "fileinfo.json", "content": JSON.stringify(Lists) }],
+                        onsuccess: function (res) {
+                            alert("Proccess Complete Successfuly.");
+                            page.load();
+                        }
+                    });
+                }
+                else 
+                    alert("No Record Available to Process or Insufficient Detail in Selected Records");
+            };            
+        }
+
+        var htmDemand = function(d){
+            var htm = '<div class="cum-card">' +
+                '<div class="cum-card-header"><h1 style="padding: 10px 5px;width: 100%;text-align: center;">Outstanding Demand</h1></div>' +
+                '<div class="cum-card-body">'+
+                '<div style="overflow-x:auto;">' +
+                '<table class="cum-table">' +
+                    '<tr>' +
+                      '<th>Assessment Year</th><th>Demand Ref Id</th><th>Date of Demand</th><th>Outstanding Demand</th>' + 
+                      '<th>Section Code</th><th>Current Status</th>' +
+                    '</tr>';
+            $(d).each(function(i,v){    
+                htm += '<tr> ' +
+                     '<td>'+ v.AssYear +'</td><td>'+ v.RefId +'</td><td>'+ v.DemandDate +'</td><td>'+ v.Outstanding +'</td>' +
+                     '<td>'+ v.SectionCode +'</td><td>'+ v.Status +'</td>' +
+                    '</tr>';
+            });
+            htm += '</table></div></div></div>';
+            return htm;
+        };
+       
+    </script>
+
+</body>
+</html>

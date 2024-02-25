@@ -1,0 +1,186 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Model1\**" />
+    <Content Remove="Model1\**" />
+    <EmbeddedResource Remove="Model1\**" />
+    <None Remove="Model1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Auth\Index.cshtml" />
+    <None Include="wwwroot\Admin\lib\bootstrap\dist\css\bootstrap-grid.css.map" />
+    <None Include="wwwroot\Admin\lib\bootstrap\dist\css\bootstrap-grid.min.css.map" />
+    <None Include="wwwroot\Admin\lib\bootstrap\dist\css\bootstrap-reboot.css.map" />
+    <None Include="wwwroot\Admin\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map" />
+    <None Include="wwwroot\Admin\lib\bootstrap\dist\css\bootstrap.css.map" />
+    <None Include="wwwroot\Admin\lib\bootstrap\dist\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\Admin\lib\bootstrap\dist\js\bootstrap.bundle.js" />
+    <None Include="wwwroot\Admin\lib\bootstrap\dist\js\bootstrap.bundle.js.map" />
+    <None Include="wwwroot\Admin\lib\bootstrap\dist\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\Admin\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\Admin\lib\bootstrap\dist\js\bootstrap.js" />
+    <None Include="wwwroot\Admin\lib\bootstrap\dist\js\bootstrap.js.map" />
+    <None Include="wwwroot\Admin\lib\bootstrap\dist\js\bootstrap.min.js" />
+    <None Include="wwwroot\Admin\lib\bootstrap\dist\js\bootstrap.min.js.map" />
+    <None Include="wwwroot\Admin\lib\bootstrap\LICENSE" />
+    <None Include="wwwroot\Admin\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js" />
+    <None Include="wwwroot\Admin\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js" />
+    <None Include="wwwroot\Admin\lib\jquery-validation\dist\additional-methods.js" />
+    <None Include="wwwroot\Admin\lib\jquery-validation\dist\additional-methods.min.js" />
+    <None Include="wwwroot\Admin\lib\jquery-validation\dist\jquery.validate.js" />
+    <None Include="wwwroot\Admin\lib\jquery-validation\dist\jquery.validate.min.js" />
+    <None Include="wwwroot\Admin\lib\jquery-validation\LICENSE.md" />
+    <None Include="wwwroot\Admin\lib\jquery\dist\jquery.js" />
+    <None Include="wwwroot\Admin\lib\jquery\dist\jquery.min.js" />
+    <None Include="wwwroot\Admin\lib\jquery\dist\jquery.min.map" />
+    <None Include="wwwroot\Admin\tautocomplete\tautocomplete.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap\LICENSE" />
+    <None Include="wwwroot\lib\fontawesome-free\webfonts\fa-brands-400.svg" />
+    <None Include="wwwroot\lib\fontawesome-free\webfonts\fa-brands-400.woff2" />
+    <None Include="wwwroot\lib\fontawesome-free\webfonts\fa-regular-400.svg" />
+    <None Include="wwwroot\lib\fontawesome-free\webfonts\fa-regular-400.woff2" />
+    <None Include="wwwroot\lib\fontawesome-free\webfonts\fa-solid-900.svg" />
+    <None Include="wwwroot\lib\fontawesome-free\webfonts\fa-solid-900.woff2" />
+    <None Include="wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js" />
+    <None Include="wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.js" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.min.js" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.min.map" />
+    <None Include="wwwroot\SlickGrid\controls\slick.columnpicker.js" />
+    <None Include="wwwroot\SlickGrid\controls\slick.pager.js" />
+    <None Include="wwwroot\SlickGrid\index.js" />
+    <None Include="wwwroot\SlickGrid\JsSlickGrd.js" />
+    <None Include="wwwroot\SlickGrid\lib\firebugx.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery-1.11.2.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery-1.11.2.min.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery-1.8.3.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery-2.2.4.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery-3.1.0.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery-migrate-1.2.1.min.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery-ui-1.11.3.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery-ui-1.11.3.min.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery-ui-1.9.2.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery.event.drag-2.2.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery.event.drag-2.3.0.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery.event.drop-2.2.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery.event.drop-2.3.0.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery.jsonp-2.4.min.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery.simulate.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery.sparkline-2-1-2.min.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery.sparkline.min.js" />
+    <None Include="wwwroot\SlickGrid\lib\jquery.tmpl.min.js" />
+    <None Include="wwwroot\SlickGrid\lib\qunit.js" />
+    <None Include="wwwroot\SlickGrid\lib\select2.js" />
+    <None Include="wwwroot\SlickGrid\plugins\slick.autotooltips.js" />
+    <None Include="wwwroot\SlickGrid\plugins\slick.cellcopymanager.js" />
+    <None Include="wwwroot\SlickGrid\plugins\slick.cellexternalcopymanager.js" />
+    <None Include="wwwroot\SlickGrid\plugins\slick.cellrangedecorator.js" />
+    <None Include="wwwroot\SlickGrid\plugins\slick.cellrangeselector.js" />
+    <None Include="wwwroot\SlickGrid\plugins\slick.cellselectionmodel.js" />
+    <None Include="wwwroot\SlickGrid\plugins\slick.checkboxselectcolumn.js" />
+    <None Include="wwwroot\SlickGrid\plugins\slick.headerbuttons.js" />
+    <None Include="wwwroot\SlickGrid\plugins\slick.headermenu.js" />
+    <None Include="wwwroot\SlickGrid\plugins\slick.rowmovemanager.js" />
+    <None Include="wwwroot\SlickGrid\plugins\slick.rowselectionmodel.js" />
+    <None Include="wwwroot\SlickGrid\slick.autotooltips.js" />
+    <None Include="wwwroot\SlickGrid\slick.coeditors.js" />
+    <None Include="wwwroot\SlickGrid\slick.cofreezgrid.js" />
+    <None Include="wwwroot\SlickGrid\slick.cogrid.js" />
+    <None Include="wwwroot\SlickGrid\slick.core.js" />
+    <None Include="wwwroot\SlickGrid\slick.dataview.js" />
+    <None Include="wwwroot\SlickGrid\slick.editors.js" />
+    <None Include="wwwroot\SlickGrid\slick.formatters.js" />
+    <None Include="wwwroot\SlickGrid\slick.grid.js" />
+    <None Include="wwwroot\SlickGrid\slick.groupitemmetadataprovider.js" />
+    <None Include="wwwroot\SlickGrid\slick.remotemodel-yahoo.js" />
+    <None Include="wwwroot\SlickGrid\slick.remotemodel.js" />
+    <None Include="wwwroot\SlickGrid\slickgrid-print-plugin.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SSRepository\SSRepository.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\Transactions\Views\PurchaseInvoice\Create.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Transactions\Views\PurchaseInvoice\List.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Shared\Transactions\_tranFooter.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Shared\Transactions\_tranGrid.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Shared\Transactions\_tranHeader.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Transactions\Views\PurchaseOrder\Create.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Transactions\Views\PurchaseOrder\List.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

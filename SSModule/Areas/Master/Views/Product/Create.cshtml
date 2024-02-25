@@ -1,0 +1,211 @@
+﻿@model SSRepository.Models.ProductModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .f-ctrl {
+        display: block !important;
+    }
+
+    .form-control {
+        height: 25px;
+        line-height: 1;
+        padding: 0px;
+        border-radius: 0;
+        border: none !important;
+        border-bottom: solid 1px #ced4da !important;
+        box-shadow: inherit;
+        font-family: 'Roboto', sans-serif !important;
+    }
+
+    label {
+        display: inline-block;
+        margin-bottom: 0;
+        color: #ce07c1;
+        text-transform: uppercase;
+        font-size: 12px;
+    }
+
+</style>
+<div class="p-3">
+    <form asp-action="Create" class="row g-3" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PkProductId" />
+ 
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Category </label>
+                    <select asp-for="FkprodCatgId" asp-items="@(new SelectList(ViewBag.CategoryList,"PkCategoryId","CategoryName"))" class="form-control" id="FkprodCatgId">
+                    </select>
+                    <span asp-validation-for="FkprodCatgId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Product Name</label>
+                    <input asp-for="Product" class="form-control" />
+                    <span asp-validation-for="Product" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+
+                    <label class="control-label">Strength</label>
+                    <input asp-for="Strength" class="form-control" />
+                    <span asp-validation-for="Strength" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Barcode" class="control-label"></label>
+                    <input asp-for="Barcode" class="form-control" />
+                    <span asp-validation-for="Barcode" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Status</label>
+                    <div class="d-flex">
+                        <div class="radio-class mr-3">
+                            <input asp-for="Status" class="radios__input" name="Status" id="StatusActive" type="radio" value="A">
+                            <label class="label" for="StatusActive">Active</label>
+                        </div>
+                        <div class="radios__item mr-3">
+                            <input asp-for="Status" class="radios__input" name="Status" id="StatusDeActive" type="radio" value="D">
+                            <label class="label" for="StatusDeActive">DeActive</label>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">HSNCode</label>
+                    <input asp-for="HSNCode" class="form-control" />
+                    <span asp-validation-for="HSNCode" class="text-danger"></span>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Brand</label>
+                    <input asp-for="Brand" class="form-control" />
+                    <span asp-validation-for="Brand" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Min Stock</label>
+                    <input asp-for="MinStock" class="form-control" />
+                    <span asp-validation-for="MinStock" class="text-danger"></span>
+                </div>
+            </div>
+             <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Max Stock</label>
+                    <input asp-for="MaxStock" class="form-control" />
+                    <span asp-validation-for="MaxStock" class="text-danger"></span>
+                </div>
+            </div>
+             <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Min Days</label>
+                    <input asp-for="MinDays" class="form-control" />
+                    <span asp-validation-for="MinDays" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Max Days</label>
+                    <input asp-for="MaxDays" class="form-control" />
+                    <span asp-validation-for="MaxDays" class="text-danger"></span>
+                </div>
+            </div>
+             <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">MRP</label>
+                    <input asp-for="MRP" class="form-control" />
+                    <span asp-validation-for="MRP" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Sale Rate</label>
+                    <input asp-for="SaleRate" class="form-control" />
+                    <span asp-validation-for="SaleRate" class="text-danger"></span>
+                </div>
+            </div>
+             <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Trade Rate</label>
+                    <input asp-for="TradeRate" class="form-control" />
+                    <span asp-validation-for="TradeRate" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Distribution Rate</label>
+                    <input asp-for="DistributionRate" class="form-control" />
+                    <span asp-validation-for="DistributionRate" class="text-danger"></span>
+                </div>
+            </div>
+             <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Purchase Rate</label>
+                    <input asp-for="PurchaseRate" class="form-control" />
+                    <span asp-validation-for="PurchaseRate" class="text-danger"></span>
+                </div>
+            </div><div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Image</label>
+                    <input type="file" id="file_Image" onchange="return UploadImage('Image')" accept="image/*" class="requied d-block" />
+
+                    <input asp-for="Image" type="hidden" />
+                    <img id="dummyimage_Image" class="img-md img-avatar" style="height: 50px;width: 50px;" src="@Model.Image" />
+                    <span asp-validation-for="Image" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="control-label">Description</label>
+                    <textarea asp-for="Description" class="form-control" ></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+            
+        </div>
+       
+    </form>
+</div>
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+<script>
+       $(document).ready(function(){
+            $('#btnServerSave').click(function (e) {
+                e.preventDefault();
+                $("form").submit();
+            });
+       })
+        UploadImage = (id) => {
+            var file = document.querySelector('input[id="file_' + id + '"]').files[0];
+            // $("#FileName").val(file.name);
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                //console.log(reader.result);
+                $("#" + id).val(reader.result);
+                $("#dummyimage_" + id).attr("src", reader.result);
+                $("#dummyimage_" + id).show();
+                //   $("#myImage").hide();
+
+            };
+        }
+</script>
+                }

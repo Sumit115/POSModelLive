@@ -1,0 +1,91 @@
+﻿@model SSRepository.Models.TranModel
+
+@{
+    Layout = null;
+}
+<div class="col-md-12">
+    <div class="row">
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="control-label">Gross Amt </label>
+                <input asp-for="GrossAmt" class="form-control" readonly="readonly" />
+                <span asp-validation-for="GrossAmt" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="control-label">Cash Discount </label>
+                <input asp-for="CashDiscount" class="form-control" onchange="FooterChange('CashDiscount')" />
+                <span asp-validation-for="CashDiscount" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="form-group">
+                <label class="control-label">Disc Type </label>
+                <select asp-for="CashDiscType" class="form-control" id="CashDiscType" onchange="FooterChange('CashDiscType')">
+                    <option value="R">Rs</option>
+                    <option value="P">%</option>
+                </select>
+                <span asp-validation-for="CashDiscType" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label">Cash Discount Amt </label>
+                <input asp-for="CashDiscountAmt" class="form-control" readonly="readonly" />
+                <span asp-validation-for="CashDiscountAmt" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="control-label">Other Charge </label>
+                <input asp-for="OtherCharge" class="form-control" onchange="FooterChange('OtherCharge')" />
+                <span asp-validation-for="OtherCharge" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="control-label">RoundOf Diff </label>
+                <input asp-for="RoundOfDiff" class="form-control" onchange="FooterChange('RoundOfDiff')" />
+                <span asp-validation-for="RoundOfDiff" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label">Total Discount </label>
+                <input asp-for="TotalDiscount" class="form-control" readonly="readonly" readonly="readonly" />
+                <span asp-validation-for="TotalDiscount" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="control-label">Tax Amt </label>
+                <input asp-for="TaxAmt" class="form-control" readonly="readonly" />
+                <span asp-validation-for="TaxAmt" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-4" style="display:none">
+            <div class="form-group">
+                <label class="control-label">Shipping </label>
+                <input asp-for="Shipping" class="form-control" onchange="FooterChange('Shipping')" />
+                <span asp-validation-for="Shipping" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="control-label">NetAmt </label>
+                <input asp-for="NetAmt" class="form-control" readonly="readonly" />
+                <span asp-validation-for="NetAmt" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="control-label">Remark </label>
+                <textarea asp-for="Remark" class="form-control"></textarea>
+                <span asp-validation-for="Remark" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</div>

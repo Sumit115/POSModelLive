@@ -1,0 +1,182 @@
+﻿ 
+@{
+    ViewData["Title"] = "Branch List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .f-list {
+        display: block !important;
+    }
+
+    .tabel thead tr th, .tabel-design tbody tr td {
+        height: 37px;
+    }
+
+    .tabel thead tr th {
+        font-family: 'Nunito', sans-serif;
+        background-color: #c4e4e3;
+        text-transform: uppercase;
+        font-size: 13px;
+        line-height: 15px;
+        color: #000;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+ <div> 
+<div class="row">
+    <div id="WUCHM1" class="col-12">
+    </div>
+    </div>
+</div>
+<input type="hidden" id="hdFormId" value="@ViewBag.FormId" />
+
+<style>
+    .cell-title {
+        font-weight: bold;
+    }
+
+    #contextMenu {
+        background: #e1efc7;
+        border: 1px solid gray;
+        padding: 2px;
+        display: inline-block;
+        min-width: 100px;
+        -moz-box-shadow: 2px 2px 2px silver;
+        -webkit-box-shadow: 2px 2px 2px silver;
+        z-index: 99999;
+    }
+
+        #contextMenu li {
+            padding: 4px 4px 4px 14px;
+            list-style: none;
+            cursor: pointer;
+            background: url("../images/arrow_right_peppermint.png") no-repeat center left;
+        }
+
+            #contextMenu li:hover {
+                background-color: white;
+            }
+</style>
+
+<ul id="contextMenu" style="display:none;position:absolute">
+    <li id="contextEdit" data="Edit">Edit</li>
+</ul>
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        var FormId = $("#hdFormId").val();
+
+
+        $(document).ready(function () {
+            View();
+        });
+  
+        function ShowGridColumn() {
+
+            Common.GridColSetup(parseInt(FormId),'', function () {
+                 View();
+            });
+        }
+        function View() {
+            $('#WUCHM1').empty();
+            Common.Get(".filter", "", function (flag, _d) {
+                if (flag) {
+                    var d = JSON.stringify({ pageNo: 1, pageSize: 1000 });
+                    $.ajax({
+                        type: "POST",
+                        url: '/Master/Branch/List',
+                        data: { pageNo: 1, pageSize: 1000 },
+                        datatype: "json",
+                        success: function (res) {
+                            console.log(res);
+                            //if (res.status == "success") {
+                                //var jo = JSON.parse(res.data);
+                            bindGrid(res);
+                            //}
+                            //else
+                            //    alert(res.msg);
+                        }
+                    })
+                    
+                }
+                else
+                    alert("Some Error found.Please Check");
+            });
+        };
+        function bindGrid(data) {
+            debugger;
+            Common.Grid(parseInt(FormId),'', function (s) {
+                var cg = new coGrid("#WUCHM1");
+                UDI = cg;
+                cg.setColumnHeading(s.ColumnHeading);
+                cg.setColumnWidthPer(s.ColumnWidthPer, 1200);
+                cg.setColumnFields(s.ColumnFields);
+                cg.setAlign(s.Align);
+                cg.defaultHeight = "65vh";
+                cg.setSearchType(s.SearchType);
+                cg.setSearchableColumns(s.SearchableColumns);
+                cg.setSortableColumns(s.SortableColumns);
+                cg.setIdProperty("PkBranchId");
+                cg.setCtrlType(s.setCtrlType);
+                cg.applyAddNewRow();
+                cg.bind(data);
+                cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
+
+
+                cg.outGrid.onClick.subscribe(function (e, args) {
+                    if (args.cell != undefined) {
+                        var PkBranchId = args.grid.getDataItem(args.row)["PkBranchId"];
+                         
+                        var Col = args.grid.getColumns()[args.cell].field;
+                        if (Col == "View") {
+                          //  window.location.href = "/Loan/LoanTran/View/" + pk_Id;
+                        }
+                        
+                    }
+                });
+
+                cg.outGrid.onContextMenu.subscribe(function (e, args) {
+
+                    e.preventDefault();
+                    var j = cg.outGrid.getCellFromEvent(e);
+
+
+                   // if (j.cell == 1 || j.cell == 2) { 
+                        $("#contextMenu")
+                            .data("row", j.row)
+                            .css("top", e.pageY - 90)
+                            .css("left", e.pageX - 60)
+                            .show();
+                   // }
+
+                    $("body").one("click", function () {
+                        $("#contextMenu").hide();
+                    });
+                });
+
+                $("#contextMenu").click(function (e) {
+                    if (!$(e.target).is("li")) {
+                        return;
+                    }
+                    if (!UDI.outGrid.getEditorLock().commitCurrentEdit()) {
+                        return;
+                    }
+
+                    var row = $(this).data("row");
+                    var command = $(e.target).attr("data");
+                    var pk_Id = UDI.outGrid.getDataItem(row)["pkBranchId"];
+                    if (command == "Edit") {
+
+                        window.location.href = "/Master/Branch/Create/" + pk_Id;
+                         
+                    }
+                    
+                });
+            });
+        };
+    </script>
+}

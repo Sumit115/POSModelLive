@@ -1,0 +1,207 @@
+﻿@model SSRepository.Models.CustomerModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .f-ctrl {
+        display: block !important;
+    }
+
+    .form-control {
+        height: 25px;
+        line-height: 1;
+        padding: 0px;
+        border-radius: 0;
+        border: none !important;
+        border-bottom: solid 1px #ced4da !important;
+        box-shadow: inherit;
+        font-family: 'Roboto', sans-serif !important;
+    }
+
+    label {
+        display: inline-block;
+        margin-bottom: 0;
+        color: #ce07c1;
+        text-transform: uppercase;
+        font-size: 12px;
+    }
+
+</style>
+<div class="p-3">
+    <form asp-action="Create" class="row g-3" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PkCustomerId" />
+        <input type="hidden" asp-for="IsAadharVerify" />
+        <input type="hidden" asp-for="IsPanVerify" />
+        <input type="hidden" asp-for="Status" />
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Mobile" class="control-label"></label>
+                    <input asp-for="Mobile" class="form-control" />
+                    <span asp-validation-for="Mobile" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Email</label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+           
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Marital</label>
+                    <div class="d-flex">
+                        <div class="radio-class mr-3">
+                            <input asp-for="Marital" class="radios__input" name="Marital" id="MaritalSingle" type="radio" value="Single">
+                            <label class="label" for="MaritalSingle">Single</label>
+                        </div>
+                        <div class="radios__item mr-3">
+                            <input asp-for="Marital" class="radios__input" name="Marital" id="MaritalMarried" type="radio" value="Married">
+                            <label class="label" for="MaritalMarried">Married</label>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Marital" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Gender</label>
+                    <div class="d-flex">
+                        <div class="radio-class mr-3">
+                            <input asp-for="Gender" class="radios__input" name="Gender" id="GenderMale" type="radio" value="Male">
+                            <label class="label" for="GenderMale">Male</label>
+                        </div>
+                        <div class="radios__item mr-3">
+                            <input asp-for="Gender" class="radios__input" name="Gender" id="GenderFemale" type="radio" value="Female">
+                            <label class="label" for="GenderFemale">Female</label>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Dob</label>
+                    <input asp-for="Dob" class="form-control" />
+                    <span asp-validation-for="Dob" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Aadhar No</label>
+                    <input asp-for="Aadhar" class="form-control" />
+                    <span asp-validation-for="Aadhar" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Aadhar Card Front Image</label>
+                    <input type="file" id="file_AadharCardFront" onchange="return UploadImage('AadharCardFront')" accept="image/*" class="requied d-block" />
+
+                    <input asp-for="AadharCardFront" type="hidden" />
+                    <img id="dummyimage_AadharCardFront" class="img-md img-avatar" style="height: 50px;width: 50px;" src="@Model.AadharCardFront" />
+
+                    <span asp-validation-for="AadharCardFront" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Aadhar Card Back Image</label>
+                    <input type="file" id="file_AadharCardBack" onchange="return UploadImage('AadharCardBack')" accept="image/*" class="requied d-block" />
+
+                    <input asp-for="AadharCardBack" type="hidden" />
+                    <img id="dummyimage_AadharCardBack" class="img-md img-avatar" style="height: 50px;width: 50px;" src="@Model.AadharCardBack" />
+                    <span asp-validation-for="AadharCardBack" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Pan No.</label>
+                    <input asp-for="Panno" class="form-control" />
+                    <span asp-validation-for="Panno" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Pan Card Image</label>
+                    <input type="file" id="file_PanCard" onchange="return UploadImage('PanCard')" accept="image/*" class="requied d-block" />
+
+                    <input asp-for="PanCard" type="hidden" />
+                    <img id="dummyimage_PanCard" class="img-md img-avatar" style="height: 50px;width: 50px;" src="@Model.PanCard" />
+                    <span asp-validation-for="PanCard" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">GSTIN</label>
+                    <input asp-for="Gstno" class="form-control" />
+                    <span asp-validation-for="Gstno" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Passport Image</label>
+                    <input type="file" id="file_Passport" onchange="return UploadImage('Passport')" accept="image/*" class="requied d-block" />
+
+                    <input asp-for="Passport" type="hidden" />
+                    <img id="dummyimage_Passport" class="img-md img-avatar" style="height: 50px;width: 50px;" src="@Model.Passport" />
+                    <span asp-validation-for="Passport" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Signature Image</label>
+                    <input type="file" id="file_Signature" onchange="return UploadImage('Signature')" accept="image/*" class="requied d-block" />
+
+                    <input asp-for="Signature" type="hidden" />
+                    <img id="dummyimage_Signature" class="img-md img-avatar" style="height: 50px;width: 50px;" src="@Model.Signature" />
+                    <span asp-validation-for="Signature" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+       
+    </form>
+</div>
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+<script>
+       $(document).ready(function(){
+            $('#btnServerSave').click(function (e) {
+                e.preventDefault();
+                $("form").submit();
+            });
+       })
+        UploadImage = (id) => {
+            var file = document.querySelector('input[id="file_' + id + '"]').files[0];
+            // $("#FileName").val(file.name);
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                //console.log(reader.result);
+                $("#" + id).val(reader.result);
+                $("#dummyimage_" + id).attr("src", reader.result);
+                $("#dummyimage_" + id).show();
+                //   $("#myImage").hide();
+
+            };
+        }
+</script>
+                }

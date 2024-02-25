@@ -1,0 +1,98 @@
+﻿@model SSRepository.Models.TranModel
+
+@{
+    Layout = null;
+}
+<input type="hidden" asp-for="FkPartyId" />
+<input type="hidden" id="PartyName" value="Search Vendor" />
+<input type="hidden" id="hdPartiList" value="@ViewBag.PartiList" />
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label class="d-block pb-1">Search Party</label>
+                        <input type="text" id="txtParty" class="form-control" placeholder="Search Vendor" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Mobile</label>
+                        <input name="PartyMobile" type="text" id="PartyMobile" class="form-control input-number" maxlength="10" />
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea name="PartyAddress" type="text" id="PartyAddress" class="form-control" rows="2" disabled>
+
+                                </textarea>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>GSTIN</label>
+                        <input type="text" id="txtPartyGSTIN" class="form-control" disabled />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Credit</label>
+                        <input name="PartyCredit" type="text" id="PartyCredit" class="form-control" value="0" disabled />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Balance</label>
+                        <input name="PartyBalance" type="text" id="PartyBalance" class="form-control" value="0" disabled />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Series </label>
+                        <select asp-for="FKSeriesId" asp-items="@(new SelectList(ViewBag.SeriesList,"PkSeriesId","Series"))" class="form-control" id="FKSeriesId">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">*Invoice No</label>
+                        <input asp-for="EntryNo" class="form-control" />
+                        <span asp-validation-for="EntryNo" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">Entry Date</label>
+                        <input asp-for="EntryDate" class="form-control" />
+                        <span asp-validation-for="EntryDate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">GRNo </label>
+                        <input asp-for="GRNo" class="form-control" />
+                        <span asp-validation-for="GRNo" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">GR Date </label>
+                        <input asp-for="GRDate" class="form-control" />
+                        <span asp-validation-for="GRDate" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
