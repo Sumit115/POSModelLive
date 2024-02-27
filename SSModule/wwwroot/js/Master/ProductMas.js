@@ -57,7 +57,7 @@ $(document).ready(function () {
         $("#div_Addon,#div_Variation").html('');
         $("#btnaddNewVariation").hide();
         $("#IsVariation,#IsAddon").val(false);
-        debugger;
+        
         if ($(this).is(':checked')) {
             $("#IsVariation").val(true);
             $("#btnaddNewVariation").show();
@@ -73,13 +73,13 @@ function BindProductAddon(data) {
     $("#div_Addon,#div_Variation").html('');
     $("#btnaddNewVariation").hide();
     $("#IsVariation,#IsAddon").val(false);
-    debugger;
+    
     if ($("#chkIsAddon").is(':checked')) {
         $("#IsAddon").val(true);
 
         html = "<div class=row>";
         $.each(AddonList, function (i, v) {
-            debugger;
+            
             let ischecked = false;
             $.map(data, function (elementOfArray, indexInArray) {
                 // console.log(elementOfArray);
@@ -177,7 +177,7 @@ function BindVariationhtml(n, data) {
 
         s += '<option value="' + VariationList[index].PkId + '">' + VariationList[index].VariationName + '</option>';
     });
-    debugger;
+    
     $('#div_Variation #ProductVariation_' + n + '__FkVariationId').html(s);
 
     if (data.FkVariationId > 0) {

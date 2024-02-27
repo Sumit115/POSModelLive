@@ -18,13 +18,6 @@ namespace SSAdmin.Areas.Master.Controllers
             _gridLayoutRepository = gridLayoutRepository;
             //_repository.SetRootPath(_hostingEnvironment.WebRootPath);
         }
-        public string Message
-        {
-            set
-            {
-                ViewBag.Message = value;
-            }
-        }
 
         [HttpPost]
         public async Task<JsonResult> GridStrucher(int FormId)

@@ -67,13 +67,7 @@
                 </div>
             </div>
             
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Pin</label>
-                    <input asp-for="Pin" class="form-control" />
-                    <span asp-validation-for="Pin" class="text-danger"></span>
-                </div>
-            </div>
+          
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Country</label>
@@ -98,7 +92,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Pin</label>
-                    <input asp-for="Pin" class="form-control" />
+                    <input asp-for="Pin" class="form-control  input-number" maxlength="6" pattern="PinCode" />
                     <span asp-validation-for="Pin" class="text-danger"></span>
                 </div>
             </div>
@@ -113,6 +107,7 @@
     }
 <script>
        $(document).ready(function(){
+            Common.InputFormat();
             $('#btnServerSave').click(function (e) {
                 e.preventDefault();
                 $("form").submit();

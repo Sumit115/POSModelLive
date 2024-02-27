@@ -555,6 +555,8 @@ namespace SSRepository.Repository
             PurchaseOrder_Create = 17,
             PurchaseInvoice_Create = 18,
             SalesChallan_Create = 19,
+            CategoryGroup = 20,
+            Brand = 21,
 
 
         }

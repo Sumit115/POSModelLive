@@ -23,6 +23,7 @@ namespace SSRepository.Data
         public virtual DbSet<TblFormMas> TblFormMas { get; set; } = null!;
         public virtual DbSet<TblGridStructer> TblGridStructer { get; set; } = null!;
         public virtual DbSet<TblCategoryMas> TblCategoryMas { get; set; } = null!;
+        public virtual DbSet<TblCategoryGroupMas> TblCategoryGroupMas { get; set; } = null!;
         public virtual DbSet<TblProductMas> TblProductMas { get; set; } = null!;
         public virtual DbSet<TblBankMas> TblBankMas { get; set; } = null!;
         public virtual DbSet<TblSeriesMas> TblSeriesMas { get; set; } = null!;
@@ -39,6 +40,7 @@ namespace SSRepository.Data
         public virtual DbSet<TblSalesChallandtl> TblSalesChallandtl { get; set; } = null!;
         public virtual DbSet<TblProdLotDtl> TblProdLotDtl { get; set; } = null!;
         public virtual DbSet<TblProdStockDtl> TblProdStockDtl { get; set; } = null!;
+        public virtual DbSet<TblBrandMas> TblBrandMas { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -58,6 +58,8 @@ namespace SSRepository.Models
         public decimal GstRate { get; set; }//9
         public decimal GstAmt { get; set; }//9
         public string ProductName_Text { get; set; }
+        public string Batch_Text { get; set; }
+        public string Color_Text { get; set; }
 
     }
 }

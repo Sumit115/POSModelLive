@@ -92,7 +92,7 @@
                         data: { pageNo: 1, pageSize: 1000 },
                         datatype: "json",
                         success: function (res) {
-                            console.log(res);
+                            
                             //if (res.status == "success") {
                                 //var jo = JSON.parse(res.data);
                             bindGrid(res);
@@ -108,7 +108,7 @@
             });
         };
         function bindGrid(data) {
-            debugger;
+            
             Common.Grid(parseInt(FormId),'', function (s) {
                 var cg = new coGrid("#WUCHM1");
                 UDI = cg;
@@ -168,7 +168,7 @@
 
                     var row = $(this).data("row");
                     var command = $(e.target).attr("data");
-                    var pk_Id = UDI.outGrid.getDataItem(row)["pkBranchId"];
+                    var pk_Id = UDI.outGrid.getDataItem(row)["PkBranchId"];
                     if (command == "Edit") {
 
                         window.location.href = "/Master/Branch/Create/" + pk_Id;

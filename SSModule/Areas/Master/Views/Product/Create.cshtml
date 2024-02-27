@@ -33,21 +33,53 @@
     <form asp-action="Create" class="row g-3" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="PkProductId" />
- 
+
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
-                    <label class="control-label">Category </label>
-                    <select asp-for="FkprodCatgId" asp-items="@(new SelectList(ViewBag.CategoryList,"PkCategoryId","CategoryName"))" class="form-control" id="FkprodCatgId">
+                    <label class="control-label">Section Group </label>
+                    <select asp-for="FkCatGroupId" asp-items="@(new SelectList(ViewBag.CategoryGroupList,"PkCategoryGroupId","CategoryGroupName"))" class="form-control" id="FkCatGroupId" onchange="GetCategory()">
                     </select>
-                    <span asp-validation-for="FkprodCatgId" class="text-danger"></span>
+                    <span asp-validation-for="FkCatGroupId" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label class="control-label">Product Name</label>
+                    <label class="control-label">Section </label>
+                    <select asp-for="FkCatId" asp-items="@(new SelectList(ViewBag.CategoryList,"PkCategoryId","CategoryName"))" class="form-control" id="FkCatId">
+                    </select>
+                    <span asp-validation-for="FkCatId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Article Name</label>
                     <input asp-for="Product" class="form-control" />
                     <span asp-validation-for="Product" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Alias</label>
+                    <input asp-for="Alias" class="form-control" />
+                    <span asp-validation-for="Alias" class="text-danger"></span>
+                </div>
+            </div>
+             <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Article Type</label>
+                    <select asp-for="ArticleType" class="form-control">
+                        <option value="Finished Goods">Finished Goods</option>
+                        <option value="Raw Material">Raw Material</option>
+                    </select>
+                    <span asp-validation-for="ArticleType" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Article No.</label>
+                    <input asp-for="ArticleNumber" class="form-control" />
+                    <span asp-validation-for="ArticleNumber" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-4">
@@ -70,7 +102,7 @@
                     <label class="control-label">Status</label>
                     <div class="d-flex">
                         <div class="radio-class mr-3">
-                            <input asp-for="Status" class="radios__input" name="Status" id="StatusActive" type="radio" value="A">
+                            <input asp-for="Status" class="radios__input" name="Status" id="StatusActive" type="radio" value="A" checked>
                             <label class="label" for="StatusActive">Active</label>
                         </div>
                         <div class="radios__item mr-3">
@@ -89,12 +121,13 @@
                     <span asp-validation-for="HSNCode" class="text-danger"></span>
                 </div>
             </div>
-            
+
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Brand</label>
-                    <input asp-for="Brand" class="form-control" />
-                    <span asp-validation-for="Brand" class="text-danger"></span>
+                    <select asp-for="FkBrandId" asp-items="@(new SelectList(ViewBag.BrandList,"PkBrandId","BrandName"))" class="form-control" id="BrandId">
+                    </select>
+                    <span asp-validation-for="FkBrandId" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-4">
@@ -104,14 +137,14 @@
                     <span asp-validation-for="MinStock" class="text-danger"></span>
                 </div>
             </div>
-             <div class="col-md-4">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Max Stock</label>
                     <input asp-for="MaxStock" class="form-control" />
                     <span asp-validation-for="MaxStock" class="text-danger"></span>
                 </div>
             </div>
-             <div class="col-md-4">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Min Days</label>
                     <input asp-for="MinDays" class="form-control" />
@@ -125,7 +158,7 @@
                     <span asp-validation-for="MaxDays" class="text-danger"></span>
                 </div>
             </div>
-             <div class="col-md-4">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">MRP</label>
                     <input asp-for="MRP" class="form-control" />
@@ -139,7 +172,7 @@
                     <span asp-validation-for="SaleRate" class="text-danger"></span>
                 </div>
             </div>
-             <div class="col-md-4">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Trade Rate</label>
                     <input asp-for="TradeRate" class="form-control" />
@@ -153,7 +186,7 @@
                     <span asp-validation-for="DistributionRate" class="text-danger"></span>
                 </div>
             </div>
-             <div class="col-md-4">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Purchase Rate</label>
                     <input asp-for="PurchaseRate" class="form-control" />
@@ -172,13 +205,13 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="control-label">Description</label>
-                    <textarea asp-for="Description" class="form-control" ></textarea>
+                    <textarea asp-for="Description" class="form-control"></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
             </div>
-            
+
         </div>
-       
+
     </form>
 </div>
 
@@ -186,13 +219,13 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-<script>
-       $(document).ready(function(){
+    <script>
+        $(document).ready(function () {
             $('#btnServerSave').click(function (e) {
                 e.preventDefault();
                 $("form").submit();
             });
-       })
+        })
         UploadImage = (id) => {
             var file = document.querySelector('input[id="file_' + id + '"]').files[0];
             // $("#FileName").val(file.name);
@@ -207,5 +240,31 @@
 
             };
         }
-</script>
-                }
+    </script>
+    <script>
+        function GetCategory() {
+            
+            var Id = $("#FkCatGroupId").val();
+            $("#FkCatId").empty();
+            //
+
+            if (Id > 0) {
+                var d = JSON.stringify({ pageNo: 1, pageSize: 1000 });
+                $.ajax({
+                    type: "POST",
+                    url: '/Master/Category/GetDrpCategoryByGroupId',
+                    data: { CategoryGroupId: Id },
+                    datatype: "json",
+                    success: function (res) {
+                        
+                        $(res).each(function (i, v) {
+
+                            $("#FkCatId").append("<option value='" + v.PkCategoryId + "'>" + v.CategoryName + "</option>");
+                        });
+                    }
+                })
+
+            } else { $("#FkCatId").append("<option value=''>-Select-</option>"); }
+        }
+    </script>
+        }

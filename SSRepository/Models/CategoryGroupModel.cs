@@ -8,17 +8,15 @@ using System.Threading.Tasks;
 
 namespace SSRepository.Models
 {
-    public class CategoryModel : BaseModel
+    public class CategoryGroupModel : BaseModel
     {
-        public long PkCategoryId { get; set; }
+        public long PkCategoryGroupId { get; set; }
 
         [Required(ErrorMessage = "Name Required")]
-        [StringLength(50)] 
-        public string CategoryName { get; set; }
-        [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "Please Select Section Group")]  
-        public long FkCategoryGroupId { get; set; }
+        [StringLength(50)]
+        public string CategoryGroupName { get; set; }
+        public long? FkCategoryGroupId { get; set; } 
         public string? PCategoryGroupName { get; set; }
-    }
 
+    }
 }

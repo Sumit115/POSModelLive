@@ -21,9 +21,11 @@ namespace SSAdmin.Areas.Master.Controllers
     public class CategoryController : BaseController
     {
         private readonly ICategoryRepository _repository;
-        public CategoryController(ICategoryRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
+        private readonly ICategoryGroupRepository _repositoryCategoryGroup;
+        public CategoryController(ICategoryRepository repository, ICategoryGroupRepository repositoryGroupRepository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
             _repository = repository;
+            _repositoryCategoryGroup = repositoryGroupRepository;
             // _gridLayoutRepository = gridLayoutRepository;
             //_repository.SetRootPath(_hostingEnvironment.WebRootPath);
         }
@@ -71,7 +73,7 @@ namespace SSAdmin.Areas.Master.Controllers
             CategoryModel Model = new CategoryModel();
             try
             {
-                ViewBag.CategoryList = _repository.GetDrpCategory(1, 1000);
+                ViewBag.CategoryGroupList = _repositoryCategoryGroup.GetDrpCategoryGroup(1, 1000);
 
                 ViewBag.PageType = "";
                 if (id != 0 && pageview.ToLower() == "log")
@@ -106,7 +108,7 @@ namespace SSAdmin.Areas.Master.Controllers
             {
                 model.FKUserId = 1;
                 model.src = 1;
-                model.FkCategoryId = (model.FkCategoryId > 0 ? model.FkCategoryId : 0);
+                model.FkCategoryGroupId = (model.FkCategoryGroupId > 0 ? model.FkCategoryGroupId : 0);
 
                 if (ModelState.IsValid)
                 {
@@ -159,6 +161,13 @@ namespace SSAdmin.Areas.Master.Controllers
                 //return CommonCore.SetError(ex.Message);
             }
             return response;
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetDrpCategoryByGroupId(int CategoryGroupId)
+        {
+            var data = _repository.GetDrpCategoryByGroupId(CategoryGroupId,1000);
+            return new JsonResult(data);
         }
 
         public override List<ColumnStructure> ColumnList()

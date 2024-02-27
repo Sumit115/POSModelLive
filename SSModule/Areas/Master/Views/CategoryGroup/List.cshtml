@@ -1,5 +1,6 @@
-﻿@{
-    ViewData["Title"] = "Sales Invoice List";
+﻿ 
+@{
+    ViewData["Title"] = "Section Group List";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <style>
@@ -23,36 +24,10 @@
         text-overflow: ellipsis;
     }
 </style>
-<div>
-    <div class="row">
-        <div class="col-12">
-            <div class="row filter">
-                <div class="col-md-2">
-                    <input name="FDate" type="text" id="FDate" class="form-control datepicker" maxlength="10" placeholder="From Date*" readonly="readonly" required="" title="From Date*">
-                    <span class="field-validation-valid text-danger" data-valmsg-for="FDate"></span>
-                </div>
-                <div class="col-md-2">
-                    <input name="TDate" type="text" id="TDate" class="form-control datepicker" maxlength="10" placeholder="To Date*" readonly="readonly" required="" title="To Date*">
-                    <span class="field-validation-valid text-danger" data-valmsg-for="TDate"></span>
-                </div>
-                <div class="col-md-1">
-                    <input type="button" value="Search" class="btn btn-success" onclick="View()">
-
-                </div>
-                 
-            </div>
-            <hr />
-            <div class="row">
-
-                <div id="WUC" class="col-12">
-                </div>
-            </div>
-
-        </div>
+ <div> 
+<div class="row">
+    <div id="WUCHM1" class="col-12">
     </div>
-    <div class="row">
-        <div id="WUCHM1" class="col-12">
-        </div>
     </div>
 </div>
 <input type="hidden" id="hdFormId" value="@ViewBag.FormId" />
@@ -64,7 +39,7 @@
 
     #contextMenu {
         background: #e1efc7;
-        bInvoice: 1px solid gray;
+        border: 1px solid gray;
         padding: 2px;
         display: inline-block;
         min-width: 100px;
@@ -97,45 +72,36 @@
 
 
         $(document).ready(function () {
-            Common.InputFormat();
-            var dt = new Date;
-            $("#FDate").val(dt.dateFormat("d-m-Y"));
-            $("#TDate").val(dt.dateFormat("d-m-Y"));
             View();
         });
-
+  
         function ShowGridColumn() {
 
             Common.GridColSetup(parseInt(FormId),'', function () {
-                View();
+                 View();
             });
         }
         function View() {
             $('#WUCHM1').empty();
             Common.Get(".filter", "", function (flag, _d) {
                 if (flag) {
-                    var d = JSON.stringify({   FDate: _d.FDate, TDate: _d.TDate });
-
-                     $.ajax({
+                    var d = JSON.stringify({ pageNo: 1, pageSize: 1000 });
+                    $.ajax({
                         type: "POST",
-                        url: '/Transactions/SalesInvoice/List',
-                        data: { FDate: _d.FDate, TDate: _d.TDate },
+                        url: '/Master/CategoryGroup/List',
+                        data: { pageNo: 1, pageSize: 1000 },
                         datatype: "json",
                         success: function (res) {
                             
-                            Handler.hide();
-                            if (res.status == "success") {
-                                var jo = JSON.parse(res.data);
-                                console.log(jo);
-                                bindGrid(jo);
-                            }
-                            else
-                                alert(res.msg);
-                            
-                             
+                            //if (res.status == "success") {
+                                //var jo = JSON.parse(res.data);
+                            bindGrid(res);
+                            //}
+                            //else
+                            //    alert(res.msg);
                         }
                     })
-
+                    
                 }
                 else
                     alert("Some Error found.Please Check");
@@ -144,7 +110,6 @@
         function bindGrid(data) {
             
             Common.Grid(parseInt(FormId),'', function (s) {
-                console.log(s);
                 var cg = new coGrid("#WUCHM1");
                 UDI = cg;
                 cg.setColumnHeading(s.ColumnHeading);
@@ -155,24 +120,24 @@
                 cg.setSearchType(s.SearchType);
                 cg.setSearchableColumns(s.SearchableColumns);
                 cg.setSortableColumns(s.SortableColumns);
-                cg.setIdProperty("PkId");
+                cg.setIdProperty("PkCategoryGroupId");
                 cg.setCtrlType(s.setCtrlType);
                 cg.applyAddNewRow();
                 cg.bind(data);
                 cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
 
-           
-                //cg.outGrid.onClick.subscribe(function (e, args) {
-                //    if (args.cell != undefined) {
-                //        var PkCategoryId = args.grid.getDataItem(args.row)["PkCategoryId"];
 
-                //        var Col = args.grid.getColumns()[args.cell].field;
-                //        if (Col == "View") {
-                //            //  window.location.href = "/Loan/LoanTran/View/" + pk_Id;
-                //        }
-
-                //    }
-                //});
+                cg.outGrid.onClick.subscribe(function (e, args) {
+                    if (args.cell != undefined) {
+                        var PkCategoryGroupId = args.grid.getDataItem(args.row)["PkCategoryGroupId"];
+                         
+                        var Col = args.grid.getColumns()[args.cell].field;
+                        if (Col == "View") {
+                          //  window.location.href = "/Loan/LoanTran/View/" + pk_Id;
+                        }
+                        
+                    }
+                });
 
                 cg.outGrid.onContextMenu.subscribe(function (e, args) {
 
@@ -180,13 +145,13 @@
                     var j = cg.outGrid.getCellFromEvent(e);
 
 
-                    // if (j.cell == 1 || j.cell == 2) {
-                    $("#contextMenu")
-                        .data("row", j.row)
-                        .css("top", e.pageY - 90)
-                        .css("left", e.pageX - 60)
-                        .show();
-                    // }
+                   // if (j.cell == 1 || j.cell == 2) { 
+                        $("#contextMenu")
+                            .data("row", j.row)
+                            .css("top", e.pageY - 90)
+                            .css("left", e.pageX - 60)
+                            .show();
+                   // }
 
                     $("body").one("click", function () {
                         $("#contextMenu").hide();
@@ -203,13 +168,13 @@
 
                     var row = $(this).data("row");
                     var command = $(e.target).attr("data");
-                    var PkId = UDI.outGrid.getDataItem(row)["PkId"];
+                    var pk_Id = UDI.outGrid.getDataItem(row)["PkCategoryGroupId"];
                     if (command == "Edit") {
 
-                        window.location.href = "/Transactions/SalesInvoice/Create/" + PkId;
-
+                        window.location.href = "/Master/CategoryGroup/Create/" + pk_Id;
+                         
                     }
-
+                    
                 });
             });
         };

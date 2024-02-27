@@ -17,26 +17,21 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace SSAdmin.Areas.Master.Controllers
 {
     [Area("Master")]
-    public class ProductController : BaseController
+    public class BrandController : BaseController
     {
-        private readonly IProductRepository _repository;
-        private readonly ICategoryGroupRepository _categoryGroupRepository;
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly IBrandRepository _brandRepository;
-
-        public ProductController(IProductRepository repository, ICategoryGroupRepository categoryGroupRepository, ICategoryRepository categoryRepository, IBrandRepository brandRepository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
+        private readonly IBrandRepository _repository;
+        
+        public BrandController(IBrandRepository repository, IGridLayoutRepository gridLayoutRepository):base(gridLayoutRepository)
         {
             _repository = repository;
-            _categoryGroupRepository = categoryGroupRepository;
-            _categoryRepository = categoryRepository;
-            _brandRepository = brandRepository;
+           // _gridLayoutRepository = gridLayoutRepository;
             //_repository.SetRootPath(_hostingEnvironment.WebRootPath);
         }
-
+       
         public async Task<IActionResult> List()
         {
-            //var json = JsonConvert.SerializeObject(_repository.ColumnList()).ToString();
-
+         //var json = JsonConvert.SerializeObject(_repository.ColumnList()).ToString();
+             
             ViewBag.FormId = _repository.FormID;
             return View();
         }
@@ -44,7 +39,7 @@ namespace SSAdmin.Areas.Master.Controllers
         [HttpPost]
         public async Task<JsonResult> List(int pageNo, int pageSize)
         {
-            var data = _repository.GetList(pageSize, pageNo);
+            var data = _repository.GetList(pageSize,pageNo);
             return new JsonResult(data);
         }
 
@@ -53,11 +48,11 @@ namespace SSAdmin.Areas.Master.Controllers
             string FileName = "";
             //try
             //{
-            //    List<BankModel> model = new List<BankModel>();
+            //    List<BrandModel> model = new List<BrandModel>();
             //    string result = CommonCore.API(ControllerName, "export", GetAPIDefaultParam());
             //    if (CommonCore.CheckError(result) == "")
             //    {
-            //        model = JsonConvert.DeserializeObject<List<BankModel>>(result);
+            //        model = JsonConvert.DeserializeObject<List<BrandModel>>(result);
             //        FileName = Common.Export(model, HeaderList, ColumnList, Name, Type);
             //    }
             //    else
@@ -73,11 +68,9 @@ namespace SSAdmin.Areas.Master.Controllers
 
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
-            ProductModel Model = new ProductModel();
+            BrandModel Model = new BrandModel();
             try
             {
-               
-
                 ViewBag.PageType = "";
                 if (id != 0 && pageview.ToLower() == "log")
                 {
@@ -93,47 +86,33 @@ namespace SSAdmin.Areas.Master.Controllers
                     ViewBag.PageType = "Create";
 
                 }
-                ViewBag.BrandList = _brandRepository.GetDrpBrand(1, 1000);
-                ViewBag.CategoryGroupList = _categoryGroupRepository.GetDrpCategoryGroup(1, 1000);
-
-                 if (Model.PkProductId > 0) { ViewBag.CategoryList = _categoryRepository.GetDrpCategoryByGroupId(Model.FkCatGroupId,1000); }
-                else
-                {
-                    var CatList = new List<CategoryModel>();
-                    CatList.Insert(0, new CategoryModel { PkCategoryId = 0, CategoryName = "Select" });
-                    ViewBag.CategoryList = CatList;
-                }
-                
             }
             catch (Exception ex)
             {
                 //CommonCore.WriteLog(ex, "Create Get ", ControllerName, GetErrorLogParam());
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(0, tblBankMas);
+            //BindViewBags(0, tblBrandMas);
             return View(Model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ProductModel model)
+        public async Task<IActionResult> Create(BrandModel model)
         {
             try
             {
                 model.FKUserId = 1;
                 model.src = 1;
-                model.NameToDisplay = model.NameToPrint = model.Product;
-                 model.ShelfID = model.TradeDisc = model.Unit1 = model.Unit2 = model.Unit3 = "";
-                model.FKTaxID = model.CaseLot = model.BoxSize = model.ProdConv1 = model.ProdConv2 = 0;
-                model.KeepStock = true;
+                //model.FkRegId = 1;
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
-                    if (model.PkProductId > 0)
+                    if (model.PkBrandId > 0)
                     {
                         Mode = "Edit";
                     }
-                    Int64 ID = model.PkProductId;
+                    Int64 ID = model.PkBrandId;
                     string error = await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {
@@ -159,17 +138,7 @@ namespace SSAdmin.Areas.Master.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(tblBankMas.PKID, tblBankMas);
-            ViewBag.BrandList = _brandRepository.GetDrpBrand(1, 1000);
-            ViewBag.CategoryGroupList = _categoryGroupRepository.GetDrpCategoryGroup(1, 1000);
-
-            if (model.PkProductId > 0) { ViewBag.CategoryList = _categoryRepository.GetDrpCategoryByGroupId(model.FkCatGroupId, 1000); }
-            else
-            {
-                var CatList = new List<CategoryModel>();
-                CatList.Insert(0, new CategoryModel { PkCategoryId = 0, CategoryName = "Select" });
-                ViewBag.CategoryList = CatList;
-            }
+            //BindViewBags(tblBrandMas.PKID, tblBrandMas);
             return View(model);
         }
 

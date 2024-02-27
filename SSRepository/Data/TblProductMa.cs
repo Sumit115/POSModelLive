@@ -16,13 +16,16 @@ namespace SSRepository.Data
         public string NameToPrint { get; set; }//backend =product
         public string? Image { get; set; }
         public string? Alias { get; set; }//=''
+        public string? ArticleType { get; set; }//txt
+        public string? ArticleNumber { get; set; }//txt
         public string? Strength { get; set; }//txt
         public string? Barcode { get; set; }//txt
         public char Status { get; set; }// Active=a / DeActive=d
-        public long FkprodCatgId { get; set; }//ddl
+        public long FkCatGroupId { get; set; }//ddl
+        public long FkCatId { get; set; }//ddl
         public long FKTaxID { get; set; }//=0
-        public string HSNCode { get; set; }//txt
-        public string Brand { get; set; }//txt
+        public string? HSNCode { get; set; }//txt
+        public long  FkBrandId { get; set; }//txt
         public string? ShelfID { get; set; }//=''
         public string? TradeDisc { get; set; }//=''
         public int MinStock { get; set; }//txt
@@ -31,7 +34,7 @@ namespace SSRepository.Data
         public int MaxDays { get; set; }//txt
         public int CaseLot { get; set; }//=0
         public int BoxSize { get; set; }//=0
-        public string Description { get; set; }//txtaera
+        public string? Description { get; set; }//txtaera
         public string? Unit1 { get; set; }//=''
         public int ProdConv1 { get; set; }//=0
         public string? Unit2 { get; set; }  //=''

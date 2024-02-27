@@ -41,6 +41,7 @@
     <None Include="wwwroot\Admin\lib\jquery\dist\jquery.min.js" />
     <None Include="wwwroot\Admin\lib\jquery\dist\jquery.min.map" />
     <None Include="wwwroot\Admin\tautocomplete\tautocomplete.js" />
+    <None Include="wwwroot\js\Transaction\Transaction.js" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map" />

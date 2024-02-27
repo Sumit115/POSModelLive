@@ -1,7 +1,7 @@
-﻿@model SSRepository.Models.CategoryModel
+﻿@model SSRepository.Models.CategoryGroupModel
 
 @{
-    ViewData["Title"] = "Section Create";
+    ViewData["Title"] = "Section Group Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <style>
@@ -32,23 +32,21 @@
 <div class="p-3">
     <form asp-action="Create" class="g-3" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkCategoryId" />
+        <input type="hidden" asp-for="PkCategoryGroupId" />
  
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label class="control-label">Section Group </label>
-                    <select asp-for="FkCategoryGroupId" asp-items="@(new SelectList(ViewBag.CategoryGroupList,"PkCategoryGroupId","CategoryGroupName"))" class="form-control" id="FkCategoryId">
+                    <label class="control-label">Parent Section Group </label>
+                    <select asp-for="FkCategoryGroupId" asp-items="@(new SelectList(ViewBag.CategoryGroupList,"PkCategoryGroupId","CategoryGroupName"))" class="form-control" id="FkCategoryGroupId">
                     </select>
-
-                    <span asp-validation-for="FkCategoryGroupId" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label class="control-label">Section Name</label>
-                    <input asp-for="CategoryName" class="form-control" />
-                    <span asp-validation-for="CategoryName" class="text-danger"></span>
+                    <label class="control-label">Section Group Name</label>
+                    <input asp-for="CategoryGroupName" class="form-control" />
+                    <span asp-validation-for="CategoryGroupName" class="text-danger"></span>
                 </div>
             </div>
           

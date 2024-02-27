@@ -219,7 +219,12 @@ namespace SSAdmin.Areas.Transactions.Controllers
             });
 
         }
-
+        [HttpPost]
+        public async Task<JsonResult> ProductLotDtlList(int FkProductId)
+        {
+            var data = _repository.Get_ProductLotDtlList(FkProductId);
+            return new JsonResult(data);
+        }
 
         public override List<ColumnStructure> ColumnList()
         {

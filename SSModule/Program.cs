@@ -41,6 +41,7 @@ builder.Services.AddScoped<IVendorRepository, VendorRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IBranchRepository, BranchRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICategoryGroupRepository, CategoryGroupRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IBankRepository, BankRepository>();
@@ -49,9 +50,9 @@ builder.Services.AddScoped<ISalesInvoiceRepository, SalesInvoiceRepository>();
 builder.Services.AddScoped<ISeriesRepository, SeriesRepository>();
 builder.Services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
 builder.Services.AddScoped<IPurchaseInvoiceRepository, PurchaseInvoiceRepository>();
-builder.Services.AddScoped<ISalesChallanRepository, SalesChallanRepository>();
+builder.Services.AddScoped<ISalesChallanRepository, SalesChallanRepository>(); 
+builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 builder.Services.AddScoped<ILoginRepository, LoginRepository>();
-
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();

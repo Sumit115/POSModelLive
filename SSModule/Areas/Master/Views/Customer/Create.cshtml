@@ -28,6 +28,11 @@
         font-size: 12px;
     }
 
+    .img-avatar {
+        position: absolute;
+        left: 80%;
+        top: 12px;
+    }
 </style>
 <div class="p-3">
     <form asp-action="Create" class="row g-3" enctype="multipart/form-data">
@@ -48,7 +53,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label asp-for="Mobile" class="control-label"></label>
-                    <input asp-for="Mobile" class="form-control" />
+                    <input asp-for="Mobile" class="form-control input-number" pattern="Mobile" maxlength="10" />
                     <span asp-validation-for="Mobile" class="text-danger"></span>
                 </div>
             </div>
@@ -56,17 +61,17 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Email</label>
-                    <input asp-for="Email" class="form-control" />
+                    <input asp-for="Email" class="form-control" pattern="Email" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
             </div>
-           
+
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Marital</label>
                     <div class="d-flex">
                         <div class="radio-class mr-3">
-                            <input asp-for="Marital" class="radios__input" name="Marital" id="MaritalSingle" type="radio" value="Single">
+                            <input asp-for="Marital" class="radios__input" name="Marital" id="MaritalSingle" type="radio" value="Single" checked>
                             <label class="label" for="MaritalSingle">Single</label>
                         </div>
                         <div class="radios__item mr-3">
@@ -82,7 +87,7 @@
                     <label class="control-label">Gender</label>
                     <div class="d-flex">
                         <div class="radio-class mr-3">
-                            <input asp-for="Gender" class="radios__input" name="Gender" id="GenderMale" type="radio" value="Male">
+                            <input asp-for="Gender" class="radios__input" name="Gender" id="GenderMale" type="radio" value="Male" checked>
                             <label class="label" for="GenderMale">Male</label>
                         </div>
                         <div class="radios__item mr-3">
@@ -104,8 +109,22 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Aadhar No</label>
-                    <input asp-for="Aadhar" class="form-control" />
+                    <input asp-for="Aadhar" class="form-control  input-number" maxLength="12" data-inputmask="'mask': '9999-9999-9999'" />
                     <span asp-validation-for="Aadhar" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Pan No.</label>
+                    <input asp-for="Panno" class="form-control" pattern="Pan" maxlength="12" />
+                    <span asp-validation-for="Panno" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">GSTIN</label>
+                    <input asp-for="Gstno" class="form-control" maxlength="18" />
+                    <span asp-validation-for="Gstno" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-4">
@@ -114,7 +133,7 @@
                     <input type="file" id="file_AadharCardFront" onchange="return UploadImage('AadharCardFront')" accept="image/*" class="requied d-block" />
 
                     <input asp-for="AadharCardFront" type="hidden" />
-                    <img id="dummyimage_AadharCardFront" class="img-md img-avatar" style="height: 50px;width: 50px;" src="@Model.AadharCardFront" />
+                    <img id="dummyimage_AadharCardFront" class="img-md img-avatar" style="height: 50px;width: 50px; @(string.IsNullOrEmpty(Model.AadharCardFront)?"display:none":"")" src="@Model.AadharCardFront" />
 
                     <span asp-validation-for="AadharCardFront" class="text-danger"></span>
                 </div>
@@ -125,41 +144,29 @@
                     <input type="file" id="file_AadharCardBack" onchange="return UploadImage('AadharCardBack')" accept="image/*" class="requied d-block" />
 
                     <input asp-for="AadharCardBack" type="hidden" />
-                    <img id="dummyimage_AadharCardBack" class="img-md img-avatar" style="height: 50px;width: 50px;" src="@Model.AadharCardBack" />
+                    <img id="dummyimage_AadharCardBack" class="img-md img-avatar" style="height: 50px;width: 50px; @(string.IsNullOrEmpty(Model.AadharCardBack)?"display:none":"")" src="@Model.AadharCardBack" />
                     <span asp-validation-for="AadharCardBack" class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Pan No.</label>
-                    <input asp-for="Panno" class="form-control" />
-                    <span asp-validation-for="Panno" class="text-danger"></span>
-                </div>
-            </div>
+           
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Pan Card Image</label>
                     <input type="file" id="file_PanCard" onchange="return UploadImage('PanCard')" accept="image/*" class="requied d-block" />
 
                     <input asp-for="PanCard" type="hidden" />
-                    <img id="dummyimage_PanCard" class="img-md img-avatar" style="height: 50px;width: 50px;" src="@Model.PanCard" />
+                    <img id="dummyimage_PanCard" class="img-md img-avatar" style="height: 50px;width: 50px; @(string.IsNullOrEmpty(Model.PanCard)?"display:none":"")" src="@Model.PanCard" />
                     <span asp-validation-for="PanCard" class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">GSTIN</label>
-                    <input asp-for="Gstno" class="form-control" />
-                    <span asp-validation-for="Gstno" class="text-danger"></span>
-                </div>
-            </div>
+          
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Passport Image</label>
                     <input type="file" id="file_Passport" onchange="return UploadImage('Passport')" accept="image/*" class="requied d-block" />
 
                     <input asp-for="Passport" type="hidden" />
-                    <img id="dummyimage_Passport" class="img-md img-avatar" style="height: 50px;width: 50px;" src="@Model.Passport" />
+                    <img id="dummyimage_Passport" class="img-md img-avatar" style="height: 50px;width: 50px; @(string.IsNullOrEmpty(Model.Passport)?"display:none":"")" src="@Model.Passport" />
                     <span asp-validation-for="Passport" class="text-danger"></span>
                 </div>
             </div>
@@ -169,12 +176,12 @@
                     <input type="file" id="file_Signature" onchange="return UploadImage('Signature')" accept="image/*" class="requied d-block" />
 
                     <input asp-for="Signature" type="hidden" />
-                    <img id="dummyimage_Signature" class="img-md img-avatar" style="height: 50px;width: 50px;" src="@Model.Signature" />
+                    <img id="dummyimage_Signature" class="img-md img-avatar " style="height: 50px;width: 50px;@(string.IsNullOrEmpty(Model.Signature)?"display:none":"")" src="@Model.Signature" />
                     <span asp-validation-for="Signature" class="text-danger"></span>
                 </div>
             </div>
         </div>
-       
+
     </form>
 </div>
 
@@ -182,13 +189,16 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-<script>
-       $(document).ready(function(){
+    <script>
+        $(document).ready(function () {
+
+            Common.InputFormat();
+
             $('#btnServerSave').click(function (e) {
                 e.preventDefault();
                 $("form").submit();
             });
-       })
+        })
         UploadImage = (id) => {
             var file = document.querySelector('input[id="file_' + id + '"]').files[0];
             // $("#FileName").val(file.name);
@@ -203,5 +213,5 @@
 
             };
         }
-</script>
+    </script>
                 }

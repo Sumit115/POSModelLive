@@ -581,7 +581,7 @@ var Handler = {
     currentPath: function () {
 
         var loc = location.href;
-        debugger;
+        
         if (location.href.indexOf("Create") != -1)
             return location.href.substring(0, location.href.indexOf("Create"));
         else if (loc.indexOf("Index") != -1)
@@ -992,10 +992,9 @@ function C_Grid(n, n2, f) {
     }
     Common.ajax(Handler.currentPath() + url, {}, "Please Wait...", function (res) {
         Handler.hide();
-        debugger;
-        // console.log(res);
+        
         if (res.PkGridId > 0) {
-            // console.log(res);
+            // 
             var d = JSON.parse(res.JsonData);
             // console.log(d);
             var j = {
@@ -1008,10 +1007,10 @@ function C_Grid(n, n2, f) {
                 SortableColumns: '',
                 setCtrlType: ''
             }
-            debugger;
+            
             var filtered = d.filter(function (person) { return person.IsActive === 1 });
             filtered.sort((a, b) => (a.Orderby - b.Orderby));
-            debugger;
+            
             $(filtered).each(function (i, v) {
                 j.ColumnHeading += "~" + v.Heading;
                 j.ColumnWidthPer += "~" + v.Width;
@@ -1048,7 +1047,7 @@ function C_Grid(n, n2, f) {
 }
 
 function C_GridColSetup(n, n2, f) {
-    debugger;
+    
     var url = "GridStrucher?FormId=" + n;
     if (n2 != '' && n2 != undefined && n2 != null) {
         url = "GridStrucher_Create?FormId=" + n + "&TranType=" + n2;
@@ -1089,7 +1088,7 @@ function C_GridColSetup(n, n2, f) {
                 $("#btnSaveGridColSetup").click(function () {
                     var ColList = [];
                     $(".trGridColumnw").each(function () {
-                        debugger;
+                        
                         var chk = $(this).find("[name='chkGridColumnField']");
                         var wid = $(this).find("[name='txtGridColumnWidth']");
                         var hding = $(this).find("[name='txtGridColumnHeading']");
@@ -1101,7 +1100,7 @@ function C_GridColSetup(n, n2, f) {
                         ColList.push({ pk_Id: chk.val(), Width: wid.val(), Heading: hding.val(), Fields: flds.val(), SearchType: styp.val(), Sortable: sotyp.val(), CtrlType: ctyp.val(), Orderby: odrby.val(), IsActive: (chk.prop("checked") ? 1 : 0) });
                     });
                     console.log(ColList);
-                    debugger;
+                    
                     //Common.ajax("/Master/Customer/ActiveGridColumn", JSON.stringify({ data: ColList }), "Please Wait...", function (res) {
                     //    if (res.status == "success") {
                     //        $(".popup_d").hide();

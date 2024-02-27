@@ -14,7 +14,7 @@ namespace SSRepository.Repository.Master
         {
             __FormID = (long)en_Form.Category;
         }
-       
+
         public string isAlreadyExist(CategoryModel model, string Mode)
         {
             dynamic cnt;
@@ -25,7 +25,7 @@ namespace SSRepository.Repository.Master
                        where x.CategoryName == model.CategoryName && x.PkCategoryId != model.PkCategoryId
                        select x).Count();
                 if (cnt > 0)
-                    error = "Category Name Already Exits";
+                    error = "Section Name Already Exits";
             }
 
             return error;
@@ -36,8 +36,9 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<CategoryModel> data = (from cou in __dbContext.TblCategoryMas
+                                        join catGrp in __dbContext.TblCategoryGroupMas on cou.FkCategoryGroupId equals catGrp.PkCategoryGroupId
 
-                                            // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                        // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                         orderby cou.PkCategoryId
                                         select (new CategoryModel
                                         {
@@ -47,13 +48,36 @@ namespace SSRepository.Repository.Master
                                             DATE_MODIFIED = cou.DateModified,
                                             DATE_CREATED = cou.DateCreated,
                                             CategoryName = cou.CategoryName,
-                                            FkCategoryId = cou.FkCategoryId,
-
+                                            FkCategoryGroupId = cou.FkCategoryGroupId,
+                                            PCategoryGroupName = catGrp.CategoryGroupName,
                                         }
                                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
 
+        public List<CategoryModel> GetListByGroupId(long CategoryGroupId, int pageSize, int pageNo = 1, string search = "")
+        {
+            if (search != null) search = search.ToLower();
+            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+            List<CategoryModel> data = (from cou in __dbContext.TblCategoryMas
+                                        join catGrp in __dbContext.TblCategoryGroupMas on cou.FkCategoryGroupId equals catGrp.PkCategoryGroupId
+                                        where cou.FkCategoryGroupId == CategoryGroupId
+                                        // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                        orderby cou.PkCategoryId
+                                        select (new CategoryModel
+                                        {
+                                            PkCategoryId = cou.PkCategoryId,
+                                            FKUserId = cou.FKUserId,
+                                            src = cou.Src,
+                                            DATE_MODIFIED = cou.DateModified,
+                                            DATE_CREATED = cou.DateCreated,
+                                            CategoryName = cou.CategoryName,
+                                            FkCategoryGroupId = cou.FkCategoryGroupId,
+                                            PCategoryGroupName = catGrp.CategoryGroupName,
+                                        }
+                                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+            return data;
+        }
 
         public CategoryModel GetSingleRecord(long PkCategoryId)
         {
@@ -69,24 +93,39 @@ namespace SSRepository.Repository.Master
                         DATE_MODIFIED = cou.DateModified,
                         DATE_CREATED = cou.DateCreated,
                         CategoryName = cou.CategoryName,
-                        FkCategoryId = cou.FkCategoryId,
+                        FkCategoryGroupId = cou.FkCategoryGroupId,
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpCategory(int pageno, int pagesize, string search = "")
+        public object GetDrpCategory( int pagesize, int pageno,string search = "")
         {
             if (search != null) search = search.ToLower();
             if (search == null) search = "";
 
             var result = GetList(pagesize, pageno, search);
 
-            result.Insert(0, new CategoryModel { PkCategoryId=0,CategoryName="Select"});
+            result.Insert(0, new CategoryModel { PkCategoryId = 0, CategoryName = "Select" });
             return (from r in result
                     select new
                     {
                         r.PkCategoryId,
                         r.CategoryName
-                    }).ToList();  
+                    }).ToList();
+        }
+        public object GetDrpCategoryByGroupId(long CategoryGroupId, int pagesize, int pageno, string search = "")
+        {
+            if (search != null) search = search.ToLower();
+            if (search == null) search = "";
+
+            var result = GetListByGroupId(CategoryGroupId,pagesize, pageno, search);
+
+            result.Insert(0, new CategoryModel { PkCategoryId = 0, CategoryName = "Select" });
+            return (from r in result
+                    select new
+                    {
+                        r.PkCategoryId,
+                        r.CategoryName
+                    }).ToList();
         }
 
         public string DeleteRecord(long PkCategoryId)
@@ -148,7 +187,7 @@ namespace SSRepository.Repository.Master
 
             Tbl.PkCategoryId = model.PkCategoryId;
             Tbl.CategoryName = model.CategoryName;
-            Tbl.FkCategoryId = model.FkCategoryId;
+            Tbl.FkCategoryGroupId = model.FkCategoryGroupId;
             Tbl.DateModified = DateTime.Now;
             if (Mode == "Create")
             {
@@ -172,7 +211,8 @@ namespace SSRepository.Repository.Master
         {
             var list = new List<ColumnStructure>
             {
-                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Category Name", Fields="CategoryName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Section Group Name", Fields="PCategoryGroupName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Section Name", Fields="CategoryName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                         };
             return list;
         }
