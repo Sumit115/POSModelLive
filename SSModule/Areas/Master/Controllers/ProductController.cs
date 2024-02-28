@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Azure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Collections;
 
 namespace SSAdmin.Areas.Master.Controllers
 {
@@ -76,7 +77,7 @@ namespace SSAdmin.Areas.Master.Controllers
             ProductModel Model = new ProductModel();
             try
             {
-               
+
 
                 ViewBag.PageType = "";
                 if (id != 0 && pageview.ToLower() == "log")
@@ -95,8 +96,13 @@ namespace SSAdmin.Areas.Master.Controllers
                 }
                 ViewBag.BrandList = _brandRepository.GetDrpBrand(1, 1000);
                 ViewBag.CategoryGroupList = _categoryGroupRepository.GetDrpCategoryGroup(1, 1000);
+                ViewBag.UnitList = new List<SelectListItem> {
+                new SelectListItem { Value = "1", Text = "Unit 1" },
+                new SelectListItem { Value = "2", Text = "Unit 2" },
+                new SelectListItem { Value = "3", Text = "Unit 3" }
+            };
 
-                 if (Model.PkProductId > 0) { ViewBag.CategoryList = _categoryRepository.GetDrpCategoryByGroupId(Model.FkCatGroupId,1000); }
+                if (Model.PkProductId > 0) { ViewBag.CategoryList = _categoryRepository.GetDrpCategoryByGroupId(Model.FkCatGroupId,1000); }
                 else
                 {
                     var CatList = new List<CategoryModel>();
@@ -162,6 +168,11 @@ namespace SSAdmin.Areas.Master.Controllers
             //BindViewBags(tblBankMas.PKID, tblBankMas);
             ViewBag.BrandList = _brandRepository.GetDrpBrand(1, 1000);
             ViewBag.CategoryGroupList = _categoryGroupRepository.GetDrpCategoryGroup(1, 1000);
+            ViewBag.UnitList = new List<SelectListItem> {
+                new SelectListItem { Value = "1", Text = "Unit 1" },
+                new SelectListItem { Value = "2", Text = "Unit 2" },
+                new SelectListItem { Value = "3", Text = "Unit 3" }
+            };
 
             if (model.PkProductId > 0) { ViewBag.CategoryList = _categoryRepository.GetDrpCategoryByGroupId(model.FkCatGroupId, 1000); }
             else

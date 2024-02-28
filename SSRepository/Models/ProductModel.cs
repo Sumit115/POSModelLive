@@ -20,14 +20,13 @@ namespace SSRepository.Models
         public string? ArticleNumber { get; set; }//txt
         public string? Strength { get; set; }//txt
         public string? Barcode { get; set; }//txt
-        public char Status { get; set; }// Active=a / DeActive=d
-        [Range(1, int.MaxValue, ErrorMessage = "Please Select Section Group")]
-        public long FkCatGroupId { get; set; }//ddl
-        [Range(1, int.MaxValue, ErrorMessage = "Please Select Section")]
+        public char Status { get; set; }
+        public long FkCatGroupId { get; set; }
         public long FkCatId { get; set; }//ddl
         public long FKTaxID { get; set; }//=0
         public string? HSNCode { get; set; }//txt
         public long FkBrandId { get; set; }//txt
+        public long FkUnitId { get; set; }//txt
         public string? ShelfID { get; set; }//=''
         public string? TradeDisc { get; set; }//=''
         public int MinStock { get; set; }//txt
@@ -49,9 +48,17 @@ namespace SSRepository.Models
         public decimal PurchaseRate { get; set; }//txt
         public bool KeepStock { get; set; }//=true 
 
-        //For Other
-            public string? CategoryGroupName { get; set; }// 
-     public string? CategoryName { get; set; }// 
-       public string? BrandName { get; set; }// 
+        
+        public string? CategoryGroupName { get; set; }
+        public string? CategoryName { get; set; }// 
+       public string? BrandName { get; set; }//
+
+        [StringLength(20)]
+        public string? Genration { get; set; }
+
+        [StringLength(20)]
+        public string? CodingScheme { get; set; }
+        
+            
     }
 }

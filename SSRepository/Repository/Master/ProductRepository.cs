@@ -142,6 +142,9 @@ namespace SSRepository.Repository.Master
                         DistributionRate = cou.DistributionRate,
                         PurchaseRate = cou.PurchaseRate,
                         KeepStock = cou.KeepStock,
+                        Genration= cou.Genration,
+                        CodingScheme = cou.CodingScheme,
+                        FkUnitId= cou.FkUnitId
                     })).FirstOrDefault();
             return data;
         }
@@ -256,6 +259,9 @@ namespace SSRepository.Repository.Master
             Tbl.PurchaseRate = model.PurchaseRate;
             Tbl.KeepStock = model.KeepStock;
             Tbl.DateModified = DateTime.Now;
+            Tbl.Genration = model.Genration;
+            Tbl.CodingScheme = model.CodingScheme;
+            Tbl.FkUnitId = model.FkUnitId;
             if (Mode == "Create")
             {
                 Tbl.Src = model.src;

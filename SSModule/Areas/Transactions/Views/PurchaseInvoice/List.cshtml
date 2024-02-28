@@ -122,7 +122,7 @@
                         data: { FDate: _d.FDate, TDate: _d.TDate },
                         datatype: "json",
                         success: function (res) {
-                            
+                            console.log(res);
                             Handler.hide();
                             if (res.status == "success") {
                                 var jo = JSON.parse(res.data);
@@ -142,7 +142,7 @@
             });
         };
         function bindGrid(data) {
-            
+            debugger;
             Common.Grid(parseInt(FormId),'', function (s) {
                 console.log(s);
                 var cg = new coGrid("#WUCHM1");

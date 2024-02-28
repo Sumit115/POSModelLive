@@ -12,40 +12,47 @@ namespace SSRepository.Data
         [Key]
         public long PkProductId { get; set; }
         public string Product { get; set; }
-        public string NameToDisplay { get; set; }//backend =product
-        public string NameToPrint { get; set; }//backend =product
+        public string NameToDisplay { get; set; }
+        public string NameToPrint { get; set; }
         public string? Image { get; set; }
-        public string? Alias { get; set; }//=''
-        public string? ArticleType { get; set; }//txt
-        public string? ArticleNumber { get; set; }//txt
-        public string? Strength { get; set; }//txt
-        public string? Barcode { get; set; }//txt
-        public char Status { get; set; }// Active=a / DeActive=d
-        public long FkCatGroupId { get; set; }//ddl
-        public long FkCatId { get; set; }//ddl
-        public long FKTaxID { get; set; }//=0
-        public string? HSNCode { get; set; }//txt
-        public long  FkBrandId { get; set; }//txt
-        public string? ShelfID { get; set; }//=''
-        public string? TradeDisc { get; set; }//=''
-        public int MinStock { get; set; }//txt
-        public int MaxStock { get; set; }//txt
-        public int MinDays { get; set; }//txt
-        public int MaxDays { get; set; }//txt
-        public int CaseLot { get; set; }//=0
-        public int BoxSize { get; set; }//=0
-        public string? Description { get; set; }//txtaera
-        public string? Unit1 { get; set; }//=''
-        public int ProdConv1 { get; set; }//=0
-        public string? Unit2 { get; set; }  //=''
-        public int ProdConv2 { get; set; } //=0
-        public string? Unit3 { get; set; }//=''
-        public decimal MRP { get; set; }//txt
-        public decimal SaleRate { get; set; }//txt
-        public decimal TradeRate { get; set; }//txt
-        public decimal DistributionRate { get; set; }//txt
-        public decimal PurchaseRate { get; set; }//txt
-        public bool KeepStock { get; set; }//=true 
+        public string? Alias { get; set; }
+        public string? ArticleType { get; set; }
+        public string? ArticleNumber { get; set; }
+        public string? Strength { get; set; }
+        public string? Barcode { get; set; }
+        public char Status { get; set; }
+        public long FkCatGroupId { get; set; }
+        public long FkCatId { get; set; }
+        public long FKTaxID { get; set; }
+        public string? HSNCode { get; set; }
+        public long  FkBrandId { get; set; }
+        public long FkUnitId { get; set; }
+        public string? ShelfID { get; set; }
+        public string? TradeDisc { get; set; }
+        public int MinStock { get; set; }
+        public int MaxStock { get; set; }
+        public int MinDays { get; set; }
+        public int MaxDays { get; set; }
+        public int CaseLot { get; set; }
+        public int BoxSize { get; set; }
+        public string? Description { get; set; }
+        public string? Unit1 { get; set; }
+        public int ProdConv1 { get; set; }
+        public string? Unit2 { get; set; }  
+        public int ProdConv2 { get; set; } 
+        public string? Unit3 { get; set; }
+        public decimal MRP { get; set; }
+        public decimal SaleRate { get; set; }
+        public decimal TradeRate { get; set; }
+        public decimal DistributionRate { get; set; }
+        public decimal PurchaseRate { get; set; }
+        public bool KeepStock { get; set; }
+
+        [StringLength(20)]
+        public string? Genration { get; set; }
+
+        [StringLength(20)]
+        public string? CodingScheme { get; set; }
     }
   
    

@@ -28,6 +28,10 @@
         font-size: 12px;
     }
 
+    .text-danger {
+        font-size: 10px;
+        font-weight: 800;
+    }
 </style>
 <div class="p-3">
     <form asp-action="Create" class="row g-3" enctype="multipart/form-data">
@@ -35,187 +39,219 @@
         <input type="hidden" asp-for="PkProductId" />
 
         <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Section Group </label>
-                    <select asp-for="FkCatGroupId" asp-items="@(new SelectList(ViewBag.CategoryGroupList,"PkCategoryGroupId","CategoryGroupName"))" class="form-control" id="FkCatGroupId" onchange="GetCategory()">
-                    </select>
-                    <span asp-validation-for="FkCatGroupId" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Section </label>
-                    <select asp-for="FkCatId" asp-items="@(new SelectList(ViewBag.CategoryList,"PkCategoryId","CategoryName"))" class="form-control" id="FkCatId">
-                    </select>
-                    <span asp-validation-for="FkCatId" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Article Name</label>
-                    <input asp-for="Product" class="form-control" />
-                    <span asp-validation-for="Product" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Alias</label>
-                    <input asp-for="Alias" class="form-control" />
-                    <span asp-validation-for="Alias" class="text-danger"></span>
-                </div>
-            </div>
-             <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Article Type</label>
-                    <select asp-for="ArticleType" class="form-control">
-                        <option value="Finished Goods">Finished Goods</option>
-                        <option value="Raw Material">Raw Material</option>
-                    </select>
-                    <span asp-validation-for="ArticleType" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Article No.</label>
-                    <input asp-for="ArticleNumber" class="form-control" />
-                    <span asp-validation-for="ArticleNumber" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Article No. <span asp-validation-for="ArticleNumber" class="text-danger"></span></label>
+                            <input asp-for="ArticleNumber" class="form-control" />
 
-                    <label class="control-label">Strength</label>
-                    <input asp-for="Strength" class="form-control" />
-                    <span asp-validation-for="Strength" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label asp-for="Barcode" class="control-label"></label>
-                    <input asp-for="Barcode" class="form-control" />
-                    <span asp-validation-for="Barcode" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Status</label>
-                    <div class="d-flex">
-                        <div class="radio-class mr-3">
-                            <input asp-for="Status" class="radios__input" name="Status" id="StatusActive" type="radio" value="A" checked>
-                            <label class="label" for="StatusActive">Active</label>
-                        </div>
-                        <div class="radios__item mr-3">
-                            <input asp-for="Status" class="radios__input" name="Status" id="StatusDeActive" type="radio" value="D">
-                            <label class="label" for="StatusDeActive">DeActive</label>
                         </div>
                     </div>
-                    <span asp-validation-for="Status" class="text-danger"></span>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Article Name <span asp-validation-for="Product" class="text-danger"></span></label>
+                            <input asp-for="Product" class="form-control" />
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Section Group <span asp-validation-for="FkCatGroupId" class="text-danger"></span></label>
+                            <select asp-for="FkCatGroupId" asp-items="@(new SelectList(ViewBag.CategoryGroupList,"PkCategoryGroupId","CategoryGroupName"))" class="form-control" id="FkCatGroupId" onchange="GetCategory()">
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Section <span asp-validation-for="FkCatId" class="text-danger"></span></label>
+                            <select asp-for="FkCatId" asp-items="@(new SelectList(ViewBag.CategoryList,"PkCategoryId","CategoryName"))" class="form-control" id="FkCatId">
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Alias <span asp-validation-for="Alias" class="text-danger"></span></label>
+                            <input asp-for="Alias" class="form-control" />
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Brand <span asp-validation-for="FkBrandId" class="text-danger"></span></label>
+                            <select asp-for="FkBrandId" asp-items="@(new SelectList(ViewBag.BrandList,"PkBrandId","BrandName"))" class="form-control" id="BrandId">
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Unit <span asp-validation-for="FkUnitId" class="text-danger"></span></label>
+                            <select asp-for="FkUnitId" asp-items="@ViewBag.UnitList" class="form-control" id="BrandId">
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Strength <span asp-validation-for="Strength" class="text-danger"></span></label>
+                            <input asp-for="Strength" class="form-control" />
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">
+                                Barcode <span asp-validation-for="Barcode" class="text-danger"></span>
+                            </label>
+                            <input asp-for="Barcode" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Status <span asp-validation-for="Status" class="text-danger"></span></label>
+                            <div class="d-flex">
+                                <div class="radio-class mr-3">
+                                    <input asp-for="Status" class="radios__input" name="Status" id="StatusActive" type="radio" value="A" checked>
+                                    <label class="label" for="StatusActive">Active</label>
+                                </div>
+                                <div class="radios__item mr-3">
+                                    <input asp-for="Status" class="radios__input" name="Status" id="StatusDeActive" type="radio" value="D">
+                                    <label class="label" for="StatusDeActive">Deactive</label>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">HSNCode <span asp-validation-for="HSNCode" class="text-danger"></span></label>
+                            <input asp-for="HSNCode" class="form-control" />
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Coding scheme <span asp-validation-for="CodingScheme" class="text-danger"></span></label>
+                            <select asp-for="CodingScheme" class="form-control">
+                                <option value="fixed">fixed</option>
+                                <option value="Lot">Lot</option>
+                                <option value="Unique">Unique</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Genration <span asp-validation-for="Genration" class="text-danger"></span></label>
+                            <select asp-for="Genration" class="form-control">
+                                <option value="Manual">Manual</option>
+                                <option value="Automatic">Automatic</option>
+                                <option value="Semi Automatic">Semi Automatic</option>
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Min Stock <span asp-validation-for="MinStock" class="text-danger"></span></label>
+                            <input asp-for="MinStock" class="form-control" />
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Max Stock <span asp-validation-for="MaxStock" class="text-danger"></span></label>
+                            <input asp-for="MaxStock" class="form-control" />
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Min Days <span asp-validation-for="MinDays" class="text-danger"></span></label>
+                            <input asp-for="MinDays" class="form-control" />
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Max Days <span asp-validation-for="MaxDays" class="text-danger"></span></label>
+                            <input asp-for="MaxDays" class="form-control" />
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">MRP <span asp-validation-for="MRP" class="text-danger"></span></label>
+                            <input asp-for="MRP" class="form-control" />
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Sale Rate <span asp-validation-for="SaleRate" class="text-danger"></span></label>
+                            <input asp-for="SaleRate" class="form-control" />
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Trade Rate <span asp-validation-for="TradeRate" class="text-danger"></span></label>
+                            <input asp-for="TradeRate" class="form-control" />
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Distribution Rate <span asp-validation-for="DistributionRate" class="text-danger"></span></label>
+                            <input asp-for="DistributionRate" class="form-control" />
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Purchase Rate <span asp-validation-for="PurchaseRate" class="text-danger"></span></label>
+                            <input asp-for="PurchaseRate" class="form-control" />
+                            
+                        </div>
+                    </div>
 
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">HSNCode</label>
-                    <input asp-for="HSNCode" class="form-control" />
-                    <span asp-validation-for="HSNCode" class="text-danger"></span>
-                </div>
-            </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Image <span asp-validation-for="Image" class="text-danger"></span></label>
+                        <input type="file" id="file_Image" onchange="return UploadImage('Image')" accept="image/*" class="requied d-block" />
 
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Brand</label>
-                    <select asp-for="FkBrandId" asp-items="@(new SelectList(ViewBag.BrandList,"PkBrandId","BrandName"))" class="form-control" id="BrandId">
-                    </select>
-                    <span asp-validation-for="FkBrandId" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Min Stock</label>
-                    <input asp-for="MinStock" class="form-control" />
-                    <span asp-validation-for="MinStock" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Max Stock</label>
-                    <input asp-for="MaxStock" class="form-control" />
-                    <span asp-validation-for="MaxStock" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Min Days</label>
-                    <input asp-for="MinDays" class="form-control" />
-                    <span asp-validation-for="MinDays" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Max Days</label>
-                    <input asp-for="MaxDays" class="form-control" />
-                    <span asp-validation-for="MaxDays" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">MRP</label>
-                    <input asp-for="MRP" class="form-control" />
-                    <span asp-validation-for="MRP" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Sale Rate</label>
-                    <input asp-for="SaleRate" class="form-control" />
-                    <span asp-validation-for="SaleRate" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Trade Rate</label>
-                    <input asp-for="TradeRate" class="form-control" />
-                    <span asp-validation-for="TradeRate" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Distribution Rate</label>
-                    <input asp-for="DistributionRate" class="form-control" />
-                    <span asp-validation-for="DistributionRate" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Purchase Rate</label>
-                    <input asp-for="PurchaseRate" class="form-control" />
-                    <span asp-validation-for="PurchaseRate" class="text-danger"></span>
-                </div>
-            </div><div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Image</label>
-                    <input type="file" id="file_Image" onchange="return UploadImage('Image')" accept="image/*" class="requied d-block" />
+                        <input asp-for="Image" type="hidden" />
+                        <img id="dummyimage_Image" class="img-md img-avatar" style="height: 50px;width: 50px;" src="@Model.Image" />
 
-                    <input asp-for="Image" type="hidden" />
-                    <img id="dummyimage_Image" class="img-md img-avatar" style="height: 50px;width: 50px;" src="@Model.Image" />
-                    <span asp-validation-for="Image" class="text-danger"></span>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label class="control-label">Description</label>
-                    <textarea asp-for="Description" class="form-control"></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-            </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="control-label">Description <span asp-validation-for="Description" class="text-danger"></span></label>
+                        <textarea asp-for="Description" class="form-control"></textarea>
 
-        </div>
+                    </div>
+                </div>
+
+            </div>
 
     </form>
 </div>
 
-@section Scripts{
+@section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
@@ -243,7 +279,7 @@
     </script>
     <script>
         function GetCategory() {
-            
+            debugger;
             var Id = $("#FkCatGroupId").val();
             $("#FkCatId").empty();
             //
@@ -256,7 +292,7 @@
                     data: { CategoryGroupId: Id },
                     datatype: "json",
                     success: function (res) {
-                        
+                        console.log(res);
                         $(res).each(function (i, v) {
 
                             $("#FkCatId").append("<option value='" + v.PkCategoryId + "'>" + v.CategoryName + "</option>");
@@ -267,4 +303,4 @@
             } else { $("#FkCatId").append("<option value=''>-Select-</option>"); }
         }
     </script>
-        }
+}
