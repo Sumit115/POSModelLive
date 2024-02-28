@@ -18,15 +18,15 @@ namespace SSRepository.Models
 
         public long FkProductId { get; set; }
         public long FkLotId { get; set; }//=0  
-       
+
         //New Start 19-02-2024
-        public string Batch { get; set; }
-        public string Color { get; set; } //Only Purchase
-       
+        public string? Batch { get; set; }
+        public string? Color { get; set; } //Only Purchase
+
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? MfgDate { get; set; }//Opt | Only Purchase
-       
+
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? ExpiryDate { get; set; }//Opt | Only Purchase
@@ -35,14 +35,14 @@ namespace SSRepository.Models
         //New End
 
         public decimal Rate { get; set; }//=Prodct Price according Series Selection
-        public string RateUnit { get; set; }//=''
+        public string? RateUnit { get; set; }//=''
         public decimal Qty { get; set; }//txt
         public decimal FreeQty { get; set; }//txt No Calculation Only stock Out
         public decimal SchemeDisc { get; set; }//=0
-        public string SchemeDiscType { get; set; }//=''
+        public string? SchemeDiscType { get; set; }//=''
         public decimal SchemeDiscAmt { get; set; }//=0
         public decimal TradeDisc { get; set; }//=0
-        public string TradeDiscType { get; set; }//=''
+        public string? TradeDiscType { get; set; }//=''
         public decimal TradeDiscAmt { get; set; }//=0
         public decimal LotDisc { get; set; }//=0
         public decimal GrossAmt { get; set; }//Product Taxable Amt//82

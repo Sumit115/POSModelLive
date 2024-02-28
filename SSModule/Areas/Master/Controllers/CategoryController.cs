@@ -144,6 +144,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 ModelState.AddModelError("", ex.Message);
             }
             //BindViewBags(tblBankMas.PKID, tblBankMas);
+            ViewBag.CategoryGroupList = _repositoryCategoryGroup.GetDrpCategoryGroup(1, 1000);
             return View(model);
         }
 

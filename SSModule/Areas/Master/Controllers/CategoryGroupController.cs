@@ -94,6 +94,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 //CommonCore.WriteLog(ex, "Create Get ", ControllerName, GetErrorLogParam());
                 ModelState.AddModelError("", ex.Message);
             }
+         
             //BindViewBags(0, tblBankMas);
             return View(Model);
         }
@@ -142,6 +143,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 ModelState.AddModelError("", ex.Message);
             }
             //BindViewBags(tblBankMas.PKID, tblBankMas);
+            ViewBag.CategoryGroupList = _repository.GetDrpCategoryGroup(1, 1000);
             return View(model);
         }
 

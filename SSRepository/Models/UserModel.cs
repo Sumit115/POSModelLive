@@ -54,7 +54,7 @@ namespace SSRepository.Models
         public string? DateModified { get { return DATE_MODIFIED != null ? DATE_MODIFIED.Value.ToString("dd/MM/yyyy") : ""; } }
 
 
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
         public long FKUserId { get; set; }
         public int src { get; set; }
     }

@@ -464,21 +464,21 @@ function GetDataFromGrid(ifForsave) {
 
     var _d = [];
     cg.getData().filter(function (element) {
-        //console.log(element);
+        console.log(element);
 
         if (ifForsave) {
-
+            debugger;
             //if (element.mode != 2) {  }
             if (element.ProductName == '' || element.ProductName == null || element.ProductName == undefined
                 //   || element.Price == '' || element.Price == null || element.Price == undefined
                 || element.Qty == '' || element.Qty == null || element.Qty == undefined
-                || element.Rate == '' || element.Rate == null || element.Rate == undefined
-                || element.GrossAmt == '' || element.GrossAmt == null || element.GrossAmt == undefined
-                || element.NetAmt == '' || element.NetAmt == null || element.NetAmt == undefined
+                //|| element.Rate == '' || element.Rate == null || element.Rate == undefined
+                //|| element.GrossAmt == '' || element.GrossAmt == null || element.GrossAmt == undefined
+                //|| element.NetAmt == '' || element.NetAmt == null || element.NetAmt == undefined
             ) {
-
+                debugger;
             } else {
-
+                debugger;
                 if (element.FkProductId > 0) { element.sno = element.sno; }
                 else { sno++; element.sno = sno; }
                 element.FkProductId = parseInt(element.ProductName);

@@ -18,8 +18,8 @@ namespace SSRepository.Data
         public long FkProductId { get; set; }
         public long FkLotId { get; set; }//=0 
         //New Start 19-02-2024
-        public string Batch { get; set; }
-        public string Color { get; set; } //Only Purchase
+        public string? Batch { get; set; }
+        public string? Color { get; set; } //Only Purchase
         public DateTime? MfgDate { get; set; }//Opt | Only Purchase
         public DateTime? ExpiryDate { get; set; }//Opt | Only Purchase
         public decimal MRP { get; set; }

@@ -80,25 +80,25 @@ namespace SSAdmin.Areas.Transactions.Controllers
         {
             ViewBag.FormId = _repository.FormID_Create;
             TranModel Model = new TranModel();
+            var PageType = "";
             try
             {
                 ViewBag.PartiList = JsonConvert.SerializeObject(_customerRepository.AutoDropDown());
                 ViewBag.ProductList = JsonConvert.SerializeObject(_productRepository.GetList(1000, 1));
                 ViewBag.SeriesList = _seriesRepository.GetList_by_TranAlias("SCHN");
 
-                ViewBag.PageType = "";
                 if (id != 0 && pageview.ToLower() == "log")
                 {
-                    ViewBag.PageType = "Log";
+                    PageType = "Log";
                 }
                 else if (id != 0)
                 {
-                    ViewBag.PageType = "Edit";
+                    PageType = "Edit";
                     Model = _repository.GetSingleRecord(id, 0);
                 }
                 else
                 {
-                    ViewBag.PageType = "Create";
+                    PageType = "Create";
 
                 }
             }
@@ -108,6 +108,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 ModelState.AddModelError("", ex.Message);
             }
             //BindViewBags(0, tblBankMas);
+            ViewBag.PageType = PageType;
             ViewBag.Data = JsonConvert.SerializeObject(Model);
             return View(Model);
         }

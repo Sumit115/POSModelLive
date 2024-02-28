@@ -27,7 +27,7 @@ namespace SSRepository.Repository.Transaction
         {
             get { return __FormID; }
         }
-        public long  FormID_Create
+        public long FormID_Create
         {
             get { return __FormID_Create; }
         }
@@ -120,19 +120,27 @@ namespace SSRepository.Repository.Transaction
         //        con.Close();
         //    }
         //    return model;
-        //}
+        //} 
         public object ColumnChange(TranModel model, int rowIndex, string fieldName)
         {
-            if (fieldName == "Product")
+            try
             {
-                setProductinfo(model, model.TranDetails[rowIndex]);
+                if (fieldName == "Product")
+                {
+                    setProductinfo(model, model.TranDetails[rowIndex]);
+                }
+                if (fieldName == "Batch" || fieldName == "Color")
+                {
+                    setProductinfoByLot(model, model.TranDetails[rowIndex]);
+                }
+                if (fieldName == "Delete")
+                {
+                    model.TranDetails[rowIndex].mode = 2;
+                }
+                CalculateExe(model);
+                setGridTotal(model);
             }
-            if (fieldName == "Delete")
-            {
-                model.TranDetails[rowIndex].mode = 2;
-            }
-            CalculateExe(model);
-            setGridTotal(model);
+            catch (Exception ex) { }
             return model;
         }
 
@@ -150,6 +158,29 @@ namespace SSRepository.Repository.Transaction
                     detail.GstRate = (product.SaleRate < 1000 ? 5 : 18);
                     detail.Rate = Math.Round(product.SaleRate * (100 / (100 + detail.GstRate)), 2);
                     detail.Qty = 1;
+                }
+            }
+        }
+        public void setProductinfoByLot(TranModel model, TranDetails? detail)
+        {
+            if (detail != null)
+            {
+                if (detail.FkLotId > 0)
+                {
+                    var productLot = Get_ProductLotDtl_SingleRecord(detail.FkLotId);
+                    if (productLot != null)
+                    {
+                        //  detail.FkProductId = product.PkProductId;
+                        detail.MRP = productLot.MRP;
+                        detail.SaleRate = productLot.SaleRate > 0 ? productLot.SaleRate : 0;
+                        //detail.mode = 0;//0=Add,1=Edit,2=Delete
+                        detail.GstRate = (detail.SaleRate < 1000 ? 5 : 18);
+                        detail.Rate = Math.Round(Convert.ToDecimal(detail.SaleRate) * (100 / (100 + detail.GstRate)), 2);
+                        detail.Qty = 1;
+                        detail.Color = productLot.Color;
+                        detail.Batch = productLot.Batch;
+
+                    }
                 }
             }
         }
@@ -194,42 +225,81 @@ namespace SSRepository.Repository.Transaction
 
         public List<ProdLotDtlModel> Get_ProductLotDtlList(int PKProductId)
         {
-           
+
             List<ProdLotDtlModel> data = (from cou in __dbContext.TblProdLotDtl
-                                    where cou.FKProdID == PKProductId
-                                             // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                             orderby cou.PkLotId
-                                    select (new ProdLotDtlModel
-                                    {
-                                        PkLotId = cou.PkLotId,
-                                        FKProdID = cou.FKProdID,
-                                        LotAlias = cou.LotAlias,
-                                        Barcode = cou.Barcode,
-                                        Batch = cou.Batch,
-                                        Color = cou.Color,
-                                        MfgDate = cou.MfgDate,
-                                        ExpiryDate = cou.ExpiryDate,
-                                        ProdConv1 = cou.ProdConv1,
-                                        MRP = cou.MRP,
-                                        LtExtra = cou.LtExtra,
-                                        AddLT = cou.AddLT,
-                                        SaleRate = cou.SaleRate,
-                                        PurchaseRate = cou.PurchaseRate,
-                                        FkmfgGroupId = cou.FkmfgGroupId,
-                                        TradeRate = cou.TradeRate,
-                                        DistributionRate = cou.DistributionRate,
-                                        PurchaseRateUnit = cou.PurchaseRateUnit,
-                                        MRPSaleRateUnit = cou.MRPSaleRateUnit,
-                                        InTrnId = cou.InTrnId,
-                                        InTrnFKSeriesID = cou.InTrnFKSeriesID,
-                                        InTrnsno = cou.InTrnsno,
-                                        Remarks = cou.Remarks,
-                                        FKUserId = cou.FKUserId,
-                                        src = cou.Src,
-                                        DATE_MODIFIED = cou.DateModified,
-                                        DATE_CREATED = cou.DateCreated, 
-                                    }
-                                   )).ToList();
+                                          where cou.FKProdID == PKProductId
+                                          // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                          orderby cou.PkLotId
+                                          select (new ProdLotDtlModel
+                                          {
+                                              PkLotId = cou.PkLotId,
+                                              FKProdID = cou.FKProdID,
+                                              LotAlias = cou.LotAlias,
+                                              Barcode = cou.Barcode,
+                                              Batch = cou.Batch,
+                                              Color = cou.Color,
+                                              MfgDate = cou.MfgDate,
+                                              ExpiryDate = cou.ExpiryDate,
+                                              ProdConv1 = cou.ProdConv1,
+                                              MRP = cou.MRP,
+                                              LtExtra = cou.LtExtra,
+                                              AddLT = cou.AddLT,
+                                              SaleRate = cou.SaleRate,
+                                              PurchaseRate = cou.PurchaseRate,
+                                              FkmfgGroupId = cou.FkmfgGroupId,
+                                              TradeRate = cou.TradeRate,
+                                              DistributionRate = cou.DistributionRate,
+                                              PurchaseRateUnit = cou.PurchaseRateUnit,
+                                              MRPSaleRateUnit = cou.MRPSaleRateUnit,
+                                              InTrnId = cou.InTrnId,
+                                              InTrnFKSeriesID = cou.InTrnFKSeriesID,
+                                              InTrnsno = cou.InTrnsno,
+                                              Remarks = cou.Remarks,
+                                              FKUserId = cou.FKUserId,
+                                              src = cou.Src,
+                                              DATE_MODIFIED = cou.DateModified,
+                                              DATE_CREATED = cou.DateCreated,
+                                          }
+                                         )).ToList();
+            return data;
+        }
+        public ProdLotDtlModel Get_ProductLotDtl_SingleRecord(long PkLotId)
+        {
+            ProdLotDtlModel data = new ProdLotDtlModel();
+            var entity = (from odr in __dbContext.TblProdLotDtl
+                              //join cust in __dbContext.TblCustomerMas on odr.FkPartyId equals cust.PkCustomerId
+                          where odr.PkLotId == PkLotId
+                          select new { odr }).FirstOrDefault();
+            if (entity != null)
+            {
+                data.PkLotId = entity.odr.PkLotId;
+                data.FKProdID = entity.odr.FKProdID;
+                data.LotAlias = entity.odr.LotAlias;
+                data.Barcode = entity.odr.Barcode;
+                data.Batch = entity.odr.Batch;
+                data.Color = entity.odr.Color;
+                data.MfgDate = entity.odr.MfgDate;
+                data.ExpiryDate = entity.odr.ExpiryDate;
+                data.ProdConv1 = entity.odr.ProdConv1;
+                data.MRP = entity.odr.MRP;
+                data.LtExtra = entity.odr.LtExtra;
+                data.AddLT = entity.odr.AddLT;
+                data.SaleRate = entity.odr.SaleRate;
+                data.PurchaseRate = entity.odr.PurchaseRate;
+                data.FkmfgGroupId = entity.odr.FkmfgGroupId;
+                data.TradeRate = entity.odr.TradeRate;
+                data.DistributionRate = entity.odr.DistributionRate;
+                data.PurchaseRateUnit = entity.odr.PurchaseRateUnit;
+                data.MRPSaleRateUnit = entity.odr.MRPSaleRateUnit;
+                data.InTrnId = entity.odr.InTrnId;
+                data.InTrnFKSeriesID = entity.odr.InTrnFKSeriesID;
+                data.InTrnsno = entity.odr.InTrnsno;
+                data.Remarks = entity.odr.Remarks;
+                data.DATE_MODIFIED = entity.odr.DateModified;
+                data.DATE_CREATED = entity.odr.DateCreated;
+                data.src = entity.odr.Src;
+                data.FKUserId = entity.odr.FKUserId;
+            }
             return data;
         }
 
@@ -240,7 +310,7 @@ namespace SSRepository.Repository.Transaction
             {
                 list = new List<ColumnStructure>
             {
-               new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Product Name", Fields="ProductName_Text",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="L" },
+               new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Product Name", Fields="ProductName_Text",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="C" },
                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="MRP", Fields="MRP",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Price", Fields="Rate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                 new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="QTY", Fields="Qty",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="F.2" },
@@ -263,7 +333,7 @@ namespace SSRepository.Repository.Transaction
             {
                 list = new List<ColumnStructure>
             {
-                new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Product Name", Fields="ProductName_Text",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="L" },
+                new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Product Name", Fields="ProductName_Text",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="C" },
                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="MRP", Fields="MRP",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Price", Fields="Rate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                 new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="QTY", Fields="Qty",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="F.2" },
@@ -278,7 +348,7 @@ namespace SSRepository.Repository.Transaction
 
             };
             }
-            return list.OrderBy(x=>x.Orderby).ToList();
+            return list.OrderBy(x => x.Orderby).ToList();
         }
 
     }
