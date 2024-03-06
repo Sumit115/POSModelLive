@@ -14,7 +14,7 @@ namespace SSRepository.Repository.Master
         {
             __FormID = (long)en_Form.Series;
         }
-       
+
         public string isAlreadyExist(SeriesModel model, string Mode)
         {
             dynamic cnt;
@@ -27,6 +27,21 @@ namespace SSRepository.Repository.Master
             //    if (cnt > 0)
             //        error = "Mobile Already Exits";
             //}
+
+            return error;
+        }
+        public string isAvailableForEdit(SeriesModel model, string Mode)
+        {
+            dynamic cnt;
+            string error = "";
+            if ( model.PkSeriesId > 0)
+            {
+                if (model.TranAlias == "SORD") { error = __dbContext.TblSalesOrdertrn.Where(x => x.FKSeriesId == model.PkSeriesId).ToList().Count > 0 ? "Update Not Available" : ""; }
+                if (model.TranAlias == "SINV") { error = __dbContext.TblSalesInvoicetrn.Where(x => x.FKSeriesId == model.PkSeriesId).ToList().Count > 0 ? "Update Not Available" : ""; }
+                if (model.TranAlias == "SCHN") { error = __dbContext.TblSalesChallantrn.Where(x => x.FKSeriesId == model.PkSeriesId).ToList().Count > 0 ? "Update Not Available" : ""; }
+                if (model.TranAlias == "PORD") { error = __dbContext.TblPurchaseOrdertrn.Where(x => x.FKSeriesId == model.PkSeriesId).ToList().Count > 0 ? "Update Not Available" : ""; }
+                if (model.TranAlias == "PINV") { error = __dbContext.TblPurchaseInvoicetrn.Where(x => x.FKSeriesId == model.PkSeriesId).ToList().Count > 0 ? "Update Not Available" : ""; }
+            }
 
             return error;
         }
@@ -64,12 +79,12 @@ namespace SSRepository.Repository.Master
                                      )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
-        public List<SeriesModel> GetList_by_TranAlias(  string TranAlias)
+        public List<SeriesModel> GetList_by_TranAlias(string TranAlias)
         {
-            
+
             List<SeriesModel> data = (from cou in __dbContext.TblSeriesMas
 
-                                          where  cou.TranAlias == TranAlias
+                                      where cou.TranAlias == TranAlias
                                       orderby cou.PkSeriesId
                                       select (new SeriesModel
                                       {
@@ -181,11 +196,14 @@ namespace SSRepository.Repository.Master
             return Error;
         }
         public override string ValidateData(object objmodel, string Mode)
-        {
-
+        { 
             SeriesModel model = (SeriesModel)objmodel;
             string error = "";
             error = isAlreadyExist(model, Mode);
+            if (string.IsNullOrEmpty(error) && model.PkSeriesId > 0)
+            {
+                error = isAvailableForEdit(model, Mode); 
+            }
             return error;
 
         }
@@ -237,18 +255,18 @@ namespace SSRepository.Repository.Master
             var list = new List<ColumnStructure>
             {
                     new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="DateCreated",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Series", Fields="series",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Series No ", Fields="seriesNo",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Billing Rate", Fields="billingRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Tran Alias", Fields="tranAlias",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Format Name", Fields="formatName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Reset No For", Fields="resetNoFor",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Allow WalkIn", Fields="allowWalkIn",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="AutoApply Promo", Fields="autoApplyPromo",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Round Off", Fields="roundOff",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Default Qty", Fields="defaultQty",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Allow Zero Rate", Fields="allowZeroRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Allow Free Qty", Fields="allowFreeQty",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                    new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Series", Fields="Series",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                    new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Series No ", Fields="SeriesNo",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                    new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Billing Rate", Fields="BillingRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                    new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Tran Alias", Fields="TranAlias",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                    //new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Format Name", Fields="FormatName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                    //new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Reset No For", Fields="ResetNoFor",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                    //new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Allow WalkIn", Fields="AllowWalkIn",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                    //new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="AutoApply Promo", Fields="AutoApplyPromo",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                    //new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Round Off", Fields="RoundOff",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                    //new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Default Qty", Fields="DefaultQty",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                    //new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Allow Zero Rate", Fields="AllowZeroRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                    //new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Allow Free Qty", Fields="AllowFreeQty",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
             };
             return list;
         }

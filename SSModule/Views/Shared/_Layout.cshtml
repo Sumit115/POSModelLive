@@ -16,84 +16,13 @@
     <!-- Theme style -->
     <link href="~/dist/css/adminlte.min.css" rel="stylesheet" />
     <link href="~/SlickGrid/slick.grid.css" rel="stylesheet" />
-    <link href="~/css/jquery-ui.css" rel="stylesheet" />
+    @* <link href="~/css/jquery-ui.css" rel="stylesheet" /> *@
     <link href="~/tautocomplete/tautocomplete.css" rel="stylesheet" />
-    <link href="~/css/jquery.datetimepicker.css" rel="stylesheet" />
     <link href="~/css/root.css" rel="stylesheet" />
-    <style>
-        body {
-            font-family: 'Nunito', sans-serif;
-        }
-
-        .pagetitle {
-            color: red;
-            font-weight: 700;
-            height: 100%;
-            font-size: 19px;
-            border: none;
-            line-height: 38px;
-            padding: 0px 12px;
-            text-align: center;
-        }
-
-        .btn-create {
-            height: 100%;
-            font-size: 15px;
-            line-height: 34px;
-            color: #f06995;
-            border: none;
-            line-height: 40px;
-            background: none;
-            font-weight: 500;
-            padding: 0px 12px;
-        }
-
-            .btn-create:hover {
-                color: #f06995;
-                text-decoration: none;
-            }
-
-        .f-ctrl {
-            color: #f06995;
-        }
-
-        .f-year, .f-ctrl, .f-list {
-            padding: 0px 7px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: 500;
-            line-height: 41px;
-            border-right: solid 1px #d8d8d8;
-        }
-
-        .user-menu {
-            padding-left: 10px;
-        }
-
-        #contextMenu {
-            background: #e1efc7;
-            border: 1px solid gray;
-            padding: 2px;
-            display: inline-block;
-            min-width: 100px;
-            -moz-box-shadow: 2px 2px 2px silver;
-            -webkit-box-shadow: 2px 2px 2px silver;
-            z-index: 99999;
-        }
-
-            #contextMenu li {
-                padding: 4px 4px 4px 14px;
-                list-style: none;
-                cursor: pointer;
-                background: url("../images/arrow_right_peppermint.png") no-repeat center left;
-            }
-
-                #contextMenu li:hover {
-                    background-color: white;
-                }
-    </style>
+    
 </head>
-<body class="sidebar-mini sidebar-collapse ">
+<body class="sidebar-mini sidebar-collapse @ViewData["bdClass"] ">
+    <input type="hidden" id="hdFormId" value="@ViewBag.FormId" />
     <div class="wrapper">
         <nav class="main-header navbar navbar-expand navbar-white navbar-light" style="padding: 0.1rem 0.5rem;margin-left: 0rem!important;">
             <!-- Left navbar links -->
@@ -174,64 +103,75 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
+                            
                                 <li class="nav-item">
                                     <a asp-area="Master" asp-controller="Customer" asp-action="List" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Customer</p>
+                                        <p>Customer
+                                            <i class="right fas fa-external-link-alt tablink"></i>
+                                        </p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a asp-area="Master" asp-controller="Vendor" asp-action="List" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Vendor</p>
+                                        <p>Vendor
+                                            <i class="right fas fa-external-link-alt tablink"></i>
+                                        </p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a asp-area="Master" asp-controller="Employee" asp-action="List" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Employee</p>
+                                        <p>Employee<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a asp-area="Master" asp-controller="Branch" asp-action="List" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Branch</p>
+                                        <p>Branch<i class="right fas fa-external-link-alt tablink"></i></p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-area="Master" asp-controller="Series" asp-action="List" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Series<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a asp-area="Master" asp-controller="User" asp-action="List" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>User</p>
+                                        <p>User<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a asp-area="Master" asp-controller="Brand" asp-action="List" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Brand</p>
+                                        <p>Brand<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a asp-area="Master" asp-controller="CategoryGroup" asp-action="List" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Section Group</p>
+                                        <p>Section Group<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a asp-area="Master" asp-controller="Category" asp-action="List" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Section</p>
+                                        <p>Section<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a asp-area="Master" asp-controller="Product" asp-action="List" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Product</p>
+                                        <p>Product<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a asp-area="Master" asp-controller="Bank" asp-action="List" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Bank</p>
+                                        <p>Bank<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                             </ul>
@@ -248,19 +188,19 @@
                                 <li class="nav-item">
                                     <a asp-area="Transactions" asp-controller="SalesOrder" asp-action="List" class="nav-link">
                                         <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Order</p>
+                                        <p>Order<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a asp-area="Transactions" asp-controller="SalesInvoice" asp-action="List" class="nav-link">
                                         <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Invoice</p>
+                                        <p>Invoice<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a asp-area="Transactions" asp-controller="SalesChallan" asp-action="List" class="nav-link">
                                         <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Challan</p>
+                                        <p>Challan<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                             </ul>
@@ -277,13 +217,13 @@
                                 <li class="nav-item">
                                     <a asp-area="Transactions" asp-controller="PurchaseOrder" asp-action="List" class="nav-link">
                                         <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Order</p>
+                                        <p>Order<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a asp-area="Transactions" asp-controller="PurchaseInvoice" asp-action="List" class="nav-link">
                                         <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Invoice</p>
+                                        <p>Invoice<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                             </ul>
@@ -319,11 +259,14 @@
             </div>
         </div>
     </div>
+    <ul id="contextMenu">
+        <li id="contextEdit" data="Edit">Edit</li>
+    </ul>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/dist/js/adminlte.min.js"></script>
     <script src="~/js/common.js"></script>
-    <script src="~/js/jquery-ui.js"></script>
+    @* <script src="~/js/jquery-ui.js"></script> *@
     <script src="~/tautocomplete/tautocomplete.js"></script>
     <script src="~/js/jquery.datetimepicker.js"></script>
     @* <script type="text/javascript" src="/script/StringEncryption.js"></script>

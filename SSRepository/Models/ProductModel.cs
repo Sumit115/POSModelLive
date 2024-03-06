@@ -21,7 +21,10 @@ namespace SSRepository.Models
         public string? Strength { get; set; }//txt
         public string? Barcode { get; set; }//txt
         public char Status { get; set; }
+        [Required]
         public long FkCatGroupId { get; set; }
+
+        [Required]
         public long FkCatId { get; set; }//ddl
         public long FKTaxID { get; set; }//=0
         public string? HSNCode { get; set; }//txt

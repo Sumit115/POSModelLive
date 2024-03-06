@@ -13,27 +13,25 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Azure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using SSRepository.Repository.Master;
 
 namespace SSAdmin.Areas.Master.Controllers
 {
     [Area("Master")]
-    public class CategoryController : BaseController
+    public class SeriesController : BaseController
     {
-        private readonly ICategoryRepository _repository;
-        private readonly ICategoryGroupRepository _repositoryCategoryGroup;
-        public CategoryController(ICategoryRepository repository, ICategoryGroupRepository repositoryGroupRepository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
+        private readonly ISeriesRepository _repository;
+        
+        public SeriesController(ISeriesRepository repository, IGridLayoutRepository gridLayoutRepository):base(gridLayoutRepository)
         {
             _repository = repository;
-            _repositoryCategoryGroup = repositoryGroupRepository;
-            // _gridLayoutRepository = gridLayoutRepository;
+           // _gridLayoutRepository = gridLayoutRepository;
             //_repository.SetRootPath(_hostingEnvironment.WebRootPath);
         }
-
+       
         public async Task<IActionResult> List()
         {
-            //var json = JsonConvert.SerializeObject(_repository.ColumnList()).ToString();
-
+         //var json = JsonConvert.SerializeObject(_repository.ColumnList()).ToString();
+             
             ViewBag.FormId = _repository.FormID;
             return View();
         }
@@ -41,7 +39,7 @@ namespace SSAdmin.Areas.Master.Controllers
         [HttpPost]
         public async Task<JsonResult> List(int pageNo, int pageSize)
         {
-            var data = _repository.GetList(pageSize, pageNo);
+            var data = _repository.GetList(pageSize,pageNo);
             return new JsonResult(data);
         }
 
@@ -50,11 +48,11 @@ namespace SSAdmin.Areas.Master.Controllers
             string FileName = "";
             //try
             //{
-            //    List<BankModel> model = new List<BankModel>();
+            //    List<SeriesModel> model = new List<SeriesModel>();
             //    string result = CommonCore.API(ControllerName, "export", GetAPIDefaultParam());
             //    if (CommonCore.CheckError(result) == "")
             //    {
-            //        model = JsonConvert.DeserializeObject<List<BankModel>>(result);
+            //        model = JsonConvert.DeserializeObject<List<SeriesModel>>(result);
             //        FileName = Common.Export(model, HeaderList, ColumnList, Name, Type);
             //    }
             //    else
@@ -70,11 +68,9 @@ namespace SSAdmin.Areas.Master.Controllers
 
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
-            CategoryModel Model = new CategoryModel();
+            SeriesModel Model = new SeriesModel();
             try
             {
-                ViewBag.CategoryGroupList = _repositoryCategoryGroup.GetDrpCategoryGroup(1, 1000);
-
                 ViewBag.PageType = "";
                 if (id != 0 && pageview.ToLower() == "log")
                 {
@@ -96,28 +92,27 @@ namespace SSAdmin.Areas.Master.Controllers
                 //CommonCore.WriteLog(ex, "Create Get ", ControllerName, GetErrorLogParam());
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(0, tblBankMas);
+            //BindViewBags(0, tblSeriesMas);
             return View(Model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CategoryModel model)
+        public async Task<IActionResult> Create(SeriesModel model)
         {
             try
             {
                 model.FKUserId = 1;
                 model.src = 1;
-                model.FkCategoryGroupId = (model.FkCategoryGroupId > 0 ? model.FkCategoryGroupId : 0);
-
+                //model.FkRegId = 1;
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
-                    if (model.PkCategoryId > 0)
+                    if (model.PkSeriesId > 0)
                     {
                         Mode = "Edit";
                     }
-                    Int64 ID = model.PkCategoryId;
+                    Int64 ID = model.PkSeriesId;
                     string error = await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {
@@ -143,8 +138,7 @@ namespace SSAdmin.Areas.Master.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(tblBankMas.PKID, tblBankMas);
-            ViewBag.CategoryGroupList = _repositoryCategoryGroup.GetDrpCategoryGroup(1, 1000);
+            //BindViewBags(tblSeriesMas.PKID, tblSeriesMas);
             return View(model);
         }
 
@@ -164,22 +158,9 @@ namespace SSAdmin.Areas.Master.Controllers
             return response;
         }
 
-        [HttpPost]
-        public async Task<JsonResult> GetDrpCategoryByGroupId(int CategoryGroupId)
-        {
-            var data = _repository.GetDrpCategoryByGroupId(CategoryGroupId,1000);
-            return new JsonResult(data);
-        }
-
         public override List<ColumnStructure> ColumnList()
         {
             return _repository.ColumnList();
-        }
-
-        [HttpPost]
-        public object FkGroupId()
-        {
-            return _repositoryCategoryGroup.GetDrpCategoryGroup(1, 1000);
         }
     }
 }

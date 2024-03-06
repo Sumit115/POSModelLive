@@ -1,4 +1,4 @@
-﻿var FormId = $("#hdFormId").val();
+﻿    var FormId = $("#hdFormId").val();
 var TranType = $("#hdTranType").val();
 
 Load();
@@ -142,10 +142,13 @@ function BindGrid(GridId, data) {
 
                 if (!Common.isNullOrEmpty(args.item["ProductName_Text"])) {
                     if (field == "Batch" || field == "Color") {
+                        console.log(args.item["Batch"]);
                         var FkProductId = Common.isNullOrEmpty(args.item["ProductName"]) ? 0 : parseFloat(args.item["ProductName"]);
-                       
-                        
-                        Common.ajax(Handler.currentPath() + "ProductLotDtlList?FkProductId=" + FkProductId, {}, "Please Wait...", function (res) {
+                        var Batch = args.item["Batch"];
+                        var Color = args.item["Color"];
+
+
+                        Common.ajax(Handler.currentPath() + "ProductLotDtlList?FkProductId=" + FkProductId + "&Batch=" + Batch + "&Color=" + Color + "", {}, "Please Wait...", function (res) {
                             Handler.hide();
                             
                             
@@ -464,7 +467,7 @@ function GetDataFromGrid(ifForsave) {
 
     var _d = [];
     cg.getData().filter(function (element) {
-        console.log(element);
+        //console.log(element);
 
         if (ifForsave) {
             debugger;

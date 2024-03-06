@@ -220,10 +220,11 @@ namespace SSAdmin.Areas.Transactions.Controllers
             });
 
         }
+
         [HttpPost]
-        public async Task<JsonResult> ProductLotDtlList(int FkProductId)
+        public async Task<JsonResult> ProductLotDtlList(int FkProductId, string Batch, string Color)
         {
-            var data = _repository.Get_ProductLotDtlList(FkProductId);
+            var data = _repository.Get_ProductLotDtlList(FkProductId, Batch, Color);
             return new JsonResult(data);
         }
 

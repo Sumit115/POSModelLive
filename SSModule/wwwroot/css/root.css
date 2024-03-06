@@ -1,4 +1,70 @@
-﻿.form-control {
+﻿body {
+    font-family: 'Nunito', sans-serif;
+}
+
+.pagetitle {
+    color: red;
+    font-weight: 700;
+    height: 100%;
+    font-size: 19px;
+    border: none;
+    line-height: 38px;
+    padding: 0px 12px;
+    text-align: center;
+}
+
+.browser .f-list {
+    display: block !important;
+}
+.page .f-ctrl {
+    display: block !important;
+}
+
+.btn-create {
+    height: 100%;
+    font-size: 15px;
+    line-height: 34px;
+    color: #f06995;
+    border: none;
+    line-height: 40px;
+    background: none;
+    font-weight: 500;
+    padding: 0px 12px;
+}
+
+    .btn-create:hover {
+        color: #f06995;
+        text-decoration: none;
+    }
+
+.f-ctrl {
+    color: #f06995;
+}
+
+.f-year, .f-ctrl, .f-list {
+    padding: 0px 7px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 41px;
+    border-right: solid 1px #d8d8d8;
+}
+
+.user-menu {
+    padding-left: 10px;
+}
+
+.filter .form-control {
+    height: 37px;
+    line-height: 1;
+    padding: 0px;
+    border-radius: 0;
+    border: none !important;
+    border-bottom: solid 1px #ced4da !important;
+    box-shadow: inherit;
+    font-family: 'Roboto', sans-serif !important;
+}
+form .form-control {
     height: 25px;
     line-height: 1;
     padding: 0px;
@@ -19,4 +85,58 @@ label {
 
 .sdbc {
     color: red;
-} 
+}
+
+
+.cell-title {
+    font-weight: bold;
+}
+
+#contextMenu {
+    background: #e1efc7;
+    border: 1px solid gray;
+    padding: 2px;
+    display: none;
+    min-width: 100px;
+    -moz-box-shadow: 2px 2px 2px silver;
+    -webkit-box-shadow: 2px 2px 2px silver;
+    z-index: 99999;
+}
+
+#contextMenu li {
+    padding: 4px 4px 4px 14px;
+    list-style: none;
+    cursor: pointer;
+    background: url("../images/arrow_right_peppermint.png") no-repeat center left;
+}
+
+#contextMenu li:hover {
+    background-color: white;
+}
+
+.slick-header-column {
+    border-top: 1px solid #d3d3d3;
+}
+    .slick-viewport {
+    border-left: 1px solid #d3d3d3;
+    border-right: 1px solid #d3d3d3;
+}
+
+
+label {
+    display: inline-block;
+    margin-bottom: 0;
+    color: #ce07c1;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.text-danger {
+    font-size: 10px;
+    font-weight: 800;
+}
+.img-avatar {
+    position: absolute;
+    left: 80%;
+    top: 12px;
+}

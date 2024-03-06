@@ -14,6 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\js\CustomDropDown.js" />
+    <Content Remove="wwwroot\js\Master\browser.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Areas\Master\Views\Bank\Create.cshtml" />
     <None Include="Areas\Master\Views\Bank\List.cshtml" />
     <None Include="Areas\Master\Views\Branch\Create.cshtml" />
@@ -83,6 +88,13 @@
     <None Include="wwwroot\Admin\lib\jquery\dist\jquery.min.js" />
     <None Include="wwwroot\Admin\lib\jquery\dist\jquery.min.map" />
     <None Include="wwwroot\Admin\tautocomplete\tautocomplete.js" />
+    <None Include="wwwroot\js\CustomDropDown.js" />
+    <None Include="wwwroot\js\Common.js" />
+    <None Include="wwwroot\js\jquery-ui.js" />
+    <None Include="wwwroot\js\jquery.datetimepicker.js" />
+    <None Include="wwwroot\js\Master\browser.js" />
+    <None Include="wwwroot\js\Master\ProductMas.js" />
+    <None Include="wwwroot\js\site.js" />
     <None Include="wwwroot\js\Transaction\Transaction.js" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map" />

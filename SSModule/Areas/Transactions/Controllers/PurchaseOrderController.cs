@@ -40,7 +40,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
         public async Task<JsonResult> List(string FDate, string TDate)
         {
             var dt = new DataTable();
-             dt = _repository.GetList(FDate, TDate,"");
+            dt = _repository.GetList(FDate, TDate, "");
 
             var jsonResult = Json(new
             {
@@ -222,9 +222,9 @@ namespace SSAdmin.Areas.Transactions.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> ProductLotDtlList(int FkProductId)
+        public async Task<JsonResult> ProductLotDtlList(int FkProductId, string Batch, string Color)
         {
-            var data = _repository.Get_ProductLotDtlList(FkProductId);
+            var data = _repository.Get_ProductLotDtlList(FkProductId, Batch, Color);
             return new JsonResult(data);
         }
         public override List<ColumnStructure> ColumnList()

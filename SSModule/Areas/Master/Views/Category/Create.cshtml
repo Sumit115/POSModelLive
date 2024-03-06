@@ -2,38 +2,262 @@
 
 @{
     ViewData["Title"] = "Section Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["bdClass"] = "page";
 }
 <style>
-    .f-ctrl {
-        display: block !important;
+
+
+    .cusdropdown-icon {
+        position: absolute;
+        right: 0;
+        cursor: pointer;
+    }
+    /*Dropdown*/
+    .cusdropdown {
+        width: 100%;
     }
 
-    .form-control {
-        height: 25px;
-        line-height: 1;
+    .highlight-box .form-control, .highlight-box input {
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+    /*Transaction Header Detail*/
+    .collapes-icon {
+        width: 30px;
+        height: 30px;
+        color: #fff;
+        background: #2dafff;
+        position: absolute;
+        right: 8px;
+        top: 3px;
+        border-radius: 4px;
+        text-align: center;
+        line-height: 30px;
+        cursor: pointer;
+    }
+    /*Dropdown Css*/
+
+    .grid-dropdown {
+        width: 600px;
+        position: absolute;
+        margin: 0px;
+        z-index: 9999;
+        -webkit-box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.3);
+        -moz-box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.3);
+        box-shadow: 0px 0px 9px 0px rgb(0 0 0 / 12%);
+        padding-top: 0px;
+    }
+
+
+
+    .cusdrp-popup {
+        z-index: 9999;
+    }
+
+    .grid-dropdown ul {
+        width: 100%;
+        display: block;
         padding: 0px;
-        border-radius: 0;
-        border: none !important;
-        border-bottom: solid 1px #ced4da !important;
-        box-shadow: inherit;
-        font-family: 'Roboto', sans-serif !important;
     }
 
-    label {
-        display: inline-block;
-        margin-bottom: 0;
-        color: #ce07c1;
+    .grid-dropdown li a thead {
+    }
+
+    .cusdropdown .close-text {
+        right: 27px;
+        top: 7px;
+        top: 1px;
+        background: #fff;
+        line-height: 28px;
+        padding: 0px 3px;
+    }
+
+    .drp-not-found {
+        text-align: center;
+        display: block;
+        line-height: 184px;
+        font-size: 31px;
+        color: red;
+    }
+
+    .grid-dropdown .drp-not-found {
+        line-height: inherit;
+        margin-top: 13% !important;
+    }
+    /*.cusdropdown input {
+        padding-right: 24px;
+    }*/
+    .grid-dropdown li a, .grid-dropdown li, .grid-dropdown.open li a {
+        border: none;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .grid-dropdown li {
+        position: relative;
+        list-style: none;
+    }
+
+        .grid-dropdown li a {
+            min-width: 100%;
+            float: left;
+            width: auto;
+            text-decoration: none;
+        }
+
+            .grid-dropdown li a thead {
+                display: block;
+                position: relative;
+                z-index: 999;
+            }
+
+
+                .grid-dropdown li a thead tr {
+                    background: #fff;
+                }
+
+            .grid-dropdown li a tbody {
+                display: block;
+            }
+
+            .grid-dropdown li a tr {
+                padding: 0px 5px;
+                border-bottom: solid 1px #efeff6;
+                min-width: 100%;
+                width: auto;
+                float: left;
+            }
+
+
+    .deleted-entryno {
+        background: #ffecec;
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+        .deleted-entryno td {
+            text-decoration: line-through;
+            color: red !important;
+            font-weight: 600 !important;
+        }
+
+    .tran-dtl-grdbtn {
+        width: 100%;
+        height: 30px;
+    }
+
+    .grid-dropdown li a table {
+        background: none;
+        display: block;
+    }
+
+    .adj-inv-list {
+        min-height: 400px;
+    }
+
+    .grid-dropdown li a:focus {
+        background: #4385f4;
+    }
+
+        .grid-dropdown li a:focus tr {
+            border: none;
+        }
+
+        .grid-dropdown li a:focus td {
+            color: #fff;
+        }
+
+    .grid-dropdown table thead {
+        display: block;
+    }
+
+    .grid-dropdown table th {
+        font-size: 14px;
+        font-weight: 600;
+        color: #000;
         text-transform: uppercase;
-        font-size: 12px;
     }
 
+    .grid-dropdown table td {
+        font-size: 14px;
+        font-weight: 400;
+        color: #000;
+    }
+
+    .grid-dropdown table th, .grid-dropdown table td {
+        min-width: 160px;
+        max-width: 160px;
+        padding: 3px 8px;
+        overflow: hidden;
+    }
+
+        .grid-dropdown table th:nth-child(2), .grid-dropdown table td:nth-child(2) {
+            padding-left: 20px;
+        }
+
+
+    .grid-dropdown:after {
+        border: 5px solid #d7e0e5;
+        border-radius: 100%;
+        border-top: 5px solid #3498db;
+        width: 30px;
+        height: 30px;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+        position: absolute;
+        content: "";
+        left: 45%;
+        top: 8%;
+        z-index: 2;
+        display: none;
+    }
+
+
+    #trtxtfields .cusdropdown-icon {
+        right: 7px;
+        top: 0px;
+        line-height: 30px;
+    }
+
+
+
+
+
+
+    /* width */
+    .grid-dropdown::-webkit-scrollbar, .grid-dropdown ul::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    /* Track */
+    .grid-dropdown::-webkit-scrollbar-track, .grid-dropdown ul::-webkit-scrollbar-track {
+        background: #fff;
+    }
+
+    /* Handle */
+    .grid-dropdown::-webkit-scrollbar-thumb, .grid-dropdown ul::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+    }
+
+        /* Handle on hover */
+        .grid-dropdown::-webkit-scrollbar-thumb:hover, .grid-dropdown ul::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .Convertbtnforinvoice {
+        font-size: 14px;
+        width: fit-content;
+        height: fit-content;
+    }
 </style>
 <div class="p-3">
     <form asp-action="Create" class="g-3" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="PkCategoryId" />
- 
+
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
@@ -51,23 +275,39 @@
                     <span asp-validation-for="CategoryName" class="text-danger"></span>
                 </div>
             </div>
-          
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Section Name</label>
+                    <div id="drpListFkGroupId" class="btn-group cusdropdown" hid="FkGroupId">
+                        <input id="FkGroupId" name="FkGroupId" type="hidden" value="0">
+                        <input type="hidden" id="hidEventFkGroupId" value="">
+                        <input type="hidden" id="hidIsGridFkGroupId" value="">
+                        <input type="hidden" id="hidParentFkGroupId" value="">
+                        <input id="hidPageNoFkGroupId" type="hidden" value="1">
+                        <input id="drpFkGroupId" class="collapsed tran-cusdrp set-back-focus form-control" tabindex="1" type="text" value="" column-name="" fdprocessedid="2hnea">
+                        <input id="hidExtraFkGroupId" name="hidExtraFkGroupId" type="hidden" value="EntryDate,DocType,FKReferByID2">
+                        <span class="cusdropdown-icon"><i class="fas fa-caret-down"></i></span>
+                    </div>
+                </div>
+            </div>
         </div>
-       
+
     </form>
 </div>
 
-@section Scripts{
+
+@section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-<script>
-       $(document).ready(function(){
+    <script src="~/js/customdropdown.js"></script>
+    <script>
+        $(document).ready(function () {
             $('#btnServerSave').click(function (e) {
                 e.preventDefault();
                 $("form").submit();
             });
-       })
+        })
         UploadImage = (id) => {
             var file = document.querySelector('input[id="file_' + id + '"]').files[0];
             // $("#FileName").val(file.name);
@@ -82,5 +322,5 @@
 
             };
         }
-</script>
-                }
+    </script>
+}

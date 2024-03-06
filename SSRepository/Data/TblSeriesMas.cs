@@ -9,11 +9,11 @@ namespace SSRepository.Data
         [Key]
         public long PkSeriesId { get; set; }
         public string Series { get; set; } //=A
-        public long SeriesNo { get; set; }// =0  autocalculation
+        public long SeriesNo { get; set; }// =0   
         public long FkBranchId { get; set; }//=ddl
         public string BillingRate { get; set; }//=MRP/SaleRate/TradeRate/DistributionRate/PurchaseRate
         public string TranAlias { get; set; }//=SORD  ddl
-        public string? FormatName { get; set; }//=''
+        public string? FormatName { get; set; }//=''   //Print Structer Format
         public string? ResetNoFor { get; set; }//=''
         public bool AllowWalkIn { get; set; }//=true
         public bool AutoApplyPromo { get; set; }//=true

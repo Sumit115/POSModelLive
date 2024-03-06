@@ -2,33 +2,9 @@
 
 @{
     ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["bdClass"] = "page";
 }
-<style>
-    .f-ctrl {
-        display: block !important;
-    }
 
-    .form-control {
-        height: 25px;
-        line-height: 1;
-        padding: 0px;
-        border-radius: 0;
-        border: none !important;
-        border-bottom: solid 1px #ced4da !important;
-        box-shadow: inherit;
-        font-family: 'Roboto', sans-serif !important;
-    }
-
-    label {
-        display: inline-block;
-        margin-bottom: 0;
-        color: #ce07c1;
-        text-transform: uppercase;
-        font-size: 12px;
-    }
-
-</style>
 <div class="p-3">
     <form asp-action="Create" class="row g-3" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>

@@ -734,7 +734,7 @@ function C_Get(s, src, c) {
     var lstRadio = [];
     var _d = {};
     var flag = true;
-    $(s + " input[type='text']," + s + " input[type='password']," + s + " input[type='radio']," + s + " input[type='file']," + s + " select," + s + " textarea ").each(function () {
+    $(s + " input[type='text']," + s + " input[type = 'date']," + s + " input[type='password']," + s + " input[type='radio']," + s + " input[type='file']," + s + " select," + s + " textarea ").each(function () {
         var key = $(this).attr("id");
         var val = $(this).val();
         var req = $(this).attr('required');
@@ -816,7 +816,7 @@ function C_Get(s, src, c) {
 }
 
 function C_Set(s, _d, src, c) {
-    $(s + " input[type='text']," + s + " input[type='password']," + s + " input[type='radio']," + s + " input[type='file']," + s + " select," + s + " textarea ").each(function () {
+    $(s + " input[type='text']," + s + " input[type = 'date']," + s + " input[type='password']," + s + " input[type='radio']," + s + " input[type='file']," + s + " select," + s + " textarea ").each(function () {
         var key = $(this).attr("id");
         var type = $(this).attr("type");
         var multiple = $(this).attr('data-multiple');
@@ -849,7 +849,7 @@ function C_Set(s, _d, src, c) {
 }
 
 function C_Reset(s) {
-    $(s + " input[type='text']," + s + " input[type='password']," + s + " input[type='file']," + s + " select," + s + " textarea ").each(function () {
+    $(s + " input[type='text']," + s + " input[type = 'date']," + s + " input[type='password']," + s + " input[type='file']," + s + " select," + s + " textarea ").each(function () {
         var multiple = $(this).attr('data-multiple');
         var key = $(this).attr("id");
         var type = $(this).attr("type");

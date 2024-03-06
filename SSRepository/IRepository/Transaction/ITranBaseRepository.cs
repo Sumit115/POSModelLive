@@ -19,7 +19,7 @@ namespace SSRepository.IRepository.Transaction
         object ColumnChange(TranModel model, int rowIndex, string fieldName);
         object FooterChange(TranModel model, string fieldName);
         List<ColumnStructure> ColumnList_CreateTran(string TranType);
-        List<ProdLotDtlModel> Get_ProductLotDtlList(int PKProductId);
+        List<ProdLotDtlModel> Get_ProductLotDtlList(int PKProductId, string Batch, string Color);
 
     }
 }
