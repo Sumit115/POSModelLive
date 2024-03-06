@@ -52,5 +52,11 @@ namespace SSRepository.Data
         public int? IsPanVerify { get; set; }
 
         public int? Status { get; set; }
+
+        public string? Address { get; set; }
+        public string? StateName { get; set; }
+        public int? FkCityId { get; set; }
+        public string? Pin { get; set; }
+
     }
 }

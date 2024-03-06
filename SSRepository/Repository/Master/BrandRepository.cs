@@ -27,6 +27,7 @@ namespace SSRepository.Repository.Master
                 if (cnt > 0)
                     error = "Brand Name Exits";
             }
+
              
             return error;
         }
@@ -36,7 +37,6 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<BrandModel> data = (from cou in __dbContext.TblBrandMas
-
                                           // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                       orderby cou.PkBrandId
                                       select (new BrandModel

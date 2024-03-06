@@ -13,15 +13,16 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Azure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using SSRepository.Repository.Master;
 
 namespace SSAdmin.Areas.Master.Controllers
 {
     [Area("Master")]
-    public class CustomerController : BaseController
+    public class CityController : BaseController
     {
-        private readonly ICustomerRepository _repository;
+        private readonly ICityRepository _repository;
         
-        public CustomerController(ICustomerRepository repository, IGridLayoutRepository gridLayoutRepository):base(gridLayoutRepository)
+        public CityController(ICityRepository repository, IGridLayoutRepository gridLayoutRepository):base(gridLayoutRepository)
         {
             _repository = repository;
            // _gridLayoutRepository = gridLayoutRepository;
@@ -30,7 +31,7 @@ namespace SSAdmin.Areas.Master.Controllers
        
         public async Task<IActionResult> List()
         {
-      // var json = JsonConvert.SerializeObject(_repository.ColumnList()).ToString();
+         //var json = JsonConvert.SerializeObject(_repository.ColumnList()).ToString();
              
             ViewBag.FormId = _repository.FormID;
             return View();
@@ -48,11 +49,11 @@ namespace SSAdmin.Areas.Master.Controllers
             string FileName = "";
             //try
             //{
-            //    List<BankModel> model = new List<BankModel>();
+            //    List<CityModel> model = new List<CityModel>();
             //    string result = CommonCore.API(ControllerName, "export", GetAPIDefaultParam());
             //    if (CommonCore.CheckError(result) == "")
             //    {
-            //        model = JsonConvert.DeserializeObject<List<BankModel>>(result);
+            //        model = JsonConvert.DeserializeObject<List<CityModel>>(result);
             //        FileName = Common.Export(model, HeaderList, ColumnList, Name, Type);
             //    }
             //    else
@@ -68,7 +69,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
-            CustomerModel Model = new CustomerModel();
+            CityModel Model = new CityModel();
             try
             {
                 ViewBag.PageType = "";
@@ -92,27 +93,28 @@ namespace SSAdmin.Areas.Master.Controllers
                 //CommonCore.WriteLog(ex, "Create Get ", ControllerName, GetErrorLogParam());
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(0, tblBankMas);
-            ViewBag.StateList = _repository.GetDrpState();
+            //BindViewBags(0, tblCityMas);
+            ViewBag.StateList =  _repository.GetDrpState();
             return View(Model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CustomerModel model)
+        public async Task<IActionResult> Create(CityModel model)
         {
             try
             {
                 model.FKUserId = 1;
                 model.src = 1;
+                //model.FkRegId = 1;
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
-                    if (model.PkCustomerId > 0)
+                    if (model.PkCityId > 0)
                     {
                         Mode = "Edit";
                     }
-                    Int64 ID = model.PkCustomerId;
+                    Int64 ID = model.PkCityId;
                     string error = await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {
@@ -138,7 +140,7 @@ namespace SSAdmin.Areas.Master.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(tblBankMas.PKID, tblBankMas);
+            //BindViewBags(tblCityMas.PKID, tblCityMas);
             ViewBag.StateList = _repository.GetDrpState();
             return View(model);
         }
@@ -158,11 +160,17 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             return response;
         }
+
+
+        [HttpPost]
+        public async Task<JsonResult> GetDrpCityByState(string State)
+        {
+            var data = _repository.GetDrpCity_ByState(State);
+            return new JsonResult(data);
+        }
         public override List<ColumnStructure> ColumnList()
         {
             return _repository.ColumnList();
         }
-
-
     }
 }

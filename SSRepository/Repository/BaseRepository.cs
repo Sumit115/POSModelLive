@@ -72,7 +72,7 @@ namespace SSRepository.Repository
             return __dbContext.Set<T>().Where(predicate);
         }
 
-     
+
 
     }
 
@@ -557,9 +557,47 @@ namespace SSRepository.Repository
             SalesChallan_Create = 19,
             CategoryGroup = 20,
             Brand = 21,
+            City = 22,
 
 
         }
+
+        public object GetDrpState()
+        {
+            return new List<ddl>(){
+             new ddl { Text = "Select", Value = "" },
+             new ddl { Text = "Andhra Pradesh", Value = "Andhra Pradesh" },
+             new ddl { Text = "Arunachal Pradesh", Value = "Arunachal Pradesh" },
+             new ddl { Text = "Assam", Value = "Assam" },
+             new ddl { Text = "Bihar", Value = "Bihar" },
+             new ddl { Text = "Chhattisgarh", Value = "Chhattisgarh" },
+             new ddl { Text = "Goa", Value = "Goa" },
+             new ddl { Text = "Gujarat", Value = "Gujarat" },
+             new ddl { Text = "Haryana", Value = "Haryana" },
+             new ddl { Text = "Himachal Pradesh", Value = "Himachal Pradesh" },
+             new ddl { Text = "Jharkhand", Value = "Jharkhand" },
+             new ddl { Text = "Karnataka", Value = "Karnataka" },
+             new ddl { Text = "Kerala", Value = "Kerala" },
+             new ddl { Text = "Madhya Pradesh", Value = "Madhya Pradesh" },
+             new ddl { Text = "Maharashtra", Value = "Maharashtra" },
+             new ddl { Text = "Manipur", Value = "Manipur" },
+             new ddl { Text = "Meghalaya", Value = "Meghalaya" },
+             new ddl { Text = "Mizoram", Value = "Mizoram" },
+             new ddl { Text = "Nagaland", Value = "Nagaland" },
+             new ddl { Text = "Odisha", Value = "Odisha" },
+             new ddl { Text = "Punjab", Value = "Punjab" },
+             new ddl { Text = "Rajasthan", Value = "Rajasthan" },
+             new ddl { Text = "Sikkim", Value = "Sikkim" },
+             new ddl { Text = "Tamil Nadu", Value = "Tamil Nadu" },
+             new ddl { Text = "Telangana", Value = "Telangana" },
+             new ddl { Text = "Tripura", Value = "Tripura" },
+             new ddl { Text = "Uttar Pradesh", Value = "Uttar Pradesh" },
+             new ddl { Text = "Uttarakhand", Value = "Uttarakhand" },
+             new ddl { Text = "West Bengal", Value = "West Bengal" } };
+
+
+        }
+
     }
 
 }

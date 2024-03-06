@@ -97,6 +97,52 @@
                     <span asp-validation-for="Gstno" class="text-danger"></span>
                 </div>
             </div>
+                <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Post</label>
+                    <input asp-for="Post" class="form-control" maxlength="18" />
+                    <span asp-validation-for="Post" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Salary</label>
+                    <input asp-for="Salary" class="form-control input-number" maxlength="18" />
+                    <span asp-validation-for="Salary" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="control-label">Address</label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">State</label>
+                    <select asp-for="StateName" asp-items="@(new SelectList(ViewBag.StateList,"Value","Text"))" class="form-control" onchange="BindCity()">
+                    </select>
+                    <span asp-validation-for="StateName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">City</label>
+                    <select asp-for="FkCityId" class="form-control">
+                        <option value="">-Select-</option>
+                    </select>
+                    <span asp-validation-for="FkCityId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Pin</label>
+                    <input asp-for="Pin" class="form-control  input-number" maxlength="6" pattern="PinCode" />
+                    <span asp-validation-for="Pin" class="text-danger"></span>
+                </div>
+            </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Aadhar Card Front Image</label>
@@ -163,7 +209,7 @@
         $(document).ready(function () {
 
             Common.InputFormat();
-
+            BindCity(@Model.FkCityId);
             $('#btnServerSave').click(function (e) {
                 e.preventDefault();
                 $("form").submit();
@@ -184,4 +230,34 @@
             };
         }
     </script>
-                }
+    <script>
+        function BindCity(CityId) {
+            debugger;
+            var StateName = $("#StateName").val();
+            $("#FkCityId").empty();
+            //
+
+            if (StateName != '') {
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Master/City/GetDrpCityByState',
+                    data: { State: StateName },
+                    datatype: "json",
+                    success: function (res) {
+                        console.log(res);
+                        $(res).each(function (i, v) {
+
+                            $("#FkCityId").append("<option value='" + v.PkCityId + "'>" + v.CityName + "</option>");
+                        });
+
+                        if (CityId > 0) {
+                            $("#FkCityId").val(CityId);
+                        }
+                    }
+                })
+
+            } else { $("#FkCityId").append("<option value=''>-Select-</option>"); }
+        }
+    </script>
+      }

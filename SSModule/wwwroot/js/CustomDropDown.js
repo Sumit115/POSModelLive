@@ -332,7 +332,7 @@ function CustomDDL(ctrlId, spn) {
                 }
                 else {
                     $drpCtrlVal.val('');
-                    if (!$drpCtrltxt.hasClass('drpEditable') || e.which == 115) {
+                    if (!$drpCtrltxt06.hasClass('drpEditable') || e.which == 115) {
                             ShowList(hid, '');
                     }
                 }

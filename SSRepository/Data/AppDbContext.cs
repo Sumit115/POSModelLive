@@ -41,6 +41,7 @@ namespace SSRepository.Data
         public virtual DbSet<TblProdLotDtl> TblProdLotDtl { get; set; } = null!;
         public virtual DbSet<TblProdStockDtl> TblProdStockDtl { get; set; } = null!;
         public virtual DbSet<TblBrandMas> TblBrandMas { get; set; } = null!;
+        public virtual DbSet<TblCityMas> TblCityMas { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -44,8 +44,12 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<VendorModel> data = (from cou in __dbContext.TblVendorMas
-                                            // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                        orderby cou.PkVendorId
+                                      join _city in __dbContext.TblCityMas
+                                       on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
+                                       into _citytmp
+                                      from city in _citytmp.DefaultIfEmpty()
+                                          // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                      orderby cou.PkVendorId
                                         select (new VendorModel
                                         {
                                             PkVendorId = cou.PkVendorId,
@@ -71,6 +75,11 @@ namespace SSRepository.Repository.Master
                                             IsAadharVerify = cou.IsAadharVerify,
                                             IsPanVerify = cou.IsPanVerify,
                                             Status = cou.Status,
+                                            Address = cou.Address,
+                                            StateName = cou.StateName,
+                                            FkCityId = cou.FkCityId,
+                                            //  City = city.CityName, 
+                                            Pin = cou.Pin,
                                         }
                                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -108,7 +117,11 @@ namespace SSRepository.Repository.Master
                         IsAadharVerify = cou.IsAadharVerify,
                         IsPanVerify = cou.IsPanVerify,
                         Status = cou.Status,
-
+                        Address = cou.Address,
+                        StateName = cou.StateName,
+                        FkCityId = cou.FkCityId,
+                        //  City = city.CityName, 
+                        Pin = cou.Pin, 
                     })).FirstOrDefault();
             return data;
         }
@@ -200,7 +213,11 @@ namespace SSRepository.Repository.Master
             Tbl.AadharCardBack = model.AadharCardBack;
             Tbl.PanCard = model.PanCard;
             Tbl.Signature = model.Signature;
-            Tbl.DateModified = DateTime.Now;
+            Tbl.Address = model.Address;
+            Tbl.FkCityId = model.FkCityId;
+            Tbl.StateName = model.StateName;
+            Tbl.Pin = model.Pin;
+             Tbl.DateModified = DateTime.Now;
             if (Mode == "Create")
             {
                 Tbl.Src = model.src;
@@ -251,8 +268,8 @@ namespace SSRepository.Repository.Master
                 new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Name", Fields="Name",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 //new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Father Name", Fields="FatherName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 //new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Mother Name", Fields="MotherName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Marital", Fields="Marital",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Gender", Fields="Gender",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                //new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Marital", Fields="Marital",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                //new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Gender", Fields="Gender",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Dob", Fields="Dob",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Email", Fields="Email",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Mobile", Fields="Mobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },

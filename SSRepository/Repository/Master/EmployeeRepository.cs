@@ -43,6 +43,9 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<EmployeeModel> data = (from cou in __dbContext.TblEmployeeMas
+                                        join _city in __dbContext.TblCityMas
+                                       on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
+                                       into _citytmp from city in _citytmp.DefaultIfEmpty()
                                             // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                         orderby cou.PkEmployeeId
                                         select (new EmployeeModel
@@ -70,6 +73,14 @@ namespace SSRepository.Repository.Master
                                             IsAadharVerify = cou.IsAadharVerify,
                                             IsPanVerify = cou.IsPanVerify,
                                             Status = cou.Status,
+                                            Address = cou.Address,
+                                            StateName = cou.StateName,
+                                            FkCityId = cou.FkCityId,
+                                            City = city.CityName,
+                                            Pin = cou.Pin,
+                                            Location = cou.Location,
+                                            Salary = cou.Salary,
+                                            Post = cou.Post,
                                         }
                                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -107,7 +118,14 @@ namespace SSRepository.Repository.Master
                         IsAadharVerify = cou.IsAadharVerify,
                         IsPanVerify = cou.IsPanVerify,
                         Status = cou.Status,
-
+                        Address = cou.Address,
+                        StateName = cou.StateName,
+                        FkCityId = cou.FkCityId,
+                        //  City = city.CityName,
+                        Pin = cou.Pin,
+                        Location = cou.Location,
+                        Salary = cou.Salary,
+                        Post = cou.Post,
                     })).FirstOrDefault();
             return data;
         }
@@ -199,6 +217,13 @@ namespace SSRepository.Repository.Master
             Tbl.AadharCardBack = model.AadharCardBack;
             Tbl.PanCard = model.PanCard;
             Tbl.Signature = model.Signature;
+            Tbl.Address = model.Address;
+            Tbl.FkCityId = model.FkCityId;
+            Tbl.StateName = model.StateName;
+            Tbl.Pin = model.Pin;
+            Tbl.Location = model.Location;
+            Tbl.Salary = model.Salary;
+            Tbl.Post = model.Post;
             Tbl.DateModified = DateTime.Now;
             if (Mode == "Create")
             {

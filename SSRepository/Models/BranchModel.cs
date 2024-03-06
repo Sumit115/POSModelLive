@@ -21,12 +21,16 @@ namespace SSRepository.Models
         [Phone]
         public string? Mobile { get; set; }
         public string? Address { get; set; }
-        public string? City { get; set; }
+        public int? FkCityId { get; set; }
         public string? State { get; set; }
         public string? Pin { get; set; }
         public string? Country { get; set; }
         public long? FkRegId { get; set; }
-
+        public string? BranchCode { get; set; }
+        public string? Location { get; set; }
         public virtual TblCompany? FkCompany { get; set; }
+
+        public string? City { get; set; }
+
     }
 }

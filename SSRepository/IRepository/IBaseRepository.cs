@@ -6,6 +6,7 @@ namespace SSRepository.IRepository
     {
         public long FormID { get; }
         Task<string> CreateAsync(object tblmas, string Mode, Int64 ID, string dbType = "");
+        object GetDrpState();
 
     }
     public interface IBaseRepository

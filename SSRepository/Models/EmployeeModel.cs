@@ -52,5 +52,16 @@ namespace SSRepository.Models
         public int? IsPanVerify { get; set; }
 
         public int? Status { get; set; }
+
+        public string? Address { get; set; }
+        public string? StateName { get; set; }
+        public int? FkCityId { get; set; }
+        public string? City { get; set; }
+        public string? Pin { get; set; }
+
+        public string? Location { get; set; }
+        public string? Post { get; set; }
+        public decimal? Salary { get; set; }
+
     }
 }

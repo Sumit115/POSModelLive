@@ -35,6 +35,8 @@
     <None Include="Areas\Master\Views\Employee\List.cshtml" />
     <None Include="Areas\Master\Views\Product\Create.cshtml" />
     <None Include="Areas\Master\Views\Product\List.cshtml" />
+    <None Include="Areas\Master\Views\Series\Create.cshtml" />
+    <None Include="Areas\Master\Views\Series\List.cshtml" />
     <None Include="Areas\Master\Views\User\Create.cshtml" />
     <None Include="Areas\Master\Views\User\List.cshtml" />
     <None Include="Areas\Master\Views\Vendor\Create.cshtml" />
@@ -55,6 +57,7 @@
     <None Include="Areas\Transactions\Views\_ViewStart.cshtml" />
     <None Include="Views\Auth\Index.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Shared\partial\_Grid.cshtml" />
     <None Include="Views\Shared\Transactions\_tranFooter.cshtml" />
     <None Include="Views\Shared\Transactions\_tranGrid.cshtml" />
     <None Include="Views\Shared\Transactions\_tranHeader.cshtml" />

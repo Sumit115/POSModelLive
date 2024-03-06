@@ -8,5 +8,9 @@ namespace SSRepository.Data
     {
         [Key]
         public long PkEmployeeId { get; set; }
+
+        public string? Location { get; set; }
+        public string? Post { get; set; }
+        public decimal? Salary { get; set; }
     }
 }

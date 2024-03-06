@@ -93,6 +93,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 ModelState.AddModelError("", ex.Message);
             }
             //BindViewBags(0, tblBankMas);
+            ViewBag.StateList = _repository.GetDrpState();
             return View(Model);
         }
 
@@ -139,6 +140,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 ModelState.AddModelError("", ex.Message);
             }
             //BindViewBags(tblBankMas.PKID, tblBankMas);
+            ViewBag.StateList = _repository.GetDrpState();
             return View(model);
         }
 

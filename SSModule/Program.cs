@@ -52,7 +52,8 @@ builder.Services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
 builder.Services.AddScoped<IPurchaseInvoiceRepository, PurchaseInvoiceRepository>();
 builder.Services.AddScoped<ISalesChallanRepository, SalesChallanRepository>(); 
 builder.Services.AddScoped<IBrandRepository, BrandRepository>();
-builder.Services.AddScoped<ILoginRepository, LoginRepository>();
+builder.Services.AddScoped<ILoginRepository, LoginRepository>(); 
+builder.Services.AddScoped<ICityRepository, CityRepository>();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();
