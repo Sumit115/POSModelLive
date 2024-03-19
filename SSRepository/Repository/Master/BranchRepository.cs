@@ -11,8 +11,7 @@ namespace SSRepository.Repository.Master
     public class BranchRepository : Repository<TblBranchMas>, IBranchRepository
     {
         public BranchRepository(AppDbContext dbContext) : base(dbContext)
-        {
-            __FormID = (long)en_Form.Branch;
+        {;
         }
 
         public string isAlreadyExist(BranchModel model, string Mode)
@@ -215,7 +214,7 @@ namespace SSRepository.Repository.Master
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKBranchID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
-        public List<ColumnStructure> ColumnList()
+        public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>
             {

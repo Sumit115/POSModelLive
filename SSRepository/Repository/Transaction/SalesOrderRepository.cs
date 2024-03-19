@@ -16,24 +16,22 @@ namespace SSRepository.Repository.Transaction
     {
         public SalesOrderRepository(AppDbContext dbContext) : base(dbContext)
         {
-            __FormID = (long)en_Form.SalesOrder;
-            __FormID_Create = (long)en_Form.SalesOrder_Create;
             SaveSP = "usp_SalesOrderAddUpd";
             GetSP = "usp_SalesOrderList";
         }
 
-        public override string ValidData(TranModel objmodel)
+        public override string ValidData(TransactionModel objmodel)
         {
 
-            TranModel model = (TranModel)objmodel;
+            TransactionModel model = (TransactionModel)objmodel;
             string error = "";
             // error = isAlreadyExist(model, "");
             return error;
 
         }
-        public TranModel GetSingleRecord(long PkId, long FkSeriesId)
+        public TransactionModel GetSingleRecord(long PkId, long FkSeriesId)
         {
-            TranModel data = new TranModel();
+            TransactionModel data = new TransactionModel();
             data.TranDetails = new List<TranDetails>();
             var entity = (from odr in __dbContext.TblSalesOrdertrn
                           join cust in __dbContext.TblCustomerMas on odr.FkPartyId equals cust.PkCustomerId
@@ -76,12 +74,9 @@ namespace SSRepository.Repository.Transaction
                 data.DATE_CREATED = entity.odr.DateCreated;
                 data.src = entity.odr.Src;
                 data.FKUserId = entity.odr.FKUserId;
-                data.Party = new PartyModel()
-                {
-                    PkPartyId = entity.cust.PkCustomerId,
-                    Name = entity.cust.Name,
-                    Mobile = entity.cust.Mobile, 
-                };
+                data.FkPartyId = entity.odr.FkPartyId;
+                data.PartyName = entity.cust.Name;
+                data.PartyMobile = entity.cust.Mobile;
                 data.TranDetails = (from odrdtl in __dbContext.TblSalesOrderdtl
                                     join prd in __dbContext.TblProductMas on odrdtl.FkProductId equals prd.PkProductId
                                     where odrdtl.FkId == PkId
@@ -98,7 +93,7 @@ namespace SSRepository.Repository.Transaction
                                         MfgDate = odrdtl.MfgDate,
                                         ExpiryDate = odrdtl.ExpiryDate,
                                         MRP = odrdtl.MRP,
-                                        SaleRate = odrdtl.SaleRate, 
+                                        SaleRate = odrdtl.SaleRate,
                                         Rate = odrdtl.Rate,
                                         RateUnit = odrdtl.RateUnit,
                                         Qty = odrdtl.Qty,
@@ -123,29 +118,36 @@ namespace SSRepository.Repository.Transaction
                                         FKUserId = odrdtl.FKUserId,
                                         GstRate = odrdtl.SCRate > 0 ? (odrdtl.SCRate * 2) : odrdtl.ICRate,
                                         GstAmt = odrdtl.SCAmt > 0 ? (odrdtl.SCAmt * 2) : odrdtl.ICAmt,
-                                        ProductName_Text = prd.Product,
-
+                                        ProductName_Text = prd.Product
                                     }).ToList();
             }
             return data;
         }
-        public List<ColumnStructure> ColumnList()
+        public List<ColumnStructure> ColumnList(string GridName = "")
         {
-            var list = new List<ColumnStructure>
+            var list = new List<ColumnStructure>();
+            if (GridName.ToString().ToLower() == "dtl")
             {
-                 new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="#", Fields="sno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Date", Fields="Entrydt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Party Name", Fields="PartyName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Party Mobile", Fields="PartyMobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Invoice No.", Fields="Inum",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Amt", Fields="GrossAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Tax Amt", Fields="TaxAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Discount Amt", Fields="TotalDiscount",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="RoundOf Amt", Fields="RoundOfDiff",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Shipping Amt ", Fields="Shipping",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Net Amt", Fields="NetAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                list = TrandtlColumnList("S");
+            }
+            else
+            {
+                list = new List<ColumnStructure>
+                {
+                     new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="#", Fields="sno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Date", Fields="Entrydt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Party Name", Fields="PartyName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Party Mobile", Fields="PartyMobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Invoice No.", Fields="Inum",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Amt", Fields="GrossAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Tax Amt", Fields="TaxAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Discount Amt", Fields="TotalDiscount",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="RoundOf Amt", Fields="RoundOfDiff",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Shipping Amt ", Fields="Shipping",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Net Amt", Fields="NetAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
 
-            };
+                };
+            }
             return list;
         }
 

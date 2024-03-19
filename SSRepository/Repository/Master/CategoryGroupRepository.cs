@@ -5,6 +5,7 @@ using SSRepository.IRepository.Master;
 using Microsoft.AspNetCore.Http;
 using SSRepository.Models;
 using Microsoft.VisualBasic;
+using System.Drawing;
 
 namespace SSRepository.Repository.Master
 {
@@ -12,7 +13,6 @@ namespace SSRepository.Repository.Master
     {
         public CategoryGroupRepository(AppDbContext dbContext) : base(dbContext)
         {
-            __FormID = (long)en_Form.CategoryGroup;
         }
 
         public string isAlreadyExist(CategoryGroupModel model, string Mode)
@@ -39,7 +39,7 @@ namespace SSRepository.Repository.Master
                                              join CatPGrp in __dbContext.TblCategoryGroupMas on cou.FkCategoryGroupId equals CatPGrp.PkCategoryGroupId
                                                              into tempcatGrp
                                              from catGrp in tempcatGrp.DefaultIfEmpty()
-                                                 // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                             where (EF.Functions.Like(cou.CategoryGroupName.Trim().ToLower(), search + "%"))
                                              orderby cou.PkCategoryGroupId
                                              select (new CategoryGroupModel
                                              {
@@ -170,7 +170,7 @@ namespace SSRepository.Repository.Master
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKCategoryGroupID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
-        public List<ColumnStructure> ColumnList()
+        public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>
             {

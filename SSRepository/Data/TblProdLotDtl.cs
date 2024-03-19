@@ -6,13 +6,15 @@ namespace SSRepository.Data
     [Table("tblProdLot_dtl", Schema = "dbo")]
     public partial class TblProdLotDtl : TblBase, IEntity
     {
-       
+
         [Key]
         public long PkLotId { get; set; }
 
         public long FKProdID { get; set; }
         public string? LotAlias { get; set; }//=''
 
+        public string? LotName { get; set; }//=''
+        public string? LotNo { get; set; }//=''
         //  public long MasterLotID { get; set; }
         public long? Barcode { get; set; }//16 digit uniq no.
         public string? Batch { get; set; }//cntrltype= L
@@ -32,8 +34,8 @@ namespace SSRepository.Data
         //  public decimal? SuggestedRate { get; set; }
         public string? PurchaseRateUnit { get; set; }//=''
         public string? MRPSaleRateUnit { get; set; }//=''
-                                                   // public DateTime? StockDate { get; set; }
-                                                   //  public decimal? ExciseRate { get; set; }
+                                                    // public DateTime? StockDate { get; set; }
+                                                    //  public decimal? ExciseRate { get; set; }
         public long InTrnId { get; set; }//=PurchaseId
         public long InTrnFKSeriesID { get; set; }//=PurchaseSeriesId
         public long InTrnsno { get; set; }//=PurchaseSeriesId

@@ -20,12 +20,11 @@ function View() {
                 datatype: "json",
                 success: function (res) {
                     console.log(res);
-                    //if (res.status == "success") {
-                    //var jo = JSON.parse(res.data);
-                    bindGrid(GridId, res, IdProperty);
-                    //}
-                    //else
-                    //    alert(res.msg);
+                    if (res.status == "success") {
+                        bindGrid(GridId, res.data, IdProperty);
+                    }
+                    else
+                        alert(res.msg);
                 }
             })
 

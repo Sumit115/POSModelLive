@@ -41,6 +41,12 @@ namespace SSRepository.Models
 
     public class BaseModel
     {
+        public BaseModel() {
+            FKUserId = 1;
+            src = 1;
+            DATE_CREATED = DateTime.Now;
+            DATE_MODIFIED = DateTime.Now;
+        }
         //public long PkId { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]

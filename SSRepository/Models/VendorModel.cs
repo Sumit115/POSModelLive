@@ -30,7 +30,7 @@ namespace SSRepository.Models
         public string? Email { get; set; }
 
         [Phone]
-        public string  Mobile { get; set; }
+        public string?  Mobile { get; set; }
 
         public string? Aadhar { get; set; }
 

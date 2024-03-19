@@ -11,7 +11,6 @@ namespace SSRepository.Repository.Master
     {
         public UserRepository(AppDbContext dbContext) : base(dbContext)
         {
-            __FormID = (long)en_Form.User;
         }
        
         public string isAlreadyExist(UserModel model, string Mode)
@@ -201,7 +200,7 @@ namespace SSRepository.Repository.Master
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKUserID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
-        public List<ColumnStructure> ColumnList()
+        public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>
             {

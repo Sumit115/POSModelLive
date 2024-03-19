@@ -7,7 +7,7 @@ namespace SSRepository.IRepository.Master
     public interface IBankRepository : IRepository<TblBankMas>
     {
         
-        List<ColumnStructure> ColumnList();
+        List<ColumnStructure> ColumnList(string GridName = "");
 
         string isAlreadyExist(BankModel tblBankMas, string Mode);
         List<BankModel> GetList(int pageSize, int pageNo = 1, string search = "");

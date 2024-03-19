@@ -33,6 +33,7 @@
     <None Include="Areas\Master\Views\Customer\List.cshtml" />
     <None Include="Areas\Master\Views\Employee\Create.cshtml" />
     <None Include="Areas\Master\Views\Employee\List.cshtml" />
+    <None Include="Areas\Master\Views\ProductLot\Create.cshtml" />
     <None Include="Areas\Master\Views\Product\Create.cshtml" />
     <None Include="Areas\Master\Views\Product\List.cshtml" />
     <None Include="Areas\Master\Views\Series\Create.cshtml" />

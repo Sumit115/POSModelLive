@@ -12,7 +12,6 @@ namespace SSRepository.Repository.Master
     {
         public BrandRepository(AppDbContext dbContext) : base(dbContext)
         {
-            __FormID = (long)en_Form.Brand;
         }
        
         public string isAlreadyExist(BrandModel model, string Mode)
@@ -167,7 +166,7 @@ namespace SSRepository.Repository.Master
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKBrandID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
-        public List<ColumnStructure> ColumnList()
+        public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>
             {

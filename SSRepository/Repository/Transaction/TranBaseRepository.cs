@@ -1,12 +1,16 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Azure;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
 using SSRepository.Data;
+using SSRepository.IRepository;
+using SSRepository.IRepository.Master;
 using SSRepository.Models;
 using SSRepository.Repository.Master;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -17,21 +21,19 @@ namespace SSRepository.Repository.Transaction
 {
     public class TranBaseRepository : BaseRepository
     {
+        public string TranType = "";
+        public string TranAlias = "";
+        public string StockFlag = "";
+        public bool PostInAc = false;
         public string SaveSP = "";
         public string GetSP = "";
+        public string GetById = "";
+        
         public TranBaseRepository(AppDbContext dbContext) : base(dbContext)
         {
 
         }
-        public long FormID
-        {
-            get { return __FormID; }
-        }
-        public long FormID_Create
-        {
-            get { return __FormID_Create; }
-        }
-        public string Create(TranModel model)
+        public string Create(TransactionModel model)
         {
             CalculateExe(model);
             ValidateData(model);
@@ -42,17 +44,17 @@ namespace SSRepository.Repository.Transaction
             SaveData(model, ref Id, ref Error, ref SeriesNo);
             return Error;
         }
-        public string ValidateData(TranModel objmodel)
+        public string ValidateData(TransactionModel objmodel)
         {
             //
             ValidData(objmodel);
             return "";
         }
-        public virtual string ValidData(TranModel objmodel)
+        public virtual string ValidData(TransactionModel objmodel)
         {
             return "";
         }
-        public void SaveData(TranModel JsonData, ref long Id, ref string ErrMsg, ref long SeriesNo)
+        public void SaveData(TransactionModel JsonData, ref long Id, ref string ErrMsg, ref long SeriesNo)
         {
 
 
@@ -66,13 +68,6 @@ namespace SSRepository.Repository.Transaction
                 cmd.Parameters.Add(new SqlParameter("@OutParam", SqlDbType.BigInt, 20, ParameterDirection.Output, false, 0, 10, "OutParam", DataRowVersion.Default, null));
                 cmd.Parameters.Add(new SqlParameter("@SeriesNo", SqlDbType.BigInt, 20, ParameterDirection.Output, false, 0, 10, "SeriesNo", DataRowVersion.Default, null));
                 cmd.Parameters.Add(new SqlParameter("@ErrMsg", SqlDbType.NVarChar, int.MaxValue, ParameterDirection.Output, false, 0, 10, "ErrMsg", DataRowVersion.Default, null));
-                //cmd.Parameters.AddWithValue("@OutParam", Id).Direction = ParameterDirection.Output;
-                //cmd.Parameters.AddWithValue("@ErrMsg", ErrMsg).Direction = ParameterDirection.Output;
-                //cmd.Parameters.AddWithValue("@SeriesNo", SeriesNo).Direction = ParameterDirection.Output;
-
-                //Get Output Parametr
-                // SqlDataAdapter adp = new SqlDataAdapter(cmd);
-                // adp.Fill(ds);
                 cmd.ExecuteNonQuery();
                 Id = Convert.ToInt64(cmd.Parameters["@OutParam"].Value);
                 SeriesNo = Convert.ToInt64(cmd.Parameters["@SeriesNo"].Value);
@@ -103,25 +98,29 @@ namespace SSRepository.Repository.Transaction
             }
             return dt;
         }
-        //public TranModel GetSingleRecord(long PkId, long FkSeriesId)
-        //{
-        //    var model = new TranModel();
-        //    DataSet ds = new DataSet();
-        //    using (SqlConnection con = new SqlConnection(conn))
-        //    {
-        //        con.Open();
-        //        SqlCommand cmd = new SqlCommand(GetSP, con);
-        //        cmd.CommandType = CommandType.StoredProcedure;
-        //        cmd.Parameters.AddWithValue("@PkId", PkId);
-        //        cmd.Parameters.AddWithValue("@FkSeriesId", FkSeriesId);
-        //        SqlDataAdapter adp = new SqlDataAdapter(cmd);
-        //        adp.Fill(ds);
-        //        //cmd.ExecuteNonQuery();
-        //        con.Close();
-        //    }
-        //    return model;
-        //} 
-        public object ColumnChange(TranModel model, int rowIndex, string fieldName)
+        public string GetData(long PkId, long FkSeriesId,ref string ErrMsg)
+        {
+            DataSet ds = new DataSet();
+            string data = "";
+            using (SqlConnection con = new SqlConnection(conn))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand(GetSP, con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@PkId", PkId);
+                cmd.Parameters.AddWithValue("@FkSeriesId", FkSeriesId);
+                cmd.Parameters.Add(new SqlParameter("@JsonData", SqlDbType.NVarChar, int.MaxValue, ParameterDirection.Output, false, 0, 10, "JsonData", DataRowVersion.Default, null));
+                cmd.Parameters.Add(new SqlParameter("@ErrMsg", SqlDbType.NVarChar, int.MaxValue, ParameterDirection.Output, false, 0, 10, "ErrMsg", DataRowVersion.Default, null));
+                SqlDataAdapter adp = new SqlDataAdapter(cmd);
+                adp.Fill(ds);
+
+                data = Convert.ToString(cmd.Parameters["@JsonData"].Value);
+                ErrMsg = Convert.ToString(cmd.Parameters["@ErrMsg"].Value);
+                con.Close();
+            }
+            return data;
+        }
+        public object ColumnChange(TransactionModel model, int rowIndex, string fieldName)
         {
             try
             {
@@ -148,7 +147,7 @@ namespace SSRepository.Repository.Transaction
             return model;
         }
 
-        public void setProductinfo(TranModel model, TranDetails? detail)
+        public void setProductinfo(TransactionModel model, TranDetails? detail)
         {
             if (detail != null)
             {
@@ -182,7 +181,7 @@ namespace SSRepository.Repository.Transaction
                 }
             }
         }
-        public void setProductinfoByBatch(TranModel model, TranDetails? detail)
+        public void setProductinfoByBatch(TransactionModel model, TranDetails? detail)
         {
             if (detail != null)
             {
@@ -214,7 +213,7 @@ namespace SSRepository.Repository.Transaction
 
             }
         }
-        public void setProductinfoByColor(TranModel model, TranDetails? detail)
+        public void setProductinfoByColor(TransactionModel model, TranDetails? detail)
         {
             if (detail != null)
             {
@@ -246,7 +245,7 @@ namespace SSRepository.Repository.Transaction
 
             }
         }
-        public void CalculateExe(TranModel model)
+        public void CalculateExe(TransactionModel model)
         {
             foreach (var item in model.TranDetails.Where(x => x.mode != 2))
             {
@@ -258,7 +257,7 @@ namespace SSRepository.Repository.Transaction
             }
         }
 
-        public void setGridTotal(TranModel model)
+        public void setGridTotal(TransactionModel model)
         {
             model.GrossAmt = Math.Round(model.TranDetails.Where(x => x.mode != 2).Sum(x => x.GrossAmt), 2);
             model.TaxAmt = Math.Round(model.TranDetails.Where(x => x.mode != 2).Sum(x => x.GstAmt), 2);
@@ -271,7 +270,7 @@ namespace SSRepository.Repository.Transaction
 
         }
 
-        public object FooterChange(TranModel model, string fieldName)
+        public object FooterChange(TransactionModel model, string fieldName)
         {
             //if (fieldName == "ApplyPromo")
             //{
@@ -282,6 +281,39 @@ namespace SSRepository.Repository.Transaction
 
             setGridTotal(model);
             return model;
+        }
+
+
+        public object SetParty(TransactionModel model, long FkPartyId)
+        {
+            var vendor = GetVendor(FkPartyId);
+            if (vendor != null)
+            { 
+                model.PartyAddress = vendor.Address == null ? "" : vendor.Address.ToString();  
+                model.PartyName = vendor.Name;
+                model.PartyGSTN = vendor.Gstno == null? "" : vendor.Gstno.ToString();
+                model.PartyMobile = vendor.Mobile;
+                model.PartyCredit = 0;
+                model.FkPartyId = FkPartyId;
+
+            }
+            return model;
+        }
+
+        public VendorModel? GetVendor(long PkVendorId)
+        {
+            VendorModel? data = (from cou in __dbContext.TblVendorMas
+                        where cou.PkVendorId == PkVendorId
+                        select (new VendorModel
+                        {
+                            PkVendorId = cou.PkVendorId,
+                            Name = cou.Name,
+                            Mobile = cou.Mobile,
+                            Address = cou.Address,
+                            Gstno = cou.Gstno
+                        }
+                       )).FirstOrDefault();
+            return data;
         }
 
         public List<ProdLotDtlModel> Get_ProductLotDtlList(int PKProductId,string Batch, string Color)
@@ -366,10 +398,10 @@ namespace SSRepository.Repository.Transaction
             return data;
         }
 
-        public List<ColumnStructure> ColumnList_CreateTran(string TranType)
+        public List<ColumnStructure> TrandtlColumnList(string TranType)
         {
             var list = new List<ColumnStructure>();
-            if (TranType == "Purchase")
+            if (TranType == "P")
             {
                 list = new List<ColumnStructure>
             {
@@ -388,7 +420,7 @@ namespace SSRepository.Repository.Transaction
                 //new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="ExpiryDate", Fields="ExpiryDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                // new ColumnStructure{ pk_Id=14, Orderby =14, Heading ="MRP", Fields="MRP",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                 new ColumnStructure{ pk_Id=15, Orderby =15, Heading ="SaleRate", Fields="SaleRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=16, Orderby =16, Heading ="Action", Fields="Delete",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=16, Orderby =16, Heading ="Action", Fields="Delete",Width=10,IsActive=1, SearchType=0,Sortable=0,CtrlType="" },
 
             };
             }
@@ -407,12 +439,31 @@ namespace SSRepository.Repository.Transaction
                 new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Net Amount", Fields="NetAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                 new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Batch", Fields="Batch",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="L" },
                  new ColumnStructure{ pk_Id=11, Orderby= 11, Heading ="Color", Fields="Color",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="L" },
-               new ColumnStructure{ pk_Id=16, Orderby =16, Heading ="Action", Fields="Delete",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+               new ColumnStructure{ pk_Id=16, Orderby =16, Heading ="Action", Fields="Delete",Width=10,IsActive=1, SearchType=0,Sortable=0,CtrlType="" },
 
             };
             }
             return list.OrderBy(x => x.Orderby).ToList();
         }
+
+        public List<VendorModel> PartyList(int pageSize, int pageNo = 1, string search = "")
+        {
+            VendorRepository rep = new VendorRepository(__dbContext);
+            return rep.GetList(pageSize, pageNo, search );
+        }
+
+        public List<ProductModel> ProductList()
+        {
+            ProductRepository rep = new ProductRepository(__dbContext);
+            return rep.GetList(1000, 1);
+        }
+        public List<SeriesModel> SeriesList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "")
+        {
+            SeriesRepository rep = new SeriesRepository(__dbContext);
+            return rep.GetList(pageSize, pageNo, search, TranAlias);
+        }
+
+
 
     }
 }

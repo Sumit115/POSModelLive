@@ -15,7 +15,6 @@ namespace SSRepository.Repository.Master
     {
         public CustomerRepository(AppDbContext dbContext) : base(dbContext)
         {
-            __FormID = (long)en_Form.Customer;
         }
         public string isAlreadyExist(CustomerModel model, string Mode)
         {
@@ -261,7 +260,7 @@ namespace SSRepository.Repository.Master
             record = ToDataTable(data);
             return record;
         }
-        public List<ColumnStructure> ColumnList()
+        public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>
             {

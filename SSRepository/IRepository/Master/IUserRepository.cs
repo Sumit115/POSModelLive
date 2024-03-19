@@ -6,7 +6,7 @@ namespace SSRepository.IRepository.Master
 {
     public interface IUserRepository : IRepository<TblUserMas>
     {
-         List<ColumnStructure> ColumnList();
+         List<ColumnStructure> ColumnList(string GridName = "");
         string isAlreadyExist(UserModel tblBankMas, string Mode);
         List<UserModel> GetList(int pageSize, int pageNo = 1, string search = "");
         UserModel GetSingleRecord(long PkID);

@@ -16,10 +16,6 @@ namespace SSRepository.Repository
         public Repository(AppDbContext dbContext) : base(dbContext)
         {
         }
-        public long FormID
-        {
-            get { return __FormID; }
-        }
         public async Task<string> CreateAsync(object tblmas, string Mode, Int64 ID, string dbType = "")
         {
             string ErrorMsg = ValidateData(tblmas, Mode);
@@ -80,8 +76,7 @@ namespace SSRepository.Repository
     public class BaseRepository //: IBaseRepository
     {
         protected readonly AppDbContext __dbContext;
-        public long __FormID;
-        public long __FormID_Create;
+        
         protected readonly int __MaxPageSize = 1000;
         protected readonly int __PageSize = 30;
 
@@ -534,33 +529,7 @@ namespace SSRepository.Repository
         }
 
         #endregion
-        public enum en_Form
-        {
-            Customer = 1,
-            Vendor = 2,
-            Employee = 3,
-            Branch = 4,
-            User = 5,
-            Category = 6,
-            Product = 7,
-            Bank = 8,
-            Series = 9,
-            SalesOrder = 10,
-            SalesInvoice = 11,
-            PurchaseOrder = 12,
-            PurchaseInvoice = 13,
-            SalesChallan = 14,
-            SalesOrder_Create = 15,
-            SalesInvoice_Create = 16,
-            PurchaseOrder_Create = 17,
-            PurchaseInvoice_Create = 18,
-            SalesChallan_Create = 19,
-            CategoryGroup = 20,
-            Brand = 21,
-            City = 22,
-
-
-        }
+        
 
         public object GetDrpState()
         {

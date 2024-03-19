@@ -14,6 +14,8 @@ namespace SSRepository.Models
 
         public long FkFormId { get; set; }
 
+        public string GridName { get; set; }
+
         public string JsonData { get; set; }
     }
 }

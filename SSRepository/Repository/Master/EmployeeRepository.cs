@@ -12,7 +12,6 @@ namespace SSRepository.Repository.Master
     {
         public EmployeeRepository(AppDbContext dbContext) : base(dbContext)
         {
-            __FormID = (long)en_Form.Employee;
         }
          
         public string isAlreadyExist(EmployeeModel model, string Mode)
@@ -247,7 +246,7 @@ namespace SSRepository.Repository.Master
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKEmployeeID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
-        public List<ColumnStructure> ColumnList()
+        public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>
             {

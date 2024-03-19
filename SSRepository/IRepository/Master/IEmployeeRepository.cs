@@ -6,7 +6,7 @@ namespace SSRepository.IRepository.Master
 {
     public interface IEmployeeRepository : IRepository<TblEmployeeMas>
     {
-         List<ColumnStructure> ColumnList();
+         List<ColumnStructure> ColumnList(string GridName = "");
 
         string isAlreadyExist(EmployeeModel tblBankMas, string Mode);
         List<EmployeeModel> GetList(int pageSize, int pageNo = 1, string search = "");

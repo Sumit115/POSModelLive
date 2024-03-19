@@ -12,7 +12,6 @@ namespace SSRepository.Repository.Master
     {
         public BankRepository(AppDbContext dbContext) : base(dbContext)
         {
-            __FormID = (long)en_Form.Bank;
         }
        
         public string isAlreadyExist(BankModel model, string Mode)
@@ -166,7 +165,7 @@ namespace SSRepository.Repository.Master
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKBankID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
-        public List<ColumnStructure> ColumnList()
+        public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>
             {

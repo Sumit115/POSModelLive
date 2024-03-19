@@ -8,14 +8,13 @@ namespace SSRepository.IRepository.Master
     public interface IVendorRepository : IRepository<TblVendorMas>
     {
         
-        List<ColumnStructure> ColumnList();
+        List<ColumnStructure> ColumnList(string GridName = "");
 
         string isAlreadyExist(VendorModel tblBankMas, string Mode);
         List<VendorModel> GetList(int pageSize, int pageNo = 1, string search = "");
         VendorModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);
-        DataTable AutoDropDown();
 
     }
 }

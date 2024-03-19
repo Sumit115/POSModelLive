@@ -16,24 +16,22 @@ namespace SSRepository.Repository.Transaction
     {
         public SalesInvoiceRepository(AppDbContext dbContext) : base(dbContext)
         {
-            __FormID = (long)en_Form.SalesInvoice;
-            __FormID_Create = (long)en_Form.SalesInvoice_Create;
             SaveSP = "usp_SalesInvoiceAddUpd";
             GetSP = "usp_SalesInvoiceList";
         }
 
-        public override string ValidData(TranModel objmodel)
+        public override string ValidData(TransactionModel objmodel)
         {
 
-            TranModel model = (TranModel)objmodel;
+            TransactionModel model = (TransactionModel)objmodel;
             string error = "";
             // error = isAlreadyExist(model, "");
             return error;
 
         }
-        public TranModel GetSingleRecord(long PkId, long FkSeriesId)
+        public TransactionModel GetSingleRecord(long PkId, long FkSeriesId)
         {
-            TranModel data = new TranModel();
+            TransactionModel data = new TransactionModel();
             data.TranDetails = new List<TranDetails>();
             var entity = (from odr in __dbContext.TblSalesInvoicetrn
                           join cust in __dbContext.TblCustomerMas on odr.FkPartyId equals cust.PkCustomerId
@@ -76,12 +74,9 @@ namespace SSRepository.Repository.Transaction
                 data.DATE_CREATED = entity.odr.DateCreated;
                 data.src = entity.odr.Src;
                 data.FKUserId = entity.odr.FKUserId;
-                data.Party = new PartyModel()
-                {
-                    PkPartyId = entity.cust.PkCustomerId,
-                    Name = entity.cust.Name,
-                    Mobile = entity.cust.Mobile, 
-                };
+                data.FkPartyId = entity.odr.FkPartyId;
+                data.PartyName = entity.cust.Name;
+                data.PartyMobile = entity.cust.Mobile;
                 data.TranDetails = (from odrdtl in __dbContext.TblSalesInvoicedtl
                                     join prd in __dbContext.TblProductMas on odrdtl.FkProductId equals prd.PkProductId
                                     where odrdtl.FkId == PkId
@@ -129,10 +124,17 @@ namespace SSRepository.Repository.Transaction
             }
             return data;
         }
-        public List<ColumnStructure> ColumnList()
+        public List<ColumnStructure> ColumnList(string GridName = "")
         {
-            var list = new List<ColumnStructure>
+            var list = new List<ColumnStructure>();
+            if (GridName.ToString().ToLower() == "dtl")
             {
+                list = TrandtlColumnList("S");
+            }
+            else
+            {
+                list = new List<ColumnStructure>
+                {
                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="#", Fields="sno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Date", Fields="Entrydt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Party Name", Fields="PartyName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
@@ -146,6 +148,7 @@ namespace SSRepository.Repository.Transaction
                  new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Net Amt", Fields="NetAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
 
             };
+            }
             return list;
         }
 

@@ -15,28 +15,31 @@ namespace SSRepository.Repository
     {
         public GridLayoutRepository(AppDbContext dbContext) : base(dbContext)
         {
-            __FormID = (long)en_Form.User;
+            
         }
-        //TblGridStructer  //PkGridId,UserId,FormId,JsonData,
-        //TblFormMas  //PkFormId,Caption,Url,FkMasterFormId
-        //PkCustomerId
-
-        public TblGridStructer GetSingleRecord(long FkUserId, long FkFormId, List<ColumnStructure> columns)
+        public TblGridStructer GetSingleRecord(long FkUserId, long FkFormId,string GridName, List<ColumnStructure> columns)
         {
+            bool flag = true;
             TblGridStructer data = new TblGridStructer();
             var _entity = __dbContext.TblGridStructer
-                .Where(cou => cou.FkUserId == FkUserId && cou.FkFormId == FkFormId).FirstOrDefault();
+                .Where(cou => cou.FkUserId == FkUserId && cou.FkFormId == FkFormId && cou.GridName == GridName).FirstOrDefault();
             if (_entity == null)
             {
-            formbase:
-                _entity = __dbContext.TblGridStructer.Where(cou => cou.FkFormId == FkFormId).FirstOrDefault();
+formbase:
+                _entity = __dbContext.TblGridStructer.Where(cou => cou.FkFormId == FkFormId && cou.GridName == GridName).FirstOrDefault();
                 if (_entity == null)
                 {
+                    if (!flag)
+                    {
+                        throw new Exception("Not Found");
+                    }
+                    flag = false;
                     object dd = new GridStructerModel()
                     {
                         PkGridId = 0,
                         FkFormId = FkFormId,
                         FkUserId = FkUserId,
+                        GridName = GridName,
                         JsonData = JsonConvert.SerializeObject(columns)
                     };
                     long ID = 0;
@@ -51,6 +54,7 @@ namespace SSRepository.Repository
                 PkGridId = _entity.PkGridId,
                 FkFormId = _entity.FkFormId,
                 FkUserId = _entity.FkUserId,
+                GridName = _entity.GridName,
                 JsonData = _entity.JsonData
             };
 
@@ -64,6 +68,7 @@ namespace SSRepository.Repository
             //Tbl.PkGridId = model.PkGridId;
             Tbl.FkFormId = model.FkFormId;
             Tbl.FkUserId = model.FkUserId;
+            Tbl.GridName = model.GridName;
             Tbl.JsonData = model.JsonData;
             if (Mode == "Create")
             {

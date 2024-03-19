@@ -14,6 +14,8 @@ using Newtonsoft.Json.Linq;
 using Azure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SSRepository.Repository.Master;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Drawing.Printing;
 
 namespace SSAdmin.Areas.Master.Controllers
 {
@@ -26,15 +28,11 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             _repository = repository;
             _repositoryCategoryGroup = repositoryGroupRepository;
-            // _gridLayoutRepository = gridLayoutRepository;
-            //_repository.SetRootPath(_hostingEnvironment.WebRootPath);
+            FKFormID = (long)Handler.Form.Category;
         }
 
         public async Task<IActionResult> List()
         {
-            //var json = JsonConvert.SerializeObject(_repository.ColumnList()).ToString();
-
-            ViewBag.FormId = _repository.FormID;
             return View();
         }
 
@@ -171,15 +169,15 @@ namespace SSAdmin.Areas.Master.Controllers
             return new JsonResult(data);
         }
 
-        public override List<ColumnStructure> ColumnList()
+        public override List<ColumnStructure> ColumnList(string GridName = "")
         {
-            return _repository.ColumnList();
+            return _repository.ColumnList(GridName);
         }
 
         [HttpPost]
-        public object FkGroupId()
+        public object FkGroupId(int pageSize, int pageNo = 1, string search = "")
         {
-            return _repositoryCategoryGroup.GetDrpCategoryGroup(1, 1000);
+            return _repositoryCategoryGroup.GetList(pageSize, pageNo, search);
         }
     }
 }

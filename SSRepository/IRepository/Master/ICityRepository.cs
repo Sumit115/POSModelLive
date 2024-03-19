@@ -7,7 +7,7 @@ namespace SSRepository.IRepository.Master
     public interface ICityRepository : IRepository<TblCityMas>
     {
         
-        List<ColumnStructure> ColumnList(); 
+        List<ColumnStructure> ColumnList(string GridName = ""); 
         string isAlreadyExist(CityModel tblCityMas, string Mode);
         List<CityModel> GetList(int pageSize, int pageNo = 1, string search = "");
         object GetDrpCity(int pageSize, int pageNo = 1, string search = "");

@@ -5,6 +5,7 @@ using SSRepository.IRepository.Master;
 using Microsoft.AspNetCore.Http;
 using SSRepository.Models;
 using Microsoft.VisualBasic;
+using System.Runtime.ConstrainedExecution;
 
 namespace SSRepository.Repository.Master
 {
@@ -12,7 +13,6 @@ namespace SSRepository.Repository.Master
     {
         public SeriesRepository(AppDbContext dbContext) : base(dbContext)
         {
-            __FormID = (long)en_Form.Series;
         }
 
         public string isAlreadyExist(SeriesModel model, string Mode)
@@ -46,12 +46,13 @@ namespace SSRepository.Repository.Master
             return error;
         }
 
-        public List<SeriesModel> GetList(int pageSize, int pageNo = 1, string search = "")
+        public List<SeriesModel> GetList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "")
         {
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<SeriesModel> data = (from cou in __dbContext.TblSeriesMas
-
+                                      where EF.Functions.Like(cou.Series.Trim().ToLower(), search + "%")
+                                      && (TranAlias != "" || cou.TranAlias == TranAlias)
                                           // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                       orderby cou.PkSeriesId
                                       select (new SeriesModel
@@ -79,38 +80,7 @@ namespace SSRepository.Repository.Master
                                      )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
-        public List<SeriesModel> GetList_by_TranAlias(string TranAlias)
-        {
-
-            List<SeriesModel> data = (from cou in __dbContext.TblSeriesMas
-
-                                      where cou.TranAlias == TranAlias
-                                      orderby cou.PkSeriesId
-                                      select (new SeriesModel
-                                      {
-                                          PkSeriesId = cou.PkSeriesId,
-                                          FKUserId = cou.FKUserId,
-                                          src = cou.Src,
-                                          DATE_MODIFIED = cou.DateModified,
-                                          DATE_CREATED = cou.DateCreated,
-                                          Series = cou.Series,
-                                          SeriesNo = cou.SeriesNo,
-                                          FkBranchId = cou.FkBranchId,
-                                          BillingRate = cou.BillingRate,
-                                          TranAlias = cou.TranAlias,
-                                          FormatName = cou.FormatName,
-                                          ResetNoFor = cou.ResetNoFor,
-                                          AllowWalkIn = cou.AllowWalkIn,
-                                          AutoApplyPromo = cou.AutoApplyPromo,
-                                          RoundOff = cou.RoundOff,
-                                          DefaultQty = cou.DefaultQty,
-                                          AllowZeroRate = cou.AllowZeroRate,
-                                          AllowFreeQty = cou.AllowFreeQty,
-
-                                      }
-                                     )).ToList();
-            return data;
-        }
+        
 
 
         public SeriesModel GetSingleRecord(long PkSeriesId)
@@ -142,22 +112,7 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpSeries(int pageno, int pagesize, string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetList(pagesize, pageno, search);
-
-
-            return (from r in result
-                    select new
-                    {
-                        r.PkSeriesId,
-                        r.Series
-                    }).ToList(); ;
-        }
-
+        
         public string DeleteRecord(long PkSeriesId)
         {
             string Error = "";
@@ -250,7 +205,7 @@ namespace SSRepository.Repository.Master
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKSeriesID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
-        public List<ColumnStructure> ColumnList()
+        public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>
             {

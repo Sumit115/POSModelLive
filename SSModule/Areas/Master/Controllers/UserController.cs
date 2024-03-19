@@ -21,15 +21,11 @@ namespace SSAdmin.Areas.Master.Controllers
             _repository = repository;
             _employeeRepository = EmployeeRepository;
             _branchRepository = BranchRepository;
-            // _gridLayoutRepository = gridLayoutRepository;
-            //_repository.SetRootPath(_hostingEnvironment.WebRootPath);
+            FKFormID = (long)Handler.Form.User;
         }
 
         public async Task<IActionResult> List()
         {
-          //  var json = JsonConvert.SerializeObject(_repository.ColumnList()).ToString();
-            ViewBag.FormId = _repository.FormID;
-
             return View();
         }
 
@@ -43,23 +39,7 @@ namespace SSAdmin.Areas.Master.Controllers
        public string Export(string ColumnList, string HeaderList, string Name, string Type)
         {
             string FileName = "";
-            //try
-            //{
-            //    List<BankModel> model = new List<BankModel>();
-            //    string result = CommonCore.API(ControllerName, "export", GetAPIDefaultParam());
-            //    if (CommonCore.CheckError(result) == "")
-            //    {
-            //        model = JsonConvert.DeserializeObject<List<BankModel>>(result);
-            //        FileName = Common.Export(model, HeaderList, ColumnList, Name, Type);
-            //    }
-            //    else
-            //        FileName = result;
-            //}
-            //catch (Exception ex)
-            //{
-            //    CommonCore.WriteLog(ex, "Export " + Type, ControllerName, GetErrorLogParam());
-            //    return CommonCore.SetError(ex.Message);
-            //}
+            
             return FileName;
         }
 
@@ -161,9 +141,9 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             return response;
         }
-        public override List<ColumnStructure> ColumnList()
+        public override List<ColumnStructure> ColumnList(string GridName = "")
         {
-            return _repository.ColumnList();
+            return _repository.ColumnList(GridName);
         }
     }
 }

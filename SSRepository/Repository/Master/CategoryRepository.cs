@@ -12,7 +12,6 @@ namespace SSRepository.Repository.Master
     {
         public CategoryRepository(AppDbContext dbContext) : base(dbContext)
         {
-            __FormID = (long)en_Form.Category;
         }
 
         public string isAlreadyExist(CategoryModel model, string Mode)
@@ -207,7 +206,7 @@ namespace SSRepository.Repository.Master
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKCategoryID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
-        public List<ColumnStructure> ColumnList()
+        public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>
             {

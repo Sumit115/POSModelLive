@@ -10,13 +10,16 @@ using System.Threading.Tasks;
 
 namespace SSRepository.Models
 {
-    public class TranModel : BaseModel
+    public class TransactionModel : BaseModel
     {
-        public TranModel()
+        public TransactionModel()
         {
             TranDetails = new List<TranDetails>();
+            ExtProperties = new ExtPropertie();
             EntryDate = DateTime.Now;
-            Party = new PartyModel();
+            GRDate = DateTime.Now;
+
+
         }
         public long PkId { get; set; }
         public long FKSeriesId { get; set; }//=ddl
@@ -31,7 +34,17 @@ namespace SSRepository.Models
         public long FKLocationID { get; set; }//=bind From Js on Series Selection(Fk_BranchId)
         //nEw End
 
-        public int FkPartyId { get; set; }//Same As CarMistri Customer
+        public long FkPartyId { get; set; }
+
+        public string PartyName { get; set; }
+
+        public string? PartyMobile { get; set; }
+
+        public string PartyAddress { get; set; }
+
+        public string PartyGSTN { get; set; }
+
+        public int PartyCredit { get; set; }
 
         public string? GRNo { get; set; }//txt
 
@@ -74,9 +87,22 @@ namespace SSRepository.Models
 
         public string? Remark { get; set; }
 
-        public string? Statu { get; set; }//
+        public string? Statu { get; set; }
+
+        public ExtPropertie ExtProperties { get; set; }
 
         public List<TranDetails> TranDetails { get; set; }
-        public PartyModel Party { get; set; }
     }
+
+    public class ExtPropertie
+    {
+        public string TranType { get; set; }
+        public string TranAlias { get; set; }
+        public string StockFlag { get; set; }
+        public bool PostInAc { get; set; }
+        public long FKFormID { get; set; }
+        public string LastEntryNo { get; set; }
+        public string DocType { get; set; }
+    }
+   
 }

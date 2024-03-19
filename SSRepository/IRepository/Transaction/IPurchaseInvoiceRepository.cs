@@ -7,6 +7,6 @@ namespace SSRepository.IRepository.Transaction
 {
     public interface IPurchaseInvoiceRepository : ITranBaseRepository
     {
-        List<ColumnStructure> ColumnList();
+        List<ColumnStructure> ColumnList(string GridName = "");
     }
 }

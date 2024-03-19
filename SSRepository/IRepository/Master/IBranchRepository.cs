@@ -6,7 +6,7 @@ namespace SSRepository.IRepository.Master
 {
     public interface IBranchRepository : IRepository<TblBranchMas>
     {
-         List<ColumnStructure> ColumnList();
+         List<ColumnStructure> ColumnList(string GridName = "");
 
         string isAlreadyExist(BranchModel tblBankMas, string Mode);
         List<BranchModel> GetList(int pageSize, int pageNo = 1, string search = "");

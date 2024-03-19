@@ -6,6 +6,9 @@
  **/
 
 ///////////////// /////////////// showWait function :- Loader With msg /////////////// ///////////////
+$(document).ready(function () {
+    $('form,input').attr('autocomplete', 'off');
+});
 function Handler_showWait(msg) {
     msg = msg == undefined ? "Please wait ..." : msg;
     if ($(".loader").length == 0) {
@@ -987,7 +990,7 @@ function C_Grid(n, n2, f) {
     //JSON.stringify({ FormId1: n})
     var url = "GridStrucher?FormId=" + n;
     if (n2 != '' && n2 != undefined && n2 != null) {
-        url = "GridStrucher_Create?FormId=" + n + "&TranType=" + n2;
+        url += "&GridName=" + n2;
 
     }
     Common.ajax(Handler.currentPath() + url, {}, "Please Wait...", function (res) {
@@ -1050,7 +1053,8 @@ function C_GridColSetup(n, n2, f) {
     
     var url = "GridStrucher?FormId=" + n;
     if (n2 != '' && n2 != undefined && n2 != null) {
-        url = "GridStrucher_Create?FormId=" + n + "&TranType=" + n2;
+        url += "&TranType=" + n2;
+
     }
     Common.ajax(Handler.currentPath() + url , {}, "Please Wait...", function (res) {
         Handler.hide();

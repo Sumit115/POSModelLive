@@ -7,7 +7,7 @@ namespace SSRepository.IRepository.Master
     public interface IBrandRepository : IRepository<TblBrandMas>
     {
         
-        List<ColumnStructure> ColumnList();
+        List<ColumnStructure> ColumnList(string GridName = "");
 
         string isAlreadyExist(BrandModel tblBrandMas, string Mode);
         List<BrandModel> GetList(int pageSize, int pageNo = 1, string search = "");

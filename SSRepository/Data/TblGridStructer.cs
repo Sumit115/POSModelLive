@@ -15,6 +15,8 @@ namespace SSRepository.Data
 
         public long FkFormId { get; set; }
 
+        [MaxLength(20)]
+        public string GridName { get; set; }
         public string JsonData { get; set; }
 
     }

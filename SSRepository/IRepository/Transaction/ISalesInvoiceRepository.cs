@@ -7,6 +7,5 @@ namespace SSRepository.IRepository.Transaction
 {
     public interface ISalesInvoiceRepository : ITranBaseRepository
     {
-        List<ColumnStructure> ColumnList();
     }
 }

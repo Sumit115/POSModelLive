@@ -6,7 +6,7 @@ namespace SSRepository.IRepository.Master
 {
     public interface ICategoryGroupRepository : IRepository<TblCategoryGroupMas>
     {
-         List<ColumnStructure> ColumnList();
+         List<ColumnStructure> ColumnList(string GridName = "");
 
         string isAlreadyExist(CategoryGroupModel tblBankMas, string Mode);
         List<CategoryGroupModel> GetList(int pageSize, int pageNo = 1, string search = "");

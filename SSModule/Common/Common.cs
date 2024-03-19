@@ -56,27 +56,28 @@ namespace SSAdmin
             Paytm,
             Razorpay,
         }
-        public enum en_rec_for
+        public enum Form
         {
-            Admin,
-            User,
-            Franchise,
-            Employee,
-            Customer,
-            ECommerce
+            Customer = 1,
+            Vendor = 2,
+            Employee = 3,
+            Branch = 4,
+            User = 5,
+            Category = 6,
+            Product = 7,
+            Bank = 8,
+            Series = 9,
+            CategoryGroup = 10,
+            Brand = 11,
+            City = 12,
+            ProductLot = 13,
+            SalesOrder = 100,
+            SalesInvoice = 101,
+            PurchaseOrder = 102,
+            PurchaseInvoice = 103,
+            SalesChallan = 104,
         }
-        public enum en_formMasterId
-        {
-            Null, //=0
-            Employee,//=1
-            User,//=2
-            Table,//=3
-            TableArea,//=4
-            Category,//=5
-            Variation,//6
-            Addon,//7
-            Product,//8
-        }
+
         public static bool IsMobileNumber(string number)
         {
             return Regex.Match(number, @"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$").Success;

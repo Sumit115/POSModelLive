@@ -13,7 +13,6 @@ namespace SSRepository.Repository.Master
     {
         public VendorRepository(AppDbContext dbContext) : base(dbContext)
         {
-            __FormID = (long)en_Form.Vendor;
         }
        
         public string isAlreadyExist(VendorModel model, string Mode)
@@ -239,27 +238,9 @@ namespace SSRepository.Repository.Master
                 //AddMasterLog(oldModel, __FormID, tblCountry.FKVendorID, oldModel.PkVendorId, oldModel.FKVendorID, oldModel.DATE_MODIFIED);
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKVendorID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
-        }
-        public DataTable AutoDropDown()
-        {
-            DataTable record = new DataTable("record");
-            var data = (from cou in __dbContext.TblVendorMas
-                            // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                        orderby cou.PkVendorId
-                        select (new
-                        {
-                            pk_Id = cou.PkVendorId,
-                            Field1 = cou.Name,
-                            Field2 = cou.Mobile,
-                            //  Field3 = "",
-                        }
-                       )).ToList();
+        }        
 
-            record = ToDataTable(data);
-            return record;
-        }
-
-        public List<ColumnStructure> ColumnList()
+        public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>
             {

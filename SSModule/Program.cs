@@ -54,6 +54,7 @@ builder.Services.AddScoped<ISalesChallanRepository, SalesChallanRepository>();
 builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 builder.Services.AddScoped<ILoginRepository, LoginRepository>(); 
 builder.Services.AddScoped<ICityRepository, CityRepository>();
+builder.Services.AddScoped<IProductLotRepository, ProductLotRepository>();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();

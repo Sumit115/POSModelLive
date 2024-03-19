@@ -65,6 +65,7 @@ function CustomDDL(ctrlId, spn) {
     var $drpCtrUl = $("#ul" + ctrlId);
     var $drpCtrdvList = $("#dvCommonCusDropList");
     var $drpCtrlExtra = $("#hidExtra" + ctrlId);
+    var $uri = $("#uri" + ctrlId);
 
 
 
@@ -100,7 +101,6 @@ function CustomDDL(ctrlId, spn) {
             hidExtra: "",
             param: ''
         }
-
         var hidExtra = $drpCtrlExtra.val();
         if (hidExtra !== '') {
             if (hidExtra.indexOf(',') !== -1) {
@@ -121,6 +121,9 @@ function CustomDDL(ctrlId, spn) {
         }
         else {
             var url = Handler.currentPath() + ctrlId;
+            if ($uri.val() != "")
+                url = $uri.val();
+            
             $.ajax({
                 url: url,
                 data: data,
@@ -235,7 +238,7 @@ function CustomDDL(ctrlId, spn) {
                     pno = parseInt(pno) + 1;
 
                     $("#hidPageNo" + ctrlId).val(pno);
-                    ListLoad("", "", "scroll");
+                    ListLoad("", "scroll");
                 }
             });
         }
@@ -332,8 +335,8 @@ function CustomDDL(ctrlId, spn) {
                 }
                 else {
                     $drpCtrlVal.val('');
-                    if (!$drpCtrltxt06.hasClass('drpEditable') || e.which == 115) {
-                            ShowList(hid, '');
+                    if (!$drpCtrltxt.hasClass('drpEditable') || e.which == 115) {
+                            ShowList('', '');
                     }
                 }
                 // for manage dropdown value on  up/down key
@@ -369,7 +372,7 @@ function CustomDDL(ctrlId, spn) {
             }
             else {
 
-                ShowList('00001');
+                ShowList('auto', '');
             }
             isAutoOpenBatchClicked = true;
             setTimeout(function () {
@@ -392,7 +395,7 @@ function CustomDDL(ctrlId, spn) {
     var ShowList = function (drpid, param) {
         if (AltDown === false) {
             SetListPosition(function () {
-                ListLoad(drpid, "", param, "");
+                ListLoad(drpid, param);
             });
         }
     }

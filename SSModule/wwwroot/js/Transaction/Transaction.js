@@ -1,32 +1,29 @@
-﻿    var FormId = $("#hdFormId").val();
-var TranType = $("#hdTranType").val();
+﻿
+var tran = null;
+$(document).ready(function () {
+    $('#btnServerSave').click(function (e) {
+        if ($("#loginform1").valid()) {
+            SaveRecord();
+        }
+        return false;
+    });
+  
+    Load();
 
-Load();
-
-SetAuto("txtParty"
-    , JSON.parse($("#hdPartiList").val())
-    , "FkPartyId"
-    , "PartyName"
-    , "PartyMobile"
-    , "PartyAddress"
-    , ['Party Name', 'Mobile']
-);
+});
 function Load() {
     var PkId = $("#PkId").val();
-
+    tran = JSON.parse($("#hdData").val());
     if (PkId > 0) {
-        var data = JSON.parse($("#hdData").val());
         // console.log(data.TranDetails);
-        $('#FkPartyId').val(data.FkPartyId);
-        $('#EntryDate').val(data.EntryDate);
-        $('#GRDate').val(data.GRDate);
-        $("#txtParty,input[placeholder='Search Party']").val(data.Party.Name);
-        $('#PartyName').val(data.Party.Name);
-        $('#PartyMobile').val(data.Party.Mobile);
+        //$('#FkPartyId').val(data.FkPartyId);
+        //$('#EntryDate').val(data.EntryDate);
+        //$('#GRDate').val(data.GRDate);
+        //$("#txtParty,input[placeholder='Search Party']").val(data.Party.Name);
+        //$('#PartyName').val(data.Party.Name);
+        //$('#PartyMobile').val(data.Party.Mobile);
 
         $(data.TranDetails).each(function (i, v) {
-            //v.Description_Text = v.Description;
-            // v["Product_Text"] = v.Description;
             v["ProductName"] = parseInt(v.FkProductId);
             v["mode"] = 1;
             v["Delete"] = 'Delete';
@@ -39,54 +36,10 @@ function Load() {
 
     }
 }
-function SetAuto(CtrlId, _data, $c1, $c2, $c3, $c4, _columns) {
-    var text2 = $("#" + CtrlId).tautocomplete({
-        width: "500px",
-        theme: "white",
-        placeholder: $("#" + CtrlId).attr("placeholder"),
-        columns: _columns,
-        data: function () {
-            var filterData = [];
-            var searchData = eval("/" + text2.searchdata() + "/gi");
-            $.each(_data, function (i, v) {
-                //console.log(v);
-                if (v.Field1.search(new RegExp(searchData)) != -1 || v.Field2.search(new RegExp(searchData)) != -1) {
-                    filterData.push(v);
-                }
-            });
-
-            //console.log(filterData);
-            if (filterData.length > 0)
-                return filterData;
-            else
-                return _data;
-        },
-        onchange: function (data) {
-
-
-            if (text2.id() > 0) {
-
-                $("#" + $c1).val(text2.id());
-                //console.log(text2.id());
-
-                var lst = _data.filter(function (element) { return element.pk_Id == text2.id(); })[0];
-                $("#" + $c2).val(lst.Field1);
-                $("#" + $c3).val(lst.Field2);
-                //$("#" + $c4).val(lst.Field3);
-
-            } else {
-
-                $("#" + $c1).val('0');
-                $("#" + $c3).val('');
-                //$("#" + $c4).val('');
-            }
-        }
-    });
-}
 function BindGrid(GridId, data) {
 
     $("#" + GridId).empty();
-    Common.Grid(parseInt(FormId), TranType, function (s) {
+    Common.Grid(tran.ExtProperties.FKFormID, "dtl", function (s) {
         var ProductList = JSON.parse($("#hdProductList").val());
         var ProductLotList = [];
         cg = new coGrid("#" + GridId);
@@ -95,7 +48,7 @@ function BindGrid(GridId, data) {
         cg.setColumnWidthPer(s.ColumnWidthPer, 1200);
         cg.setColumnFields(s.ColumnFields);
         cg.setAlign(s.Align);
-        cg.defaultHeight = "400px";
+        cg.defaultHeight = "300px";
         cg._MinRows = 50;
         cg.setIdProperty("sno");
         cg.setCtrlType(s.setCtrlType);
@@ -332,13 +285,10 @@ function ColumnChange(args, rowIndex, fieldName) {
     Common.Get(".form", "", function (flag, _d) {
 
         _d.PkId = $('#PkId').val();
-        //_d.FkPartyId = $('#FkPartyId').val();
         _d.EntryDate = $('#EntryDate').val();
-        // _d.GRDate = $('#GRDate').val(); 
         _d.TranDetails = GetDataFromGrid();
 
         if (_d.TranDetails.length > 0) {
-            ////console.log(_d);
             $.ajax({
                 type: "POST",
                 url: Handler.currentPath() + 'ColumnChange',
@@ -350,13 +300,12 @@ function ColumnChange(args, rowIndex, fieldName) {
                         // //console.log(res.data);
                         setFooterData(res.data)
                         setGridRowData(args, res.data.TranDetails, rowIndex, fieldName);
-                        
+
                     }
                     else
                         alert(res.msg);
                 }
-            })
-
+            });
         }
 
     });
@@ -451,13 +400,6 @@ function setGridRowData(args, data, rowIndex, fieldName) {
     //cg.updateRefreshDataRow(args.row);
 }
 
-
-$('#btnServerSave').click(function (e) {
-    if ($("#loginform1").valid()) {
-        SaveRecord();
-    }
-    return false;
-});
 function GetDataFromGrid(ifForsave) {
 
     var array = cg.getData().filter(x => x.FkProductId > 0);
@@ -470,7 +412,7 @@ function GetDataFromGrid(ifForsave) {
         //console.log(element);
 
         if (ifForsave) {
-            debugger;
+            
             //if (element.mode != 2) {  }
             if (element.ProductName == '' || element.ProductName == null || element.ProductName == undefined
                 //   || element.Price == '' || element.Price == null || element.Price == undefined
@@ -479,9 +421,9 @@ function GetDataFromGrid(ifForsave) {
                 //|| element.GrossAmt == '' || element.GrossAmt == null || element.GrossAmt == undefined
                 //|| element.NetAmt == '' || element.NetAmt == null || element.NetAmt == undefined
             ) {
-                debugger;
+                
             } else {
-                debugger;
+                
                 if (element.FkProductId > 0) { element.sno = element.sno; }
                 else { sno++; element.sno = sno; }
                 element.FkProductId = parseInt(element.ProductName);
@@ -504,7 +446,6 @@ function GetDataFromGrid(ifForsave) {
 
                 if (element.FkProductId > 0) { element.sno = element.sno; }
                 else { sno++; element.sno = sno; }
-
                 element.FkProductId = parseInt(element.ProductName);
                 _d.push(element);
                 return element
@@ -521,7 +462,6 @@ function GetDataFromGrid(ifForsave) {
     return _d
 }
 function SaveRecord() {
-
     Common.Get(".form", "", function (flag, _d) {
         if (flag) {
             _d.PkId = $('#PkId').val();
@@ -570,7 +510,7 @@ function setdisablecolumn(cg, cc, hash, index, type) {
     var focjson = {};
     var h = (hash[index] = {});
     var focu = {};
-    debugger;
+    
     if (cc["mode"] == 1) {
         h["ProductName_Text"] = "sobc";
         focu["ProductName_Text"] = { "focusable": false };        
@@ -584,8 +524,32 @@ function setdisablecolumn(cg, cc, hash, index, type) {
     focjson["columns"] = focu;
     return focjson;
 
-};
+}
 
 
+function setParty() {
+    var FkPartyId = $("#FkPartyId").val();
+    var tran
+    $.ajax({
+        type: "POST",
+        url: Handler.currentPath() + 'SetParty',
+        data: { model: tran, FkPartyId: FkPartyId },
+        datatype: "json",
+        success: function (res) {
 
+            if (res.status == "success") {
+                tran = res.data;   
+                $('#FkPartyId').val(tran.FkPartyId);
+                $('#drpFkPartyId').val(tran.PartyName);
+                $('#PartyGSTN').val(tran.PartyGSTN);
+                $('#PartyMobile').val(tran.PartyMobile);
+                $('#PartyAddress').val(tran.PartyAddress);
+                $('#PartyCredit').val(tran.PartyCredit);
+            }
+            else
+                alert(res.msg);
+        }
+    })
 
+}
+    

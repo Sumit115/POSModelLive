@@ -7,10 +7,13 @@ using SSRepository.IRepository.Master;
 using SSRepository.Models;
 using SSRepository.Repository;
 
-namespace SSAdmin.Areas.Master.Controllers
+namespace SSAdmin.Areas
 {
     public class BaseController : Controller
     {
+
+        public long FKFormID = 0;
+
         public readonly IGridLayoutRepository _gridLayoutRepository;
         public BaseController(IGridLayoutRepository gridLayoutRepository)
         {
@@ -20,18 +23,19 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> GridStrucher(int FormId)
+        public async Task<JsonResult> GridStrucher(long FormId, string GridName="")
         {
-            var data = _gridLayoutRepository.GetSingleRecord(1, FormId, ColumnList());
+            if(FormId == 0) FormId = FKFormID;
+            var data = _gridLayoutRepository.GetSingleRecord(1, FormId, GridName, ColumnList(GridName));
             return new JsonResult(data);
         }
 
-        public virtual List<ColumnStructure> ColumnList()
+        public virtual List<ColumnStructure> ColumnList(string GridName = "")
         {
             return new List<ColumnStructure>();
         }
 
-         
+
         [HttpPost]
         public IActionResult ActiveGridColumn(GridStructerModel data)
         {
@@ -42,29 +46,38 @@ namespace SSAdmin.Areas.Master.Controllers
                 status = "success"
             });
         }
-        //Create
-        [HttpPost]
-        public async Task<JsonResult> GridStrucher_Create(int FormId, string TranType)
+
+        public int LoginId
         {
-            var data = _gridLayoutRepository.GetSingleRecord(1, FormId, ColumnList_Create(TranType));
-            return new JsonResult(data);
+            get
+            {
+                return Convert.ToInt32(HttpContext.Session.GetString("LoginId"));
+            }
+        }
+        public int src_Id
+        {
+            get
+            {
+                return Convert.ToInt32(HttpContext.Session.GetString("LoginId"));
+            }
+        }
+        public en_src src
+        {
+            get
+            {
+                return Enum.Parse<en_src>(HttpContext.Session.GetString("src")); ;
+            }
         }
 
-        public virtual List<ColumnStructure> ColumnList_Create(string TranType)
-        {
-            return new List<ColumnStructure>();
-        }
-         
-       
         public enum en_src
         {
-            Admin,
-            User,
-            Franchise,
-            Employee,
-            Customer,
-            ECommerce,
-            API
+            SuperAdmin, //=0
+            Admin,//=1
+            User,//=2
+            Branch,//=3
+            Customer,//=4
+            Employee,//5
         }
+
     }
 }

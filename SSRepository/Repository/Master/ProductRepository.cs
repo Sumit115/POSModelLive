@@ -12,7 +12,6 @@ namespace SSRepository.Repository.Master
     {
         public ProductRepository(AppDbContext dbContext) : base(dbContext)
         {
-            __FormID = (long)en_Form.Product;
         }
 
         public string isAlreadyExist(ProductModel model, string Mode)
@@ -148,16 +147,17 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpProduct(int pageno, int pagesize, string search = "")
+        public object GetDrpProduct(int pageno, int pagesize, string search = "", long FkCatId = 0)
         {
+            if (search != null) search = search.ToLower();
             if (search != null) search = search.ToLower();
             if (search == null) search = "";
 
             var result = GetList(pagesize, pageno, search);
             result.Insert(0, new ProductModel { PkProductId = 0, Product = "Select" });
 
-
             return (from r in result
+                    where (FkCatId == 0 && r.FkCatId == FkCatId)
                     select new
                     {
                         r.PkProductId,
@@ -280,7 +280,7 @@ namespace SSRepository.Repository.Master
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKProductID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
-        public List<ColumnStructure> ColumnList()
+        public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>
             {

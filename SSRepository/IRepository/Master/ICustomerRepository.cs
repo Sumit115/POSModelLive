@@ -8,7 +8,7 @@ namespace SSRepository.IRepository.Master
     public interface ICustomerRepository : IRepository<TblCustomerMas>
     {
       
-        List<ColumnStructure> ColumnList();
+        List<ColumnStructure> ColumnList(string GridName = "");
 
         string isAlreadyExist(CustomerModel tblBankMas, string Mode);
         List<CustomerModel> GetList(int pageSize, int pageNo = 1, string search = "");

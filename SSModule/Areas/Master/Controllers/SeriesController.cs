@@ -23,16 +23,12 @@ namespace SSAdmin.Areas.Master.Controllers
         
         public SeriesController(ISeriesRepository repository, IGridLayoutRepository gridLayoutRepository):base(gridLayoutRepository)
         {
-            _repository = repository;
-           // _gridLayoutRepository = gridLayoutRepository;
-            //_repository.SetRootPath(_hostingEnvironment.WebRootPath);
+            _repository = repository; 
+            FKFormID = (long)Handler.Form.Series;
         }
        
         public async Task<IActionResult> List()
         {
-         //var json = JsonConvert.SerializeObject(_repository.ColumnList()).ToString();
-             
-            ViewBag.FormId = _repository.FormID;
             return View();
         }
 
@@ -158,9 +154,9 @@ namespace SSAdmin.Areas.Master.Controllers
             return response;
         }
 
-        public override List<ColumnStructure> ColumnList()
+        public override List<ColumnStructure> ColumnList(string GridName = "")
         {
-            return _repository.ColumnList();
+            return _repository.ColumnList(GridName);
         }
     }
 }
