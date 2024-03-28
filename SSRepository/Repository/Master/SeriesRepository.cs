@@ -52,7 +52,7 @@ namespace SSRepository.Repository.Master
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<SeriesModel> data = (from cou in __dbContext.TblSeriesMas
                                       where EF.Functions.Like(cou.Series.Trim().ToLower(), search + "%")
-                                      && (TranAlias != "" || cou.TranAlias == TranAlias)
+                                      && (TranAlias == "" || cou.TranAlias == TranAlias)
                                           // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                       orderby cou.PkSeriesId
                                       select (new SeriesModel

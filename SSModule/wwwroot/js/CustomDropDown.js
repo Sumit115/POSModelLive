@@ -63,7 +63,7 @@ function CustomDDL(ctrlId, spn) {
     var $drpCtrlsearch = $("#search" + ctrlId);
     var $drpCtrlList = $("#drpList" + ctrlId);
     var $drpCtrUl = $("#ul" + ctrlId);
-    var $drpCtrdvList = $("#dvCommonCusDropList");
+    var drpCtrdvList = "#dvCommonCusDropList";
     var $drpCtrlExtra = $("#hidExtra" + ctrlId);
     var $uri = $("#uri" + ctrlId);
 
@@ -142,7 +142,7 @@ function CustomDDL(ctrlId, spn) {
     var BindList = function (result, evnt, param, PageNo) {
         if (result == "" || result == null) {
             if (evnt !== 'scroll') {
-                $drpCtrdvList.html("<span class='drp-not-found'> Data Not Found </span>");
+                $(drpCtrdvList).html("<span class='drp-not-found'> Data Not Found </span>");
             }
             return false;
         }
@@ -203,11 +203,11 @@ function CustomDDL(ctrlId, spn) {
             }
 
             if (evnt === 'scroll')
-                $drpCtrdvList.children("ul").append(html);
+                $(drpCtrdvList).children("ul").append(html);
             else {
-                $drpCtrdvList.children("ul").html(html);
+                $(drpCtrdvList).html('<ul style="height:200px; overflow-y:scroll;">' + html  + '</ul>');
             }
-            $drpCtrdvList.show();
+            $(drpCtrdvList).show();
             if (param === 'auto') {
                 $('#dvCommonCusDropList > ul > li').eq(1).find('a').focus();
             }
@@ -360,7 +360,7 @@ function CustomDDL(ctrlId, spn) {
 
     $(spn).off("click").on("click", function (e) {
 
-        $drpCtrdvList.offset();
+        $(drpCtrdvList).offset();
         if ($drpCtrltxt.attr("disabled") !== 'disabled') {
             $(".cusdropdown.open").each(function () {
                 var droId = $(this).attr("id");
@@ -387,8 +387,8 @@ function CustomDDL(ctrlId, spn) {
     //hideCustomDropdown
     var hideList = function () {
         $drpCtrlList.removeClass("open");
-        $drpCtrdvList.children('ul').empty();
-        $drpCtrdvList.hide();
+        $(drpCtrdvList).empty();
+        $(drpCtrdvList).hide();
     }
 
     //callCustomDropDown
@@ -401,17 +401,15 @@ function CustomDDL(ctrlId, spn) {
     }
 
     var SetListPosition = function (callback) {
-        if ($drpCtrdvList.length === 0) {
+        if ($(drpCtrdvList).length === 0) {
             var htm = '<div id="dvCommonCusDropList" class="grid-dropdown" style="display: none;">'+
-                '<ul style="height:200px; overflow-y:scroll;"></ul>'+
                 '</div>';
             $("body").append(htm);
-            $drpCtrdvList = $("#dvCommonCusDropList");
         }
-
+        $(drpCtrdvList).empty();
         var ctrlOffset = $drpCtrltxt.offset();
         var DivWidth = '600px';
-        var ElementWidth = $drpCtrdvList.width();
+        var ElementWidth = $(drpCtrdvList).width();
         var LeftPosition = ctrlOffset.left;
         var TopPosition = ctrlOffset.top ;
 
@@ -422,7 +420,7 @@ function CustomDDL(ctrlId, spn) {
             TopPosition = TopPosition + $drpCtrltxt.outerHeight();
         }
 
-        $drpCtrdvList.css({
+        $(drpCtrdvList).css({
             "left": LeftPosition,
             "top": TopPosition,
             "display": "block",

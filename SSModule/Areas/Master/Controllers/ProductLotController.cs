@@ -83,7 +83,7 @@ namespace SSAdmin.Areas.Master.Controllers
                         var _md = model;
                         model = new ProdLotDtlModel();
                         model.FkCatId = _md.FkCatId;
-                        model.FKProdID = _md.FKProdID;
+                        model.FKProductId = _md.FKProductId;
                         //   return RedirectToAction(nameof(Create));
                     }
                 }

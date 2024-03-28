@@ -12,7 +12,7 @@ namespace SSRepository.Models
     {
         public long PkLotId { get; set; }
         [Required(ErrorMessage = "Select SubSection Required")]
-        public long FKProdID { get; set; }
+        public long FKProductId { get; set; }
         [Required(ErrorMessage = "Alias Required")]
         public string? LotAlias { get; set; }//=''
 

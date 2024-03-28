@@ -246,7 +246,7 @@ function BindGrid(GridId, data) {
             var command = $(e.target).attr("data");
             if (command == "EditColumn") {
 
-                Common.GridColSetup(parseInt(FormId), '', function () {
+                Common.GridColSetup(tran.ExtProperties.FKFormID, '', function () {
                     var _dtl = GetDataFromGrid();
                     BindGrid('DDT', _dtl);
                 });
@@ -474,13 +474,9 @@ function SaveRecord() {
 
                 var filteredDetails = _d.TranDetails.filter(x => x.mode != 2);
                 if (_d.TranDetails.length > 0 && filteredDetails.length > 0) {
-
-
-                    //console.log(_d);
-
                     $.ajax({
                         type: "POST",
-                        url: Handler.currentPath() + 'SaveRecord',
+                        url: Handler.currentPath() + 'Create',
                         data: { model: _d },
                         datatype: "json",
                         success: function (res) {
@@ -492,8 +488,7 @@ function SaveRecord() {
                             else
                                 alert(res.msg);
                         }
-                    })
-
+                    });
                 }
                 else
                     alert("Insert Valid Product Data..");

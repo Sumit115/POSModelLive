@@ -22,8 +22,9 @@ namespace SSRepository.Models
 
         }
         public long PkId { get; set; }
-        public long FKSeriesId { get; set; }//=ddl
-        public long EntryNo { get; set; }//backend se 1,2,3,
+        public long FKSeriesId { get; set; }
+        public string SeriesName { get; set; }
+        public long? EntryNo { get; set; }//backend se 1,2,3,
 
         
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]

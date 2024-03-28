@@ -35,8 +35,11 @@ namespace SSAdmin.Areas.Master.Controllers
         [HttpPost]
         public async Task<JsonResult> List(int pageNo, int pageSize)
         {
-            var data = _repository.GetList(pageSize,pageNo);
-            return new JsonResult(data);
+            return Json(new
+            {
+                status = "success",
+                data = _repository.GetList(pageSize, pageNo)
+            });
         }
 
         public string Export(string ColumnList, string HeaderList, string Name, string Type)

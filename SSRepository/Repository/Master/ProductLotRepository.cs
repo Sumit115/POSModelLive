@@ -27,7 +27,7 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<ProdLotDtlModel> data = (from cou in __dbContext.TblProdLotDtl
-                                          join prd in __dbContext.TblProductMas on cou.FKProdID equals prd.PkProductId
+                                          join prd in __dbContext.TblProductMas on cou.FKProductId equals prd.PkProductId
                                           join cat in __dbContext.TblCategoryMas on prd.FkCatId equals cat.PkCategoryId
                                           join catgrop in __dbContext.TblCategoryGroupMas on prd.FkCatGroupId equals catgrop.PkCategoryGroupId
                                           join Pbrand in __dbContext.TblBrandMas on prd.FkBrandId equals Pbrand.PkBrandId
@@ -42,7 +42,7 @@ namespace SSRepository.Repository.Master
                                               src = cou.Src,
                                               DATE_MODIFIED = cou.DateModified,
                                               DATE_CREATED = cou.DateCreated,
-                                              FKProdID = cou.FKProdID,
+                                              FKProductId = cou.FKProductId,
                                               LotAlias = cou.LotAlias,
                                               Barcode = cou.Barcode,
                                               Batch = cou.Batch,
@@ -75,13 +75,13 @@ namespace SSRepository.Repository.Master
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             // var data = new List<ProdLotDtlModel>();
             var data = (from cou in __dbContext.TblProdLotDtl
-                        join prd in __dbContext.TblProductMas on cou.FKProdID equals prd.PkProductId
+                        join prd in __dbContext.TblProductMas on cou.FKProductId equals prd.PkProductId
                         join cat in __dbContext.TblCategoryMas on prd.FkCatId equals cat.PkCategoryId
                       //  join catgrop in __dbContext.TblCategoryGroupMas on prd.FkCatGroupId equals catgrop.PkCategoryGroupId
                         join Pbrand in __dbContext.TblBrandMas on prd.FkBrandId equals Pbrand.PkBrandId
                                               into tembrand
                         from brand in tembrand.DefaultIfEmpty()
-                        where cou.FKProdID == FkProductId
+                        where cou.FKProductId == FkProductId
                         // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                         // orderby cou.PkLotId
                         select new ProdLotDtlModel
@@ -91,7 +91,7 @@ namespace SSRepository.Repository.Master
                             src = cou.Src,
                             DATE_MODIFIED = cou.DateModified,
                             DATE_CREATED = cou.DateCreated,
-                            FKProdID = cou.FKProdID,
+                            FKProductId = cou.FKProductId,
                             LotAlias = cou.LotAlias,
                             LotName = cou.LotName,
                             LotNo = cou.LotNo,
@@ -134,7 +134,7 @@ namespace SSRepository.Repository.Master
                         src = cou.Src,
                         DATE_MODIFIED = cou.DateModified,
                         DATE_CREATED = cou.DateCreated,
-                        FKProdID = cou.FKProdID,
+                        FKProductId = cou.FKProductId,
                         LotAlias = cou.LotAlias,
                         LotName = cou.LotName,
                         LotNo = cou.LotNo,
@@ -219,7 +219,7 @@ namespace SSRepository.Repository.Master
             }
 
             Tbl.PkLotId = model.PkLotId;
-            Tbl.FKProdID = model.FKProdID;
+            Tbl.FKProductId = model.FKProductId;
             Tbl.LotAlias = model.LotAlias;
             Tbl.LotName = model.LotName;
             Tbl.LotNo = model.LotNo;

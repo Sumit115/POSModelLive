@@ -36,7 +36,9 @@ namespace SSRepository.Repository.Master
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<ProductModel> data = (from cou in __dbContext.TblProductMas
                                        join cat in __dbContext.TblCategoryMas on cou.FkCatId equals cat.PkCategoryId
-                                       join catgrop in __dbContext.TblCategoryGroupMas on cou.FkCatGroupId equals catgrop.PkCategoryGroupId
+                                       join Pcatgrop in __dbContext.TblCategoryGroupMas on cou.FkCatGroupId equals Pcatgrop.PkCategoryGroupId
+                                                            into temcatgrop
+                                       from catgrop in temcatgrop.DefaultIfEmpty()
                                        join Pbrand in __dbContext.TblBrandMas on cou.FkBrandId equals Pbrand.PkBrandId
                                                              into tembrand
                                        from brand in tembrand.DefaultIfEmpty()
@@ -149,7 +151,6 @@ namespace SSRepository.Repository.Master
         }
         public object GetDrpProduct(int pageno, int pagesize, string search = "", long FkCatId = 0)
         {
-            if (search != null) search = search.ToLower();
             if (search != null) search = search.ToLower();
             if (search == null) search = "";
 

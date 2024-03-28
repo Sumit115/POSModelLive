@@ -21,10 +21,10 @@ namespace SSRepository.Repository.Transaction
 {
     public class TranBaseRepository : BaseRepository
     {
-        public string TranType = "";
-        public string TranAlias = "";
-        public string StockFlag = "";
-        public bool PostInAc = false;
+        //public string TranType = "";
+        //public string TranAlias = "";
+        //public string StockFlag = "";
+        //public bool PostInAc = false;
         public string SaveSP = "";
         public string GetSP = "";
         public string GetById = "";
@@ -157,7 +157,7 @@ namespace SSRepository.Repository.Transaction
                     detail.FkProductId = product.PkProductId;
                     detail.Qty = 1;
                     detail.mode = 0;//0=Add,1=Edit,2=Delete 
-                    var _lotEntity = __dbContext.TblProdLotDtl.Where(x => x.FKProdID == product.PkProductId).FirstOrDefault();
+                    var _lotEntity = __dbContext.TblProdLotDtl.Where(x => x.FKProductId == product.PkProductId).FirstOrDefault();
                     if (_lotEntity != null)
                     {
                         detail.MRP = _lotEntity.MRP;
@@ -186,7 +186,7 @@ namespace SSRepository.Repository.Transaction
             if (detail != null)
             {
 
-                var _productLot = __dbContext.TblProdLotDtl.Where(x => x.FKProdID == detail.FkProductId && x.Batch == detail.Batch).FirstOrDefault();
+                var _productLot = __dbContext.TblProdLotDtl.Where(x => x.FKProductId == detail.FkProductId && x.Batch == detail.Batch).FirstOrDefault();
                 if (_productLot != null)
                 {
                     detail.MRP = _productLot.MRP;
@@ -218,7 +218,7 @@ namespace SSRepository.Repository.Transaction
             if (detail != null)
             {
 
-                var _productLot = __dbContext.TblProdLotDtl.Where(x => x.FKProdID == detail.FkProductId && x.Color == detail.Color).FirstOrDefault();
+                var _productLot = __dbContext.TblProdLotDtl.Where(x => x.FKProductId == detail.FkProductId && x.Color == detail.Color).FirstOrDefault();
                 if (_productLot != null)
                 {
                     detail.MRP = _productLot.MRP;
@@ -320,7 +320,7 @@ namespace SSRepository.Repository.Transaction
         {
 
             List<ProdLotDtlModel> data = (from cou in __dbContext.TblProdLotDtl
-                                          where cou.FKProdID == PKProductId
+                                          where cou.FKProductId == PKProductId
                                           && cou.Batch == (!string.IsNullOrEmpty(Batch) ? Batch : cou.Batch)
                                           && cou.Color == (!string.IsNullOrEmpty(Color) ? Color : cou.Color)
                                           // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
@@ -328,7 +328,7 @@ namespace SSRepository.Repository.Transaction
                                           select (new ProdLotDtlModel
                                           {
                                               PkLotId = cou.PkLotId,
-                                              FKProdID = cou.FKProdID,
+                                              FKProductId = cou.FKProductId,
                                               LotAlias = cou.LotAlias,
                                               Barcode = cou.Barcode,
                                               Batch = cou.Batch,
@@ -368,7 +368,7 @@ namespace SSRepository.Repository.Transaction
             if (entity != null)
             {
                 data.PkLotId = entity.odr.PkLotId;
-                data.FKProdID = entity.odr.FKProdID;
+                data.FKProductId = entity.odr.FKProductId;
                 data.LotAlias = entity.odr.LotAlias;
                 data.Barcode = entity.odr.Barcode;
                 data.Batch = entity.odr.Batch;

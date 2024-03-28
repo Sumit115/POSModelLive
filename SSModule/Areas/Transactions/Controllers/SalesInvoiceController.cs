@@ -35,29 +35,26 @@ namespace SSAdmin.Areas.Transactions.Controllers
         [HttpPost]
         public JsonResult List(string FDate, string TDate)
         {
-            var dt = new DataTable();
-             dt = _repository.GetList(FDate, TDate,"");
-
-            var jsonResult = Json(new
+            return Json(new
             {
                 status = "success",
-                data = JsonConvert.SerializeObject(dt)
+                data = _repository.GetList(FDate, TDate, "")
             });
-
-
-            return jsonResult;
-            //return new JsonResult(data);
         }
 
         public string Export(string ColumnList, string HeaderList, string Name, string Type)
         {
-            string FileName = "";            
+            string FileName = "";
+
             return FileName;
         }
 
-        public IActionResult Create(long id, string pageview = "")
+
+        [HttpGet]
+        [Route("Transactions/SalesInvoice/Create/{id?}/{FKSeriesID?}/{isPopup?}")]
+        public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
-            TransactionModel Model = new TransactionModel();
+            TransactionModel Trans = new TransactionModel();
             var PageType = "";
             try
             {
@@ -65,115 +62,51 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 {
                     PageType = "Log";
                 }
-                else if (id != 0)
-                {
-                    PageType = "Edit";
-                    Model = _repository.GetSingleRecord(id, 0);
-                }
                 else
                 {
-                    PageType = "Create";
-
+                    Trans = _repository.GetSingleRecord(id, FKSeriesID);
                 }
             }
             catch (Exception ex)
             {
-                //CommonCore.WriteLog(ex, "Create Get ", ControllerName, GetErrorLogParam());
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(0, tblBankMas);
-            ViewBag.PageType = PageType;
-            ViewBag.Data = JsonConvert.SerializeObject(Model);
-            return View(Model);
+            setDefault(Trans);
+            BindViewBags(Trans);
+            return View(Trans);
+        }
+
+        private void setDefault(TransactionModel model)
+        {
+            model.ExtProperties.TranType = TranType;
+            model.ExtProperties.TranAlias = TranAlias;
+            model.ExtProperties.StockFlag = StockFlag;
+            model.ExtProperties.FKFormID = FKFormID;
+            model.ExtProperties.PostInAc = PostInAc;
         }
 
         [HttpPost]
-        public JsonResult SaveRecord(TransactionModel model)
+        public JsonResult Create(TransactionModel model)
         {
             try
             {
-                var aaaa = JsonConvert.SerializeObject(model);
-                if (model.TranDetails != null)
+                string Error = _repository.Create(model);
+                return Json(new
                 {
+                    status = "success",
+                    msg = Error
+                });
 
-                    //if (ModelState.IsValid)
-                    //{
-                    if (model.PkId > 0)
-                    {
-                        model.DATE_MODIFIED = DateTime.Now;
-                        string Error = _repository.Create(model);
-                        return Json(new
-                        {
-                            status = "success",
-                            msg = Error
-                        });
-                    }
-                    else
-                    {
-                        model.FKUserId = 1;
-                        model.src = 1;
-                        model.DATE_CREATED = DateTime.Now;
-                        model.DATE_MODIFIED = DateTime.Now;
-                        string Error = _repository.Create(model);
-                        return Json(new
-                        {
-                            status = "success",
-                            msg = Error
-                        });
-
-                    }
-                    //string error =   _repository.SaveData(model);
-                    //if (error.ToLower().Contains("success"))
-                    //{
-
-                    //    return Json(new
-                    //    {
-                    //        status = "success",
-                    //       // dtList
-                    //    });
-                    //}
-                    //else
-                    //{
-                    //    return Json(new
-                    //    {
-                    //        status = "error",
-                    //        msg = ""
-                    //    });
-                    //}
-                    //}
-                    //else
-                    //{
-                    //    foreach (ModelStateEntry modelState in ModelState.Values)
-                    //    {
-                    //        foreach (ModelError error in modelState.Errors)
-                    //        {
-                    //            var sdfs = error.ErrorMessage;
-                    //        }
-                    //    }
-                    //}
-                }
-                else
-                {
-                    return Json(new
-                    {
-                        status = "error",
-                        msg = "Product Required"
-                    });
-                }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
             }
-
             return Json(new
             {
-                status = "error",
-                msg = ""
+                status = "success"
             });
+
         }
-
-
-        
     }
 }

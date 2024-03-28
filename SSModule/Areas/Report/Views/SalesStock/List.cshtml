@@ -1,0 +1,302 @@
+﻿@{
+    ViewData["Title"] = "Product Wise Sales";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="row p-2 filter">
+            <div class="col-md-2">
+                <input name="FromDate" type="date" id="FromDate" class="form-control" maxlength="10" placeholder="From Date*" required="" title="From Date*">
+                <span class="field-validation-valid text-danger" data-valmsg-for="FromDate"></span>
+            </div>
+            <div class="col-md-2">
+                <input name="ToDate" type="date" id="ToDate" class="form-control" maxlength="10" placeholder="To Date*" required="" title="To Date*">
+                <span class="field-validation-valid text-danger" data-valmsg-for="ToDate"></span>
+            </div>
+            <div class="col-md-1">
+                <select id="ReportType" class="form-control" onchange="View();">
+                    <option value="S">Summary</option>
+                    <option value="M">Month Wise</option>
+                    <option value="D">Day Wise</option>
+                    @*    <option value="W">Monthly</option>
+                    <option value="Q">Quarterly</option>
+                    <option value="C">Cumulative</option>*@
+                </select>
+            </div>
+            <div class="col-md-1">
+                <select id="TranAlias" class="form-control" onchange="View();">
+                    <option value="SINV">Sales</option>
+                    <option value="SORD">Sales Order</option>
+                    <option value="SPSL">Sales Challan</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <input type="button" value="Search" class="btn btn-success" onclick="View()">
+            </div>
+            <div class="col-md-2">
+                <input type="button" value="Export To Excel" class="btn btn-dark" id="btnExportToExcel">
+            </div>
+            <div class="col-md-1">
+                <input type="button" value="Product Filter" onclick="ShowFilterPopup('Product')" class="btn btn-info" id="btnFilterProduct">
+            </div>
+            <div class="col-md-1">
+                <input type="button" value="Customer Filter" onclick="ShowFilterPopup('Customer')" class="btn btn-info" id="btnFilterCustomer">
+            </div>
+        </div>
+    </div>
+</div>
+<hr style="margin: 1px 0px;" />
+
+<div class="row">
+    <div id="WUCHM" class="col-12">
+    </div>
+</div>
+<input type="hidden" id="hdProductFilter" value="[]" />
+<input type="hidden" id="hdCustomerFilter" value="[]" />
+
+<input type="hidden" id="hdProductList" value="[]" />
+<input type="hidden" id="hdCustomerList" value="[]" />
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            IdProperty = "sno";
+            GridHeight = "85vh"
+            var dt = new Date;
+            document.getElementById("FromDate").valueAsDate = new Date();
+            document.getElementById("ToDate").valueAsDate = new Date();
+            View();
+        });
+    </script>
+    <script>
+        var FormId = $("#hdFormId").val();
+        var GridId = "WUCHM", GridHeight = "90vh", pageNo = 1, pageSize = 1000, filterclass = "filter", IdProperty = "";
+        var ProductFilter = '', CustomerFilter = '';
+        function ShowGridColumn() {
+            Common.GridColSetup(parseInt(FormId), $("#ReportType").val(), function () {
+                View();
+            });
+        }
+        function View() {
+            $('#' + GridId).empty();
+            Common.Get("." + filterclass, "", function (flag, _d) {
+                if (flag) {
+                    debugger;
+                    console.log(_d);
+                    _d["pageNo"] = pageNo;
+                    _d["pageSize"] = pageSize;
+                    _d["ProductFilter"] = $("#hdProductFilter").val();
+                    _d["CustomerFilter"] = $("#hdCustomerFilter").val();
+                    $.ajax({
+                        type: "POST",
+                        url: 'List',
+                        data: _d,
+                        datatype: "json",
+                        success: function (res) {
+                            console.log(res);
+                            //if (res.status == "success") {
+                            var jo = JSON.parse(res.data);
+                            bindGrid(GridId, jo, IdProperty);
+                            //}
+                            //else
+                            //    alert(res.msg);
+                        }
+                    })
+
+                }
+                else
+                    alert("Some Error found.Please Check");
+            });
+        };
+        function bindGrid(GridId, data, IdProperty) {
+            Common.Grid(parseInt(FormId), $("#ReportType").val(), function (s) {
+                var cg = new coGrid("#" + GridId);
+                UDI = cg;
+                cg.setColumnHeading(s.ColumnHeading);
+                cg.setColumnWidthPer(s.ColumnWidthPer, 1200);
+                cg.setColumnFields(s.ColumnFields);
+                cg.setAlign(s.Align);
+                cg.defaultHeight = GridHeight;
+                cg.setSearchType(s.SearchType);
+                cg.setSearchableColumns(s.SearchableColumns);
+                cg.setSortableColumns(s.SortableColumns);
+                cg.setIdProperty(IdProperty);
+                cg.setCtrlType(s.setCtrlType);
+                cg.bind(data);
+                cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
+
+
+
+
+            });
+        };
+
+        //function ExportToExcel() {
+        //    Common.Get("." + filterclass, "", function (flag, _d) {
+        //        if (flag) {
+        //            _d["pageNo"] = pageNo;
+        //            _d["pageSize"] = pageSize;
+        //            $.ajax({
+        //                type: "POST",
+        //                url: 'Export',
+        //                data: _d,
+        //                datatype: "json",
+        //                contentType: "application/json; charset=utf-8",
+        //                success: function (response) {
+        //                    debugger;
+        //                    console.log()
+        //                    var blob = new Blob([response], { type: 'application/ms-excel' });
+        //                    var downloadUrl = URL.createObjectURL(blob);
+        //                    var a = document.createElement("a");
+        //                    a.href = downloadUrl;
+        //                    a.download = "ReportFile.xls";
+        //                    document.body.appendChild(a);
+        //                    a.click();
+        //                }
+        //            });
+        //            return false;
+        //        }
+        //        else
+        //            alert("Some Error found.Please Check");
+        //    });
+        //}
+
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#btnExportToExcel').click(function (e) {
+                Common.Get("." + filterclass, "", function (flag, _d) {
+                    if (flag) {
+                        debugger;
+                         ProductFilter   = $("#hdProductFilter").val();
+                        CustomerFilter  = $("#hdCustomerFilter").val();
+
+                        var downloadUrl = '/Report/SalesStock/Export?FromDate=' + _d.FromDate + '&ToDate=' + _d.ToDate + '&ReportType=' + _d.ReportType + '&TranAlias=' + _d.TranAlias + '&ProductFilter=' + ProductFilter + '&CustomerFilter=' + CustomerFilter + '';
+                        var a = document.createElement("a");
+                        a.href = downloadUrl;
+                        a.download = "ReportFile.xls";
+                        document.body.appendChild(a);
+                        a.click();
+                    }
+                    else
+                        alert("Some Error found.Please Check");
+                });
+
+            });
+        })
+    </script>
+    <script>
+        function ShowFilterPopup(type) {
+            debugger;
+            var htm = '';
+            var _data = JSON.parse($('#hd' + type + 'List').val());
+            if (_data.length > 0) {
+
+                showpopupWithData(fn_GetPopuphtml(type, _data));
+            }
+            else {
+                var _d = {};
+                _d["pageNo"] = pageNo;
+                _d["pageSize"] = pageSize;
+                $.ajax({
+                    type: "POST",
+                    url: '/Master/' + type + '/List',
+                    data: _d,
+                    datatype: "json",
+                    success: function (res) {
+                        debugger;
+                        console.log(res);
+                        $('#hd' + type + 'List').val(JSON.stringify(res));
+                        htm = fn_GetPopuphtml(type, res);
+                        showpopupWithData(htm);
+                    }
+                });
+
+            }
+
+
+
+        }
+        function showpopupWithData(htm) {
+            Handler.popUp(htm, { width: "800px", height: "500px" }, function () {
+                $("#btnSaveFilter").click(function () {
+                    var type = $("#hdtype").val();
+                  //  console.log(type);
+                    var _List = [];
+                    $("input[name=chkFilterPkId]:checked").each(function () {
+
+                        var pk_Id = $(this).val();
+                        _List.push({ PKID: pk_Id });
+                    });
+                    //console.log(_List);
+
+                    var jsonData = JSON.stringify(_List);
+                    $('#hd' + type + 'Filter').val(jsonData);
+                    console.log($('#hd' + type + 'Filter').val());
+                    $(".popup_d").hide();
+                });
+            });
+        }
+        function fn_GetPopuphtml(type, _data) {
+            debugger;
+            var htm = '';
+            htm += '<div class="mb-4 card"><div class="card-body">';
+            htm += '<div class="row mb-3">';
+            htm += '<div class="col-md-6">';
+            htm += '<div class="card-title"> ' + type + ' Filter</div>';
+            htm += '</div>';
+            htm += '<div class="col-md-6 text-center">';
+            htm += '<input type="button" id="btnSaveFilter" value="Done" class="btn btn-success"/>';
+            htm += '</div>';
+            htm += '</div> ';
+             htm += '<input type="hidden" name="hdtype" id="hdtype"  value="' + type + '"  />';
+            htm += '<div class="row"><div class="col-md-12 mb-2"  style="max-height:300px;overflow: auto;">';
+            htm += '<table class="table table-striped table-bordered table-hover table-full-width">';
+
+            if (type == 'Product') {
+                htm += '<thead><tr><th>Select</th><th>Name To Display</th><th>HSN</th><th>Section</th></tr></thead>';
+                htm += '<tbody >';
+                $(_data).each(function (i, v) {
+                    debugger;
+                    var _isexists = $.grep(JSON.parse($('#hd' + type + 'Filter').val()), function (item) { return item.PKID == v.PkProductId; }).length > 0 ? true : false;
+
+                    htm += '<tr class="trFilter"> ';
+                    htm += ' <td> ';
+                    htm += '<input type="checkbox" name="chkFilterPkId" ' + (_isexists ? "checked" : "") + ' value="' + v.PkProductId + '"  style="height: 25px;width: 25px;"/> ';
+                    htm += '</td>';
+                    htm += '<td>' + v.Product + '</td>';
+                    htm += '<td>' + v.HSNCode + '</td>';
+                    htm += '<td>' + v.CategoryName + '</td>';
+                    htm += ' </tr> ';
+                });
+                htm += '</tbody>';
+            }
+            else if (type == 'Customer') {
+                htm += '<thead><tr><th>Select</th><th>Customer</th><th>Mobile</th><th>Email</th><th>City</th></tr></thead>';
+                htm += '<tbody >';
+                $(_data).each(function (i, v) {
+                    debugger;
+                    var _isexists = $.grep(JSON.parse($('#hd' + type + 'Filter').val()), function (item) { return item.PKID == v.PkCustomerId; }).length > 0 ? true : false;
+
+                    htm += '<tr class="trFilter"> ';
+                    htm += ' <td> ';
+                    htm += '<input type="checkbox" name="chkFilterPkId" ' + (_isexists ? "checked" : "") + ' value="' + v.PkCustomerId + '"  style="height: 25px;width: 25px;"/> ';
+                    htm += '</td>';
+                    htm += '<td>' + v.Name + '</td>';
+                    htm += '<td>' + v.Mobile + '</td>';
+                    htm += '<td>' + v.Email + '</td>';
+                    htm += '<td>' + v.City + '</td>';
+                    htm += ' </tr> ';
+                });
+                htm += '</tbody>';
+            }
+            htm += '</table>';
+            htm += '</div></div> ';
+            
+            htm += '   </div></div>';
+
+            return htm;
+        }
+    </script>
+}

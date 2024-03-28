@@ -63,8 +63,8 @@
                     <div class="form-group">
                         <label class="control-label">Series </label>
 
-                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKSeriesId" }, { "Class", "val-cus-drp" }, { "event", "setParty()" },
-                        { "value", Model.FKSeriesId }, { "text", Model.FKSeriesId }, { "uri", "" } })
+                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKSeriesId" }, { "Class", "val-cus-drp" }, { "event", "setSeries()" },
+                        { "value", Model.FKSeriesId }, { "text", Model.SeriesName }, { "uri", "" }})
                        
                     </div>
                 </div>

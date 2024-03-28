@@ -83,7 +83,6 @@ namespace SSAdmin.Areas
         [HttpPost]
         public object FKSeriesId(int pageSize, int pageNo = 1, string search = "")
         {
-            string TranAlias = "";
             return _repository.SeriesList(pageSize, pageNo, search, TranAlias);
         }
     }

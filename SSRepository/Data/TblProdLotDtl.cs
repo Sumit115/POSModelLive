@@ -10,7 +10,7 @@ namespace SSRepository.Data
         [Key]
         public long PkLotId { get; set; }
 
-        public long FKProdID { get; set; }
+        public long FKProductId { get; set; }
         public string? LotAlias { get; set; }//=''
 
         public string? LotName { get; set; }//=''

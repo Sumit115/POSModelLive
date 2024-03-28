@@ -35,15 +35,18 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         public async Task<IActionResult> List()
-        {   
+        {
             return View();
         }
 
         [HttpPost]
         public async Task<JsonResult> List(int pageNo, int pageSize)
         {
-            var data = _repository.GetList(pageSize, pageNo);
-            return new JsonResult(data);
+            return Json(new
+            {
+                status = "success",
+                data = _repository.GetList(pageSize, pageNo)
+            });
         }
 
         public string Export(string ColumnList, string HeaderList, string Name, string Type)
@@ -99,14 +102,14 @@ namespace SSAdmin.Areas.Master.Controllers
                 new SelectListItem { Value = "3", Text = "Unit 3" }
             };
 
-                if (Model.PkProductId > 0) { ViewBag.CategoryList = _categoryRepository.GetDrpCategoryByGroupId(Model.FkCatGroupId,1000); }
+                if (Model.PkProductId > 0) { ViewBag.CategoryList = _categoryRepository.GetDrpCategoryByGroupId(Model.FkCatGroupId, 1000); }
                 else
                 {
                     var CatList = new List<CategoryModel>();
                     CatList.Insert(0, new CategoryModel { PkCategoryId = 0, CategoryName = "Select" });
                     ViewBag.CategoryList = CatList;
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -126,7 +129,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 model.FKUserId = 1;
                 model.src = 1;
                 model.NameToDisplay = model.NameToPrint = model.Product;
-                 model.ShelfID = model.TradeDisc = model.Unit1 = model.Unit2 = model.Unit3 = "";
+                model.ShelfID = model.TradeDisc = model.Unit1 = model.Unit2 = model.Unit3 = "";
                 model.FKTaxID = model.CaseLot = model.BoxSize = model.ProdConv1 = model.ProdConv2 = 0;
                 model.KeepStock = true;
                 if (ModelState.IsValid)

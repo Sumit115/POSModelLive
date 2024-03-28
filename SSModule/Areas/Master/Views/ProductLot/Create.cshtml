@@ -23,9 +23,9 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="control-label">Sub Section <span asp-validation-for="FKProdID" class="text-danger"></span></label>
+                            <label class="control-label">Sub Section <span asp-validation-for="FKProductId" class="text-danger"></span></label>
 
-                            <select asp-for="FKProdID" asp-items="@(new SelectList(ViewBag.ProductList,"PkProductId","Product"))" class="form-control" onchange="ViewProductLot()">
+                            <select asp-for="FKProductId" asp-items="@(new SelectList(ViewBag.ProductList,"PkProductId","Product"))" class="form-control" onchange="ViewProductLot()">
                             </select>
 
                         </div>

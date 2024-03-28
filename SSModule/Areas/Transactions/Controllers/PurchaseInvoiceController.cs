@@ -32,14 +32,11 @@ namespace SSAdmin.Areas.Transactions.Controllers
         [HttpPost]
         public JsonResult List(string FDate, string TDate)
         {
-            var dt = _repository.GetList(FDate, TDate, "");
-
-            var jsonResult = Json(new
+            return Json(new
             {
                 status = "success",
-                data = dt
+                data = _repository.GetList(FDate, TDate, "")
             });
-            return jsonResult;
         }
 
         public string Export(string ColumnList, string HeaderList, string Name, string Type)

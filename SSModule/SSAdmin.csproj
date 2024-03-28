@@ -44,6 +44,7 @@
     <None Include="Areas\Master\Views\Vendor\List.cshtml" />
     <None Include="Areas\Master\Views\_ViewImports.cshtml" />
     <None Include="Areas\Master\Views\_ViewStart.cshtml" />
+    <None Include="Areas\Report\Views\SalesStock\List.cshtml" />
     <None Include="Areas\Transactions\Views\PurchaseInvoice\Create.cshtml" />
     <None Include="Areas\Transactions\Views\PurchaseInvoice\List.cshtml" />
     <None Include="Areas\Transactions\Views\PurchaseOrder\Create.cshtml" />

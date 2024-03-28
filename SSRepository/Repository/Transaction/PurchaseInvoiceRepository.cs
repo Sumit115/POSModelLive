@@ -16,10 +16,6 @@ namespace SSRepository.Repository.Transaction
     {
         public PurchaseInvoiceRepository(AppDbContext dbContext) : base(dbContext)
         {
-            TranType = "P";
-            TranAlias = "PINV";
-            StockFlag = "I";
-            PostInAc = true;
             SaveSP = "usp_PurchaseInvoiceAddUpd";
             GetSP = "usp_PurchaseInvoiceList";
             GetById = "usp_PurchaseById";
