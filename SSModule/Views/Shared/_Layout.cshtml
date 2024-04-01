@@ -149,12 +149,12 @@
                                         <p>Brand<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                               @* <li class="nav-item">
                                     <a asp-area="Master" asp-controller="CategoryGroup" asp-action="List" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Section Group<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
-                                </li>
+                                </li>*@
                                 <li class="nav-item">
                                     <a asp-area="Master" asp-controller="Category" asp-action="List" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
@@ -164,7 +164,13 @@
                                 <li class="nav-item">
                                     <a asp-area="Master" asp-controller="Product" asp-action="List" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Product<i class="right fas fa-external-link-alt tablink"></i></p>
+                                        <p>Sub Section<i class="right fas fa-external-link-alt tablink"></i></p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-area="Master" asp-controller="ProductLot" asp-action="Create" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Article<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -177,6 +183,12 @@
                                     <a asp-area="Master" asp-controller="City" asp-action="List" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>City<i class="right fas fa-external-link-alt tablink"></i></p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-area="Master" asp-controller="AccountGroup" asp-action="List" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Account Group<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                             </ul>
@@ -229,6 +241,30 @@
                                     <a asp-area="Transactions" asp-controller="PurchaseInvoice" asp-action="List" class="nav-link">
                                         <i class="fas fa-clipboard-list nav-icon"></i>
                                         <p>Invoice<i class="right fas fa-external-link-alt tablink"></i></p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-columns"></i>
+                                <p>
+                                    Report
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+
+                                <li class="nav-item">
+                                    <a asp-area="Report" asp-controller="PurchaseStock" asp-action="List" class="nav-link">
+                                        <i class="fas fa-clipboard-list nav-icon"></i>
+                                        <p>Product Wise Purchase<i class="right fas fa-external-link-alt tablink"></i></p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-area="Report" asp-controller="SalesStock" asp-action="List" class="nav-link">
+                                        <i class="fas fa-clipboard-list nav-icon"></i>
+                                        <p>Product Wise Sales<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                             </ul>

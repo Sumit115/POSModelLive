@@ -14,11 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\js\CustomDropDown.js" />
-    <Content Remove="wwwroot\js\Master\browser.js" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <None Include="Areas\Master\Views\AccountGroup\Create.cshtml" />
     <None Include="Areas\Master\Views\Bank\Create.cshtml" />
     <None Include="Areas\Master\Views\Bank\List.cshtml" />
     <None Include="Areas\Master\Views\Branch\Create.cshtml" />
@@ -29,6 +25,8 @@
     <None Include="Areas\Master\Views\CategoryGroup\List.cshtml" />
     <None Include="Areas\Master\Views\Category\Create.cshtml" />
     <None Include="Areas\Master\Views\Category\List.cshtml" />
+    <None Include="Areas\Master\Views\City\Create.cshtml" />
+    <None Include="Areas\Master\Views\City\List.cshtml" />
     <None Include="Areas\Master\Views\Customer\Create.cshtml" />
     <None Include="Areas\Master\Views\Customer\List.cshtml" />
     <None Include="Areas\Master\Views\Employee\Create.cshtml" />
@@ -44,6 +42,7 @@
     <None Include="Areas\Master\Views\Vendor\List.cshtml" />
     <None Include="Areas\Master\Views\_ViewImports.cshtml" />
     <None Include="Areas\Master\Views\_ViewStart.cshtml" />
+    <None Include="Areas\Report\Views\PurchaseStock\List.cshtml" />
     <None Include="Areas\Report\Views\SalesStock\List.cshtml" />
     <None Include="Areas\Transactions\Views\PurchaseInvoice\Create.cshtml" />
     <None Include="Areas\Transactions\Views\PurchaseInvoice\List.cshtml" />
@@ -63,6 +62,7 @@
     <None Include="Views\Shared\Transactions\_tranFooter.cshtml" />
     <None Include="Views\Shared\Transactions\_tranGrid.cshtml" />
     <None Include="Views\Shared\Transactions\_tranHeader.cshtml" />
+    <None Include="Views\Shared\_DropDown.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml" />
     <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
     <None Include="Views\_ViewImports.cshtml" />
@@ -99,6 +99,7 @@
     <None Include="wwwroot\js\jquery.datetimepicker.js" />
     <None Include="wwwroot\js\Master\browser.js" />
     <None Include="wwwroot\js\Master\ProductMas.js" />
+    <None Include="wwwroot\js\Report\Report.js" />
     <None Include="wwwroot\js\site.js" />
     <None Include="wwwroot\js\Transaction\Transaction.js" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map" />
@@ -193,6 +194,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.102.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">

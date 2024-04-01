@@ -4,9 +4,11 @@ using Newtonsoft.Json.Serialization;
 using SSRepository.Data;
 using SSRepository.IRepository;
 using SSRepository.IRepository.Master;
+using SSRepository.IRepository.Report;
 using SSRepository.IRepository.Transaction;
 using SSRepository.Repository;
 using SSRepository.Repository.Master;
+using SSRepository.Repository.Report;
 using SSRepository.Repository.Transaction;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,6 +57,9 @@ builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 builder.Services.AddScoped<ILoginRepository, LoginRepository>(); 
 builder.Services.AddScoped<ICityRepository, CityRepository>();
 builder.Services.AddScoped<IProductLotRepository, ProductLotRepository>();
+builder.Services.AddScoped<ISalesStockRepository, SalesStockRepository>();
+builder.Services.AddScoped<IPurchaseStockRepository, PurchaseStockRepository>();
+builder.Services.AddScoped<IAccountGroupRepository, AccountGroupRepository>();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();

@@ -24,7 +24,7 @@ namespace SSRepository.Repository.Report
         }
       
         
-        public DataTable GetList(string FromDate, string ToDate, string ReportType , string TranAlias, DataTable ProductFilter=null  , DataTable CustomerFilter = null)
+        public DataTable GetList(string FromDate, string ToDate, string ReportType , string TranAlias, DataTable ProductFilter=null  , DataTable PartyFilter = null)
         {
             DataTable dt = new DataTable();
             using (SqlConnection con = new SqlConnection(conn))
@@ -42,7 +42,7 @@ namespace SSRepository.Repository.Report
                 //    Value = dt
                 //};
                 cmd.Parameters.AddWithValue("@ProductFilter", ProductFilter);
-                cmd.Parameters.AddWithValue("@CustomerFilter", CustomerFilter); 
+                cmd.Parameters.AddWithValue("@PartyFilter", PartyFilter); 
                 //Get Output Parametr
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(dt);

@@ -20,14 +20,14 @@ using DocumentFormat.OpenXml.Spreadsheet;
 namespace SSAdmin.Areas.Report.Controllers
 {
     [Area("Report")]
-    public class SalesStockController : BaseController
+    public class PurchaseStockController : BaseController
     {
-        private readonly ISalesStockRepository _repository;
+        private readonly IPurchaseStockRepository _repository;
 
-        public SalesStockController(ISalesStockRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
+        public PurchaseStockController(IPurchaseStockRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
             _repository = repository;
-            FKFormID = (long)Handler.Form.SalesStock;
+            FKFormID = (long)Handler.Form.PurchaseStock;
 
             //_repository.SetRootPath(_hostingEnvironment.WebRootPath);
         }
@@ -38,16 +38,16 @@ namespace SSAdmin.Areas.Report.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> List(string FromDate, string ToDate, string ReportType, string TranAlias, string ProductFilter = "", string CustomerFilter = "")
+        public async Task<JsonResult> List(string FromDate, string ToDate, string ReportType, string TranAlias, string ProductFilter = "", string VendorFilter = "")
         {
 
             DataTable dt = new DataTable();
             try
             {
                 DataTable dt_ProductFilter = GetFilterData(ProductFilter);
-                DataTable dt_CustomerFilter = GetFilterData(CustomerFilter);
+                DataTable dt_VendorFilter = GetFilterData(VendorFilter);
 
-                  dt = _repository.GetList(FromDate, ToDate, ReportType, TranAlias, dt_ProductFilter, dt_CustomerFilter);
+                  dt = _repository.GetList(FromDate, ToDate, ReportType, TranAlias, dt_ProductFilter, dt_VendorFilter);
             }
             catch (Exception ex) { }
             var jsonResult = Json(new
@@ -61,12 +61,12 @@ namespace SSAdmin.Areas.Report.Controllers
             //return new JsonResult(data);
         }
 
-        public ActionResult Export(string FromDate, string ToDate, string ReportType, string TranAlias, string ProductFilter = "", string CustomerFilter = "")
+        public ActionResult Export(string FromDate, string ToDate, string ReportType, string TranAlias, string ProductFilter = "", string VendorFilter = "")
         {
             DataTable dt_ProductFilter = GetFilterData(ProductFilter);
-            DataTable dt_CustomerFilter = GetFilterData(CustomerFilter);
+            DataTable dt_VendorFilter = GetFilterData(VendorFilter);
 
-            DataTable dtList = _repository.GetList(FromDate, ToDate, ReportType, TranAlias, dt_ProductFilter, dt_CustomerFilter);
+            DataTable dtList = _repository.GetList(FromDate, ToDate, ReportType, TranAlias, dt_ProductFilter, dt_VendorFilter);
 
             var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, ReportType, ColumnList());
             var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData);
@@ -87,7 +87,7 @@ namespace SSAdmin.Areas.Report.Controllers
 
         }
 
-        public DataTable GetFilterData(string strFilter)
+        public DataTable GetFilterData(string strFilter )
         {
             if (strFilter == null || strFilter == "[]")
             {

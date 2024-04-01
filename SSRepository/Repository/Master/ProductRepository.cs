@@ -157,8 +157,8 @@ namespace SSRepository.Repository.Master
             var result = GetList(pagesize, pageno, search);
             result.Insert(0, new ProductModel { PkProductId = 0, Product = "Select" });
 
+
             return (from r in result
-                    where (FkCatId == 0 && r.FkCatId == FkCatId)
                     select new
                     {
                         r.PkProductId,

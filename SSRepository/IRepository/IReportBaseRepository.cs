@@ -13,7 +13,7 @@ namespace SSRepository.IRepository
     {
         List<ColumnStructure> ColumnList(string GridName = "");
 
-        DataTable GetList(string FromDate, string ToDate, string ReportType, string TranAlias, DataTable ProductFilter = null, DataTable CustomerFilter = null);
+        DataTable GetList(string FromDate, string ToDate, string ReportType, string TranAlias, DataTable ProductFilter = null, DataTable PartyFilter = null);
 
     }
 }
