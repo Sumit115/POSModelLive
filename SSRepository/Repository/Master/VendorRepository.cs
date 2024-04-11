@@ -15,14 +15,14 @@ namespace SSRepository.Repository.Master
         {
         }
        
-        public string isAlreadyExist(VendorModel model, string Mode)
+        public string isAlreadyExist(PartyModel model, string Mode)
         {
             dynamic cnt;
             string error = "";
             if (!string.IsNullOrEmpty(model.Mobile))
             {
                 cnt = (from x in __dbContext.TblVendorMas
-                       where x.Mobile == model.Mobile && x.PkVendorId != model.PkVendorId
+                       where x.Mobile == model.Mobile && x.PkVendorId != model.PkId
                        select x).Count();
                 if (cnt > 0)
                     error = "Mobile Already Exits";
@@ -30,7 +30,7 @@ namespace SSRepository.Repository.Master
             else if (!string.IsNullOrEmpty(model.Email))
             {
                 cnt = (from x in __dbContext.TblVendorMas
-                       where x.Email == model.Email && x.PkVendorId != model.PkVendorId
+                       where x.Email == model.Email && x.PkVendorId != model.PkId
                        select x).Count();
                 if (cnt > 0)
                     error = "Email Already Exits";
@@ -38,26 +38,26 @@ namespace SSRepository.Repository.Master
             return error;
         }
 
-        public List<VendorModel> GetList(int pageSize, int pageNo = 1, string search = "")
+        public List<PartyModel> GetList(int pageSize, int pageNo = 1, string search = "")
         {
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
-            List<VendorModel> data = (from cou in __dbContext.TblVendorMas
+            List<PartyModel> data = (from cou in __dbContext.TblVendorMas
                                       join _city in __dbContext.TblCityMas
                                        on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
                                        into _citytmp
                                       from city in _citytmp.DefaultIfEmpty()
                                           // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                       orderby cou.PkVendorId
-                                        select (new VendorModel
+                                        select (new PartyModel
                                         {
-                                            PkVendorId = cou.PkVendorId,
+                                            PkId = cou.PkVendorId,
                                             Code = cou.Code,
                                             Name = cou.Name,
                                             FKUserId = cou.FKUserId,
                                             src = cou.Src,
-                                            DATE_MODIFIED = cou.DateModified,
-                                            DATE_CREATED = cou.DateCreated,
+                                            DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
+                                            DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
                                             Marital = cou.Marital,
                                             Gender = cou.Gender,
                                             Dob = cou.Dob,
@@ -85,21 +85,21 @@ namespace SSRepository.Repository.Master
         }
 
 
-        public VendorModel GetSingleRecord(long PkVendorId)
+        public PartyModel GetSingleRecord(long PkVendorId)
         {
 
-            VendorModel data = new VendorModel();
+            PartyModel data = new PartyModel();
             data = (from cou in __dbContext.TblVendorMas
                     where cou.PkVendorId == PkVendorId
-                    select (new VendorModel
+                    select (new PartyModel
                     {
-                        PkVendorId = cou.PkVendorId,
+                        PkId = cou.PkVendorId,
                         Code = cou.Code,
                         Name = cou.Name,
                         FKUserId = cou.FKUserId,
                         src = cou.Src,
-                        DATE_MODIFIED = cou.DateModified,
-                        DATE_CREATED = cou.DateCreated, 
+                        DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
+                        DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"), 
                         Marital = cou.Marital,
                         Gender = cou.Gender,
                         Dob = cou.Dob,
@@ -135,7 +135,7 @@ namespace SSRepository.Repository.Master
             return (from r in result
                     select new
                     {
-                        r.PkVendorId,
+                        r.PkId,
                         r.Name
                     }).ToList(); ;
         }
@@ -143,7 +143,7 @@ namespace SSRepository.Repository.Master
         public string DeleteRecord(long PkVendorId)
         {
             string Error = "";
-            VendorModel obj = GetSingleRecord(PkVendorId);
+            PartyModel obj = GetSingleRecord(PkVendorId);
 
             //var Country = (from x in _context.TblStateMas
             //               where x.FkcountryId == PkVendorId
@@ -180,7 +180,7 @@ namespace SSRepository.Repository.Master
         public override string ValidateData(object objmodel, string Mode)
         {
 
-            VendorModel model = (VendorModel)objmodel;
+            PartyModel model = (PartyModel)objmodel;
             string error = "";
             error = isAlreadyExist(model, Mode);
             return error;
@@ -188,16 +188,17 @@ namespace SSRepository.Repository.Master
         }
         public override void SaveBaseData(ref object objmodel, string Mode, ref Int64 ID)
         {
-            VendorModel model = (VendorModel)objmodel;
+            PartyModel model = (PartyModel)objmodel;
             TblVendorMas Tbl = new TblVendorMas();
-            if (model.PkVendorId > 0)
+            if (model.PkId > 0)
             {
-                var _entity = __dbContext.TblVendorMas.Find(model.PkVendorId);
+                var _entity = __dbContext.TblVendorMas.Find(model.PkId);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkVendorId = model.PkVendorId;
+            Tbl.PkVendorId = model.PkId;
+            Tbl.Code = model.Code;
             Tbl.Name = model.Name;
             Tbl.Marital = model.Marital;
             Tbl.Gender = model.Gender;
@@ -231,8 +232,8 @@ namespace SSRepository.Repository.Master
             }
             else
             {
-                
-                 VendorModel oldModel = GetSingleRecord(Tbl.PkVendorId);
+
+                PartyModel oldModel = GetSingleRecord(Tbl.PkVendorId);
                 ID = Tbl.PkVendorId;
                 UpdateData(Tbl, false);
                 //AddMasterLog(oldModel, __FormID, tblCountry.FKVendorID, oldModel.PkVendorId, oldModel.FKVendorID, oldModel.DATE_MODIFIED);

@@ -12,6 +12,7 @@
         margin-bottom: 0.2rem!important;
     }
 </style>
+<input asp-for="ExtProperties.TranAlias" type="hidden" />
 <div class="col-md-12" >
     <div class="row">
         <div class="col-md-6">
@@ -20,7 +21,7 @@
                     <div class="form-group">
                         <label class="d-block pb-1">Party</label>
                         @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkPartyId" }, { "Class", "val-cus-drp" }, { "event", "setParty()" },
-                        { "value", Model.FkPartyId }, { "text", Model.PartyName }, { "uri", "" } })
+                        { "value", Model.FkPartyId }, { "ExtraParam", "ExtProperties_TranAlias" }, { "text", Model.PartyName }, { "uri", "" } })
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -79,21 +80,22 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="control-label">Entry Date</label>
-                        @Html.TextBoxFor(m => m.EntryDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off" })
+                        @Html.TextBoxFor(m => m.EntryDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" })
                         <span asp-validation-for="EntryDate" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="control-label">GRNo </label>
-                        <input asp-for="GRNo" class="form-control" />
+                        <input asp-for="GRNo" class="form-control trn" />
                         <span asp-validation-for="GRNo" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="control-label">GR Date </label>
-                        @Html.TextBoxFor(m => m.GRDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off" })
+                        <input type ="Date" asp-for="GRDate" class="form-control trn" />
+                        @* @Html.TextBoxFor(m => m.GRDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" }) *@
                         <span asp-validation-for="GRDate" class="text-danger"></span>
                     </div>
                 </div>

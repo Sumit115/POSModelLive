@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using SSRepository.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using SSRepository.IRepository.Master;
 using SSRepository.IRepository;
 using SSRepository.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Azure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace SSAdmin.Areas.Master.Controllers
@@ -67,7 +57,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
-            CustomerModel Model = new CustomerModel();
+            PartyModel Model = new PartyModel();
             try
             {
                 ViewBag.PageType = "";
@@ -98,7 +88,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CustomerModel model)
+        public async Task<IActionResult> Create(PartyModel model)
         {
             try
             {
@@ -107,11 +97,11 @@ namespace SSAdmin.Areas.Master.Controllers
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
-                    if (model.PkCustomerId > 0)
+                    if (model.PkId > 0)
                     {
                         Mode = "Edit";
                     }
-                    Int64 ID = model.PkCustomerId;
+                    Int64 ID = model.PkId;
                     string error = await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {

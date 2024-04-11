@@ -16,49 +16,57 @@ namespace SSRepository.Repository.Master
         public CustomerRepository(AppDbContext dbContext) : base(dbContext)
         {
         }
-        public string isAlreadyExist(CustomerModel model, string Mode)
+        public string isAlreadyExist(PartyModel model, string Mode)
         {
             dynamic cnt;
             string error = "";
             if (!string.IsNullOrEmpty(model.Mobile))
             {
                 cnt = (from x in __dbContext.TblCustomerMas
-                       where x.Mobile == model.Mobile && x.PkCustomerId != model.PkCustomerId
+                       where x.Mobile == model.Mobile && x.PkCustomerId != model.PkId
                        select x).Count();
                 if (cnt > 0)
-                    error = "Mobile Already Exits";
+                    error = "Mobile Already Exits !";
             }
-            else if (!string.IsNullOrEmpty(model.Email))
+            if (!string.IsNullOrEmpty(model.Email))
             {
                 cnt = (from x in __dbContext.TblCustomerMas
-                       where x.Email == model.Email && x.PkCustomerId != model.PkCustomerId
+                       where x.Email == model.Email && x.PkCustomerId != model.PkId
                        select x).Count();
                 if (cnt > 0)
-                    error = "Email Already Exits";
+                    error = "Email Already Exits !";
+            }
+            if (!string.IsNullOrEmpty(model.Code))
+            {
+                cnt = (from x in __dbContext.TblCustomerMas
+                       where x.Code == model.Code && x.PkCustomerId != model.PkId
+                       select x).Count();
+                if (cnt > 0)
+                    error = "ALIAS Already Exits !";
             }
             return error;
         }
 
-        public List<CustomerModel> GetList(int pageSize, int pageNo = 1, string search = "")
+        public List<PartyModel> GetList(int pageSize, int pageNo = 1, string search = "")
         {
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
-            List<CustomerModel> data = (from cou in __dbContext.TblCustomerMas
+            List<PartyModel> data = (from cou in __dbContext.TblCustomerMas
                                         join _city in __dbContext.TblCityMas
                                        on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
                                        into _citytmp
                                         from city in _citytmp.DefaultIfEmpty()
                                             // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                         orderby cou.PkCustomerId
-                                        select (new CustomerModel
+                                        select (new PartyModel
                                         {
-                                            PkCustomerId = cou.PkCustomerId,
+                                            PkId = cou.PkCustomerId,
                                             Code = cou.Code,
                                             Name = cou.Name,
                                             FKUserId = cou.FKUserId,
                                             src = cou.Src,
-                                            DATE_MODIFIED = cou.DateModified,
-                                            DATE_CREATED = cou.DateCreated,
+                                            DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
+                                            DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
                                             Marital = cou.Marital,
                                             Gender = cou.Gender,
                                             Dob = cou.Dob,
@@ -86,21 +94,21 @@ namespace SSRepository.Repository.Master
         }
 
 
-        public CustomerModel GetSingleRecord(long PkCustomerId)
+        public PartyModel GetSingleRecord(long PkCustomerId)
         {
 
-            CustomerModel data = new CustomerModel();
+            PartyModel data = new PartyModel();
             data = (from cou in __dbContext.TblCustomerMas
                     where cou.PkCustomerId == PkCustomerId
-                    select (new CustomerModel
+                    select (new PartyModel
                     {
-                        PkCustomerId = cou.PkCustomerId,
+                        PkId = cou.PkCustomerId,
                         Code = cou.Code,
                         Name = cou.Name,
                         FKUserId = cou.FKUserId,
                         src = cou.Src,
-                        DATE_MODIFIED = cou.DateModified,
-                        DATE_CREATED = cou.DateCreated,
+                        DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
+                        DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
                         Marital = cou.Marital,
                         Gender = cou.Gender,
                         Dob = cou.Dob,
@@ -122,6 +130,7 @@ namespace SSRepository.Repository.Master
                         FkCityId = cou.FkCityId,
                        // City = city.CityName,
                         Pin = cou.Pin,
+                        Disc = cou.Disc,
 
                     })).FirstOrDefault();
             return data;
@@ -137,15 +146,15 @@ namespace SSRepository.Repository.Master
             return (from r in result
                     select new
                     {
-                        r.PkCustomerId,
+                        r.PkId,
                         r.Name
                     }).ToList(); ;
         }
 
-        public string DeleteRecord(long PkCustomerId)
+        public string DeleteRecord(long PkId)
         {
             string Error = "";
-            CustomerModel obj = GetSingleRecord(PkCustomerId);
+            PartyModel obj = GetSingleRecord(PkId);
 
             //var Country = (from x in _context.TblStateMas
             //               where x.FkcountryId == PkCustomerId
@@ -157,7 +166,7 @@ namespace SSRepository.Repository.Master
             if (Error == "")
             {
                 var lst = (from x in __dbContext.TblCustomerMas
-                           where x.PkCustomerId == PkCustomerId
+                           where x.PkCustomerId == PkId
                            select x).ToList();
                 if (lst.Count > 0)
                     __dbContext.TblCustomerMas.RemoveRange(lst);
@@ -182,7 +191,7 @@ namespace SSRepository.Repository.Master
         public override string ValidateData(object objmodel, string Mode)
         {
 
-            CustomerModel model = (CustomerModel)objmodel;
+            PartyModel model = (PartyModel)objmodel;
             string error = "";
             error = isAlreadyExist(model, Mode);
             return error;
@@ -190,17 +199,18 @@ namespace SSRepository.Repository.Master
         }
         public override void SaveBaseData(ref object objmodel, string Mode, ref Int64 ID)
         {
-            CustomerModel model = (CustomerModel)objmodel;
+            PartyModel model = (PartyModel)objmodel;
             TblCustomerMas Tbl = new TblCustomerMas();
-            if (model.PkCustomerId > 0)
+            if (model.PkId > 0)
             {
-                var _entity = __dbContext.TblCustomerMas.Find(model.PkCustomerId);
+                var _entity = __dbContext.TblCustomerMas.Find(model.PkId);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkCustomerId = model.PkCustomerId;
+            Tbl.PkCustomerId = model.PkId;
             Tbl.Name = model.Name;
+            Tbl.Code = model.Code;
             Tbl.Marital = model.Marital;
             Tbl.Gender = model.Gender;
             Tbl.Dob = model.Dob;
@@ -217,7 +227,8 @@ namespace SSRepository.Repository.Master
             Tbl.Address = model.Address;
             Tbl.FkCityId = model.FkCityId;
             Tbl.StateName = model.StateName;
-            Tbl.Pin = model.Pin; 
+            Tbl.Pin = model.Pin;
+            Tbl.Disc = model.Disc;
             Tbl.DateModified = DateTime.Now;
             if (Mode == "Create")
             {
@@ -234,7 +245,7 @@ namespace SSRepository.Repository.Master
             else
             {
 
-                CustomerModel oldModel = GetSingleRecord(Tbl.PkCustomerId);
+                PartyModel oldModel = GetSingleRecord(Tbl.PkCustomerId);
                 ID = Tbl.PkCustomerId;
                 UpdateData(Tbl, false);
                 //AddMasterLog(oldModel, __FormID, tblCountry.FKCustomerID, oldModel.PkCustomerId, oldModel.FKCustomerID, oldModel.DATE_MODIFIED);
@@ -264,13 +275,9 @@ namespace SSRepository.Repository.Master
         {
             var list = new List<ColumnStructure>
             {
-                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="DateCreated",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Code", Fields="Code",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="DateCreated",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Code", Fields="Code",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Name", Fields="Name",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                //new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Father Name", Fields="FatherName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                //new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Mother Name", Fields="MotherName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                //new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Marital", Fields="Marital",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                //new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Gender", Fields="Gender",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Dob", Fields="Dob",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Email", Fields="Email",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Mobile", Fields="Mobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },

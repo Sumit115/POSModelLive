@@ -53,8 +53,8 @@ namespace SSRepository.Models
         //  public decimal? SuggestedRate { get; set; }
         public string? PurchaseRateUnit { get; set; }//=''
         public string? MRPSaleRateUnit { get; set; }//=''
-                                                    // public DateTime? StockDate { get; set; }
-                                                    //  public decimal? ExciseRate { get; set; }
+        // public DateTime? StockDate { get; set; }
+        //  public decimal? ExciseRate { get; set; }
         public long InTrnId { get; set; }//=PurchaseId
         public long InTrnFKSeriesID { get; set; }//=PurchaseSeriesId
         public long InTrnsno { get; set; }//=PurchaseSeriesId
@@ -68,8 +68,6 @@ namespace SSRepository.Models
 
         //Other
         public string? ProductName { get; set; }
-        [Required(ErrorMessage = "Select Section Required")]
-        public long? FkCatId { get; set; }
 
     }
 }

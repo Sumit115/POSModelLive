@@ -13,8 +13,8 @@ namespace SSRepository.Models
         public long PkId { get; set; }
         public long FkId { get; set; }
         public long FKSeriesId { get; set; }//=0
-        public int sno { get; set; }
-        public int mode { get; set; }
+        public int SrNo { get; set; }
+        public int ModeForm { get; set; }
 
         public long FkProductId { get; set; }
         public long FkLotId { get; set; }//=0  

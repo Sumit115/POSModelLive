@@ -15,7 +15,7 @@ function Handler_showWait(msg) {
         var d = document.createElement("div");
         var h = ($(window).height() / 3);
         var w = (document.body.parentElement.offsetWidth / 2.8);
-        var img = Handler.rootPath() + "/images/logo-D.png";
+        var img = Handler.rootPath() + "/images/loader.gif";
         var htm = '<div class="cnt" style="text-align:center;position:fixed;font-size:30px;font-weight:bold;color:#fff;top:' + h + 'px;left:' + w + 'px;z-index:11000;">';
         htm += '<img alt="Please wait..." src="' + img + '" />';
         htm += '<br />';
@@ -623,9 +623,12 @@ var Handler = {
     startWith: function (v, c) {
         var flag = false;
         if (v.toString().length >= c.toString().length)
-            if (v.toString().substring(0, c.toString().length) == c.toString())
+            if (v.toString().substring(0, c.toString().length).toLowerCase() == c.toString().toLowerCase())
                 flag = true;
         return flag;
+    },
+    convertToSpace: function(v) {
+        return v.replace(/([A-Z])/g, ' $1').trim();
     },
     bowser: function () {
         if (typeof (bowser) == "undefined") {

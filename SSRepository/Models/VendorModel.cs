@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SSRepository.Models
 {
-     public class VendorModel : BaseModel
+     public class VendorModelold : BaseModel
     {
         public long PkVendorId { get; set; }
         
@@ -58,4 +58,5 @@ namespace SSRepository.Models
         public int? FkCityId { get; set; }
         public string? Pin { get; set; }
     }
+
 }

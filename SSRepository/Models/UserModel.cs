@@ -44,20 +44,11 @@ namespace SSRepository.Models
         public BaseModel() {
             FKUserId = 1;
             src = 1;
-            DATE_CREATED = DateTime.Now;
-            DATE_MODIFIED = DateTime.Now;
         }
-        //public long PkId { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? DATE_CREATED { get; set; }//DateCreated
-        public string? DateCreated { get { return DATE_CREATED != null ? DATE_CREATED.Value.ToString("dd/MM/yyyy") : ""; } }
 
+        public string DateCreated { get; set; }//DateCreated
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? DATE_MODIFIED { get; set; }
-        public string? DateModified { get { return DATE_MODIFIED != null ? DATE_MODIFIED.Value.ToString("dd/MM/yyyy") : ""; } }
+        public string DateModified { get; set; }
 
 
         public string? UserName { get; set; }

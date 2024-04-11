@@ -19,7 +19,7 @@ function View() {
                 data: _d,
                 datatype: "json",
                 success: function (res) {
-                    console.log(res);
+                    
                     if (res.status == "success") {
                         bindGrid(GridId, res.data, IdProperty);
                     }
@@ -51,8 +51,13 @@ function bindGrid(GridId, data, IdProperty) {
         cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
         cg.outGrid.onDblClick.subscribe(function (e, args) {
             if (args.cell != undefined) {
-                var pk_Id = args.grid.getDataItem(args.row)[IdProperty];                
-                window.location.href = "Create/" + pk_Id;
+                var pk_Id = args.grid.getDataItem(args.row)[IdProperty];
+                if (window.location.href.indexOf("Transactions") > 0) {
+                    var FKSeriesId = args.grid.getDataItem(args.row)["FKSeriesId"];
+                    window.location.href = "Create/" + pk_Id + "/" + FKSeriesId;
+                }
+                else
+                    window.location.href = "Create/" + pk_Id;
             }
         });
 

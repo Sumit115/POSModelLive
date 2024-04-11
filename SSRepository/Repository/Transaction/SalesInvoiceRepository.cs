@@ -16,8 +16,9 @@ namespace SSRepository.Repository.Transaction
     {
         public SalesInvoiceRepository(AppDbContext dbContext) : base(dbContext)
         {
-            SaveSP = "usp_SalesInvoiceAddUpd";
-            GetSP = "usp_SalesInvoiceList";
+            SPAddUpd = "usp_SalesInvoiceAddUpd";
+            SPList = "usp_SalesInvoiceList";
+            SPById = "usp_SalesInvoiceById";
         }
 
         public override string ValidData(TransactionModel objmodel)
@@ -31,96 +32,21 @@ namespace SSRepository.Repository.Transaction
         }
         public TransactionModel GetSingleRecord(long PkId, long FkSeriesId)
         {
-            TransactionModel data = new TransactionModel();
-            data.TranDetails = new List<TranDetails>();
-            var entity = (from odr in __dbContext.TblSalesInvoicetrn
-                          join cust in __dbContext.TblCustomerMas on odr.FkPartyId equals cust.PkCustomerId
-                          where odr.PkId == PkId
-                          select new { odr, cust }).FirstOrDefault();
-            if (entity != null)
-            {
-                data.PkId = entity.odr.PkId;
-                data.FKSeriesId = entity.odr.FKSeriesId;
-                data.EntryNo = entity.odr.EntryNo;
-                data.EntryDate = entity.odr.EntryDate;
-                data.TranAlias = entity.odr.TranAlias;
-                data.FkPartyId = entity.odr.FkPartyId;
-                data.GRNo = entity.odr.GRNo;
-                data.GRDate = entity.odr.GRDate;
-                data.GrossAmt = entity.odr.GrossAmt;
-                data.SgstAmt = entity.odr.SgstAmt;
-                data.TaxAmt = entity.odr.TaxAmt;
-                data.CashDiscount = entity.odr.CashDiscount;
-                data.CashDiscType = entity.odr.CashDiscType;
-                data.CashDiscountAmt = entity.odr.CashDiscountAmt;
-                data.TotalDiscount = entity.odr.TotalDiscount;
-                data.RoundOfDiff = entity.odr.RoundOfDiff;
-                data.Shipping = entity.odr.Shipping;
-                data.OtherCharge = entity.odr.OtherCharge;
-                data.NetAmt = entity.odr.NetAmt;
-                data.Cash = entity.odr.Cash;
-                data.CashAmt = entity.odr.CashAmt;
-                data.Credit = entity.odr.Credit;
-                data.CreditAmt = entity.odr.CreditAmt;
-                data.CreditDate = entity.odr.CreditDate;
-                data.Cheque = entity.odr.Cheque;
-                data.ChequeAmt = entity.odr.ChequeAmt;
-                data.ChequeNo = entity.odr.ChequeNo;
-                data.ChequeDate = entity.odr.ChequeDate;
-                data.FKBankChequeID = entity.odr.FKBankChequeID;
-                data.Remark = entity.odr.Remark;
-                data.Statu = entity.odr.Statu;
-                data.DATE_MODIFIED = entity.odr.DateModified;
-                data.DATE_CREATED = entity.odr.DateCreated;
-                data.src = entity.odr.Src;
-                data.FKUserId = entity.odr.FKUserId;
-                data.FkPartyId = entity.odr.FkPartyId;
-                data.PartyName = entity.cust.Name;
-                data.PartyMobile = entity.cust.Mobile;
-                data.TranDetails = (from odrdtl in __dbContext.TblSalesInvoicedtl
-                                    join prd in __dbContext.TblProductMas on odrdtl.FkProductId equals prd.PkProductId
-                                    where odrdtl.FkId == PkId
-                                    select new TranDetails()
-                                    {
-                                        PkId = odrdtl.PkId,
-                                        FkId = odrdtl.FkId,
-                                        FKSeriesId = odrdtl.FKSeriesId,
-                                        sno = odrdtl.sno,
-                                        FkProductId = odrdtl.FkProductId,
-                                        FkLotId = odrdtl.FkLotId,
-                                        Batch = odrdtl.Batch,
-                                        Color = odrdtl.Color,
-                                        MfgDate = odrdtl.MfgDate,
-                                        ExpiryDate = odrdtl.ExpiryDate,
-                                        MRP = odrdtl.MRP,
-                                        SaleRate = odrdtl.SaleRate,
-                                        Rate = odrdtl.Rate,
-                                        RateUnit = odrdtl.RateUnit,
-                                        Qty = odrdtl.Qty,
-                                        FreeQty = odrdtl.FreeQty,
-                                        SchemeDisc = odrdtl.SchemeDisc,
-                                        SchemeDiscType = odrdtl.SchemeDiscType,
-                                        SchemeDiscAmt = odrdtl.SchemeDiscAmt,
-                                        TradeDisc = odrdtl.TradeDisc,
-                                        TradeDiscType = odrdtl.TradeDiscType,
-                                        TradeDiscAmt = odrdtl.TradeDiscAmt,
-                                        LotDisc = odrdtl.LotDisc,
-                                        GrossAmt = odrdtl.GrossAmt,
-                                        ICRate = odrdtl.ICRate,
-                                        ICAmt = odrdtl.ICAmt,
-                                        SCRate = odrdtl.SCRate,
-                                        SCAmt = odrdtl.SCAmt,
-                                        NetAmt = odrdtl.NetAmt,
-                                        Remark = odrdtl.Remark,
-                                        DATE_MODIFIED = odrdtl.DateModified,
-                                        DATE_CREATED = odrdtl.DateCreated,
-                                        src = odrdtl.Src,
-                                        FKUserId = odrdtl.FKUserId,
-                                        GstRate = odrdtl.SCRate > 0 ? (odrdtl.SCRate * 2) : odrdtl.ICRate,
-                                        GstAmt = odrdtl.SCAmt > 0 ? (odrdtl.SCAmt * 2) : odrdtl.ICAmt,
-                                        ProductName_Text = prd.Product,
 
-                                    }).ToList();
+            TransactionModel data = new TransactionModel();
+            if (PkId > 0)
+            {
+                string ErrMsg = "";
+                string dd = GetData(PkId, FkSeriesId, ref ErrMsg);
+                if (dd != null)
+                {
+                    List<TransactionModel> aa = JsonConvert.DeserializeObject<List<TransactionModel>>(dd);
+                    data = aa[0];
+                }
+            }
+            else
+            {
+                //UserLastSeries
             }
             return data;
         }

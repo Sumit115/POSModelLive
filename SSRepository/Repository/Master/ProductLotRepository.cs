@@ -28,8 +28,7 @@ namespace SSRepository.Repository.Master
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<ProdLotDtlModel> data = (from cou in __dbContext.TblProdLotDtl
                                           join prd in __dbContext.TblProductMas on cou.FKProductId equals prd.PkProductId
-                                          join cat in __dbContext.TblCategoryMas on prd.FkCatId equals cat.PkCategoryId
-                                          join catgrop in __dbContext.TblCategoryGroupMas on prd.FkCatGroupId equals catgrop.PkCategoryGroupId
+                                          join cat in __dbContext.TblCategoryMas on prd.FKProdCatgId equals cat.PkCategoryId
                                           join Pbrand in __dbContext.TblBrandMas on prd.FkBrandId equals Pbrand.PkBrandId
                                                                 into tembrand
                                           from brand in tembrand.DefaultIfEmpty()
@@ -40,8 +39,8 @@ namespace SSRepository.Repository.Master
                                               PkLotId = cou.PkLotId,
                                               FKUserId = cou.FKUserId,
                                               src = cou.Src,
-                                              DATE_MODIFIED = cou.DateModified,
-                                              DATE_CREATED = cou.DateCreated,
+                                              DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
+                                              DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
                                               FKProductId = cou.FKProductId,
                                               LotAlias = cou.LotAlias,
                                               Barcode = cou.Barcode,
@@ -76,7 +75,7 @@ namespace SSRepository.Repository.Master
             // var data = new List<ProdLotDtlModel>();
             var data = (from cou in __dbContext.TblProdLotDtl
                         join prd in __dbContext.TblProductMas on cou.FKProductId equals prd.PkProductId
-                        join cat in __dbContext.TblCategoryMas on prd.FkCatId equals cat.PkCategoryId
+                        join cat in __dbContext.TblCategoryMas on prd.FKProdCatgId equals cat.PkCategoryId
                       //  join catgrop in __dbContext.TblCategoryGroupMas on prd.FkCatGroupId equals catgrop.PkCategoryGroupId
                         join Pbrand in __dbContext.TblBrandMas on prd.FkBrandId equals Pbrand.PkBrandId
                                               into tembrand
@@ -89,8 +88,8 @@ namespace SSRepository.Repository.Master
                             PkLotId = cou.PkLotId,
                             FKUserId = cou.FKUserId,
                             src = cou.Src,
-                            DATE_MODIFIED = cou.DateModified,
-                            DATE_CREATED = cou.DateCreated,
+                            DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
+                            DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
                             FKProductId = cou.FKProductId,
                             LotAlias = cou.LotAlias,
                             LotName = cou.LotName,
@@ -132,8 +131,8 @@ namespace SSRepository.Repository.Master
                         PkLotId = cou.PkLotId,
                         FKUserId = cou.FKUserId,
                         src = cou.Src,
-                        DATE_MODIFIED = cou.DateModified,
-                        DATE_CREATED = cou.DateCreated,
+                        DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
+                        DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
                         FKProductId = cou.FKProductId,
                         LotAlias = cou.LotAlias,
                         LotName = cou.LotName,

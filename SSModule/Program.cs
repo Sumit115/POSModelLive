@@ -59,7 +59,7 @@ builder.Services.AddScoped<ICityRepository, CityRepository>();
 builder.Services.AddScoped<IProductLotRepository, ProductLotRepository>();
 builder.Services.AddScoped<ISalesStockRepository, SalesStockRepository>();
 builder.Services.AddScoped<IPurchaseStockRepository, PurchaseStockRepository>();
-builder.Services.AddScoped<IAccountGroupRepository, AccountGroupRepository>();
+//builder.Services.AddScoped<IAccountGroupRepository, AccountGroupRepository>();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();

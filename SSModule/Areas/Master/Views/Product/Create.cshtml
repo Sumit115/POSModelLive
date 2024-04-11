@@ -14,40 +14,15 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="control-label">Article No. <span asp-validation-for="ArticleNumber" class="text-danger"></span></label>
-                            <input asp-for="ArticleNumber" class="form-control" />
-
+                            <label class="control-label">Section <span asp-validation-for="FKProdCatgId" class="text-danger"></span></label>
+                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKProdCatgId" }, { "Class", "form-control" }, { "event", "" },
+                            { "value", Model.FKProdCatgId }, { "text", Model.CategoryName }, { "uri", "" }})
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="control-label">Article Name <span asp-validation-for="Product" class="text-danger"></span></label>
+                            <label class="control-label">Name <span asp-validation-for="Product" class="text-danger"></span></label>
                             <input asp-for="Product" class="form-control" />
-
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Section Group <span asp-validation-for="FkCatGroupId" class="text-danger"></span></label>
-                            <select asp-for="FkCatGroupId" asp-items="@(new SelectList(ViewBag.CategoryGroupList,"PkCategoryGroupId","CategoryGroupName"))" class="form-control" id="FkCatGroupId" onchange="GetCategory()">
-                            </select>
-
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Section <span asp-validation-for="FkCatId" class="text-danger"></span></label>
-                            <select asp-for="FkCatId" asp-items="@(new SelectList(ViewBag.CategoryList,"PkCategoryId","CategoryName"))" class="form-control" id="FkCatId">
-                            </select>
-
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Alias <span asp-validation-for="Alias" class="text-danger"></span></label>
-                            <input asp-for="Alias" class="form-control" />
-
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -56,6 +31,13 @@
                             <select asp-for="FkBrandId" asp-items="@(new SelectList(ViewBag.BrandList,"PkBrandId","BrandName"))" class="form-control" id="BrandId">
                             </select>
 
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Alias <span asp-validation-for="Alias" class="text-danger"></span></label>
+                            <input asp-for="Alias" class="form-control" aria-describedby="basic-addon2" />
+                            @* <span class="input-group-text" id="basic-addon2">Auto Generate</span> *@
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -224,7 +206,7 @@
                     <div class="col-sm-12 pb-2">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="IsBatchApplied" checked="">
-                            <label for="IsBatchApplied" class="form-check-label">Article Name</label>
+                            <label for="IsBatchApplied" class="form-check-label">Name</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="IsColorApplied" checked="">
@@ -259,7 +241,7 @@
                         </div>
                         <div class="col-md-2 dIsBatchApplied" style="display: block;">
                             <div class="form-group">
-                            <label class="control-label">Article Name</label>
+                            <label class="control-label">Name</label>
                                 <input type="text" id="txtBatch" class="form-control" fdprocessedid="m66p7g">
                             </div>
                         </div>
@@ -392,22 +374,16 @@
             var reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = function () {
-                //console.log(reader.result);
                 $("#" + id).val(reader.result);
                 $("#dummyimage_" + id).attr("src", reader.result);
                 $("#dummyimage_" + id).show();
-                //   $("#myImage").hide();
-
             };
         }
     </script>
     <script>
         function GetCategory() {
-            
             var Id = $("#FkCatGroupId").val();
             $("#FkCatId").empty();
-            //
-
             if (Id > 0) {
                 var d = JSON.stringify({ pageNo: 1, pageSize: 1000 });
                 $.ajax({
@@ -418,13 +394,14 @@
                     success: function (res) {
                         console.log(res);
                         $(res).each(function (i, v) {
-
                             $("#FkCatId").append("<option value='" + v.PkCategoryId + "'>" + v.CategoryName + "</option>");
                         });
                     }
                 })
 
-            } else { $("#FkCatId").append("<option value=''>-Select-</option>"); }
+            } else { 
+                $("#FkCatId").append("<option value=''>-Select-</option>"); 
+            }
         }
     </script>
 }

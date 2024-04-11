@@ -3,7 +3,7 @@
 @{
     Layout = null;
 }
-<div class="col-md-12">
+<div class="col-md-12 trn-footer">
     <div class="row">
 
         <div class="col-md-2">
@@ -16,14 +16,14 @@
         <div class="col-md-2">
             <div class="form-group">
                 <label class="control-label">Cash Discount </label>
-                <input asp-for="CashDiscount" class="form-control" onchange="FooterChange('CashDiscount')" />
+                <input asp-for="CashDiscount" class="form-control FotChng" />
                 <span asp-validation-for="CashDiscount" class="text-danger"></span>
             </div>
         </div>
         <div class="col-md-1">
             <div class="form-group">
                 <label class="control-label">Disc Type </label>
-                <select asp-for="CashDiscType" class="form-control" id="CashDiscType" onchange="FooterChange('CashDiscType')">
+                <select asp-for="CashDiscType" class="form-control FotChng">
                     <option value="R">Rs</option>
                     <option value="P">%</option>
                 </select>
@@ -40,14 +40,14 @@
         <div class="col-md-2">
             <div class="form-group">
                 <label class="control-label">Other Charge </label>
-                <input asp-for="OtherCharge" class="form-control" onchange="FooterChange('OtherCharge')" />
+                <input asp-for="OtherCharge" class="form-control FotChng" />
                 <span asp-validation-for="OtherCharge" class="text-danger"></span>
             </div>
         </div>
         <div class="col-md-2">
             <div class="form-group">
                 <label class="control-label">RoundOf Diff </label>
-                <input asp-for="RoundOfDiff" class="form-control" onchange="FooterChange('RoundOfDiff')" />
+                <input asp-for="RoundOfDiff" class="form-control FotChng"/>
                 <span asp-validation-for="RoundOfDiff" class="text-danger"></span>
             </div>
         </div>
@@ -69,7 +69,7 @@
         <div class="col-md-4" style="display:none">
             <div class="form-group">
                 <label class="control-label">Shipping </label>
-                <input asp-for="Shipping" class="form-control" onchange="FooterChange('Shipping')" />
+                <input asp-for="Shipping" class="form-control FotChng"/>
                 <span asp-validation-for="Shipping" class="text-danger"></span>
             </div>
         </div>

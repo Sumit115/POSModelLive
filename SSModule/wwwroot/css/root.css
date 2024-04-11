@@ -172,7 +172,8 @@ label {
 /*Dropdown Css*/
 
 .grid-dropdown {
-    width: 600px;
+    min-width: 300px;
+    max-width: 600px;
     position: absolute;
     margin: 0px;
     z-index: 9999;

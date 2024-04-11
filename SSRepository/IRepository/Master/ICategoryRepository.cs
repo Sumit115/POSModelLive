@@ -9,9 +9,7 @@ namespace SSRepository.IRepository.Master
          List<ColumnStructure> ColumnList(string GridName = "");
 
         string isAlreadyExist(CategoryModel tblBankMas, string Mode);
-        List<CategoryModel> GetList(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpCategory(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpCategoryByGroupId(long CategoryGroupId, int pageSize, int pageNo = 1, string search = "");
+        List<CategoryModel> GetList(int pageSize, int pageNo = 1, string search = "", long CategoryGroupId = 0);
         CategoryModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);

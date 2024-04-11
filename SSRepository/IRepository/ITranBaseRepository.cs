@@ -12,13 +12,18 @@ namespace SSRepository.IRepository
         object FooterChange(TransactionModel model, string fieldName);
 
         object ColumnChange(TransactionModel model, int rowIndex, string fieldName);
-        object SetParty(TransactionModel model, long FkPartyId);
         List<ProdLotDtlModel> Get_ProductLotDtlList(int PKProductId, string Batch, string Color);
 
         List<ColumnStructure> ColumnList(string GridName = "");
 
-        List<VendorModel> PartyList(int pageSize, int pageNo = 1, string search = "");
+        List<PartyModel> PartyList(int pageSize, int pageNo = 1, string search = "", string TranType = "");
+
+        object SetParty(TransactionModel model, long FkPartyId);
+
         List<ProductModel> ProductList();
+
         List<SeriesModel> SeriesList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "");
+
+        object SetSeries(TransactionModel model, long FKSeriesId);
     }
 }

@@ -14,11 +14,11 @@ namespace SSRepository.Models
 
         [Required(ErrorMessage = "Name Required")]
         [StringLength(50)] 
-        public string CategoryName { get; set; }
+        public string Category { get; set; }
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Please Select Section Group")]  
         public long FkCategoryGroupId { get; set; }
-        public string? PCategoryGroupName { get; set; }
+        public string? GroupName { get; set; }
     }
 
 }

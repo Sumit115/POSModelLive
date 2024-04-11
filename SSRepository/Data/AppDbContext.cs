@@ -42,7 +42,7 @@ namespace SSRepository.Data
         public virtual DbSet<TblProdStockDtl> TblProdStockDtl { get; set; } = null!;
         public virtual DbSet<TblBrandMas> TblBrandMas { get; set; } = null!;
         public virtual DbSet<TblCityMas> TblCityMas { get; set; } = null!;
-        public virtual DbSet<TblAccountGroupMas> TblAccountGroupMas { get; set; } = null!;
+        //public virtual DbSet<TblAccountGroupMas> TblAccountGroupMas { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

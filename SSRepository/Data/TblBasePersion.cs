@@ -58,5 +58,7 @@ namespace SSRepository.Data
         public int? FkCityId { get; set; }
         public string? Pin { get; set; }
 
+        public decimal Disc { get; set; }
+
     }
 }

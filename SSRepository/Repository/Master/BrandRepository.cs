@@ -43,8 +43,8 @@ namespace SSRepository.Repository.Master
                                           PkBrandId = cou.PkBrandId,
                                           FKUserId = cou.FKUserId,
                                           src = cou.Src,
-                                          DATE_MODIFIED = cou.DateModified,
-                                          DATE_CREATED = cou.DateCreated,
+                                          DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
+                                          DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
                                           BrandName = cou.BrandName, 
                                       }
                                      )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
@@ -63,8 +63,8 @@ namespace SSRepository.Repository.Master
                         PkBrandId = cou.PkBrandId,
                         FKUserId = cou.FKUserId,
                         src = cou.Src,
-                        DATE_MODIFIED = cou.DateModified,
-                        DATE_CREATED = cou.DateCreated,
+                        DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
+                        DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
                         BrandName = cou.BrandName,
                        
                     })).FirstOrDefault();

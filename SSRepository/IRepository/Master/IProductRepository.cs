@@ -14,5 +14,7 @@ namespace SSRepository.IRepository.Master
         ProductModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);
+
+        List<CategoryModel> prodCatgList(int pageSize, int pageNo = 1, string search = "");
     }
 }

@@ -14,6 +14,8 @@ using Newtonsoft.Json.Linq;
 using Azure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Collections;
+using DocumentFormat.OpenXml.Wordprocessing;
+using SSRepository.Repository.Master;
 
 namespace SSAdmin.Areas.Master.Controllers
 {
@@ -42,11 +44,19 @@ namespace SSAdmin.Areas.Master.Controllers
         [HttpPost]
         public async Task<JsonResult> List(int pageNo, int pageSize)
         {
-            return Json(new
+            ResModel res = new ResModel();
+            try
             {
-                status = "success",
-                data = _repository.GetList(pageSize, pageNo)
-            });
+                res.status = "success";
+                res.data = _repository.GetList(pageSize, pageNo);
+
+            }
+            catch (Exception ex)
+            {
+                res.status = "warr";
+                res.msg = ex.Message;
+            }
+            return Json(res);
         }
 
         public string Export(string ColumnList, string HeaderList, string Name, string Type)
@@ -95,28 +105,18 @@ namespace SSAdmin.Areas.Master.Controllers
 
                 }
                 ViewBag.BrandList = _brandRepository.GetDrpBrand(1, 1000);
-                ViewBag.CategoryGroupList = _categoryGroupRepository.GetDrpCategoryGroup(1, 1000);
                 ViewBag.UnitList = new List<SelectListItem> {
                 new SelectListItem { Value = "1", Text = "Unit 1" },
                 new SelectListItem { Value = "2", Text = "Unit 2" },
                 new SelectListItem { Value = "3", Text = "Unit 3" }
             };
 
-                if (Model.PkProductId > 0) { ViewBag.CategoryList = _categoryRepository.GetDrpCategoryByGroupId(Model.FkCatGroupId, 1000); }
-                else
-                {
-                    var CatList = new List<CategoryModel>();
-                    CatList.Insert(0, new CategoryModel { PkCategoryId = 0, CategoryName = "Select" });
-                    ViewBag.CategoryList = CatList;
-                }
 
             }
             catch (Exception ex)
             {
-                //CommonCore.WriteLog(ex, "Create Get ", ControllerName, GetErrorLogParam());
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(0, tblBankMas);
             return View(Model);
         }
 
@@ -129,11 +129,13 @@ namespace SSAdmin.Areas.Master.Controllers
                 model.FKUserId = 1;
                 model.src = 1;
                 model.NameToDisplay = model.NameToPrint = model.Product;
-                model.ShelfID = model.TradeDisc = model.Unit1 = model.Unit2 = model.Unit3 = "";
-                model.FKTaxID = model.CaseLot = model.BoxSize = model.ProdConv1 = model.ProdConv2 = 0;
+                model.ShelfID = model.CaseLot = model.Unit1 = model.Unit2 = model.Unit3 = "";
+                model.FKTaxID = model.BoxSize = 0;
+                model.ProdConv1 = 0;
+                model.ProdConv2 = 0;
                 model.KeepStock = true;
-                if (ModelState.IsValid)
-                {
+                //if (ModelState.IsValid)
+                //{
                     string Mode = "Create";
                     if (model.PkProductId > 0)
                     {
@@ -149,38 +151,29 @@ namespace SSAdmin.Areas.Master.Controllers
                     {
                         return RedirectToAction(nameof(List));
                     }
-                }
-                else
-                {
-                    foreach (ModelStateEntry modelState in ModelState.Values)
-                    {
-                        foreach (ModelError error in modelState.Errors)
-                        {
-                            var sdfs = error.ErrorMessage;
-                        }
-                    }
-                }
+                //}
+                //else
+                //{
+                //    foreach (ModelStateEntry modelState in ModelState.Values)
+                //    {
+                //        foreach (ModelError error in modelState.Errors)
+                //        {
+                //            var sdfs = error.ErrorMessage;
+                //        }
+                //    }
+                //}
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(tblBankMas.PKID, tblBankMas);
+
             ViewBag.BrandList = _brandRepository.GetDrpBrand(1, 1000);
-            ViewBag.CategoryGroupList = _categoryGroupRepository.GetDrpCategoryGroup(1, 1000);
             ViewBag.UnitList = new List<SelectListItem> {
                 new SelectListItem { Value = "1", Text = "Unit 1" },
                 new SelectListItem { Value = "2", Text = "Unit 2" },
                 new SelectListItem { Value = "3", Text = "Unit 3" }
             };
-
-            if (model.PkProductId > 0) { ViewBag.CategoryList = _categoryRepository.GetDrpCategoryByGroupId(model.FkCatGroupId, 1000); }
-            else
-            {
-                var CatList = new List<CategoryModel>();
-                CatList.Insert(0, new CategoryModel { PkCategoryId = 0, CategoryName = "Select" });
-                ViewBag.CategoryList = CatList;
-            }
             return View(model);
         }
 
@@ -204,5 +197,32 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             return _repository.ColumnList(GridName);
         }
+
+
+        //====================================*****************================================
+        [HttpPost]
+        public string GetAlias(string ProdName, string ProdBrand, Int64 CategoryID, Int64 MarketingID, Int64 ManufacturingID, string Category, string Marketing, string Manufacturing)
+        {
+            //blProductMaster = new blProductMaster(GetConnectionsString(), objSystemDef, objReturnTypes);
+            //return blProductMaster.blGetProductAlias(SwilConvert.ToString(ProdName), SwilConvert.ToString(ProdBrand), CategoryID, MarketingID, ManufacturingID, SwilConvert.ToString(Category), SwilConvert.ToString(Marketing), SwilConvert.ToString(Manufacturing));
+            return "";
+
+        }
+
+        public string GetBarCode()
+        {
+            //long barcode = 0;
+            //blProductMaster = new blProductMaster(GetConnectionsString(), objSystemDef, objReturnTypes);
+            //barcode = blProductMaster.blGetProdBarcode();
+            //return barcode;
+            return "";
+        }
+
+        [HttpPost]
+        public object FkprodCatgId(int pageSize, int pageNo = 1, string search = "")
+        {
+            return _repository.prodCatgList(pageSize, pageNo, search);
+        }
+
     }
 }

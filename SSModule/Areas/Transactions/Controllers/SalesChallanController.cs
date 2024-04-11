@@ -118,7 +118,6 @@ namespace SSAdmin.Areas.Transactions.Controllers
                     //{
                     if (model.PkId > 0)
                     {
-                        model.DATE_MODIFIED = DateTime.Now;
                         string Error = _repository.Create(model);
                         return Json(new
                         {
@@ -130,8 +129,6 @@ namespace SSAdmin.Areas.Transactions.Controllers
                     {
                         model.FKUserId = 1;
                         model.src = 1;
-                        model.DATE_CREATED = DateTime.Now;
-                        model.DATE_MODIFIED = DateTime.Now;
                         string Error = _repository.Create(model);
                         return Json(new
                         {

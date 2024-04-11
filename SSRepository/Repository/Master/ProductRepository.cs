@@ -24,7 +24,7 @@ namespace SSRepository.Repository.Master
                        where x.Product == model.Product && x.PkProductId != model.PkProductId
                        select x).Count();
                 if (cnt > 0)
-                    error = "Mobile Already Exits";
+                    error = "Already Exits";
             }
 
             return error;
@@ -32,38 +32,31 @@ namespace SSRepository.Repository.Master
 
         public List<ProductModel> GetList(int pageSize, int pageNo = 1, string search = "")
         {
+           
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<ProductModel> data = (from cou in __dbContext.TblProductMas
-                                       join cat in __dbContext.TblCategoryMas on cou.FkCatId equals cat.PkCategoryId
-                                       join Pcatgrop in __dbContext.TblCategoryGroupMas on cou.FkCatGroupId equals Pcatgrop.PkCategoryGroupId
-                                                            into temcatgrop
-                                       from catgrop in temcatgrop.DefaultIfEmpty()
+                                       join cat in __dbContext.TblCategoryMas on cou.FKProdCatgId equals cat.PkCategoryId
                                        join Pbrand in __dbContext.TblBrandMas on cou.FkBrandId equals Pbrand.PkBrandId
                                                              into tembrand
                                        from brand in tembrand.DefaultIfEmpty()
-                                           // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                        orderby cou.PkProductId
                                        select (new ProductModel
                                        {
                                            PkProductId = cou.PkProductId,
                                            FKUserId = cou.FKUserId,
                                            src = cou.Src,
-                                           DATE_MODIFIED = cou.DateModified,
-                                           DATE_CREATED = cou.DateCreated,
+                                           DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
+                                           DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
                                            Product = cou.Product,
                                            NameToDisplay = cou.NameToDisplay,
                                            NameToPrint = cou.NameToPrint,
                                            Image = cou.Image,
                                            Alias = cou.Alias,
-                                           ArticleNumber = cou.ArticleNumber,
-                                           ArticleType = cou.ArticleType,
                                            Strength = cou.Strength,
                                            Barcode = cou.Barcode,
                                            Status = cou.Status,
-                                           FkCatGroupId = cou.FkCatGroupId,
-                                           FkCatId = cou.FkCatId,
-                                           FKTaxID = cou.FKTaxID,
+                                           FKProdCatgId = cou.FKProdCatgId,
                                            HSNCode = cou.HSNCode,
                                            FkBrandId = cou.FkBrandId,
                                            ShelfID = cou.ShelfID,
@@ -87,7 +80,6 @@ namespace SSRepository.Repository.Master
                                            PurchaseRate = cou.PurchaseRate,
                                            KeepStock = cou.KeepStock,
                                            CategoryName = cat.CategoryName,
-                                           CategoryGroupName = catgrop.CategoryGroupName,
                                            BrandName = brand.BrandName,
                                        }
                                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
@@ -106,20 +98,17 @@ namespace SSRepository.Repository.Master
                         PkProductId = cou.PkProductId,
                         FKUserId = cou.FKUserId,
                         src = cou.Src,
-                        DATE_MODIFIED = cou.DateModified,
-                        DATE_CREATED = cou.DateCreated,
+                        DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
+                        DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
                         Product = cou.Product,
                         NameToDisplay = cou.NameToDisplay,
                         NameToPrint = cou.NameToPrint,
                         Image = cou.Image,
                         Alias = cou.Alias,
-                        ArticleNumber = cou.ArticleNumber,
-                        ArticleType = cou.ArticleType,
                         Strength = cou.Strength,
                         Barcode = cou.Barcode,
                         Status = cou.Status,
-                        FkCatGroupId = cou.FkCatGroupId,
-                        FkCatId = cou.FkCatId,
+                        FKProdCatgId = cou.FKProdCatgId,
                         FKTaxID = cou.FKTaxID,
                         HSNCode = cou.HSNCode,
                         FkBrandId = cou.FkBrandId,
@@ -147,6 +136,7 @@ namespace SSRepository.Repository.Master
                         CodingScheme = cou.CodingScheme,
                         FkUnitId= cou.FkUnitId
                     })).FirstOrDefault();
+
             return data;
         }
         public object GetDrpProduct(int pageno, int pagesize, string search = "", long FkCatId = 0)
@@ -229,13 +219,10 @@ namespace SSRepository.Repository.Master
             Tbl.NameToPrint = model.NameToPrint;
             Tbl.Image = model.Image;
             Tbl.Alias = model.Alias;
-            Tbl.ArticleNumber = model.ArticleNumber;
-            Tbl.ArticleType = model.ArticleType;
             Tbl.Strength = model.Strength;
             Tbl.Barcode = model.Barcode;
             Tbl.Status = model.Status;
-            Tbl.FkCatGroupId = model.FkCatGroupId;
-            Tbl.FkCatId = model.FkCatId;
+            Tbl.FKProdCatgId = model.FKProdCatgId;
             Tbl.FKTaxID = model.FKTaxID;
             Tbl.HSNCode = model.HSNCode;
             Tbl.FkBrandId = model.FkBrandId;
@@ -254,10 +241,12 @@ namespace SSRepository.Repository.Master
             Tbl.ProdConv2 = model.ProdConv2;
             Tbl.Unit3 = model.Unit3;
             Tbl.MRP = model.MRP;
+            Tbl.MRPSaleRateUnit = "";
             Tbl.SaleRate = model.SaleRate;
             Tbl.TradeRate = model.TradeRate;
             Tbl.DistributionRate = model.DistributionRate;
             Tbl.PurchaseRate = model.PurchaseRate;
+            Tbl.PurchaseRateUnit = "";
             Tbl.KeepStock = model.KeepStock;
             Tbl.DateModified = DateTime.Now;
             Tbl.Genration = model.Genration;
@@ -265,6 +254,15 @@ namespace SSRepository.Repository.Master
             Tbl.FkUnitId = model.FkUnitId;
             if (Mode == "Create")
             {
+                var data = __dbContext.TblProductMas.OrderByDescending(u => u.PkProductId).FirstOrDefault();
+                if (data != null)
+                {
+                    Tbl.PkProductId = data.PkProductId + 1;
+                }
+                else
+                {
+                    Tbl.PkProductId = 1;
+                }
                 Tbl.Src = model.src;
                 Tbl.FKUserId = model.FKUserId;
                 Tbl.DateCreated = DateTime.Now;
@@ -285,14 +283,11 @@ namespace SSRepository.Repository.Master
         {
             var list = new List<ColumnStructure>
             {
-                new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Article Name", Fields="Product",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Name", Fields="Product",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Alias", Fields="Alias",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Article Type", Fields="ArticleType",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Article No.", Fields="ArticleNumber",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Strength", Fields="Strength",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Barcode", Fields="Barcode",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Status", Fields="Status",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Section Group", Fields="CategoryGroupName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Section", Fields="CategoryName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="HSNCode", Fields="HSNCode",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Brand", Fields="BrandName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
@@ -304,6 +299,12 @@ namespace SSRepository.Repository.Master
 
             };
             return list;
+        }
+
+        public List<CategoryModel> prodCatgList(int pageSize, int pageNo = 1, string search = "")
+        {
+            CategoryRepository rep = new CategoryRepository(__dbContext);
+            return rep.GetList(pageSize, pageNo, search);
         }
 
 

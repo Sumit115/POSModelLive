@@ -16,9 +16,9 @@ namespace SSRepository.Repository.Transaction
     {
         public PurchaseInvoiceRepository(AppDbContext dbContext) : base(dbContext)
         {
-            SaveSP = "usp_PurchaseInvoiceAddUpd";
-            GetSP = "usp_PurchaseInvoiceList";
-            GetById = "usp_PurchaseById";
+            SPAddUpd = "usp_PurchaseInvoiceAddUpd";
+            SPList = "usp_PurchaseInvoiceList";
+            SPById = "usp_PurchaseInvoiceById";
         }
 
         public override string ValidData(TransactionModel objmodel)
@@ -37,8 +37,12 @@ namespace SSRepository.Repository.Transaction
             if (PkId > 0)
             {
                 string ErrMsg = "";
-                data = JsonConvert.DeserializeObject<TransactionModel>(GetData(PkId, FkSeriesId, ref ErrMsg));
-
+                string dd = GetData(PkId, FkSeriesId, ref ErrMsg);
+                if (dd != null)
+                {
+                    List<TransactionModel> aa = JsonConvert.DeserializeObject<List<TransactionModel>>(dd);
+                    data = aa[0];
+                }
             }
             else
             {

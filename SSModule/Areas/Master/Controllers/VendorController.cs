@@ -67,7 +67,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
-            VendorModel Model = new VendorModel();
+            PartyModel Model = new PartyModel();
             try
             {
                 ViewBag.PageType = "";
@@ -98,7 +98,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(VendorModel model)
+        public async Task<IActionResult> Create(PartyModel model)
         {
             try
             {
@@ -107,11 +107,11 @@ namespace SSAdmin.Areas.Master.Controllers
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
-                    if (model.PkVendorId > 0)
+                    if (model.PkId > 0)
                     {
                         Mode = "Edit";
                     }
-                    Int64 ID = model.PkVendorId;
+                    Int64 ID = model.PkId;
                     string error = await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {

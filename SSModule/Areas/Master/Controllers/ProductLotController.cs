@@ -22,17 +22,11 @@ namespace SSAdmin.Areas.Master.Controllers
     {
         private readonly IProductLotRepository _repository;
         private readonly IProductRepository _productRepository;
-        private readonly ICategoryGroupRepository _categoryGroupRepository;
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly IBrandRepository _brandRepository;
 
-        public ProductLotController(IProductLotRepository repository, IProductRepository productRepository, ICategoryGroupRepository categoryGroupRepository, ICategoryRepository categoryRepository, IBrandRepository brandRepository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
+        public ProductLotController(IProductLotRepository repository, IProductRepository productRepository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
             _repository = repository;
             _productRepository = productRepository;
-            _categoryGroupRepository = categoryGroupRepository;
-            _categoryRepository = categoryRepository;
-            _brandRepository = brandRepository;
             FKFormID = (long)Handler.Form.ProductLot;
         }
 
@@ -40,16 +34,10 @@ namespace SSAdmin.Areas.Master.Controllers
         public async Task<IActionResult> Create()
         {
             var Model = new ProdLotDtlModel();
-            ViewBag.CategoryList = _categoryRepository.GetDrpCategory(1000);
-            var prdList = new List<ProductModel>();
-            prdList.Insert(0, new ProductModel { PkProductId = 0, Product = "Select" });
-            ViewBag.ProductList = prdList;
-
             return View(Model);
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ProdLotDtlModel model)
+        public async Task<JsonResult> Create( ProdLotDtlModel model)
         {
             try
             {
@@ -68,11 +56,6 @@ namespace SSAdmin.Areas.Master.Controllers
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
-                    //if (model.PkProductId > 0)
-                    //{
-                    //    Mode = "Edit";
-                    //}
-                    //Int64 ID = model.PkProductId;
                     string error = await _repository.CreateAsync(model, Mode, 0);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {
@@ -81,8 +64,7 @@ namespace SSAdmin.Areas.Master.Controllers
                     else
                     {
                         var _md = model;
-                        model = new ProdLotDtlModel();
-                        model.FkCatId = _md.FkCatId;
+                        model = new ProdLotDtlModel();                        
                         model.FKProductId = _md.FKProductId;
                         //   return RedirectToAction(nameof(Create));
                     }
@@ -102,16 +84,8 @@ namespace SSAdmin.Areas.Master.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
             }
-            ViewBag.CategoryList = _categoryRepository.GetDrpCategory(1000);
-            if (model.FkCatId > 0) { 
-                ViewBag.ProductList = _productRepository.GetDrpProduct(1000, 1, "", (long)model.FkCatId); }
-            else
-            {
-                var prdList = new List<ProductModel>();
-                prdList.Insert(0, new ProductModel { PkProductId = 0, Product = "Select" });
-                ViewBag.ProductList = prdList;
-            };
-            return View(model);
+            ResModel res = new ResModel();
+            return new JsonResult(res);
         }
 
         [HttpPost]
@@ -130,7 +104,11 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
 
-
+        [HttpPost]
+        public object FKProductId(int pageSize, int pageNo = 1, string search = "")
+        {
+            return _productRepository.GetList(pageSize, pageNo, search);
+        }
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {
             return _repository.ColumnList(GridName);

@@ -11,4 +11,11 @@ namespace SSRepository.Models
         public string Response { get; set; }
         public long ID { get; set; }
     }
+
+    public class ResModel
+    {
+        public string status { get; set; }
+        public object data { get; set; }
+        public string msg { get; set; }
+    }
 }

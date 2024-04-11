@@ -165,12 +165,6 @@ namespace SSAdmin.Areas.Master.Controllers
             return response;
         }
 
-        [HttpPost]
-        public async Task<JsonResult> GetDrpCategoryByGroupId(int CategoryGroupId)
-        {
-            var data = _repository.GetDrpCategoryByGroupId(CategoryGroupId,1000);
-            return new JsonResult(data);
-        }
 
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {

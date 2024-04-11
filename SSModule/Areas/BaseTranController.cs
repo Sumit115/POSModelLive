@@ -63,8 +63,8 @@ namespace SSAdmin.Areas
         {
             return _repository.ColumnList(GridName);
         }
-        
 
+        [HttpPost]
         public JsonResult SetParty(TransactionModel model, long FkPartyId)
         {
             return Json(new
@@ -74,16 +74,28 @@ namespace SSAdmin.Areas
             });
 
         }
+
         [HttpPost]
         public object FkPartyId(int pageSize, int pageNo = 1, string search = "")
         {
-            return _repository.PartyList(pageSize, pageNo, search);
+            return _repository.PartyList(pageSize, pageNo, search, TranType);
         }
 
         [HttpPost]
         public object FKSeriesId(int pageSize, int pageNo = 1, string search = "")
         {
             return _repository.SeriesList(pageSize, pageNo, search, TranAlias);
+        }
+
+        [HttpPost]
+        public JsonResult SetSeries(TransactionModel model, long FKSeriesId)
+        {
+            return Json(new
+            {
+                status = "success",
+                data = _repository.SetSeries(model, FKSeriesId)
+            });
+
         }
     }
 }

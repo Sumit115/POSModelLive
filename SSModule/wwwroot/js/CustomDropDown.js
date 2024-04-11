@@ -6,7 +6,8 @@
  **/
 
 
-var arrCusDrpHideColumn = ['CreationDate', 'DATE_MODIFIED'];
+var arrCusDrpHideColumn = ['DateCreated', 'DATE_CREATED', 'DATE_MODIFIED', 'DateModified', 'UserName', 'FKUserId','src'];
+
 var typingTimer;
 var custypingTimer;
 var doneTypingInterval = 1000;
@@ -170,8 +171,8 @@ function CustomDDL(ctrlId, spn) {
                 if (PageNo === 1) {
                     html = "<li index='-1'><a href='javascript: void(0)'> <table> <thead> <tr>";
                     $.each(cols, function (index, item) {
-                        if (index > 0 && arrCusDrpHideColumn.indexOf(item) === -1)
-                            html += "<th>" + item + "</th>";
+                        if (index > 0 && arrCusDrpHideColumn.indexOf(item) === -1 && !Handler.startWith(item, 'FK'))
+                            html += "<th>" + Handler.convertToSpace(item) + "</th>";
                     });
                     html += "</tr> </thead></table></a> </li>";
                 }
@@ -187,7 +188,7 @@ function CustomDDL(ctrlId, spn) {
                     }
 
                     $.each(cols, function (innerIndex, innerItem) {
-                        if (innerIndex > 0 && arrCusDrpHideColumn.indexOf(innerItem) === -1) {
+                        if (innerIndex > 0 && arrCusDrpHideColumn.indexOf(innerItem) === -1 && !Handler.startWith(innerItem, 'FK')) {
                             if (item[innerItem] === null)
                                 html += "<td class=clsdrp" + innerItem + ">&nbsp;</td>";
                             else

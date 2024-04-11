@@ -1,193 +1,224 @@
-﻿@model SSRepository.Models.CustomerModel
+﻿@model SSRepository.Models.PartyModel
 
 @{
     ViewData["Title"] = "Create";
     ViewData["bdClass"] = "page";
-    }
+}
 <div class="p-3">
     <form asp-action="Create" class="row g-3" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkCustomerId" />
+        <input type="hidden" asp-for="PkId" />
         <input type="hidden" asp-for="IsAadharVerify" />
         <input type="hidden" asp-for="IsPanVerify" />
         <input type="hidden" asp-for="Status" />
         <div class="row">
+            <div class="col-md-6">
+                <div class="row">
 
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label asp-for="Name" class="control-label"></label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label asp-for="Mobile" class="control-label"></label>
-                    <input asp-for="Mobile" class="form-control input-number" pattern="Mobile" maxlength="10" />
-                    <span asp-validation-for="Mobile" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Email</label>
-                    <input asp-for="Email" class="form-control" pattern="Email" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="col-md-4" style="display:none">
-                <div class="form-group">
-                    <label class="control-label">Marital</label>
-                    <div class="d-flex">
-                        <div class="radio-class mr-3">
-                            <input asp-for="Marital" class="radios__input" name="Marital" id="MaritalSingle" type="radio" value="Single" checked>
-                            <label class="label" for="MaritalSingle">Single</label>
-                        </div>
-                        <div class="radios__item mr-3">
-                            <input asp-for="Marital" class="radios__input" name="Marital" id="MaritalMarried" type="radio" value="Married">
-                            <label class="label" for="MaritalMarried">Married</label>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label asp-for="Name" class="control-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                     </div>
-                    <span asp-validation-for="Marital" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4" style="display:none">
-                <div class="form-group">
-                    <label class="control-label">Gender</label>
-                    <div class="d-flex">
-                        <div class="radio-class mr-3">
-                            <input asp-for="Gender" class="radios__input" name="Gender" id="GenderMale" type="radio" value="Male" checked>
-                            <label class="label" for="GenderMale">Male</label>
-                        </div>
-                        <div class="radios__item mr-3">
-                            <input asp-for="Gender" class="radios__input" name="Gender" id="GenderFemale" type="radio" value="Female">
-                            <label class="label" for="GenderFemale">Female</label>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">ALIAS</label>
+                            <input asp-for="Code" class="form-control" />
+                            <span asp-validation-for="Code" class="text-danger"></span>
                         </div>
                     </div>
-                    <span asp-validation-for="Gender" class="text-danger"></span>
+                    <div class="col-md-4 pt-2">
+                        <input type="button" value="Auto Generate " class="btn btn-warning">
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Address</label>
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                    </div>
 
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">State</label>
+                            <select asp-for="StateName" asp-items="@(new SelectList(ViewBag.StateList,"Value","Text"))" class="form-control" onchange="BindCity()">
+                            </select>
+                            <span asp-validation-for="StateName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">City</label>
+                            <select asp-for="FkCityId" class="form-control">
+                                <option value="">-Select-</option>
+                            </select>
+                            <span asp-validation-for="FkCityId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Pin</label>
+                            <input asp-for="Pin" class="form-control  input-number" maxlength="6" pattern="PinCode" />
+                            <span asp-validation-for="Pin" class="text-danger"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label class="control-label">Dob</label>
-                    <input asp-for="Dob" class="form-control" />
-                    <span asp-validation-for="Dob" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label class="control-label">Aadhar No</label>
-                    <input asp-for="Aadhar" class="form-control  input-number" maxLength="12" data-inputmask="'mask': '9999-9999-9999'" />
-                    <span asp-validation-for="Aadhar" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label class="control-label">Pan No.</label>
-                    <input asp-for="Panno" class="form-control" pattern="Pan" maxlength="12" />
-                    <span asp-validation-for="Panno" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label class="control-label">GSTIN</label>
-                    <input asp-for="Gstno" class="form-control" maxlength="18" />
-                    <span asp-validation-for="Gstno" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label class="control-label">Address</label>
-                    <input asp-for="Address" class="form-control" />
-                    <span asp-validation-for="Address" class="text-danger"></span>
+            <div class="col-md-6">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Mobile" class="control-label"></label>
+                            <input asp-for="Mobile" class="form-control input-number" pattern="Mobile" maxlength="10" />
+                            <span asp-validation-for="Mobile" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Email</label>
+                            <input asp-for="Email" class="form-control" pattern="Email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6" style="display:none">
+                        <div class="form-group">
+                            <label class="control-label">Marital</label>
+                            <div class="d-flex">
+                                <div class="radio-class mr-3">
+                                    <input asp-for="Marital" class="radios__input" name="Marital" id="MaritalSingle" type="radio" value="Single" checked>
+                                    <label class="label" for="MaritalSingle">Single</label>
+                                </div>
+                                <div class="radios__item mr-3">
+                                    <input asp-for="Marital" class="radios__input" name="Marital" id="MaritalMarried" type="radio" value="Married">
+                                    <label class="label" for="MaritalMarried">Married</label>
+                                </div>
+                            </div>
+                            <span asp-validation-for="Marital" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6" style="display:none">
+                        <div class="form-group">
+                            <label class="control-label">Gender</label>
+                            <div class="d-flex">
+                                <div class="radio-class mr-3">
+                                    <input asp-for="Gender" class="radios__input" name="Gender" id="GenderMale" type="radio" value="Male" checked>
+                                    <label class="label" for="GenderMale">Male</label>
+                                </div>
+                                <div class="radios__item mr-3">
+                                    <input asp-for="Gender" class="radios__input" name="Gender" id="GenderFemale" type="radio" value="Female">
+                                    <label class="label" for="GenderFemale">Female</label>
+                                </div>
+                            </div>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Dob</label>
+                            <input asp-for="Dob" class="form-control" />
+                            <span asp-validation-for="Dob" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Aadhar No</label>
+                            <input asp-for="Aadhar" class="form-control  input-number" maxLength="12" data-inputmask="'mask': '9999-9999-9999'" />
+                            <span asp-validation-for="Aadhar" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Pan No.</label>
+                            <input asp-for="Panno" class="form-control" pattern="Pan" maxlength="12" />
+                            <span asp-validation-for="Panno" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">GSTIN</label>
+                            <input asp-for="Gstno" class="form-control" maxlength="18" />
+                            <span asp-validation-for="Gstno" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Discount</label>
+                            <input asp-for="Disc" class="form-control" maxlength="18" />
+                            <span asp-validation-for="Disc" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">State</label>
-                    <select asp-for="StateName" asp-items="@(new SelectList(ViewBag.StateList,"Value","Text"))" class="form-control" onchange="BindCity()">
-                    </select>
-                    <span asp-validation-for="StateName" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">City</label>
-                    <select asp-for="FkCityId" class="form-control">
-                        <option value="">-Select-</option>
-                    </select>
-                    <span asp-validation-for="FkCityId" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Pin</label>
-                    <input asp-for="Pin" class="form-control  input-number" maxlength="6" pattern="PinCode" />
-                    <span asp-validation-for="Pin" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Aadhar Card Front Image</label>
-                    <input type="file" id="file_AadharCardFront" onchange="return UploadImage('AadharCardFront')" accept="image/*" class="requied d-block" />
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Aadhar Card Front Image</label>
+                            <input type="file" id="file_AadharCardFront" onchange="return UploadImage('AadharCardFront')" accept="image/*" class="requied d-block" />
 
-                    <input asp-for="AadharCardFront" type="hidden" />
-                    <img id="dummyimage_AadharCardFront" class="img-md img-avatar" style="height: 50px;width: 50px; @(string.IsNullOrEmpty(Model.AadharCardFront)?"display:none":"")" src="@Model.AadharCardFront" />
+                            <input asp-for="AadharCardFront" type="hidden" />
+                            <img id="dummyimage_AadharCardFront" class="img-md img-avatar" style="height: 50px;width: 50px; @(string.IsNullOrEmpty(Model.AadharCardFront)?"display:none":"")" src="@Model.AadharCardFront" />
 
-                    <span asp-validation-for="AadharCardFront" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Aadhar Card Back Image</label>
-                    <input type="file" id="file_AadharCardBack" onchange="return UploadImage('AadharCardBack')" accept="image/*" class="requied d-block" />
+                            <span asp-validation-for="AadharCardFront" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Aadhar Card Back Image</label>
+                            <input type="file" id="file_AadharCardBack" onchange="return UploadImage('AadharCardBack')" accept="image/*" class="requied d-block" />
 
-                    <input asp-for="AadharCardBack" type="hidden" />
-                    <img id="dummyimage_AadharCardBack" class="img-md img-avatar" style="height: 50px;width: 50px; @(string.IsNullOrEmpty(Model.AadharCardBack)?"display:none":"")" src="@Model.AadharCardBack" />
-                    <span asp-validation-for="AadharCardBack" class="text-danger"></span>
-                </div>
-            </div>
-           
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Pan Card Image</label>
-                    <input type="file" id="file_PanCard" onchange="return UploadImage('PanCard')" accept="image/*" class="requied d-block" />
+                            <input asp-for="AadharCardBack" type="hidden" />
+                            <img id="dummyimage_AadharCardBack" class="img-md img-avatar" style="height: 50px;width: 50px; @(string.IsNullOrEmpty(Model.AadharCardBack)?"display:none":"")" src="@Model.AadharCardBack" />
+                            <span asp-validation-for="AadharCardBack" class="text-danger"></span>
+                        </div>
+                    </div>
 
-                    <input asp-for="PanCard" type="hidden" />
-                    <img id="dummyimage_PanCard" class="img-md img-avatar" style="height: 50px;width: 50px; @(string.IsNullOrEmpty(Model.PanCard)?"display:none":"")" src="@Model.PanCard" />
-                    <span asp-validation-for="PanCard" class="text-danger"></span>
-                </div>
-            </div>
-          
-            <div class="col-md-4" style="display:none">
-                <div class="form-group">
-                    <label class="control-label">Passport Image</label>
-                    <input type="file" id="file_Passport" onchange="return UploadImage('Passport')" accept="image/*" class="requied d-block" />
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Pan Card Image</label>
+                            <input type="file" id="file_PanCard" onchange="return UploadImage('PanCard')" accept="image/*" class="requied d-block" />
 
-                    <input asp-for="Passport" type="hidden" />
-                    <img id="dummyimage_Passport" class="img-md img-avatar" style="height: 50px;width: 50px; @(string.IsNullOrEmpty(Model.Passport)?"display:none":"")" src="@Model.Passport" />
-                    <span asp-validation-for="Passport" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4" style="display:none">
-                <div class="form-group">
-                    <label class="control-label">Signature Image</label>
-                    <input type="file" id="file_Signature" onchange="return UploadImage('Signature')" accept="image/*" class="requied d-block" />
+                            <input asp-for="PanCard" type="hidden" />
+                            <img id="dummyimage_PanCard" class="img-md img-avatar" style="height: 50px;width: 50px; @(string.IsNullOrEmpty(Model.PanCard)?"display:none":"")" src="@Model.PanCard" />
+                            <span asp-validation-for="PanCard" class="text-danger"></span>
+                        </div>
+                    </div>
 
-                    <input asp-for="Signature" type="hidden" />
-                    <img id="dummyimage_Signature" class="img-md img-avatar " style="height: 50px;width: 50px;@(string.IsNullOrEmpty(Model.Signature)?"display:none":"")" src="@Model.Signature" />
-                    <span asp-validation-for="Signature" class="text-danger"></span>
+                    <div class="col-md-4" style="display:none">
+                        <div class="form-group">
+                            <label class="control-label">Passport Image</label>
+                            <input type="file" id="file_Passport" onchange="return UploadImage('Passport')" accept="image/*" class="requied d-block" />
+
+                            <input asp-for="Passport" type="hidden" />
+                            <img id="dummyimage_Passport" class="img-md img-avatar" style="height: 50px;width: 50px; @(string.IsNullOrEmpty(Model.Passport)?"display:none":"")" src="@Model.Passport" />
+                            <span asp-validation-for="Passport" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4" style="display:none">
+                        <div class="form-group">
+                            <label class="control-label">Signature Image</label>
+                            <input type="file" id="file_Signature" onchange="return UploadImage('Signature')" accept="image/*" class="requied d-block" />
+
+                            <input asp-for="Signature" type="hidden" />
+                            <img id="dummyimage_Signature" class="img-md img-avatar " style="height: 50px;width: 50px;@(string.IsNullOrEmpty(Model.Signature)?"display:none":"")" src="@Model.Signature" />
+                            <span asp-validation-for="Signature" class="text-danger"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
     </form>
 </div>
 
-@section Scripts{
+@section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
@@ -218,7 +249,7 @@
     </script>
     <script>
         function BindCity(CityId) {
-            
+
             var StateName = $("#StateName").val();
             $("#FkCityId").empty();
             //
@@ -246,4 +277,4 @@
             } else { $("#FkCityId").append("<option value=''>-Select-</option>"); }
         }
     </script>
-    }
+}

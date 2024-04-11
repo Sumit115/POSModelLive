@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace SSRepository.Models
 {
-     public class PartyModel : BaseModel
+
+    public class PartyModel : BaseModel
     {
-        public long PkPartyId { get; set; }
-        
+        public long PkId { get; set; }
+
         [StringLength(10)]
         [Display(Name = "Code")]
         public string? Code { get; set; }
@@ -30,7 +31,7 @@ namespace SSRepository.Models
         public string? Email { get; set; }
 
         [Phone]
-        public string  Mobile { get; set; }
+        public string? Mobile { get; set; }
 
         public string? Aadhar { get; set; }
 
@@ -52,5 +53,13 @@ namespace SSRepository.Models
         public int? IsPanVerify { get; set; }
 
         public int? Status { get; set; }
+
+        public string? Address { get; set; }
+        public string? StateName { get; set; }
+        public int? FkCityId { get; set; }
+        public string? City { get; set; }
+        public string? Pin { get; set; }
+
+        public decimal Disc { get; set;}
     }
 }

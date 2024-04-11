@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace SSRepository.Models
 {
-    public class CustomerModel : BaseModel
+    //replace by
+    public class CustomerModelOld : BaseModel
     {
         public long PkCustomerId { get; set; }
 

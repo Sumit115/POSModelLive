@@ -25,9 +25,9 @@ namespace SSRepository.Repository.Transaction
         //public string TranAlias = "";
         //public string StockFlag = "";
         //public bool PostInAc = false;
-        public string SaveSP = "";
-        public string GetSP = "";
-        public string GetById = "";
+        public string SPAddUpd = "";
+        public string SPList = "";
+        public string SPById = "";
         
         public TranBaseRepository(AppDbContext dbContext) : base(dbContext)
         {
@@ -61,7 +61,7 @@ namespace SSRepository.Repository.Transaction
             using (SqlConnection con = new SqlConnection(conn))
             {
                 con.Open();
-                SqlCommand cmd = new SqlCommand(SaveSP, con);
+                SqlCommand cmd = new SqlCommand(SPAddUpd, con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@JsonData", JsonConvert.SerializeObject(JsonData));
 
@@ -72,19 +72,17 @@ namespace SSRepository.Repository.Transaction
                 Id = Convert.ToInt64(cmd.Parameters["@OutParam"].Value);
                 SeriesNo = Convert.ToInt64(cmd.Parameters["@SeriesNo"].Value);
                 ErrMsg = Convert.ToString(cmd.Parameters["@ErrMsg"].Value);
-
                 con.Close();
-
             }
-
         }
+
         public DataTable GetList(string FromDate, string ToDate, string SeriesFilter = "")
         {
             DataTable dt = new DataTable();
             using (SqlConnection con = new SqlConnection(conn))
             {
                 con.Open();
-                SqlCommand cmd = new SqlCommand(GetSP, con);
+                SqlCommand cmd = new SqlCommand(SPList, con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@FromDate", FromDate);
                 cmd.Parameters.AddWithValue("@ToDate", ToDate);
@@ -105,7 +103,7 @@ namespace SSRepository.Repository.Transaction
             using (SqlConnection con = new SqlConnection(conn))
             {
                 con.Open();
-                SqlCommand cmd = new SqlCommand(GetSP, con);
+                SqlCommand cmd = new SqlCommand(SPById, con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@PkId", PkId);
                 cmd.Parameters.AddWithValue("@FkSeriesId", FkSeriesId);
@@ -138,7 +136,7 @@ namespace SSRepository.Repository.Transaction
                 }
                 if (fieldName == "Delete")
                 {
-                    model.TranDetails[rowIndex].mode = 2;
+                    model.TranDetails[rowIndex].ModeForm = 2;
                 }
                 CalculateExe(model);
                 setGridTotal(model);
@@ -156,7 +154,7 @@ namespace SSRepository.Repository.Transaction
                 {
                     detail.FkProductId = product.PkProductId;
                     detail.Qty = 1;
-                    detail.mode = 0;//0=Add,1=Edit,2=Delete 
+                    detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
                     var _lotEntity = __dbContext.TblProdLotDtl.Where(x => x.FKProductId == product.PkProductId).FirstOrDefault();
                     if (_lotEntity != null)
                     {
@@ -247,7 +245,7 @@ namespace SSRepository.Repository.Transaction
         }
         public void CalculateExe(TransactionModel model)
         {
-            foreach (var item in model.TranDetails.Where(x => x.mode != 2))
+            foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2))
             {
                 item.GrossAmt = Math.Round(item.Rate * item.Qty, 2);
                 item.GstAmt = Math.Round(item.GrossAmt * item.GstRate / 100, 2);
@@ -259,8 +257,8 @@ namespace SSRepository.Repository.Transaction
 
         public void setGridTotal(TransactionModel model)
         {
-            model.GrossAmt = Math.Round(model.TranDetails.Where(x => x.mode != 2).Sum(x => x.GrossAmt), 2);
-            model.TaxAmt = Math.Round(model.TranDetails.Where(x => x.mode != 2).Sum(x => x.GstAmt), 2);
+            model.GrossAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.GrossAmt), 2);
+            model.TaxAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.GstAmt), 2);
             model.CashDiscountAmt = 0;
             if (model.CashDiscType == "R" && model.CashDiscount > 0 && model.CashDiscount <= model.GrossAmt) { Math.Round(model.CashDiscountAmt = model.CashDiscount, 2); }
             else if (model.CashDiscType == "P" && model.CashDiscount > 0 && model.CashDiscount <= 100) { model.CashDiscountAmt = Math.Round((model.GrossAmt * model.CashDiscount / 100), 2); }
@@ -283,10 +281,28 @@ namespace SSRepository.Repository.Transaction
             return model;
         }
 
+        public List<PartyModel> PartyList(int pageSize, int pageNo = 1, string search = "", string TranType = "")
+        {
+            if (TranType == "P")
+            {
+                VendorRepository rep = new VendorRepository(__dbContext);
+                return rep.GetList(pageSize, pageNo, search);
+            }
+            else
+            {
+                CustomerRepository rep = new CustomerRepository(__dbContext);
+                return rep.GetList(pageSize, pageNo, search);
+            }
+        }
 
         public object SetParty(TransactionModel model, long FkPartyId)
         {
-            var vendor = GetVendor(FkPartyId);
+            var vendor = new PartyModel();
+            if(model.ExtProperties.TranAlias == "PINV")
+                vendor = GetVendor(FkPartyId);
+            else
+                vendor = GetCustomer(FkPartyId);
+
             if (vendor != null)
             { 
                 model.PartyAddress = vendor.Address == null ? "" : vendor.Address.ToString();  
@@ -300,13 +316,13 @@ namespace SSRepository.Repository.Transaction
             return model;
         }
 
-        public VendorModel? GetVendor(long PkVendorId)
+        public PartyModel? GetVendor(long PkVendorId)
         {
-            VendorModel? data = (from cou in __dbContext.TblVendorMas
+            PartyModel? data = (from cou in __dbContext.TblVendorMas
                         where cou.PkVendorId == PkVendorId
-                        select (new VendorModel
+                        select (new PartyModel
                         {
-                            PkVendorId = cou.PkVendorId,
+                            PkId = cou.PkVendorId,
                             Name = cou.Name,
                             Mobile = cou.Mobile,
                             Address = cou.Address,
@@ -315,6 +331,50 @@ namespace SSRepository.Repository.Transaction
                        )).FirstOrDefault();
             return data;
         }
+
+        public PartyModel? GetCustomer(long PkId)
+        {
+            PartyModel? data = (from cou in __dbContext.TblCustomerMas
+                                 where cou.PkCustomerId == PkId
+                                 select (new PartyModel
+                                 {
+                                     PkId = cou.PkCustomerId,
+                                     Name = cou.Name,
+                                     Mobile = cou.Mobile,
+                                     Address = cou.Address,
+                                     Gstno = cou.Gstno
+                                 }
+                                )).FirstOrDefault();
+            return data;
+        }
+
+        public object SetSeries(TransactionModel model, long FKSeriesId)
+        {
+            var obj = GetSeries(FKSeriesId);
+            if (obj != null)
+            {
+                model.SeriesName = obj.Series == null ? "" : obj.Series.ToString();
+                model.FKLocationID = obj.FkBranchId;
+                model.FKSeriesId = FKSeriesId;
+
+            }
+            return model;
+        }
+
+        public SeriesModel? GetSeries(long FKSeriesId)
+        {
+            SeriesModel? data = (from cou in __dbContext.TblSeriesMas
+                                 where cou.PkSeriesId == FKSeriesId
+                                 select (new SeriesModel
+                                 {
+                                     PkSeriesId = cou.PkSeriesId,
+                                     Series = cou.Series,
+                                     FkBranchId= cou.FkBranchId
+                                 }
+                                )).FirstOrDefault();
+            return data;
+        }
+
 
         public List<ProdLotDtlModel> Get_ProductLotDtlList(int PKProductId,string Batch, string Color)
         {
@@ -352,8 +412,8 @@ namespace SSRepository.Repository.Transaction
                                               Remarks = cou.Remarks,
                                               FKUserId = cou.FKUserId,
                                               src = cou.Src,
-                                              DATE_MODIFIED = cou.DateModified,
-                                              DATE_CREATED = cou.DateCreated,
+                                              DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
+                                              DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
                                           }
                                          )).ToList();
             return data;
@@ -390,8 +450,8 @@ namespace SSRepository.Repository.Transaction
                 data.InTrnFKSeriesID = entity.odr.InTrnFKSeriesID;
                 data.InTrnsno = entity.odr.InTrnsno;
                 data.Remarks = entity.odr.Remarks;
-                data.DATE_MODIFIED = entity.odr.DateModified;
-                data.DATE_CREATED = entity.odr.DateCreated;
+                data.DateModified = entity.odr.DateModified.ToString("dd-MMM-yyyy");
+                data.DateCreated = entity.odr.DateCreated.ToString("dd-MMM-yyyy");
                 data.src = entity.odr.Src;
                 data.FKUserId = entity.odr.FKUserId;
             }
@@ -446,11 +506,7 @@ namespace SSRepository.Repository.Transaction
             return list.OrderBy(x => x.Orderby).ToList();
         }
 
-        public List<VendorModel> PartyList(int pageSize, int pageNo = 1, string search = "")
-        {
-            VendorRepository rep = new VendorRepository(__dbContext);
-            return rep.GetList(pageSize, pageNo, search );
-        }
+       
 
         public List<ProductModel> ProductList()
         {

@@ -1,5 +1,5 @@
 ﻿
-var tran = null;
+var tranModel = null;
 $(document).ready(function () {
     $('#btnServerSave').click(function (e) {
         if ($("#loginform1").valid()) {
@@ -7,28 +7,34 @@ $(document).ready(function () {
         }
         return false;
     });
-  
+
     Load();
 
+    $(".FotChng").change(function () {
+        var fieldName = $(this).attr("id");
+        tranModel[fieldName] = $(this).val();
+        FooterChange(fieldName)
+    });
+
+    $(".trn").change(function () {
+        var fieldName = $(this).attr("id");
+        tranModel[fieldName] = $(this).val();
+    });
+
+    
+
 });
+
 function Load() {
     var PkId = $("#PkId").val();
-    tran = JSON.parse($("#hdData").val());
+    tranModel = JSON.parse($("#hdData").val());
     if (PkId > 0) {
-        // console.log(data.TranDetails);
-        //$('#FkPartyId').val(data.FkPartyId);
-        //$('#EntryDate').val(data.EntryDate);
-        //$('#GRDate').val(data.GRDate);
-        //$("#txtParty,input[placeholder='Search Party']").val(data.Party.Name);
-        //$('#PartyName').val(data.Party.Name);
-        //$('#PartyMobile').val(data.Party.Mobile);
-
-        $(data.TranDetails).each(function (i, v) {
+        $(tranModel.TranDetails).each(function (i, v) {
             v["ProductName"] = parseInt(v.FkProductId);
-            v["mode"] = 1;
+            v["ModeForm"] = 1;
             v["Delete"] = 'Delete';
         });
-        BindGrid('DDT', data.TranDetails);
+        BindGrid('DDT', tranModel.TranDetails);
     }
 
     else {
@@ -36,10 +42,11 @@ function Load() {
 
     }
 }
+
 function BindGrid(GridId, data) {
 
     $("#" + GridId).empty();
-    Common.Grid(tran.ExtProperties.FKFormID, "dtl", function (s) {
+    Common.Grid(tranModel.ExtProperties.FKFormID, "dtl", function (s) {
         var ProductList = JSON.parse($("#hdProductList").val());
         var ProductLotList = [];
         cg = new coGrid("#" + GridId);
@@ -50,7 +57,7 @@ function BindGrid(GridId, data) {
         cg.setAlign(s.Align);
         cg.defaultHeight = "300px";
         cg._MinRows = 50;
-        cg.setIdProperty("sno");
+        cg.setIdProperty("SrNo");
         cg.setCtrlType(s.setCtrlType);
         cg.setOptionArray(0, ProductList, "ProductName", false, "Product", "PkProductId", "1");
         cg.setOptionArray(9, ProductLotList, "Batch", false, "Batch", "PkLotId", "1");
@@ -82,7 +89,7 @@ function BindGrid(GridId, data) {
                 return true;
             else {
                 var hash = {};
-                var json = setdisablecolumn( cg, cc, hash, row, 0);
+                var json = setdisablecolumn(cg, cc, hash, row, 0);
                 cg.outGrid.setCellCssStyles("tRow" + String(row), hash);
                 if (json != {})
                     return json;
@@ -103,13 +110,13 @@ function BindGrid(GridId, data) {
 
                         Common.ajax(Handler.currentPath() + "ProductLotDtlList?FkProductId=" + FkProductId + "&Batch=" + Batch + "&Color=" + Color + "", {}, "Please Wait...", function (res) {
                             Handler.hide();
-                            
-                            
+
+
                             // cg.setOptionArray(args.cell, res, "Color", false, "Color", "Color", "1");
                             cg.setOptionArray(9, res, "Batch_Text", false, "Batch", "PkLotId", "1");
                             cg.setOptionArray(10, res, "Color_Text", false, "Color", "PkLotId", "1");
                             //  cg.setOptionArray(0, ProductList, "ProductName", false, "Product", "PkProductId", "1");
-                          //  cg.outGrid.gotoCell(args.row, args.cell, true)
+                            //  cg.outGrid.gotoCell(args.row, args.cell, true)
 
 
 
@@ -129,7 +136,7 @@ function BindGrid(GridId, data) {
         //---------------    ---------------   ---------------   ---------------/
         cg.outGrid.onCellChange.subscribe(function (e, args) {
             if (args.cell != undefined) {
-                
+
                 var field = cg.columns[args.cell].field;
                 if (field == "ProductName_Text") {
                     var FkProductId = Common.isNullOrEmpty(args.item["ProductName"]) ? 0 : parseFloat(args.item["ProductName"]);
@@ -141,7 +148,7 @@ function BindGrid(GridId, data) {
                     }
                     else {
                         alert("Product Already Add In List");
-                        cg_ClearRow(args); 
+                        cg_ClearRow(args);
                         return false;
                     }
                 }
@@ -188,30 +195,9 @@ function BindGrid(GridId, data) {
                 var field = cg.columns[args.cell].field;
 
                 var PkProductId = args.grid.getDataItem(args.row)["PkProductId"];
-                var sno = args.grid.getDataItem(args.row)["sno"];
+                var SrNo = args.grid.getDataItem(args.row)["SrNo"];
 
-                if (field == "Delete") {
-
-
-                    //if (PkProductId > 0) {
-
-                    //    var DeletedProductList = JSON.parse($("#hdDeletedProductList").val());
-                    //    DeletedProductList.push({ PkProductId: PkProductId });
-                    //    $("#hdDeletedProductList").val(JSON.stringify(DeletedProductList));
-                    //}
-                    ColumnChange(args, args.row, "Delete");
-                    //var data = $.grep(cg.getData(), function (e) {
-                    //    return e.sno != sno;
-                    //});
-
-                    //BindGrid('DDT', data);
-
-
-                }
-                //cg.updateRefreshDataRow(args.row);
-                //cg.updateAndRefreshTotal();
-
-                // //console.log(cg.getData());
+                
             }
         });
 
@@ -246,7 +232,7 @@ function BindGrid(GridId, data) {
             var command = $(e.target).attr("data");
             if (command == "EditColumn") {
 
-                Common.GridColSetup(tran.ExtProperties.FKFormID, '', function () {
+                Common.GridColSetup(tranModel.ExtProperties.FKFormID, '', function () {
                     var _dtl = GetDataFromGrid();
                     BindGrid('DDT', _dtl);
                 });
@@ -257,6 +243,7 @@ function BindGrid(GridId, data) {
         //---------------    ---------------   ---------------   ---------------/
     });
 }
+
 function cg_ClearRow(args) {
     args.item["PkId"] = 0;
     args.item["mode"] = 0;
@@ -277,99 +264,60 @@ function cg_ClearRow(args) {
     args.item["Batch_Text"] = "";
     args.item["Batch"] = "";
     args.item["SaleRate"] = "";
-    args.item["MfgDate"] = ""; 
+    args.item["MfgDate"] = "";
     cg.updateRefreshDataRow(args.row);
 }
+
 function ColumnChange(args, rowIndex, fieldName) {
 
-    Common.Get(".form", "", function (flag, _d) {
+    tranModel.TranDetails = GetDataFromGrid();
 
-        _d.PkId = $('#PkId').val();
-        _d.EntryDate = $('#EntryDate').val();
-        _d.TranDetails = GetDataFromGrid();
+    if (tranModel.TranDetails.length > 0) {
+        $.ajax({
+            type: "POST",
+            url: Handler.currentPath() + 'ColumnChange',
+            data: { model: tranModel, rowIndex: rowIndex, fieldName: fieldName },
+            datatype: "json",
+            success: function (res) {
 
-        if (_d.TranDetails.length > 0) {
-            $.ajax({
-                type: "POST",
-                url: Handler.currentPath() + 'ColumnChange',
-                data: { model: _d, rowIndex: rowIndex, fieldName: fieldName },
-                datatype: "json",
-                success: function (res) {
+                if (res.status == "success") {
+                    tranModel = res.data;
+                    setFooterData(tranModel)
+                    setGridRowData(args, tranModel.TranDetails, rowIndex, fieldName);
 
-                    if (res.status == "success") {
-                        // //console.log(res.data);
-                        setFooterData(res.data)
-                        setGridRowData(args, res.data.TranDetails, rowIndex, fieldName);
-
-                    }
-                    else
-                        alert(res.msg);
                 }
-            });
-        }
-
-    });
+                else
+                    alert(res.msg);
+            }
+        });
+    }
 }
+
 function FooterChange(fieldName) {
-
-    Common.Get(".form", "", function (flag, _d) {
-
-        _d.PkId = $('#PkId').val();
-        //_d.FkPartyId = $('#FkPartyId').val();
-        _d.EntryDate = $('#EntryDate').val();
-        // _d.GRDate = $('#GRDate').val(); 
-
-        _d.TranDetails = GetDataFromGrid();
-        if (_d.TranDetails.length > 0) {
-            ////console.log(_d);
-            $.ajax({
-                type: "POST",
-                url: Handler.currentPath() + 'FooterChange',
-                data: { model: _d, fieldName: fieldName },
-                datatype: "json",
-                success: function (res) {
-
-                    if (res.status == "success") {
-
-                        //console.log(res.data);
-                        setFooterData(res.data)
-                        //setGridRowData(args, res.data.TranDetails, rowIndex, fieldName);
-                    }
-                    else
-                        alert(res.msg);
-                }
-            })
-
+    $.ajax({
+        type: "POST",
+        url: Handler.currentPath() + 'FooterChange',
+        data: { model: tranModel, fieldName: fieldName },
+        datatype: "json", success: function (res) {
+            if (res.status == "success") {
+                tranModel = res.data;
+                setFooterData(tranModel)
+            }
+            else
+                alert(res.msg);
         }
-
-    });
+    })
 }
+
 function setFooterData(data) {
-
-    //console.log(data);
-    Common.Set(".form", data, "", function () {
-
-        Common.InputFormat();
-    });
+    Common.Set(".trn-footer", data, "");
     return false;
-
 }
+
 function setGridRowData(args, data, rowIndex, fieldName) {
 
-    var sno = args.grid.getDataItem(args.row)["mode"];
-
-    //console.log(data);
-    //console.log(rowIndex);
-    //console.log(data[rowIndex].Rate);
-    //  args.item = data[args.row];
-    //args.item["qty"] = data[rowIndex].qty;
-    //args.item["pkId"] = 0;
-    //args.item["fkProductId"] = 0;
-    //args.item["productName_Text"] = "";
-    //args.item["product"] = 0;
     if (fieldName == 'Delete') {
-        //args.item["mode"] = 2;
-        args.grid.getDataItem(args.row).mode = 2
+        args.grid.getDataItem(args.row).ModeForm = 2
     }
     else {
         args.item["PkProductId"] = data[rowIndex].PkProductId;
@@ -381,51 +329,32 @@ function setGridRowData(args, data, rowIndex, fieldName) {
         args.item["GstRate"] = data[rowIndex].GstRate;
         args.item["GstAmt"] = data[rowIndex].GstAmt;
         args.item["NetAmt"] = data[rowIndex].NetAmt;
-        args.item["mode"] = data[rowIndex].mode;
+        args.item["ModeForm"] = data[rowIndex].ModeForm;
         args.item["Batch"] = data[rowIndex].Batch;
         args.item["Color"] = data[rowIndex].Color;
         args.item["MfgDate"] = data[rowIndex].MfgDate;
         args.item["ExpiryDate"] = data[rowIndex].ExpiryDate;
         args.item["SaleRate"] = data[rowIndex].SaleRate;
-        //  console.log(data[rowIndex].mode);
         args.item["Delete"] = 'Delete';
 
     }
     cg.updateRefreshDataRow(args.row);
     cg.updateAndRefreshTotal();
     return false;
-    //cg.outGrid.setData(data);
-    //  cg.updateRefreshData();
-    //  cg.updateRefreshDataRow(rowIndex);
-    //cg.updateRefreshDataRow(args.row);
 }
 
 function GetDataFromGrid(ifForsave) {
 
     var array = cg.getData().filter(x => x.FkProductId > 0);
-    let number = Math.max.apply(Math, array.map(function (o) { return o.sno; }));
-    let sno = number > 0 ? number : 0;
-    //  console.log(cg.getData());
-
+    let number = Math.max.apply(Math, array.map(function (o) { return o.SrNo; }));
+    let SrNo = number > 0 ? number : 0;
     var _d = [];
     cg.getData().filter(function (element) {
-        //console.log(element);
-
         if (ifForsave) {
-            
-            //if (element.mode != 2) {  }
-            if (element.ProductName == '' || element.ProductName == null || element.ProductName == undefined
-                //   || element.Price == '' || element.Price == null || element.Price == undefined
-                || element.Qty == '' || element.Qty == null || element.Qty == undefined
-                //|| element.Rate == '' || element.Rate == null || element.Rate == undefined
-                //|| element.GrossAmt == '' || element.GrossAmt == null || element.GrossAmt == undefined
-                //|| element.NetAmt == '' || element.NetAmt == null || element.NetAmt == undefined
-            ) {
-                
-            } else {
-                
-                if (element.FkProductId > 0) { element.sno = element.sno; }
-                else { sno++; element.sno = sno; }
+            if (!Handler.isNullOrEmpty(element.ProductName) && !Handler.isNullOrEmpty(element.Qty)) {
+
+                if (element.FkProductId > 0) { element.SrNo = element.SrNo; }
+                else { SrNo++; element.SrNo = SrNo; }
                 element.FkProductId = parseInt(element.ProductName);
                 _d.push(element);
                 return element
@@ -434,50 +363,35 @@ function GetDataFromGrid(ifForsave) {
         else {
 
 
-            if (element.ProductName == '' || element.ProductName == null || element.ProductName == undefined
-                ////   || element.Price == '' || element.Price == null || element.Price == undefined
-                //|| element.QTY == '' || element.QTY == null || element.QTY == undefined
-                //|| element.Rate == '' || element.Rate == null || element.Rate == undefined
-                //|| element.GrossAmt == '' || element.GrossAmt == null || element.GrossAmt == undefined
-                //|| element.NetAmt == '' || element.NetAmt == null || element.NetAmt == undefined
-            ) {
-
-            } else {
-
-                if (element.FkProductId > 0) { element.sno = element.sno; }
-                else { sno++; element.sno = sno; }
+            if (!Handler.isNullOrEmpty(element.ProductName)) {
+                if (element.FkProductId > 0) { element.SrNo = element.SrNo; }
+                else { SrNo++; element.SrNo = SrNo; }
                 element.FkProductId = parseInt(element.ProductName);
                 _d.push(element);
                 return element
             }
         }
-        //
-
-
     });
-    //console.log(_d);
-    //var filteredHomes = _d.filter(x => x.mode != 2);
-    //console.log(filteredHomes);
-
     return _d
 }
+
 function SaveRecord() {
     Common.Get(".form", "", function (flag, _d) {
         if (flag) {
-            _d.PkId = $('#PkId').val();
-            _d.FkPartyId = $('#FkPartyId').val();
-            _d.EntryDate = $('#EntryDate').val();
-            _d.GRDate = $('#GRDate').val();
-            _d.TranDetails = [];
-            if (_d.FkPartyId > 0) {
-                _d.TranDetails = GetDataFromGrid(true);
+            tranModel.PkId = $('#PkId').val();
+            tranModel.FkPartyId = $('#FkPartyId').val();
+            tranModel.EntryDate = $('#EntryDate').val();
+            tranModel.GRDate = $('#GRDate').val();
+            tranModel.TranDetails = [];
+            if (tranModel.FkPartyId > 0) {
+                tranModel.TranDetails = GetDataFromGrid(true);
 
-                var filteredDetails = _d.TranDetails.filter(x => x.mode != 2);
-                if (_d.TranDetails.length > 0 && filteredDetails.length > 0) {
+                var filteredDetails = tranModel.TranDetails.filter(x => x.ModeForm != 2);
+                if (tranModel.TranDetails.length > 0 && filteredDetails.length > 0) {
                     $.ajax({
                         type: "POST",
                         url: Handler.currentPath() + 'Create',
-                        data: { model: _d },
+                        data: { model: tranModel },
                         datatype: "json",
                         success: function (res) {
 
@@ -505,46 +419,59 @@ function setdisablecolumn(cg, cc, hash, index, type) {
     var focjson = {};
     var h = (hash[index] = {});
     var focu = {};
-    
+
     if (cc["mode"] == 1) {
         h["ProductName_Text"] = "sobc";
-        focu["ProductName_Text"] = { "focusable": false };        
+        focu["ProductName_Text"] = { "focusable": false };
     }
     else if (cc["mode"] == 2) {
-        for (k = 0; k < cg.columns.length - 2; k++) {            
+        for (k = 0; k < cg.columns.length - 2; k++) {
             h[cg.columns[k]["field"]] = "sdbc";
-            focu[cg.columns[k]["field"]] = { "focusable": false };           
+            focu[cg.columns[k]["field"]] = { "focusable": false };
         }
     }
     focjson["columns"] = focu;
     return focjson;
-
 }
-
 
 function setParty() {
     var FkPartyId = $("#FkPartyId").val();
-    var tran
     $.ajax({
         type: "POST",
         url: Handler.currentPath() + 'SetParty',
-        data: { model: tran, FkPartyId: FkPartyId },
+        data: { model: tranModel, FkPartyId: FkPartyId },
         datatype: "json",
         success: function (res) {
-
             if (res.status == "success") {
-                tran = res.data;   
-                $('#FkPartyId').val(tran.FkPartyId);
-                $('#drpFkPartyId').val(tran.PartyName);
-                $('#PartyGSTN').val(tran.PartyGSTN);
-                $('#PartyMobile').val(tran.PartyMobile);
-                $('#PartyAddress').val(tran.PartyAddress);
-                $('#PartyCredit').val(tran.PartyCredit);
+                tranModel = res.data;
+                $('#FkPartyId').val(tranModel.FkPartyId);
+                $('#drpFkPartyId').val(tranModel.PartyName);
+                $('#PartyGSTN').val(tranModel.PartyGSTN);
+                $('#PartyMobile').val(tranModel.PartyMobile);
+                $('#PartyAddress').val(tranModel.PartyAddress);
+                $('#PartyCredit').val(tranModel.PartyCredit);
             }
             else
                 alert(res.msg);
         }
-    })
-
+    });
 }
-    
+
+function setSeries() {
+    var FKSeriesId = $("#FKSeriesId").val();
+    $.ajax({
+        type: "POST",
+        url: Handler.currentPath() + 'SetSeries',
+        data: { model: tranModel, FKSeriesId: FKSeriesId },
+        datatype: "json",
+        success: function (res) {
+            if (res.status == "success") {
+                tranModel = res.data;
+                $("#FKSeriesId").val(FKSeriesId);
+                $('#PartyCredit').val(tranModel.PartyCredit);
+            }
+            else
+                alert(res.msg);
+        }
+    });
+}

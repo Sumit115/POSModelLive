@@ -10,9 +10,9 @@ namespace SSRepository.IRepository.Master
       
         List<ColumnStructure> ColumnList(string GridName = "");
 
-        string isAlreadyExist(CustomerModel tblBankMas, string Mode);
-        List<CustomerModel> GetList(int pageSize, int pageNo = 1, string search = "");
-        CustomerModel GetSingleRecord(long PkID);
+        string isAlreadyExist(PartyModel tblBankMas, string Mode);
+        List<PartyModel> GetList(int pageSize, int pageNo = 1, string search = "");
+        PartyModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);
         DataTable AutoDropDown();

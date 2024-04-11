@@ -18,10 +18,10 @@ namespace SSRepository.Repository.Master
         {
             dynamic cnt;
             string error = "";
-            if (!string.IsNullOrEmpty(model.CategoryName))
+            if (!string.IsNullOrEmpty(model.Category))
             {
                 cnt = (from x in __dbContext.TblCategoryMas
-                       where x.CategoryName == model.CategoryName && x.PkCategoryId != model.PkCategoryId
+                       where x.CategoryName == model.Category && x.PkCategoryId != model.PkCategoryId
                        select x).Count();
                 if (cnt > 0)
                     error = "Section Name Already Exits";
@@ -30,49 +30,25 @@ namespace SSRepository.Repository.Master
             return error;
         }
 
-        public List<CategoryModel> GetList(int pageSize, int pageNo = 1, string search = "")
+        public List<CategoryModel> GetList(int pageSize, int pageNo = 1, string search = "",long CategoryGroupId =0)
         {
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<CategoryModel> data = (from cou in __dbContext.TblCategoryMas
                                         join catGrp in __dbContext.TblCategoryGroupMas on cou.FkCategoryGroupId equals catGrp.PkCategoryGroupId
-
-                                        // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                        where (EF.Functions.Like(cou.CategoryName.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                        && (CategoryGroupId == 0 || cou.FkCategoryGroupId == CategoryGroupId)
                                         orderby cou.PkCategoryId
                                         select (new CategoryModel
                                         {
                                             PkCategoryId = cou.PkCategoryId,
                                             FKUserId = cou.FKUserId,
                                             src = cou.Src,
-                                            DATE_MODIFIED = cou.DateModified,
-                                            DATE_CREATED = cou.DateCreated,
-                                            CategoryName = cou.CategoryName,
+                                            DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
+                                            DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
+                                            Category = cou.CategoryName,
                                             FkCategoryGroupId = cou.FkCategoryGroupId,
-                                            PCategoryGroupName = catGrp.CategoryGroupName,
-                                        }
-                                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
-            return data;
-        }
-
-        public List<CategoryModel> GetListByGroupId(long CategoryGroupId, int pageSize, int pageNo = 1, string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
-            List<CategoryModel> data = (from cou in __dbContext.TblCategoryMas
-                                        join catGrp in __dbContext.TblCategoryGroupMas on cou.FkCategoryGroupId equals catGrp.PkCategoryGroupId
-                                        where cou.FkCategoryGroupId == CategoryGroupId
-                                        // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                        orderby cou.PkCategoryId
-                                        select (new CategoryModel
-                                        {
-                                            PkCategoryId = cou.PkCategoryId,
-                                            FKUserId = cou.FKUserId,
-                                            src = cou.Src,
-                                            DATE_MODIFIED = cou.DateModified,
-                                            DATE_CREATED = cou.DateCreated,
-                                            CategoryName = cou.CategoryName,
-                                            FkCategoryGroupId = cou.FkCategoryGroupId,
-                                            PCategoryGroupName = catGrp.CategoryGroupName,
+                                            GroupName = catGrp.CategoryGroupName,
                                         }
                                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -89,42 +65,12 @@ namespace SSRepository.Repository.Master
                         PkCategoryId = cou.PkCategoryId,
                         FKUserId = cou.FKUserId,
                         src = cou.Src,
-                        DATE_MODIFIED = cou.DateModified,
-                        DATE_CREATED = cou.DateCreated,
-                        CategoryName = cou.CategoryName,
+                        DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
+                        DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
+                        Category = cou.CategoryName,
                         FkCategoryGroupId = cou.FkCategoryGroupId,
                     })).FirstOrDefault();
             return data;
-        }
-        public object GetDrpCategory( int pagesize, int pageno,string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetList(pagesize, pageno, search);
-
-            result.Insert(0, new CategoryModel { PkCategoryId = 0, CategoryName = "Select" });
-            return (from r in result
-                    select new
-                    {
-                        r.PkCategoryId,
-                        r.CategoryName
-                    }).ToList();
-        }
-        public object GetDrpCategoryByGroupId(long CategoryGroupId, int pagesize, int pageno, string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetListByGroupId(CategoryGroupId,pagesize, pageno, search);
-
-            result.Insert(0, new CategoryModel { PkCategoryId = 0, CategoryName = "Select" });
-            return (from r in result
-                    select new
-                    {
-                        r.PkCategoryId,
-                        r.CategoryName
-                    }).ToList();
         }
 
         public string DeleteRecord(long PkCategoryId)
@@ -185,7 +131,7 @@ namespace SSRepository.Repository.Master
             }
 
             Tbl.PkCategoryId = model.PkCategoryId;
-            Tbl.CategoryName = model.CategoryName;
+            Tbl.CategoryName = model.Category;
             Tbl.FkCategoryGroupId = model.FkCategoryGroupId;
             Tbl.DateModified = DateTime.Now;
             if (Mode == "Create")
