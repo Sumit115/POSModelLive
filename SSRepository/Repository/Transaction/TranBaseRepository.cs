@@ -412,8 +412,8 @@ namespace SSRepository.Repository.Transaction
                                               Remarks = cou.Remarks,
                                               FKUserId = cou.FKUserId,
                                               src = cou.Src,
-                                              DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
-                                              DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
+                                              DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
+                                              DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
                                           }
                                          )).ToList();
             return data;

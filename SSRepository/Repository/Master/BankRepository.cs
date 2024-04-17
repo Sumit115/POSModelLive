@@ -43,8 +43,8 @@ namespace SSRepository.Repository.Master
                                           PkBankId = cou.PkBankId,
                                           FKUserId = cou.FKUserId,
                                           src = cou.Src,
-                                          DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
-                                          DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
+                                          DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
+                                          DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
                                           BankName = cou.BankName
                                       }
                                      )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
@@ -63,8 +63,8 @@ namespace SSRepository.Repository.Master
                         PkBankId = cou.PkBankId,
                         FKUserId = cou.FKUserId,
                         src = cou.Src,
-                        DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
-                        DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
+                        DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
+                        DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
                         BankName = cou.BankName,
                        
                     })).FirstOrDefault();

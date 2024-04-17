@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SSRepository.Models
 {
-    public class CategoryGroupModel : BaseModel
+    public class CategoryGroupModel
     {
         public long PkCategoryGroupId { get; set; }
 

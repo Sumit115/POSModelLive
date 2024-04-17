@@ -105,8 +105,6 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             try
             {
-                model.FKUserId = 1;
-                model.src = 1;
                 model.FkCategoryGroupId = (model.FkCategoryGroupId > 0 ? model.FkCategoryGroupId : 0);
 
                 if (ModelState.IsValid)
@@ -116,8 +114,7 @@ namespace SSAdmin.Areas.Master.Controllers
                     {
                         Mode = "Edit";
                     }
-                    Int64 ID = model.PkCategoryGroupId;
-                    string error = await _repository.CreateAsync(model, Mode, ID);
+                    string error = await _repository.CreateAsync(model, Mode, 0);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {
                         ModelState.AddModelError("", error);

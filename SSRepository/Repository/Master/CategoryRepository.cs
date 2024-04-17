@@ -44,8 +44,8 @@ namespace SSRepository.Repository.Master
                                             PkCategoryId = cou.PkCategoryId,
                                             FKUserId = cou.FKUserId,
                                             src = cou.Src,
-                                            DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
-                                            DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
+                                            DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
+                                            DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
                                             Category = cou.CategoryName,
                                             FkCategoryGroupId = cou.FkCategoryGroupId,
                                             GroupName = catGrp.CategoryGroupName,
@@ -65,8 +65,8 @@ namespace SSRepository.Repository.Master
                         PkCategoryId = cou.PkCategoryId,
                         FKUserId = cou.FKUserId,
                         src = cou.Src,
-                        DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
-                        DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
+                        DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
+                        DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
                         Category = cou.CategoryName,
                         FkCategoryGroupId = cou.FkCategoryGroupId,
                     })).FirstOrDefault();
@@ -155,9 +155,11 @@ namespace SSRepository.Repository.Master
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>
-            {
-                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Section Group Name", Fields="PCategoryGroupName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Section Name", Fields="CategoryName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+            {                   
+                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Section Name", Fields="Category",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=1, Orderby =2, Heading ="Section Group", Fields="GroupName",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=1, Orderby =3, Heading ="Created", Fields="DateCreated",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=1, Orderby =4, Heading ="Modified", Fields="DateModified",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                         };
             return list;
         }

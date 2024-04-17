@@ -44,10 +44,6 @@ namespace SSRepository.Repository.Master
                                              select (new CategoryGroupModel
                                              {
                                                  PkCategoryGroupId = cou.PkCategoryGroupId,
-                                                 FKUserId = cou.FKUserId,
-                                                 src = cou.Src,
-                                                 DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
-                                                 DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
                                                  CategoryGroupName = cou.CategoryGroupName,
                                                  FkCategoryGroupId = cou.FkCategoryGroupId,
                                                  PCategoryGroupName = catGrp.CategoryGroupName,
@@ -66,10 +62,6 @@ namespace SSRepository.Repository.Master
                     select (new CategoryGroupModel
                     {
                         PkCategoryGroupId = cou.PkCategoryGroupId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
-                        DateModified = cou.DateModified.ToString("dd-MMM-YYY"),
-                        DateCreated = cou.DateCreated.ToString("dd-MMM-YYY"),
                         CategoryGroupName = cou.CategoryGroupName,
                         FkCategoryGroupId = cou.FkCategoryGroupId,
                     })).FirstOrDefault();
@@ -154,10 +146,9 @@ namespace SSRepository.Repository.Master
             Tbl.DateModified = DateTime.Now;
             if (Mode == "Create")
             {
-                Tbl.Src = model.src;
-                Tbl.FKUserId = model.FKUserId;
+                Tbl.Src = 1;
+                Tbl.FKUserId = 1;
                 Tbl.DateCreated = DateTime.Now;
-                //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
             else
@@ -174,9 +165,9 @@ namespace SSRepository.Repository.Master
         {
             var list = new List<ColumnStructure>
             {
-                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Parent Section Group Name", Fields="PCategoryGroupName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                   new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Section Group Name", Fields="CategoryGroupName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                        };
+                new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Section Group", Fields="CategoryGroupName",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Parent Group", Fields="PCategoryGroupName",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+            };
             return list;
         }
 

@@ -46,9 +46,9 @@ namespace SSRepository.Models
             src = 1;
         }
 
-        public string DateCreated { get; set; }//DateCreated
+        public string? DateCreated { get; set; }//DateCreated
 
-        public string DateModified { get; set; }
+        public string? DateModified { get; set; }
 
 
         public string? UserName { get; set; }
