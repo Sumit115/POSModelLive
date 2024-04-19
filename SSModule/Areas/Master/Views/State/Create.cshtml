@@ -1,0 +1,100 @@
+﻿@model SSRepository.Models.StateModel
+
+@{
+    ViewData["Title"] = "Section Create";
+    ViewData["bdClass"] = "page";
+}
+
+<div class="p-3">
+    <form asp-action="Create" class="g-3" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PkStateId" />
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="d-block pb-1">Country</label>
+                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkCountryId" }, { "Class", "val-cus-drp" }, { "event", "" },
+                    { "value", Model.FkCountryId }, { "text", Model.CountryName }, { "uri", "" } })
+                </div>
+            </div>
+       @*     <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Country </label>
+                    <select asp-for="FkCountryId" asp-items="@(new SelectList(ViewBag.CountryList,"PkCountryId","CountryName"))" class="form-control" id="FkStateId">
+                    </select>
+
+                    <span asp-validation-for="FkCountryId" class="text-danger"></span>
+                </div>
+            </div>*@
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">State</label>
+                    <input asp-for="StateName" class="form-control" />
+                    <span asp-validation-for="StateName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Capital</label>
+                    <input asp-for="CapitalName" class="form-control" />
+                    <span asp-validation-for="CapitalName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">State Code</label>
+                    <input asp-for="StateCode" class="form-control" maxlength="2" />
+                    <span asp-validation-for="StateCode" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4" >
+                <div class="form-group">
+                    <label class="control-label">State Type</label>
+                    <div class="d-flex">
+                        <div class="radio-class mr-3">
+                            <input asp-for="StateType" class="radios__input" name="StateType" id="StateTypeState" type="radio" value="State" checked>
+                            <label class="label" for="StateTypeState">State</label>
+                        </div>
+                        <div class="radios__item mr-3">
+                            <input asp-for="StateType" class="radios__input" name="StateType" id="StateTypeUnionTerritory" type="radio" value="Union Territory">
+                            <label class="label" for="StateTypeUnionTerritory">Union Territory</label>
+                        </div>
+                    </div>
+                    <span asp-validation-for="StateType" class="text-danger"></span>
+
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            $('#btnServerSave').click(function (e) {
+                e.preventDefault();
+                $("form").submit();
+            });
+        })
+        UploadImage = (id) => {
+            var file = document.querySelector('input[id="file_' + id + '"]').files[0];
+            // $("#FileName").val(file.name);
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                //console.log(reader.result);
+                $("#" + id).val(reader.result);
+                $("#dummyimage_" + id).attr("src", reader.result);
+                $("#dummyimage_" + id).show();
+                //   $("#myImage").hide();
+
+            };
+        }
+    </script>
+}

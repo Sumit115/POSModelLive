@@ -19,7 +19,7 @@ function View() {
                 data: _d,
                 datatype: "json",
                 success: function (res) {
-                    
+                    console.log(res);
                     if (res.status == "success") {
                         bindGrid(GridId, res.data, IdProperty);
                     }
@@ -51,7 +51,7 @@ function bindGrid(GridId, data, IdProperty) {
         cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
         cg.outGrid.onDblClick.subscribe(function (e, args) {
             if (args.cell != undefined) {
-                var pk_Id = args.grid.getDataItem(args.row)[IdProperty];
+                var pk_Id = args.grid.getDataItem(args.row)[IdProperty];  
                 if (window.location.href.indexOf("Transactions") > 0) {
                     var FKSeriesId = args.grid.getDataItem(args.row)["FKSeriesId"];
                     window.location.href = "Create/" + pk_Id + "/" + FKSeriesId;
@@ -88,6 +88,41 @@ function bindGrid(GridId, data, IdProperty) {
             if (command == "Edit") {
                 window.location.href = "Create/" + pk_Id;
             }
+            if (command == "Delete") {
+                $.ajax({
+                    type: "POST",
+                    url: 'DeleteRecord',
+                    data: { PKID: pk_Id },
+                    datatype: "json",
+                    success: function (res) {
+                        console.log(res);
+                        if (res == "") {
+                            View()
+                        }
+                        else
+                            alert(res);
+                    }
+                })
+               
+            }
         });
     });
+};
+
+function ExportToExcel() {
+    Common.Get("." + filterclass, "", function (flag, _d) {
+        if (flag) {
+            debugger;
+          //  var url = $(location).attr('href').replace('List', 'Export');
+            var downloadUrl = 'Export';
+            var a = document.createElement("a");
+            a.href = downloadUrl;
+            a.download = "ReportFile.xls";
+            document.body.appendChild(a);
+            a.click();
+        }
+        else
+            alert("Some Error found.Please Check");
+    });
+
 };

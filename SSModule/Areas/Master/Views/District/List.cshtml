@@ -1,0 +1,17 @@
+﻿ 
+@{
+    ViewData["Title"] = "District List";
+    ViewData["bdClass"] = "browser";
+}
+
+<partial name="~/Views/Shared/partial/_Grid.cshtml" />;
+
+@section Scripts {
+    <script src="~/js/master/browser.js"></script>
+    <script>
+        $(document).ready(function () {
+            IdProperty = "PkDistrictId";
+            View();
+        });
+    </script>
+}

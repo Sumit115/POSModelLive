@@ -13,7 +13,7 @@ namespace SSRepository.Repository.Master
         public BankRepository(AppDbContext dbContext) : base(dbContext)
         {
         }
-       
+
         public string isAlreadyExist(BankModel model, string Mode)
         {
             dynamic cnt;
@@ -26,7 +26,7 @@ namespace SSRepository.Repository.Master
                 if (cnt > 0)
                     error = "Bank Name Exits";
             }
-             
+
             return error;
         }
 
@@ -36,18 +36,17 @@ namespace SSRepository.Repository.Master
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<BankModel> data = (from cou in __dbContext.TblBankMas
 
-                                          // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                      orderby cou.PkBankId
-                                      select (new BankModel
-                                      {
-                                          PkBankId = cou.PkBankId,
-                                          FKUserId = cou.FKUserId,
-                                          src = cou.Src,
-                                          DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                                          DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
-                                          BankName = cou.BankName
-                                      }
-                                     )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+                                        // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                    orderby cou.PkBankId
+                                    select (new BankModel
+                                    {
+                                        PkBankId = cou.PkBankId,
+                                        FKUserId = cou.FKUserId,
+                                        src = cou.Src,
+                                        BankName = cou.BankName,
+                                        IFSCCode = cou.IFSCCode,
+                                    }
+                                   )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
 
@@ -63,27 +62,28 @@ namespace SSRepository.Repository.Master
                         PkBankId = cou.PkBankId,
                         FKUserId = cou.FKUserId,
                         src = cou.Src,
-                        DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                        DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
                         BankName = cou.BankName,
-                       
+                        IFSCCode = cou.IFSCCode,
+
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpBank(int pageno, int pagesize, string search = "")
+        public object GetDrpBank(int pageSize, int pageno, string search = "")
         {
             if (search != null) search = search.ToLower();
             if (search == null) search = "";
 
-            var result = GetList(pagesize, pageno, search);
+            var result = GetList(pageSize, pageno, search);
 
+            result.Insert(0, new BankModel { PkBankId = 0, BankName = "Select" });
 
             return (from r in result
                     select new
                     {
                         r.PkBankId,
-                        r.BankName
-                    }).ToList(); ;
+                        r.BankName,
+                        r.IFSCCode
+                    }).ToList().OrderBy(x => x.PkBankId).ToList();
         }
 
         public string DeleteRecord(long PkBankId)
@@ -145,7 +145,8 @@ namespace SSRepository.Repository.Master
 
             Tbl.PkBankId = model.PkBankId;
             Tbl.BankName = model.BankName;
-         
+            Tbl.IFSCCode = model.IFSCCode;
+
             Tbl.DateModified = DateTime.Now;
             if (Mode == "Create")
             {
@@ -171,6 +172,7 @@ namespace SSRepository.Repository.Master
             {
                  // new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="DateCreated",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Bank Name", Fields="BankName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=2, Orderby =1, Heading ="IFSC Code", Fields="IFSCCode",Width=40,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                       };
             return list;
         }

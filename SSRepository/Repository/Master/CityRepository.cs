@@ -45,8 +45,6 @@ namespace SSRepository.Repository.Master
                                         PkCityId = cou.PkCityId,
                                         FKUserId = cou.FKUserId,
                                         src = cou.Src,
-                                        DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                                        DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
                                         CityName = cou.CityName,
                                         StateName = cou.StateName,
                                     }
@@ -66,8 +64,6 @@ namespace SSRepository.Repository.Master
                         PkCityId = cou.PkCityId,
                         FKUserId = cou.FKUserId,
                         src = cou.Src,
-                        DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                        DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
                         CityName = cou.CityName,
                         StateName = cou.StateName,
 

@@ -9,6 +9,7 @@ namespace SSRepository.Data
        [Key]
         public long PkBankId { get; set; }
         public string BankName { get; set; }
+        public string? IFSCCode { get; set; }
 
     }
 }

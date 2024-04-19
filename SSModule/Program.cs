@@ -59,7 +59,19 @@ builder.Services.AddScoped<ICityRepository, CityRepository>();
 builder.Services.AddScoped<IProductLotRepository, ProductLotRepository>();
 builder.Services.AddScoped<ISalesStockRepository, SalesStockRepository>();
 builder.Services.AddScoped<IPurchaseStockRepository, PurchaseStockRepository>();
-//builder.Services.AddScoped<IAccountGroupRepository, AccountGroupRepository>();
+builder.Services.AddScoped<IAccountGroupRepository, AccountGroupRepository>();
+builder.Services.AddScoped<IAccountMasRepository, AccountMasRepository>();
+
+builder.Services.AddScoped<ICountryRepository, CountryRepository>(); 
+builder.Services.AddScoped<IStateRepository, StateRepository>();
+builder.Services.AddScoped<IDistrictRepository, DistrictRepository>();
+builder.Services.AddScoped<IStationRepository, StationRepository>();
+
+builder.Services.AddScoped<IZoneRepository, ZoneRepository>();
+builder.Services.AddScoped<IRegionRepository, RegionRepository>();
+builder.Services.AddScoped<IAreaRepository, AreaRepository>();
+builder.Services.AddScoped<ILocalityRepository, LocalityRepository>();
+
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();

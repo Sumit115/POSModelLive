@@ -1,4 +1,4 @@
-﻿    using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace SSRepository.Data
@@ -42,14 +42,27 @@ namespace SSRepository.Data
         public virtual DbSet<TblProdStockDtl> TblProdStockDtl { get; set; } = null!;
         public virtual DbSet<TblBrandMas> TblBrandMas { get; set; } = null!;
         public virtual DbSet<TblCityMas> TblCityMas { get; set; } = null!;
-        //public virtual DbSet<TblAccountGroupMas> TblAccountGroupMas { get; set; } = null!;
+        public virtual DbSet<TblAccountGroupMas> TblAccountGroupMas { get; set; } = null!;
+
+        public virtual DbSet<TblAccountMas> TblAccountMas { get; set; } = null!;
+        public virtual DbSet<TblAccountLicDtl> TblAccountLicDtl { get; set; } = null!;
+        public virtual DbSet<TblAccountLocLnk> TblAccountLocLnk { get; set; } = null!;
+        public virtual DbSet<TblAccountDtl> TblAccountDtl { get; set; } = null!;
+        public virtual DbSet<TblCountryMas> TblCountryMas { get; set; } = null!;
+        public virtual DbSet<TblStateMas> TblStateMas { get; set; } = null!;
+        public virtual DbSet<TblDistrictMas> TblDistrictMas { get; set; } = null!;
+        public virtual DbSet<TblStationMas> TblStationMas { get; set; } = null!;
+        public virtual DbSet<TblZoneMas> TblZoneMas { get; set; } = null!;
+        public virtual DbSet<TblRegionMas> TblRegionMas { get; set; } = null!;
+        public virtual DbSet<TblAreaMas> TblAreaMas { get; set; } = null!;
+        public virtual DbSet<TblLocalityMas> TblLocalityMas { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                // optionsBuilder.UseSqlServer("server=DESKTOP-OM06UCD\\SQLEXPRESS;database=POSdb;Trusted_Connection=True;TrustServerCertificate=True");
-               optionsBuilder.UseSqlServer("Data Source=154.61.77.18;database=jaipursoftdata;uid=jaipurdatauser;pwd=btof5zxmgjlyusvnehdc;TrustServerCertificate=True");
+              //  optionsBuilder.UseSqlServer("server=DESKTOP-OM06UCD\\SQLEXPRESS;database=POSdb1;Trusted_Connection=True;TrustServerCertificate=True");
+                 optionsBuilder.UseSqlServer("Data Source=154.61.77.18;database=jaipursoftdata;uid=jaipurdatauser;pwd=btof5zxmgjlyusvnehdc;TrustServerCertificate=True");
             }
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -79,7 +92,9 @@ namespace SSRepository.Data
             //modelBuilder.Ignore<TblSalesChallantrn>();
             //modelBuilder.Ignore<TblSalesChallandtl>();
             //modelBuilder.Ignore<TblProdLotDtl>();
-            //modelBuilder.Ignore<TblProdStockDtl>();
+            //modelBuilder.Ignore<TblBrandMas>();
+            //modelBuilder.Ignore<TblCityMas>();
+            //modelBuilder.Ignore<TblAccountGroupMas>(); 
 
         }
     }

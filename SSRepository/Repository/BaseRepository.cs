@@ -68,6 +68,86 @@ namespace SSRepository.Repository
             return __dbContext.Set<T>().Where(predicate);
         }
 
+        public Int64 getIdOfSeriesByEntity(string ColumnName, object FKSeriesID, T entity, string TableName)
+        {
+            try
+            {
+                //int? BranchNo = 0;
+                //var SysDefValue = _context.TblSysDefaults.FirstOrDefault(a => a.SysDefKey == "BranchNo").SysDefValue;
+
+
+                //if (SysDefValue != null)
+                //{
+                //    try
+                //    {
+                //        //BranchNo = _context.TblBranchMas.FirstOrDefault(a => a.PkbranchId == Convert.ToInt64(SysDefValue)).No;
+                //        BranchNo = _context.TblBranchMas.Where(a => a.PkbranchId == Convert.ToInt64(SysDefValue)).Select(a => a.No).First();
+                //    }
+                //    catch
+                //    {
+                //        BranchNo = 1;
+                //    }
+                //}
+
+                //Int64 BranchID = 10000000 * Convert.ToInt32(BranchNo);
+                //Int64 MaxBranchID = 10000000 * Convert.ToInt32(BranchNo + 1);
+
+                //IQueryable queryableData = _context.Query(entity.GetType());
+
+                //var tbl = Expression.Parameter(entity.GetType(), "tbl");
+                //var prop = Expression.Property(tbl, ColumnName);
+                //var MinValue = Expression.Constant(BranchID);
+                //var MaxValue = Expression.Constant(MaxBranchID);
+                //var Greater = Expression.GreaterThanOrEqual(prop, MinValue);
+                //var Less = Expression.LessThan(prop, MaxValue);
+                //var And = Expression.And(Greater, Less);
+
+                //MethodCallExpression whereCallExpression = Expression.Call(
+                //    typeof(Queryable),
+                //    "Where",
+                //    new Type[] { queryableData.ElementType },
+                //    queryableData.Expression,
+                //    Expression.Lambda<Func<T, bool>>(And, new ParameterExpression[] { tbl }));
+                ////var abc = queryableData.Provider.CreateQuery(whereCallExpression);
+                //var lstMaxID = queryableData.Provider.CreateQuery(whereCallExpression).ToDynamicList();//.Aggregate("Max", ColumnName);
+
+                //long MaxID = 0;
+                //if (lstMaxID.Count == 0)
+                //{
+                //    MaxID = BranchID;
+                //}
+                //else
+                //{
+                //    var asd = queryableData.Provider.CreateQuery(whereCallExpression).DefaultIfEmpty();
+                //    MaxID = Convert.ToInt64(queryableData.Provider.CreateQuery(whereCallExpression).DefaultIfEmpty().Aggregate("Max", ColumnName));
+                //}
+
+                //return Convert.ToInt64(MaxID) + 1;
+                long MaxID = 0;
+                if (TableName == "TblAccountMas")
+                {
+                    MaxID = __dbContext.TblAccountMas.ToList().Count > 0 ? __dbContext.TblAccountMas.ToList().Max(x => x.PkAccountId) : 0;
+                }
+                else if (TableName == "TblAccountLocLnk")
+                {
+                    MaxID = __dbContext.TblAccountLocLnk.ToList().Count > 0 ? __dbContext.TblAccountLocLnk.ToList().Max(x => x.PKAccountLocLnkId) : 0;
+                }
+                else if (TableName == "TblAccountDtl")
+                {
+                    MaxID = __dbContext.TblAccountDtl.ToList().Count > 0 ? __dbContext.TblAccountDtl.ToList().Max(x => x.PKAccountDtlId) : 0;
+                }
+                else if (TableName == "TblAccountLicDtl")
+                {
+                    MaxID = __dbContext.TblAccountLicDtl.ToList().Count > 0 ? __dbContext.TblAccountLicDtl.ToList().Max(x => x.PKAccountLicDtlId) : 0;
+                }
+
+                return Convert.ToInt64(MaxID) + 1;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
 
     }
@@ -76,7 +156,7 @@ namespace SSRepository.Repository
     public class BaseRepository //: IBaseRepository
     {
         protected readonly AppDbContext __dbContext;
-        
+
         protected readonly int __MaxPageSize = 1000;
         protected readonly int __PageSize = 30;
 
@@ -529,7 +609,7 @@ namespace SSRepository.Repository
         }
 
         #endregion
-        
+
 
         public object GetDrpState()
         {

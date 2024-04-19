@@ -18,7 +18,7 @@
     <link href="~/SlickGrid/slick.grid.css" rel="stylesheet" />
     @* <link href="~/css/jquery-ui.css" rel="stylesheet" /> *@
     <link href="~/css/root.css" rel="stylesheet" />
-    
+
 </head>
 <body class="sidebar-mini sidebar-collapse @ViewData["bdClass"] ">
     <input type="hidden" id="hdFormId" value="@ViewBag.FormId" />
@@ -47,9 +47,11 @@
                 </li>
                 <li class="nav-item f-list" style="display:none">
                     <a class="btn btn-create" tabindex="3" id="create_new" href='@Url.Action("Create")'>Create New <i class="fas fa-plus font-aws-icon"></i></a>
-                    <span title="Export" style="border: none;padding: 8px 4px 8px 8px;background-color: #e6e6e6;color:#455a64 !important;">
-                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-down-to-line" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="svg-inline--fa fa-arrow-down-to-line fa-fw"><path fill="currentColor" d="M32 480c-17.7 0-32-14.3-32-32s14.3-32 32-32H352c17.7 0 32 14.3 32 32s-14.3 32-32 32H32zM214.6 342.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 242.7V64c0-17.7 14.3-32 32-32s32 14.3 32 32V242.7l73.4-73.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-128 128z" class=""></path></svg> <span class="sr-only">Download SVG file</span>
-                    </span>
+                    <a href="javascript:void(0)" id="btnExportToExcel" onclick="ExportToExcel()">
+                        <span title="Export" style="border: none;padding: 8px 4px 8px 8px;background-color: #e6e6e6;color:#455a64 !important;">
+                            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-down-to-line" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="svg-inline--fa fa-arrow-down-to-line fa-fw"><path fill="currentColor" d="M32 480c-17.7 0-32-14.3-32-32s14.3-32 32-32H352c17.7 0 32 14.3 32 32s-14.3 32-32 32H32zM214.6 342.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 242.7V64c0-17.7 14.3-32 32-32s32 14.3 32 32V242.7l73.4-73.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-128 128z" class=""></path></svg> <span class="sr-only">Download SVG file</span>
+                        </span>
+                    </a>
                     <a href="javascript:void(0)" id="btnGridColumn" onclick="ShowGridColumn()" title="Grid layout" style="border: none;padding: 0px 8px;"><i class="fa fa-thin fa-list font-aws-icon"></i></a>
 
                 </li>
@@ -102,94 +104,235 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                            
                                 <li class="nav-item">
-                                    <a asp-area="Master" asp-controller="Customer" asp-action="List" class="nav-link">
+                                    <a href="#" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Customer
-                                            <i class="right fas fa-external-link-alt tablink"></i>
+                                        <p>
+                                            Inventory
+                                            <i class="right fas fa-angle-left"></i>
                                         </p>
                                     </a>
+                                    <ul class="nav nav-treeview" style="display: none;">
+
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Brand" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Brand<i class="right fas fa-external-link-alt tablink"></i></p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="CategoryGroup" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Section Group<i class="right fas fa-external-link-alt tablink"></i></p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Category" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Section<i class="right fas fa-external-link-alt tablink"></i></p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Product" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Sub Section<i class="right fas fa-external-link-alt tablink"></i></p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="ProductLot" asp-action="Create" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Article<i class="right fas fa-external-link-alt tablink"></i></p>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
                                 <li class="nav-item">
-                                    <a asp-area="Master" asp-controller="Vendor" asp-action="List" class="nav-link">
+                                    <a href="#" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Vendor
-                                            <i class="right fas fa-external-link-alt tablink"></i>
+                                        <p>
+                                            Customer/Vendor
+                                            <i class="right fas fa-angle-left"></i>
                                         </p>
                                     </a>
+                                    <ul class="nav nav-treeview" style="display: none;">
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Customer" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>
+                                                    Customer
+                                                    <i class="right fas fa-external-link-alt tablink"></i>
+                                                </p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Vendor" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>
+                                                    Vendor
+                                                    <i class="right fas fa-external-link-alt tablink"></i>
+                                                </p>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
                                 <li class="nav-item">
-                                    <a asp-area="Master" asp-controller="Employee" asp-action="List" class="nav-link">
+                                    <a href="#" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Employee<i class="right fas fa-external-link-alt tablink"></i></p>
+                                        <p>
+                                            Accounts
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
                                     </a>
+                                    <ul class="nav nav-treeview" style="display: none;">
+
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="AccountGroup" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Account Group<i class="right fas fa-external-link-alt tablink"></i></p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="AccountMas" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Ledger Account<i class="right fas fa-external-link-alt tablink"></i></p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Bank" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Bank<i class="right fas fa-external-link-alt tablink"></i></p>
+                                            </a>
+                                        </li>
+
+                                    </ul>
                                 </li>
+
                                 <li class="nav-item">
-                                    <a asp-area="Master" asp-controller="Branch" asp-action="List" class="nav-link">
+                                    <a href="#" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Branch<i class="right fas fa-external-link-alt tablink"></i></p>
+                                        <p>
+                                            Locations
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
                                     </a>
+                                    <ul class="nav nav-treeview" style="display: none;">
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="City" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>City<i class="right fas fa-external-link-alt tablink"></i></p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Country" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>
+                                                    Country
+                                                    <i class="right fas fa-external-link-alt tablink"></i>
+                                                </p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="State" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>
+                                                    State
+                                                    <i class="right fas fa-external-link-alt tablink"></i>
+                                                </p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="District" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>
+                                                    District
+                                                    <i class="right fas fa-external-link-alt tablink"></i>
+                                                </p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Station" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>
+                                                    Station
+                                                    <i class="right fas fa-external-link-alt tablink"></i>
+                                                </p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Zone" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>
+                                                    Zone
+                                                    <i class="right fas fa-external-link-alt tablink"></i>
+                                                </p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Region" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>
+                                                    Region
+                                                    <i class="right fas fa-external-link-alt tablink"></i>
+                                                </p>
+                                            </a>
+                                        </li>
+
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Area" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>
+                                                    Area
+                                                    <i class="right fas fa-external-link-alt tablink"></i>
+                                                </p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Locality" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>
+                                                    Locality
+                                                    <i class="right fas fa-external-link-alt tablink"></i>
+                                                </p>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
+
                                 <li class="nav-item">
-                                    <a asp-area="Master" asp-controller="Series" asp-action="List" class="nav-link">
+                                    <a href="#" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Series<i class="right fas fa-external-link-alt tablink"></i></p>
+                                        <p>
+                                            Resources
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
                                     </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Master" asp-controller="User" asp-action="List" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>User<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Master" asp-controller="Brand" asp-action="List" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Brand<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                               <li class="nav-item">
-                                    <a asp-area="Master" asp-controller="CategoryGroup" asp-action="List" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Section Group<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Master" asp-controller="Category" asp-action="List" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Section<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Master" asp-controller="Product" asp-action="List" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Sub Section<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Master" asp-controller="ProductLot" asp-action="Create" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Article<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Master" asp-controller="Bank" asp-action="List" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Bank<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Master" asp-controller="City" asp-action="List" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>City<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Master" asp-controller="AccountGroup" asp-action="List" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Account Group<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
+                                    <ul class="nav nav-treeview" style="display: none;">
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Employee" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Employee</p>
+                                                <i class="right fas fa-external-link-alt tablink"></i>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Branch" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Branch<i class="right fas fa-external-link-alt tablink"></i></p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Series" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Series<i class="right fas fa-external-link-alt tablink"></i></p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="User" asp-action="List" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>User<i class="right fas fa-external-link-alt tablink"></i></p>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
                             </ul>
                         </li>
@@ -343,7 +486,7 @@
     <script type="text/javascript" src="~/SlickGrid/slick.grid.js"></script>
 
     <script type="text/javascript" src="~/SlickGrid/JsSlickGrd.js"></script>
-    <script type="text/javascript"  src="~/js/customdropdown.js"></script>
+    <script type="text/javascript" src="~/js/customdropdown.js"></script>
 
     @RenderSection("Scripts", required: false)
     <script>

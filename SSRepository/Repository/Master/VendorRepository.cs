@@ -47,7 +47,7 @@ namespace SSRepository.Repository.Master
                                        on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
                                        into _citytmp
                                       from city in _citytmp.DefaultIfEmpty()
-                                          // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                       where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                       orderby cou.PkVendorId
                                         select (new PartyModel
                                         {
@@ -84,6 +84,30 @@ namespace SSRepository.Repository.Master
             return data;
         }
 
+        public List<object> CustomList(int pageSize, int pageNo = 1, string search = "")
+        {
+            if (search != null) search = search.ToLower();
+            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+            var data = (from cou in __dbContext.TblVendorMas
+                                     join _city in __dbContext.TblCityMas
+                                      on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
+                                      into _citytmp
+                                     from city in _citytmp.DefaultIfEmpty()
+                                     where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                     orderby cou.PkVendorId
+                                     select (new 
+                                     {
+                                         cou.PkVendorId,
+                                         cou.Code,
+                                         cou.Name,
+                                         cou.StateName,
+                                         cou.Address,
+                                         cou.Mobile,
+                                         cou.Email
+                                     }
+                                    )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+            return data.Select(x => (object)x).ToList();
+        }
 
         public PartyModel GetSingleRecord(long PkVendorId)
         {

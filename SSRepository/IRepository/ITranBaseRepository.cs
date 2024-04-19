@@ -16,7 +16,7 @@ namespace SSRepository.IRepository
 
         List<ColumnStructure> ColumnList(string GridName = "");
 
-        List<PartyModel> PartyList(int pageSize, int pageNo = 1, string search = "", string TranType = "");
+        List<object> PartyList(int pageSize, int pageNo = 1, string search = "", string TranType = "");
 
         object SetParty(TransactionModel model, long FkPartyId);
 

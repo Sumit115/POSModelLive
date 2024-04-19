@@ -1,0 +1,202 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using SSRepository.Data;
+using SSRepository.IRepository.Master;
+using SSRepository.IRepository;
+using SSRepository.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Azure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using SSRepository.Repository.Master;
+using ClosedXML.Excel;
+using System.Data;
+
+namespace SSAdmin.Areas.Master.Controllers
+{
+    [Area("Master")]
+    public class AccountMasController : BaseController
+    {
+        private readonly IAccountMasRepository _repository;
+        private readonly IAccountGroupRepository _repositoryAccountGroup;
+        private readonly IBankRepository _repositoryBank;
+        private readonly IBranchRepository _repositoryBranch;
+        public AccountMasController(IAccountMasRepository repository, IBranchRepository branchRepository, IBankRepository bankRepository, IAccountGroupRepository repositoryAccountGroup, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
+        {
+            _repository = repository;
+            _repositoryAccountGroup = repositoryAccountGroup;
+            _repositoryBank = bankRepository;
+            _repositoryBranch = branchRepository;
+            FKFormID = (long)Handler.Form.AccountMas;
+        }
+
+        public async Task<IActionResult> List()
+        {
+            ViewBag.FormId = FKFormID;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> List(int pageNo, int pageSize)
+        {
+            return Json(new
+            {
+                status = "success",
+                data = _repository.GetList(pageSize, pageNo)
+            });
+        }
+
+       
+        public async Task<IActionResult> Create(long id, string pageview = "")
+        {
+            AccountMasModel Model = new AccountMasModel();
+            Model.AccountLicDtl_lst = new List<AccountLicDtlModel>();
+            Model.AccountLocation_lst = new List<AccountLocLnkModel>();
+            Model.AccountDtl_lst = new List<AccountDtlModel>();
+            try
+            {
+
+                ViewBag.PageType = "";
+                if (id != 0 && pageview.ToLower() == "log")
+                {
+                    ViewBag.PageType = "Log";
+                }
+                else if (id != 0)
+                {
+                    ViewBag.PageType = "Edit";
+                    Model = _repository.GetSingleRecord(id);
+                }
+                else
+                {
+                    ViewBag.PageType = "Create";
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                //CommonCore.WriteLog(ex, "Create Get ", ControllerName, GetErrorLogParam());
+                ModelState.AddModelError("", ex.Message);
+            }
+
+            //BindViewBags(0, tblBankMas);
+            ViewBag.AccountGroupList = _repositoryAccountGroup.GetDrpAccountGroup(1000, 1);
+            ViewBag.BankMasList = _repositoryBank.GetDrpBank(1000, 1);
+            Model.AccountLocation_lst = _repositoryBranch.GetList(1000, 1).ToList().Select(x => new AccountLocLnkModel()
+            {
+                BranchName = x.BranchName,
+                FKLocationID = x.PkBranchId,
+                Selected = Model.AccountLocation_lst.Where(y => y.FKLocationID == x.PkBranchId).ToList().Count > 0 ? true : false,
+            }).ToList();
+
+            return View(Model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(AccountMasModel model)
+        {
+            try
+            {
+                model.FKUserId = 1;
+                model.src = 1;
+
+                if (ModelState.IsValid)
+                {
+                    string Mode = "Create";
+                    if (model.PkAccountId > 0)
+                    {
+                        Mode = "Edit";
+                    }
+                    Int64 ID = model.PkAccountId;
+                    string error = await _repository.CreateAsync(model, Mode, ID);
+                    if (error != "" && !error.ToLower().Contains("success"))
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                    else
+                    {
+                        return RedirectToAction(nameof(List));
+                    }
+                }
+                else
+                {
+                    foreach (ModelStateEntry modelState in ModelState.Values)
+                    {
+                        foreach (ModelError error in modelState.Errors)
+                        {
+                            var sdfs = error.ErrorMessage;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+            }
+            //BindViewBags(tblBankMas.PKID, tblBankMas);
+            ViewBag.AccountGroupList = _repositoryAccountGroup.GetDrpAccountGroup(1000, 1);
+            ViewBag.BankMasList = _repositoryBank.GetDrpBank(1000, 1);
+            model.AccountLocation_lst = _repositoryBranch.GetList(1000, 1).ToList().Select(x => new AccountLocLnkModel()
+            {
+                BranchName = x.BranchName,
+                FKLocationID = x.PkBranchId,
+                Selected = model.AccountLocation_lst.Where(y => y.FKLocationID == x.PkBranchId).ToList().Count > 0 ? true : false,
+            }).ToList();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public string DeleteRecord(long PKID)
+        {
+            string response = "";
+            try
+            {
+                response = _repository.DeleteRecord(PKID);
+            }
+            catch (Exception ex)
+            {
+                response = ex.Message;
+                //CommonCore.WriteLog(ex, "DeleteRecord", ControllerName, GetErrorLogParam());
+                //return CommonCore.SetError(ex.Message);
+            }
+            return response;
+        }
+
+        public ActionResult Export()
+        {
+          var  lst= _repository.GetList(1000, 1);
+
+
+            var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "", ColumnList());
+            var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData);
+            DataTable _gridColumn = Handler.ToDataTable(model);
+            DataTable dtList= Handler.ToDataTable(lst);
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                DataTable dt = Handler.GenerateExcel(_gridColumn, dtList);
+                wb.Worksheets.Add(dt);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/ms-excel", "ReportFile.xls");
+                    // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
+                }
+            }
+
+        }
+
+
+        public override List<ColumnStructure> ColumnList(string GridName = "")
+        {
+            return _repository.ColumnList(GridName);
+        }
+    }
+}

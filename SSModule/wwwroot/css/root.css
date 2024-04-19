@@ -13,6 +13,14 @@
     padding: 0px 12px;
     text-align: center;
 }
+[class*=sidebar-dark-] .nav-sidebar > .nav-item > .nav-treeview {
+    background: 0 0;
+    padding-left: 5px !important;
+}
+.nav-sidebar .menu-open > .nav-treeview {
+    padding-left: 14px!important;
+}
+
 
 .browser .f-list {
     display: block !important;

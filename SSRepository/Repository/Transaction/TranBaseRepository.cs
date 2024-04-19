@@ -281,17 +281,17 @@ namespace SSRepository.Repository.Transaction
             return model;
         }
 
-        public List<PartyModel> PartyList(int pageSize, int pageNo = 1, string search = "", string TranType = "")
+        public List<object> PartyList(int pageSize, int pageNo = 1, string search = "", string TranType = "")
         {
             if (TranType == "P")
             {
                 VendorRepository rep = new VendorRepository(__dbContext);
-                return rep.GetList(pageSize, pageNo, search);
+                return rep.CustomList(pageSize, pageNo, search);
             }
             else
             {
                 CustomerRepository rep = new CustomerRepository(__dbContext);
-                return rep.GetList(pageSize, pageNo, search);
+                return rep.CustomList(pageSize, pageNo, search);
             }
         }
 

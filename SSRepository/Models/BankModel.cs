@@ -13,6 +13,7 @@ namespace SSRepository.Models
         public long PkBankId { get; set; }
         [Required]
         public string BankName { get; set; }
-         
+        public string? IFSCCode { get; set; }
+
     }
 }

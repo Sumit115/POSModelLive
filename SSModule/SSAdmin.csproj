@@ -15,6 +15,9 @@
 
   <ItemGroup>
     <None Include="Areas\Master\Views\AccountGroup\Create.cshtml" />
+    <None Include="Areas\Master\Views\AccountGroup\List.cshtml" />
+    <None Include="Areas\Master\Views\AccountMas\Create.cshtml" />
+    <None Include="Areas\Master\Views\AccountMas\List.cshtml" />
     <None Include="Areas\Master\Views\Bank\Create.cshtml" />
     <None Include="Areas\Master\Views\Bank\List.cshtml" />
     <None Include="Areas\Master\Views\Branch\Create.cshtml" />
@@ -27,8 +30,12 @@
     <None Include="Areas\Master\Views\Category\List.cshtml" />
     <None Include="Areas\Master\Views\City\Create.cshtml" />
     <None Include="Areas\Master\Views\City\List.cshtml" />
+    <None Include="Areas\Master\Views\Country\Create.cshtml" />
+    <None Include="Areas\Master\Views\Country\List.cshtml" />
     <None Include="Areas\Master\Views\Customer\Create.cshtml" />
     <None Include="Areas\Master\Views\Customer\List.cshtml" />
+    <None Include="Areas\Master\Views\District\Create.cshtml" />
+    <None Include="Areas\Master\Views\District\List.cshtml" />
     <None Include="Areas\Master\Views\Employee\Create.cshtml" />
     <None Include="Areas\Master\Views\Employee\List.cshtml" />
     <None Include="Areas\Master\Views\ProductLot\Create.cshtml" />
@@ -36,6 +43,10 @@
     <None Include="Areas\Master\Views\Product\List.cshtml" />
     <None Include="Areas\Master\Views\Series\Create.cshtml" />
     <None Include="Areas\Master\Views\Series\List.cshtml" />
+    <None Include="Areas\Master\Views\State\Create.cshtml" />
+    <None Include="Areas\Master\Views\State\List.cshtml" />
+    <None Include="Areas\Master\Views\Station\Create.cshtml" />
+    <None Include="Areas\Master\Views\Station\List.cshtml" />
     <None Include="Areas\Master\Views\User\Create.cshtml" />
     <None Include="Areas\Master\Views\User\List.cshtml" />
     <None Include="Areas\Master\Views\Vendor\Create.cshtml" />
@@ -98,6 +109,7 @@
     <None Include="wwwroot\js\jquery-ui.js" />
     <None Include="wwwroot\js\jquery.datetimepicker.js" />
     <None Include="wwwroot\js\Master\browser.js" />
+    <None Include="wwwroot\js\Master\ProdLotDtl.js" />
     <None Include="wwwroot\js\Master\ProductMas.js" />
     <None Include="wwwroot\js\Report\Report.js" />
     <None Include="wwwroot\js\site.js" />

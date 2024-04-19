@@ -1,0 +1,69 @@
+﻿@model SSRepository.Models.LocalityModel
+
+@{
+    ViewData["Title"] = "Locality Create";
+    ViewData["bdClass"] = "page";
+}
+
+<div class="p-3">
+    <form asp-action="Create" class="g-3" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PkLocalityId" />
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Area</label>
+                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkAreaId" }, { "Class", "val-cus-drp" }, { "event", "" },
+                    { "value", Model.FkAreaId }, { "text", Model.AreaName }, { "uri", "" } })
+
+                    <span asp-validation-for="FkAreaId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Locality Name</label>
+                    <input asp-for="LocalityName" class="form-control" />
+                    <span asp-validation-for="LocalityName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="control-label">Description</label>
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="LocalityName" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            $('#btnServerSave').click(function (e) {
+                e.preventDefault();
+                $("form").submit();
+            });
+        })
+        UploadImage = (id) => {
+            var file = document.querySelector('input[id="file_' + id + '"]').files[0];
+            // $("#FileName").val(file.name);
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                //console.log(reader.result);
+                $("#" + id).val(reader.result);
+                $("#dummyimage_" + id).attr("src", reader.result);
+                $("#dummyimage_" + id).show();
+                //   $("#myImage").hide();
+
+            };
+        }
+    </script>
+}

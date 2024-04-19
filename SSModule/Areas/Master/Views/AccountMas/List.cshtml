@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Ledger Account List";
+    ViewData["bdClass"] = "browser";
+}
+
+<partial name="~/Views/Shared/partial/_Grid.cshtml" />
+<ul id="contextMenu" style="display:none;position:absolute">
+    <li data="Delete">Delete</li>
+ 
+</ul>
+@section Scripts {
+    <script src="~/js/master/browser.js"></script>
+    <script>
+        $(document).ready(function () {
+            IdProperty = "PkAccountId";
+            View();
+        });
+    </script>
+}
