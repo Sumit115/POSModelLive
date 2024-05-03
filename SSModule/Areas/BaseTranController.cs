@@ -43,6 +43,7 @@ namespace SSAdmin.Areas
 
         }
 
+        [HttpPost]
         public JsonResult FooterChange(TransactionModel model, string fieldName)
         {
             return Json(new
@@ -52,7 +53,38 @@ namespace SSAdmin.Areas
             });
 
         }
+        public JsonResult BarcodeScan(TransactionModel model, long barcode)
+        {
+            try
+            {
+                return Json(new
+                {
+                    status = "success",
+                    data = _repository.BarcodeScan(model, barcode)
+                });
 
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = "error",
+                    msg = ex.Message,
+                });
+            }
+
+
+        }
+
+        public JsonResult ApplyRateDiscount(TransactionModel model, string type, decimal discount)
+        {
+            return Json(new
+            {
+                status = "success",
+                data = _repository.ApplyRateDiscount(model, type, discount)
+            });
+
+        }
         [HttpPost]
         public async Task<JsonResult> ProductLotDtlList(int FkProductId, string Batch, string Color)
         {

@@ -82,6 +82,7 @@ namespace SSAdmin
             Region = 21,
             Area = 22,
             Locality = 23,
+            OpeningStock=24,
 
             SalesOrder = 100,
             SalesInvoice = 101,

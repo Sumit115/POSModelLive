@@ -16,7 +16,7 @@
                     <label class="control-label">State</label>
                     @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkStateId" }, { "Class", "val-cus-drp" }, { "event", "" },
                     { "value", Model.FkStateId }, { "text", Model.StateName }, { "uri", "" } })
-             
+
                     <span asp-validation-for="FkStateId" class="text-danger"></span>
                 </div>
             </div>
@@ -26,7 +26,7 @@
                     <input asp-for="DistrictName" class="form-control" />
                     <span asp-validation-for="DistrictName" class="text-danger"></span>
                 </div>
-            </div>           
+            </div>
         </div>
     </form>
 </div>
@@ -36,7 +36,7 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    
+
     <script>
         $(document).ready(function () {
             $('#btnServerSave').click(function (e) {

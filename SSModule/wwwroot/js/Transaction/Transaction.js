@@ -1,6 +1,8 @@
 ﻿
 var tranModel = null;
 $(document).ready(function () {
+    $("#txtSearchBarcode").focus();
+    Common.InputFormat();
     $('#btnServerSave').click(function (e) {
         if ($("#loginform1").valid()) {
             SaveRecord();
@@ -15,13 +17,23 @@ $(document).ready(function () {
         tranModel[fieldName] = $(this).val();
         FooterChange(fieldName)
     });
+    $(".ratediscount").change(function () { 
+        var type = $("#RateDiscountType").val();
+        var value = $("#RateDiscountValue").val();
+        ApplyRateDiscount(type, value);
+        //$("#RateDiscountValue").val('')
+    });
 
     $(".trn").change(function () {
         var fieldName = $(this).attr("id");
         tranModel[fieldName] = $(this).val();
     });
 
-
+    $("#txtSearchBarcode").change(function () {
+        BarcodeScan($(this).val());
+        $(this).val('');
+        $(this).focus();
+    });
 
 });
 
@@ -39,6 +51,7 @@ function Load() {
 
     else {
         BindGrid('DDT', []);
+
     }
 }
 
@@ -59,13 +72,13 @@ function BindGrid(GridId, data) {
         cg.setIdProperty("SrNo");
         cg.setCtrlType(s.setCtrlType);
         cg.setOptionArray(0, ProductList, "ProductName", false, "Product", "PkProductId", "1");
-        cg.setOptionArray(9, ProductLotList, "Batch", false, "Batch", "PkLotId", "1");
-        cg.setOptionArray(10, ProductLotList, "Color", false, "Color", "PkLotId", "1");
+        cg.setOptionArray(12, [], "Batch", false, "Batch", "PkLotId", "1");
+        cg.setOptionArray(13, [], "Color", false, "Color", "PkLotId", "1");
         var obdt = cg.populateDataFromJson({
             srcData: data,
             mapData: [{ data: ProductList, textColumn: "ProductName_Text", srcValueColumn: "ProductName_Text", destValueColumn: "PkProductId", destTextColumn: "Product" },
-            { data: ProductLotList, textColumn: "Batch_Text", srcValueColumn: "Batch_Text", destValueColumn: "PkLotId", destTextColumn: "Batch" },
-            { data: ProductLotList, textColumn: "Color_Text", srcValueColumn: "Color_Text", destValueColumn: "PkLotId", destTextColumn: "Color" },
+            { data: [], textColumn: "Batch_Text", srcValueColumn: "Batch_Text", destValueColumn: "PkLotId", destTextColumn: "Batch" },
+            { data: [], textColumn: "Color_Text", srcValueColumn: "Color_Text", destValueColumn: "PkLotId", destTextColumn: "Color" },
             ]
         });
         cg.applyAddNewRow();
@@ -112,8 +125,8 @@ function BindGrid(GridId, data) {
 
 
                             // cg.setOptionArray(args.cell, res, "Color", false, "Color", "Color", "1");
-                            cg.setOptionArray(9, res, "Batch_Text", false, "Batch", "PkLotId", "1");
-                            cg.setOptionArray(10, res, "Color_Text", false, "Color", "PkLotId", "1");
+                            cg.setOptionArray(12, res, "Batch_Text", false, "Batch", "PkLotId", "1");
+                            cg.setOptionArray(13, res, "Color_Text", false, "Color", "PkLotId", "1");
                             //  cg.setOptionArray(0, ProductList, "ProductName", false, "Product", "PkProductId", "1");
                             //  cg.outGrid.gotoCell(args.row, args.cell, true)
 
@@ -152,12 +165,15 @@ function BindGrid(GridId, data) {
                     }
                 }
                 else if (field == "Qty") {
+                   
+                  //  var index = cg.columns.findIndex(args);
                     ColumnChange(args, args.row, "Qty");
                 }
                 else if (field == "TradeDisc") {
                     ColumnChange(args, args.row, "TradeDisc");
                 }
                 else if (field == "Batch") {
+                   
                     var FkLotId = Common.isNullOrEmpty(args.item["Batch_Text"]) ? 0 : parseFloat(args.item["Batch_Text"]);
                     if (FkLotId > 0 || TranType == "Purchase") {
                         args.item["FkLotId"] = FkLotId > 0 ? FkLotId : 0;
@@ -272,7 +288,27 @@ function cg_ClearRow(args) {
     args.item["MfgDate"] = "";
     cg.updateRefreshDataRow(args.row);
 }
+function BarcodeScan(barcode) {
+    $.ajax({
+        type: "POST",
+        url: Handler.currentPath() + 'BarcodeScan',
+        data: { model: tranModel, barcode: barcode },
+        datatype: "json", success: function (res) {
+            if (res.status == "success") {
+                tranModel = res.data;
+                $(tranModel.TranDetails).each(function (i, v) {
+                    v["ProductName"] = parseInt(v.FkProductId);
+                });
+                BindGrid('DDT', tranModel.TranDetails);
 
+                setFooterData(tranModel)
+
+            }
+            else
+                alert(res.msg);
+        }
+    })
+}
 function ColumnChange(args, rowIndex, fieldName) {
 
     tranModel.TranDetails = GetDataFromGrid();
@@ -299,22 +335,59 @@ function ColumnChange(args, rowIndex, fieldName) {
 }
 
 function FooterChange(fieldName) {
+    debugger;
+     console.log(tranModel);
+   
     $.ajax({
         type: "POST",
         url: Handler.currentPath() + 'FooterChange',
         data: { model: tranModel, fieldName: fieldName },
         datatype: "json", success: function (res) {
+            console.log(res);
             if (res.status == "success") {
+                debugger;
                 tranModel = res.data;
 
-                if (fieldName == "CashDiscType" || fieldName == "CashDiscount") {
+                //if (fieldName == "CashDiscType" || fieldName == "CashDiscount") {
+                //    $(tranModel.TranDetails).each(function (i, v) {
+                //        v["ProductName"] = parseInt(v.FkProductId);
+                //    });
+                //    BindGrid('DDT', tranModel.TranDetails);
+                //    //$("#hdData").val(JSON.stringify(tranModel));
+                //    //Load();
+                //}
+                debugger;
+                console.log(tranModel);
+                setFooterData(tranModel)
+
+            }
+            else
+                alert(res.msg);
+        }
+    })
+}
+function ApplyRateDiscount(Type, Discount) {
+    console.log(tranModel);
+   
+    $.ajax({
+        type: "POST",
+        url: Handler.currentPath() + 'ApplyRateDiscount',
+        data: { model: tranModel, type: Type, discount: Discount },
+        datatype: "json", success: function (res) {
+           
+            if (res.status == "success") {
+                tranModel = res.data;
+               // console.log(tranModel.TranDetails);
+
+                debugger;
+                //if (fieldName == "CashDiscType" || fieldName == "CashDiscount") {
                     $(tranModel.TranDetails).each(function (i, v) {
                         v["ProductName"] = parseInt(v.FkProductId);
                     });
                     BindGrid('DDT', tranModel.TranDetails);
                     //$("#hdData").val(JSON.stringify(tranModel));
                     //Load();
-                }
+                /*}*/
 
                 setFooterData(tranModel)
 
@@ -324,7 +397,6 @@ function FooterChange(fieldName) {
         }
     })
 }
-
 function setFooterData(data) {
     Common.Set(".trn-footer", data, "");
     return false;
@@ -399,7 +471,7 @@ function SaveRecord() {
         if (flag) {
             tranModel.PkId = $('#PkId').val();
             tranModel.FkPartyId = $('#FkPartyId').val();
-             tranModel.EntryDate = $('#EntryDate').val();
+            tranModel.EntryDate = $('#EntryDate').val();
             tranModel.GRDate = $('#GRDate').val();
             tranModel.TranDetails = [];
             if (tranModel.FkPartyId > 0) {

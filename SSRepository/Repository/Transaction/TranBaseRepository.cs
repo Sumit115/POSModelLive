@@ -1,5 +1,6 @@
 ﻿using Azure;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
 using SSRepository.Data;
@@ -8,6 +9,7 @@ using SSRepository.IRepository.Master;
 using SSRepository.Models;
 using SSRepository.Repository.Master;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -118,6 +120,66 @@ namespace SSRepository.Repository.Transaction
             }
             return data;
         }
+
+        public object BarcodeScan(TransactionModel model, long barcode)
+        {
+            try
+            {
+                var product = new ProductRepository(__dbContext).GetSingleRecord_ByBarcode(barcode);
+                if (product != null)
+                {
+
+                    //check
+                    var detail = new TranDetails();
+                    var _old = model.TranDetails.ToList().Where(x => x.FkProductId == product.PkProductId).FirstOrDefault();
+                    if (_old == null)
+                    {
+
+                        detail.SrNo = model.TranDetails.ToList().Count > 0 ? model.TranDetails.ToList().Max(x => x.SrNo) + 1 : 1;
+                        detail.FkProductId = product.PkProductId;
+                        detail.ProductName_Text = product.Product;
+                        detail.Qty = 1;
+                        detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
+                        var _lotEntity = __dbContext.TblProdLotDtl.Where(x => x.FKProductId == product.PkProductId).FirstOrDefault();
+                        if (_lotEntity != null)
+                        {
+                            detail.MRP = _lotEntity.MRP;
+                            detail.SaleRate = _lotEntity.SaleRate > 0 ? _lotEntity.SaleRate : 0;
+                            detail.FkLotId = _lotEntity.PkLotId;
+                            detail.Color = _lotEntity.Color;
+                            detail.Batch = _lotEntity.Batch;
+                        }
+                        else
+                        {
+                            detail.MRP = product.MRP;
+                            detail.SaleRate = product.SaleRate;
+                            detail.FkLotId = 0;
+                            detail.Batch = "";
+                            detail.Color = "";
+                        }
+                        detail.GstRate = (detail.SaleRate < 1000 ? 5 : 18);
+                        detail.Rate = Math.Round(Convert.ToDecimal(detail.SaleRate) * (100 / (100 + detail.GstRate)), 2);
+                        detail.TradeDisc = 0;
+                        detail.TradeDiscAmt = 0;
+                        detail.TradeDiscType = "";
+                        detail.Qty = 1;
+
+                        model.TranDetails.Add(detail);
+                    }
+                    else
+                    {
+                        int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == product.PkProductId);
+                        model.TranDetails[rowIndex].Qty += 1;
+                    }
+                }
+
+                CalculateExe(model);
+                setGridTotal(model);
+            }
+            catch (Exception ex) { }
+            return model;
+        }
+
         public object ColumnChange(TransactionModel model, int rowIndex, string fieldName)
         {
             try
@@ -142,11 +204,44 @@ namespace SSRepository.Repository.Transaction
                 {
                     model.TranDetails[rowIndex].TradeDiscAmt = 0;
                 }
-               
+
                 CalculateExe(model);
                 setGridTotal(model);
             }
             catch (Exception ex) { }
+            return model;
+        }
+        public object ApplyRateDiscount(TransactionModel model, string type, decimal discount)
+        {
+
+            if (type == "LIR")
+            {
+                foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
+                {
+                    item.TradeDisc = 0;
+                    item.TradeDiscAmt = discount;
+                }
+                CalculateExe(model);
+            }
+            else if (type == "LIP")
+            {
+                foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
+                {
+                    item.TradeDisc = discount;
+                    item.TradeDiscAmt = 0;
+                }
+                CalculateExe(model);
+            }
+            else if (type == "F")
+            {
+                foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
+                {
+                    item.Rate = discount;
+                }
+                CalculateExe(model);
+            }
+
+            setGridTotal(model);
             return model;
         }
 
@@ -257,7 +352,7 @@ namespace SSRepository.Repository.Transaction
             {
                 decimal amt = item.Rate * item.Qty;
                 decimal decAmt = item.TradeDisc > 0 ? (amt * item.TradeDisc / 100) : item.TradeDiscAmt;
-                item.TradeDiscAmt = decAmt; 
+                item.TradeDiscAmt = decAmt;
                 item.GrossAmt = Math.Round(amt - item.TradeDiscAmt, 2);//Math.Round(item.Rate * item.Qty, 2) ;
                 item.GstAmt = Math.Round(item.GrossAmt * item.GstRate / 100, 2);
                 item.SCRate = Math.Round(item.GstRate / 2, 2);
@@ -272,7 +367,7 @@ namespace SSRepository.Repository.Transaction
             model.GrossAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.GrossAmt), 2);
             model.TaxAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.GstAmt), 2);
             model.CashDiscountAmt = 0;
-            if (model.CashDiscType == "R" && model.CashDiscount > 0 && model.CashDiscount <= model.GrossAmt) { Math.Round(model.CashDiscountAmt = model.CashDiscount, 2); }
+            if (model.CashDiscType == "R" && model.CashDiscount > 0 && model.CashDiscount <= model.GrossAmt) { model.CashDiscountAmt = Math.Round(model.CashDiscount, 2); }
             else if (model.CashDiscType == "P" && model.CashDiscount > 0 && model.CashDiscount <= 100) { model.CashDiscountAmt = Math.Round((model.GrossAmt * model.CashDiscount / 100), 2); }
             else { model.CashDiscount = 0; }
             model.TotalDiscount = model.CashDiscountAmt;
@@ -282,59 +377,59 @@ namespace SSRepository.Repository.Transaction
 
         public object FooterChange(TransactionModel model, string fieldName)
         {
-            if (fieldName == "CashDiscType" || fieldName == "CashDiscount")
-            {
-                if (model.CashDiscType == "LIR")
-                {
-                    foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId>0))
-                    {
-                        item.TradeDisc =0;
-                        item.TradeDiscAmt = model.CashDiscount;
-                    }
-                    model.CashDiscount = 0;
-                    model.CashDiscountAmt = 0;
-                    CalculateExe(model);
-                }
-                else if (model.CashDiscType == "LIP")
-                {
-                    foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
-                    {
-                        item.TradeDisc = model.CashDiscount;
-                        item.TradeDiscAmt = 0;
-                    }
-                    model.CashDiscount = 0;
-                    model.CashDiscountAmt = 0;
-                    CalculateExe(model);
-                }
-                else if (model.CashDiscType == "F")
-                {
-                    foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
-                    {
-                        item.Rate = model.CashDiscount;
-                    }
-                    model.CashDiscount = 0;
-                    model.CashDiscountAmt = 0;
-                    CalculateExe(model);
-                }
+            //if (fieldName == "CashDiscType" || fieldName == "CashDiscount")
+            //{
+            //    if (model.CashDiscType == "LIR")
+            //    {
+            //        foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
+            //        {
+            //            item.TradeDisc = 0;
+            //            item.TradeDiscAmt = model.CashDiscount;
+            //        }
+            //        model.CashDiscount = 0;
+            //        model.CashDiscountAmt = 0;
+            //        CalculateExe(model);
+            //    }
+            //    else if (model.CashDiscType == "LIP")
+            //    {
+            //        foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
+            //        {
+            //            item.TradeDisc = model.CashDiscount;
+            //            item.TradeDiscAmt = 0;
+            //        }
+            //        model.CashDiscount = 0;
+            //        model.CashDiscountAmt = 0;
+            //        CalculateExe(model);
+            //    }
+            //    else if (model.CashDiscType == "F")
+            //    {
+            //        foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
+            //        {
+            //            item.Rate = model.CashDiscount;
+            //        }
+            //        model.CashDiscount = 0;
+            //        model.CashDiscountAmt = 0;
+            //        CalculateExe(model);
+            //    }
 
 
-            }
+            //}
 
             setGridTotal(model);
             return model;
         }
 
-        public List<object> PartyList(int pageSize, int pageNo = 1, string search = "", string TranType = "")
+        public List<PartyModel> PartyList(int pageSize, int pageNo = 1, string search = "", string TranType = "")
         {
             if (TranType == "P")
             {
                 VendorRepository rep = new VendorRepository(__dbContext);
-                return rep.CustomList(pageSize, pageNo, search);
+                return rep.GetList(pageSize, pageNo, search);
             }
             else
             {
                 CustomerRepository rep = new CustomerRepository(__dbContext);
-                return rep.CustomList(pageSize, pageNo, search);
+                return rep.GetList(pageSize, pageNo, search);
             }
         }
 

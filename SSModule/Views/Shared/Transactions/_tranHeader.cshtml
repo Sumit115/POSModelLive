@@ -80,7 +80,9 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="control-label">Entry Date</label>
-                        @Html.TextBoxFor(m => m.EntryDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" })
+                     @*   @Html.TextBoxFor(m => m.EntryDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" })
+                     *@
+                        <input type="Date" asp-for="EntryDate" class="form-control trn" />
                         <span asp-validation-for="EntryDate" class="text-danger"></span>
                     </div>
                 </div>
@@ -97,6 +99,24 @@
                         <input type ="Date" asp-for="GRDate" class="form-control trn" />
                         @* @Html.TextBoxFor(m => m.GRDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" }) *@
                         <span asp-validation-for="GRDate" class="text-danger"></span>
+                    </div>
+                </div>
+              
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">Rate/Discount Type </label>
+                        <select id="RateDiscountType" class="form-control ratediscount">
+                             <option value="LIR">Line Item Rs</option>
+                            <option value="LIP">Line Item %</option>
+                            <option value="F">Fix Rate</option>
+                        </select>
+               
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">Rate/Discount Value </label>
+                        <input id="RateDiscountValue" class="form-control ratediscount" /> 
                     </div>
                 </div>
             </div>

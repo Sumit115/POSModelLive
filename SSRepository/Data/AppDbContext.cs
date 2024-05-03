@@ -43,7 +43,7 @@ namespace SSRepository.Data
         public virtual DbSet<TblBrandMas> TblBrandMas { get; set; } = null!;
         public virtual DbSet<TblCityMas> TblCityMas { get; set; } = null!;
         public virtual DbSet<TblSysDefaults> TblSysDefaults { get; set; } = null!;
-        public virtual DbSet<TblLocationMas> TblLocationMas { get; set; } = null!;
+        //public virtual DbSet<TblLocationMas> TblLocationMas { get; set; } = null!;
        // public virtual DbSet<TblStationMas> TblStationMas { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
