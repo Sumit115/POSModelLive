@@ -1,0 +1,208 @@
+﻿@model SSRepository.Models.LocationModel
+
+@{
+    ViewData["Title"] = "Create";
+    ViewData["bdClass"] = "page";
+}
+<div class="p-3">
+    <form asp-action="Create" class="row g-3" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PkLocationID" />
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Branch</label>
+                            <select asp-for="FKBranchID" asp-items="@(new SelectList(ViewBag.BranchList,"PkBranchId","BranchName"))" class="form-control" id="FkBranchId">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Location</label>
+                            <input asp-for="Location" class="form-control" />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">ALIAS</label>
+                            <input asp-for="Alias" id="txtalias" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 pt-2">
+                        <input type="button" onclick="GenerateAlias()" value="Auto Generate " class="btn btn-warning">
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Address</label>
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Billing Location</label>
+                            <input type="checkbox" asp-for="IsBillingLocation" class="form-control" />
+                         
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">All Product</label>
+                            <input type="checkbox" asp-for="IsAllProduct" class="form-control" />
+                            
+                        </div>
+                    </div> 
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">All Customer</label>
+                            <input type="checkbox" asp-for="IsAllCustomer" class="form-control" />
+                           
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Different Tax</label>
+                            <input type="checkbox" asp-for="IsDifferentTax" class="form-control" />
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Station</label>
+                            @* <select asp-for="FKStationID" asp-items="@(new SelectList(ViewBag.StationList,"PkStationId","StationName"))" class="form-control" id="FkBranchId">
+                            </select> *@
+                            <select asp-for="FKStationID" class="form-control">
+                                <option value="1">Station 01</option>
+                            </select>
+                            <span asp-validation-for="FKStationID" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Locality</label>
+                            <select asp-for="FKLocalityID" class="form-control">
+                                <option value="1">Locality  1</option>
+                            </select>
+                            @* <input asp-for="FKLocalityID" class="form-control  input-number" maxlength="6" pattern="PinCode" /> *@
+                            <span asp-validation-for="FKLocalityID" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Pincode" class="control-label"></label>
+                            <input asp-for="Pincode" type="number" class="form-control input-number" pattern="Mobile" maxlength="10" />
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Fax" class="control-label"></label>
+                            <input asp-for="Fax" class="form-control input-number" pattern="Mobile" maxlength="10" />
+                            <span asp-validation-for="Fax" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                  
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Phone</label>
+                            <input asp-for="Phone1" class="form-control" pattern="Email" />
+                            <span asp-validation-for="Phone1" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Mobile</label>
+                            <input asp-for="Phone2" class="form-control" pattern="Email" />
+                           
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Email</label>
+                            <input asp-for="Email" class="form-control" pattern="Email" />
+                           
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">WebSite</label>
+                            <input asp-for="Website" class="form-control" pattern="Email" />
+                           
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Posting Account</label>
+                            <select asp-for="FKAccountID" class="form-control">
+                                <option value="2">sdfcsdf</option>
+                                <option value="3">zdsa</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">All Vendor</label>
+                            <input type="checkbox" asp-for="IsAllVendor" class="form-control" />
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Cost Center</label>
+                            <input type="checkbox" asp-for="IsAllCostCenter" class="form-control" />
+                           
+                        </div>
+                    </div>
+                  
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+       $(document).ready(function () {
+      
+      //     Common.InputFormat();
+      //     //BindCity(20Model.FkCityId);
+          $('#btnServerSave').click(function (e) {
+              e.preventDefault();
+              $("form").submit();
+          });
+      })
+
+
+
+       function GenerateAlias() {
+           if ($("#txtalias").val() == "") {
+               $.ajax({
+                   type: "POST",
+                    url: '/Master/Location/GetAlias',
+                   data: {},
+                   datatype: "json",
+                   success: function (res) {
+                       if (res != "") {
+                           $("#txtalias").val(res);
+                       }
+                   }
+               });
+           }
+
+       }
+    </script>
+
+}

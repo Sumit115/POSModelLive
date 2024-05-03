@@ -36,8 +36,11 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label">Alias <span asp-validation-for="Alias" class="text-danger"></span></label>
-                            <input asp-for="Alias" class="form-control" aria-describedby="basic-addon2" />
+                            <input asp-for="Alias" id="txtalias" class="form-control" aria-describedby="basic-addon2" />
                             @* <span class="input-group-text" id="basic-addon2">Auto Generate</span> *@
+                        </div>
+                        <div>
+                            <input type="button" onclick="GenerateAlias()" value="Generate" class="btn btn-primary" />
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -61,7 +64,10 @@
                             <label class="control-label">
                                 Barcode <span asp-validation-for="Barcode" class="text-danger"></span>
                             </label>
-                            <input asp-for="Barcode" class="form-control" />
+                            <input asp-for="Barcode" id="txtBarcode" class="form-control" />
+                        </div>
+                        <div>
+                            <input type="button" onclick="GetBarCode()" value="Auto Generate" class="btn btn-primary" />
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -402,6 +408,39 @@
             } else { 
                 $("#FkCatId").append("<option value=''>-Select-</option>"); 
             }
+        }
+
+        function GetBarCode() {
+
+            $.ajax({
+                type: "POST",
+                url: '/Master/Product/GetBarCode',
+                data: {},
+                datatype: "json",
+                success: function (res) {
+                    console.log(res);
+                    if (res != null || res != "") {
+                        $("#txtBarcode").val(res);
+                    }
+                }
+            })
+        }
+
+        function GenerateAlias() {
+            if ($("#txtalias").val() == "") {
+                $.ajax({
+                    type: "POST",
+                    url: '/Master/Product/GetAlias',
+                    data: {},
+                    datatype: "json",
+                    success: function (res) {
+                        if (res != "") {
+                            $("#txtalias").val(res);
+                        }
+                    }
+                });
+            }
+
         }
     </script>
 }

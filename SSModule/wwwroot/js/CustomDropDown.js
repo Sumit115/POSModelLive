@@ -55,7 +55,7 @@ $(document).ready(function () {
 });
 
 function CustomDDL(ctrlId, spn) {
-
+    
     var _data = {};
 
     var $drpCtrltxt = $("#drp" + ctrlId);
@@ -104,23 +104,26 @@ function CustomDDL(ctrlId, spn) {
         }
         var hidExtra = $drpCtrlExtra.val();
         if (hidExtra !== '') {
+            
             if (hidExtra.indexOf(',') !== -1) {
                 var arrExtra = hidExtra.split(',');
                 $(arrExtra).each(function (extraIndex, extraItem) {
                     ExtraParam += $('#' + extraItem).val() + '~';
                 });
             } else {
-                ExtraParam = $('#' + hidExtra).val();
+                ExtraParam = hidExtra; //$('#' + hidExtra).val(); by suresh (discuss with sumit sir)
             }
             data["ExtraParam"] = ExtraParam;
         }
 
         var result = "";
+        
         if (typeof (cbLoad) == "function") {
             var result = cbLoad(data)
             BindList(result, evnt, param, PageNo);
         }
         else {
+            
             var url = Handler.currentPath() + ctrlId;
             if ($uri.val() != "")
                 url = $uri.val();

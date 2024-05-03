@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using SSRepository.Models;
 using Microsoft.VisualBasic;
 using System.Data;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace SSRepository.Repository.Master
 {
@@ -47,7 +49,7 @@ namespace SSRepository.Repository.Master
                                        on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
                                        into _citytmp
                                       from city in _citytmp.DefaultIfEmpty()
-                                       where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                          // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                       orderby cou.PkVendorId
                                         select (new PartyModel
                                         {
@@ -84,30 +86,6 @@ namespace SSRepository.Repository.Master
             return data;
         }
 
-        public List<object> CustomList(int pageSize, int pageNo = 1, string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
-            var data = (from cou in __dbContext.TblVendorMas
-                                     join _city in __dbContext.TblCityMas
-                                      on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
-                                      into _citytmp
-                                     from city in _citytmp.DefaultIfEmpty()
-                                     where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                     orderby cou.PkVendorId
-                                     select (new 
-                                     {
-                                         cou.PkVendorId,
-                                         cou.Code,
-                                         cou.Name,
-                                         cou.StateName,
-                                         cou.Address,
-                                         cou.Mobile,
-                                         cou.Email
-                                     }
-                                    )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
-            return data.Select(x => (object)x).ToList();
-        }
 
         public PartyModel GetSingleRecord(long PkVendorId)
         {
@@ -265,6 +243,38 @@ namespace SSRepository.Repository.Master
             //AddImagesAndRemark(obj.PkcountryId, obj.FKVendorID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }        
 
+        public string GetAlias(string FormName = "")
+        {
+          
+
+            string retVal = "";
+            try
+            {
+
+                if (FormName == "product")
+                {
+                    retVal= GetAlias("tblProduct_mas", "Alias");
+                }else if(FormName == "location")
+                {
+                    retVal= GetAlias("tblLocation_mas", "Alias");
+                }else if(FormName == "account")
+                {
+                    retVal = GetAlias("tblAccount_mas", "Alias");
+                }
+               
+               if (String.IsNullOrEmpty(retVal) || retVal == "0"|| retVal=="ABC")
+               {
+                   retVal = "100000000000";
+               }
+                retVal =Convert.ToString(Convert.ToInt64(retVal)+1);
+              
+            }
+            catch(Exception ex) 
+            { 
+                ex.ToString();
+            }
+            return retVal;
+        }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>
@@ -286,6 +296,28 @@ namespace SSRepository.Repository.Master
             return list;
         }
 
+        public string GetAlias(string TableName, string ColumnName)
+        {
+            string returnAlias = string.Empty;
+            using (SqlConnection con = new SqlConnection(conn))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("uspGetAlias", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@TableName", TableName);
+                cmd.Parameters.AddWithValue("@ColumnName", ColumnName);
+
+                SqlParameter outputParameter = new SqlParameter("@Alias", SqlDbType.NVarChar, 20);
+                outputParameter.Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(outputParameter);
+                returnAlias = Convert.ToString(cmd.ExecuteScalar());
+                con.Close();
+            }
+            return returnAlias;
+        }
+
+
+        
 
     }
 }

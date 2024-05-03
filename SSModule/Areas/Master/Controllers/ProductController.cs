@@ -26,13 +26,15 @@ namespace SSAdmin.Areas.Master.Controllers
         private readonly ICategoryGroupRepository _categoryGroupRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IBrandRepository _brandRepository;
+        private readonly IVendorRepository _VendorRepository;
 
-        public ProductController(IProductRepository repository, ICategoryGroupRepository categoryGroupRepository, ICategoryRepository categoryRepository, IBrandRepository brandRepository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
+        public ProductController(IProductRepository repository, ICategoryGroupRepository categoryGroupRepository, ICategoryRepository categoryRepository, IBrandRepository brandRepository, IGridLayoutRepository gridLayoutRepository, IVendorRepository vendorRepository) : base(gridLayoutRepository)
         {
             _repository = repository;
             _categoryGroupRepository = categoryGroupRepository;
             _categoryRepository = categoryRepository;
             _brandRepository = brandRepository;
+            _VendorRepository= vendorRepository;
             FKFormID = (long)Handler.Form.Product;
         }
 
@@ -199,23 +201,26 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
 
-        //====================================*****************================================
         [HttpPost]
-        public string GetAlias(string ProdName, string ProdBrand, Int64 CategoryID, Int64 MarketingID, Int64 ManufacturingID, string Category, string Marketing, string Manufacturing)
+        public string GetAlias()
         {
-            //blProductMaster = new blProductMaster(GetConnectionsString(), objSystemDef, objReturnTypes);
-            //return blProductMaster.blGetProductAlias(SwilConvert.ToString(ProdName), SwilConvert.ToString(ProdBrand), CategoryID, MarketingID, ManufacturingID, SwilConvert.ToString(Category), SwilConvert.ToString(Marketing), SwilConvert.ToString(Manufacturing));
-            return "";
-
+            string Return = string.Empty;
+            try
+            {
+                Return = _VendorRepository.GetAlias("product");
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
+            return Return;
         }
 
         public string GetBarCode()
         {
-            //long barcode = 0;
-            //blProductMaster = new blProductMaster(GetConnectionsString(), objSystemDef, objReturnTypes);
-            //barcode = blProductMaster.blGetProdBarcode();
-            //return barcode;
-            return "";
+          string Return = _repository.GetBarCode();
+
+          return Return;
         }
 
         [HttpPost]
@@ -224,5 +229,8 @@ namespace SSAdmin.Areas.Master.Controllers
             return _repository.prodCatgList(pageSize, pageNo, search);
         }
 
+
+
+       
     }
 }

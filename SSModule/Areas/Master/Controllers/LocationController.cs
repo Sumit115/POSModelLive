@@ -1,32 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using SSRepository.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using SSRepository.IRepository.Master;
 using SSRepository.IRepository;
 using SSRepository.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Azure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using SSRepository.Repository.Master;
 
 namespace SSAdmin.Areas.Master.Controllers
 {
     [Area("Master")]
-    public class VendorController : BaseController
+    public class LocationController : BaseController
     {
-        private readonly IVendorRepository _repository;
-        
-        public VendorController(IVendorRepository repository, IGridLayoutRepository gridLayoutRepository):base(gridLayoutRepository)
+        private readonly ILocationRepository _repository;
+        private readonly IBranchRepository _Branchrepository;
+        private readonly IVendorRepository _Vendorrepository;
+
+        public LocationController(ILocationRepository repository,IGridLayoutRepository gridLayoutRepository, IBranchRepository BranchRepository, IVendorRepository vendorrepository) : base(gridLayoutRepository)
         {
             _repository = repository;
-            FKFormID = (long)Handler.Form.Vendor;
+            _Branchrepository = BranchRepository;
+           // _Stationrepository = Stationrepository; 
+            FKFormID = (long)Handler.Form.Location;
+            _Vendorrepository = vendorrepository;
         }
-       
+
         public async Task<IActionResult> List()
         {
             return View();
@@ -45,32 +41,18 @@ namespace SSAdmin.Areas.Master.Controllers
         public string Export(string ColumnList, string HeaderList, string Name, string Type)
         {
             string FileName = "";
-            //try
-            //{
-            //    List<BankModel> model = new List<BankModel>();
-            //    string result = CommonCore.API(ControllerName, "export", GetAPIDefaultParam());
-            //    if (CommonCore.CheckError(result) == "")
-            //    {
-            //        model = JsonConvert.DeserializeObject<List<BankModel>>(result);
-            //        FileName = Common.Export(model, HeaderList, ColumnList, Name, Type);
-            //    }
-            //    else
-            //        FileName = result;
-            //}
-            //catch (Exception ex)
-            //{
-            //    CommonCore.WriteLog(ex, "Export " + Type, ControllerName, GetErrorLogParam());
-            //    return CommonCore.SetError(ex.Message);
-            //}
             return FileName;
         }
 
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
-            PartyModel Model = new PartyModel();
+            LocationModel Model = new LocationModel();
             try
             {
                 ViewBag.PageType = "";
+                ViewBag.BranchList = _Branchrepository.GetDrpBranch(1, 1000);
+                ViewBag.StationList = ""; //_Stationrepository.GetDrpStation(1, 1000);
+
                 if (id != 0 && pageview.ToLower() == "log")
                 {
                     ViewBag.PageType = "Log";
@@ -88,30 +70,28 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             catch (Exception ex)
             {
-                //CommonCore.WriteLog(ex, "Create Get ", ControllerName, GetErrorLogParam());
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(0, tblBankMas);
-            ViewBag.StateList = _repository.GetDrpState();
             return View(Model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(PartyModel model)
+        public async Task<IActionResult> Create(LocationModel model)
         {
             try
             {
                 model.FKUserId = 1;
                 model.src = 1;
+
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
-                    if (model.PkId > 0)
+                    if (model.PKLocationID > 0)
                     {
                         Mode = "Edit";
                     }
-                    Int64 ID = model.PkId;
+                    Int64 ID = model.PkLocationID;
                     string error = await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {
@@ -137,8 +117,6 @@ namespace SSAdmin.Areas.Master.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(tblBankMas.PKID, tblBankMas);
-            ViewBag.StateList = _repository.GetDrpState();
             return View(model);
         }
 
@@ -152,31 +130,30 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             catch (Exception ex)
             {
-                //CommonCore.WriteLog(ex, "DeleteRecord", ControllerName, GetErrorLogParam());
-                //return CommonCore.SetError(ex.Message);
+                ex.ToString();
             }
             return response;
         }
 
-
         [HttpPost]
         public string GetAlias()
         {
-            string Return=string.Empty;
+            string Return = string.Empty;
             try
             {
-                Return= _repository.GetAlias("Vendor");
+                Return = _Vendorrepository.GetAlias("location");
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 ex.ToString();
             }
             return Return;
         }
-
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {
             return _repository.ColumnList(GridName);
         }
+
     }
 }
+

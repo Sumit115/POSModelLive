@@ -18,6 +18,8 @@
     <None Include="Areas\Master\Views\AccountGroup\List.cshtml" />
     <None Include="Areas\Master\Views\AccountMas\Create.cshtml" />
     <None Include="Areas\Master\Views\AccountMas\List.cshtml" />
+    <None Include="Areas\Master\Views\Area\Create.cshtml" />
+    <None Include="Areas\Master\Views\Area\List.cshtml" />
     <None Include="Areas\Master\Views\Bank\Create.cshtml" />
     <None Include="Areas\Master\Views\Bank\List.cshtml" />
     <None Include="Areas\Master\Views\Branch\Create.cshtml" />
@@ -38,9 +40,13 @@
     <None Include="Areas\Master\Views\District\List.cshtml" />
     <None Include="Areas\Master\Views\Employee\Create.cshtml" />
     <None Include="Areas\Master\Views\Employee\List.cshtml" />
+    <None Include="Areas\Master\Views\Locality\Create.cshtml" />
+    <None Include="Areas\Master\Views\Locality\List.cshtml" />
     <None Include="Areas\Master\Views\ProductLot\Create.cshtml" />
     <None Include="Areas\Master\Views\Product\Create.cshtml" />
     <None Include="Areas\Master\Views\Product\List.cshtml" />
+    <None Include="Areas\Master\Views\Region\Create.cshtml" />
+    <None Include="Areas\Master\Views\Region\List.cshtml" />
     <None Include="Areas\Master\Views\Series\Create.cshtml" />
     <None Include="Areas\Master\Views\Series\List.cshtml" />
     <None Include="Areas\Master\Views\State\Create.cshtml" />
@@ -51,6 +57,8 @@
     <None Include="Areas\Master\Views\User\List.cshtml" />
     <None Include="Areas\Master\Views\Vendor\Create.cshtml" />
     <None Include="Areas\Master\Views\Vendor\List.cshtml" />
+    <None Include="Areas\Master\Views\Zone\Create.cshtml" />
+    <None Include="Areas\Master\Views\Zone\List.cshtml" />
     <None Include="Areas\Master\Views\_ViewImports.cshtml" />
     <None Include="Areas\Master\Views\_ViewStart.cshtml" />
     <None Include="Areas\Report\Views\PurchaseStock\List.cshtml" />

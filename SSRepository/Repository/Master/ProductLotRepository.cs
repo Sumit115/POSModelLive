@@ -68,7 +68,7 @@ namespace SSRepository.Repository.Master
                                          )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
-        public List<ProdLotDtlModel> GetListByProduct(int FkProductId, int pageSize, int pageNo = 1, string search = "")
+        public List<ProdLotDtlModel> GetListByProduct(long FkProductId, int pageSize, int pageNo = 1, string search = "")
         {
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;

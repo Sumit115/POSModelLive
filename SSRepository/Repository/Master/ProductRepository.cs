@@ -307,6 +307,119 @@ namespace SSRepository.Repository.Master
             return rep.GetList(pageSize, pageNo, search);
         }
 
+        public string GetBarCode()
+        {
+            Int64 ProdBarcode;
+            Int64 InitBarcode = 99900000000000;
+            Int32 DefBarcodeLen;
+            Int64 DefBarcode = 0;
+            Int64 BranchNo = 0;
+            Int64 MaxDefBarcode;
+            string SKUDef = "";
+
+            var lstSysDef = (from x in __dbContext.TblSysDefaults
+                             where (x.SysDefKey.Contains("InitialProdBarcode") || x.SysDefKey.Contains("BranchNo") || x.SysDefKey.Contains("SKUDefinition"))
+                             select x).ToList();
+
+            foreach (var item in lstSysDef)
+            {
+                if (item.SysDefKey == "InitialProdBarcode")
+                {
+                    if (item.SysDefValue != null && item.SysDefValue != "")
+                    {
+                        InitBarcode = Convert.ToInt64(item.SysDefValue);
+                    }
+                }
+                else if (item.SysDefKey == "BranchNo")
+                {
+                    if (item.SysDefValue != null && item.SysDefValue != "")
+                    {
+                        BranchNo = Convert.ToInt64(item.SysDefValue);
+                    }
+                }
+                else if (item.SysDefKey == "SKUDefinition")
+                {
+                    if (item.SysDefValue != null && item.SysDefValue != "")
+                    {
+                        SKUDef = item.SysDefValue;
+                    }
+                }
+            }
+            DefBarcodeLen = InitBarcode.ToString().Length;
+
+            if (BranchNo > 0)
+            {
+                DefBarcode = Convert.ToInt64(InitBarcode.ToString().Substring(0, 5));
+            }
+
+            string result = new String('9', DefBarcodeLen - DefBarcode.ToString().Length);
+            MaxDefBarcode = Convert.ToInt64(DefBarcode.ToString() + result);
+
+            dynamic OutParam;
+            dynamic OutParam1;
+
+            try
+            {
+                if (BranchNo > 0)
+                {
+                    OutParam = (from b in __dbContext.TblProdLotDtl where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 5)) == DefBarcode select b.Barcode).Max();
+                }
+                else
+                {
+                    OutParam = (from b in __dbContext.TblProdLotDtl where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 1)) == DefBarcode select b.Barcode).Max();
+                }
+            }
+            catch
+            {
+                OutParam = InitBarcode.ToString();
+            }
+
+            if (OutParam == null)
+                OutParam = Convert.ToInt64(InitBarcode);
+
+            try
+            {
+                if (BranchNo > 0)
+                {
+                    ProdBarcode = (from b in __dbContext.TblProductMas where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 5)) == DefBarcode select (long)b.Barcode).Max();
+                }
+                else
+                {
+               
+                    ProdBarcode = (from b in __dbContext.TblProductMas where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 1)) == DefBarcode select (long)b.Barcode).Max();
+                }
+                ProdBarcode = InitBarcode;
+            }
+            catch (Exception ex)
+            {
+                ProdBarcode = InitBarcode;
+            }
+
+            if (InitBarcode > OutParam && InitBarcode > ProdBarcode)
+            {
+                OutParam = InitBarcode;
+            }
+            else if (OutParam > ProdBarcode)
+            {
+                OutParam = OutParam;
+            }
+            else
+            {
+                OutParam = ProdBarcode;
+            }
+
+            if (OutParam >= MaxDefBarcode)
+            {
+                OutParam = 0;
+            }
+            else
+                OutParam = OutParam + 1;
+            string ReturnVar = Convert.ToString(OutParam);
+
+            return ReturnVar;
+
+        }
+
 
     }
 }

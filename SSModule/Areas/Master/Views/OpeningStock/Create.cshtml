@@ -1,0 +1,105 @@
+﻿@model SSRepository.Models.TblProdStockDtlModel
+
+@{
+    ViewData["Title"] = "Opening Stock";
+    ViewData["bdClass"] = "page";
+}
+
+
+
+ <div class="row" style="background:#e4e9ec">
+    <div class="col-md-3">
+        <div class="form-group">
+          
+
+            <label class="control-label">Sub Section <span asp-validation-for="FKProdID" class="text-danger"></span></label>
+            @await Html.PartialAsync("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKProductId" }, { "Class", "form-control" }, { "event", "ViewProductLot()" },
+            { "value", Model.FKProdID },{ "uri", "" }})
+           
+        </div>
+    </div>  
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="control-label">Prod Lot <span asp-validation-for="FKLotID" class="text-danger"></span></label>
+            @await Html.PartialAsync("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKLotID" }, { "Class", "form-control" }, { "event","" },
+            { "value", Model.FKLotID },{ "uri", "" }})
+            
+          @*   <select id="drpProdLot" class="form-control">
+
+           </select> *@
+        </div>
+    </div>
+</div> 
+
+<div class="p-3">
+    <form asp-action="Create" class="g-3" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PKStockId" />
+          <input type="hidden" name="FKProdID" id="hdnFKProdID" />
+            <input type="hidden" name="FKLotID" id="hdnFKLotID" />
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Location  <span asp-validation-for="FKLocationID" class="text-danger"></span></label>
+
+                            @await Html.PartialAsync("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKLocationID" }, { "Class", "form-control" }, { "event", "GetLocationData()" },
+                            { "value", Model.FKLocationID },{ "uri", "" }})
+                           @*  <select asp-for="FKLocationID" asp-items="@(new SelectList(ViewBag.GetDrpLocation,"PKLocationID","Location"))" class="form-control" id="FkBranchId">
+                            </select> *@
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">in Stock <span asp-validation-for="InStock" class="text-danger"></span></label>
+                            <input asp-for="InStock" id="txtInStock" disabled="disabled" class="form-control" />
+                   
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Out Stock <span asp-validation-for="OutStock" class="text-danger"></span></label>
+                            <input asp-for="OutStock" id="txtOutStock" disabled="disabled" class="form-control" />
+
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">CurStock <span asp-validation-for="CurStock" class="text-danger"></span></label>
+                            <input asp-for="CurStock" id="txtCurStock" disabled="disabled" class="form-control" />
+
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">OpStock <span asp-validation-for="OpStock" class="text-danger"></span></label>
+                            <input asp-for="OpStock" id="txtOpStock" class="form-control" />
+
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <button type="submit" id="btnSave"class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                </div>
+             </div>
+        </div>
+    </form>
+
+    <div>
+        <div class="row">
+            <div id="WUCHM1" class="col-12">
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+        @section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/master/openingstock.js"></script>
+}

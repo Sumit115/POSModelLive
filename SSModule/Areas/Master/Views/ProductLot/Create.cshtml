@@ -116,7 +116,10 @@
                             <label class="control-label">
                                 Barcode <span asp-validation-for="Barcode" class="text-danger"></span>
                             </label>
-                            <input asp-for="Barcode" class="form-control" />
+                            <input asp-for="Barcode" id="txtBarcode" class="form-control" />
+                        </div>
+                        <div>
+                            <input type="button" onclick="GetBarCode()" value="Generate"/>
                         </div>
                     </div>
                     <div class="col-md-8">
@@ -149,4 +152,22 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script src="~/js/master/prodlotdtl.js"></script>
+
+    <script>
+        function GetBarCode() {
+
+            $.ajax({
+                type: "POST",
+                url: '/Master/Product/GetBarCode',
+                data: {},
+                datatype: "json",
+                success: function (res) {
+                    console.log(res);
+                    if (res != null || res != "") {
+                        $("#txtBarcode").val(res);
+                    }
+                }
+            })
+        }
+    </script>
 }
