@@ -27,7 +27,7 @@ namespace SSRepository.Models
         public long? EntryNo { get; set; }//backend se 1,2,3,
 
         
-        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
+       // [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime EntryDate { get; set; }//txt  //only fincial year date
 
         public string TranAlias { get; set; }//=bind From Js on Series Selection
@@ -49,9 +49,9 @@ namespace SSRepository.Models
 
         public string? GRNo { get; set; }//txt
 
-        [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? GRDate { get; set; }//txt
+        //[DataType(DataType.DateTime)]
+        //[DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime  GRDate { get; set; }//txt
 
         public decimal GrossAmt { get; set; }//txt =taxableAmount
 

@@ -21,7 +21,7 @@ $(document).ready(function () {
         tranModel[fieldName] = $(this).val();
     });
 
-    
+
 
 });
 
@@ -39,7 +39,6 @@ function Load() {
 
     else {
         BindGrid('DDT', []);
-
     }
 }
 
@@ -155,6 +154,9 @@ function BindGrid(GridId, data) {
                 else if (field == "Qty") {
                     ColumnChange(args, args.row, "Qty");
                 }
+                else if (field == "TradeDisc") {
+                    ColumnChange(args, args.row, "TradeDisc");
+                }
                 else if (field == "Batch") {
                     var FkLotId = Common.isNullOrEmpty(args.item["Batch_Text"]) ? 0 : parseFloat(args.item["Batch_Text"]);
                     if (FkLotId > 0 || TranType == "Purchase") {
@@ -197,7 +199,7 @@ function BindGrid(GridId, data) {
                 var PkProductId = args.grid.getDataItem(args.row)["PkProductId"];
                 var SrNo = args.grid.getDataItem(args.row)["SrNo"];
 
-                
+
             }
         });
 
@@ -257,6 +259,9 @@ function cg_ClearRow(args) {
     args.item["GrossAmt"] = "";
     args.item["GstRate"] = "";
     args.item["GstAmt"] = "";
+    args.item["TradeDisc"] = "";
+    args.item["TradeDiscAmt"] = "";
+    args.item["TradeDiscType"] = "";
     args.item["NetAmt"] = "";
     args.item["Delete"] = '';
     args.item["Batch"] = "";
@@ -301,7 +306,18 @@ function FooterChange(fieldName) {
         datatype: "json", success: function (res) {
             if (res.status == "success") {
                 tranModel = res.data;
+
+                if (fieldName == "CashDiscType" || fieldName == "CashDiscount") {
+                    $(tranModel.TranDetails).each(function (i, v) {
+                        v["ProductName"] = parseInt(v.FkProductId);
+                    });
+                    BindGrid('DDT', tranModel.TranDetails);
+                    //$("#hdData").val(JSON.stringify(tranModel));
+                    //Load();
+                }
+
                 setFooterData(tranModel)
+
             }
             else
                 alert(res.msg);
@@ -328,6 +344,9 @@ function setGridRowData(args, data, rowIndex, fieldName) {
         args.item["GrossAmt"] = data[rowIndex].GrossAmt;
         args.item["GstRate"] = data[rowIndex].GstRate;
         args.item["GstAmt"] = data[rowIndex].GstAmt;
+        args.item["TradeDisc"] = data[rowIndex].TradeDisc;
+        args.item["TradeDiscAmt"] = data[rowIndex].TradeDiscAmt;
+        args.item["TradeDiscType"] = data[rowIndex].TradeDiscType;
         args.item["NetAmt"] = data[rowIndex].NetAmt;
         args.item["ModeForm"] = data[rowIndex].ModeForm;
         args.item["Batch"] = data[rowIndex].Batch;
@@ -380,32 +399,36 @@ function SaveRecord() {
         if (flag) {
             tranModel.PkId = $('#PkId').val();
             tranModel.FkPartyId = $('#FkPartyId').val();
-            tranModel.EntryDate = $('#EntryDate').val();
+             tranModel.EntryDate = $('#EntryDate').val();
             tranModel.GRDate = $('#GRDate').val();
             tranModel.TranDetails = [];
             if (tranModel.FkPartyId > 0) {
-                tranModel.TranDetails = GetDataFromGrid(true);
+                if (tranModel.FKSeriesId > 0) {
+                    tranModel.TranDetails = GetDataFromGrid(true);
 
-                var filteredDetails = tranModel.TranDetails.filter(x => x.ModeForm != 2);
-                if (tranModel.TranDetails.length > 0 && filteredDetails.length > 0) {
-                    $.ajax({
-                        type: "POST",
-                        url: Handler.currentPath() + 'Create',
-                        data: { model: tranModel },
-                        datatype: "json",
-                        success: function (res) {
+                    var filteredDetails = tranModel.TranDetails.filter(x => x.ModeForm != 2);
+                    if (tranModel.TranDetails.length > 0 && filteredDetails.length > 0) {
+                        $.ajax({
+                            type: "POST",
+                            url: Handler.currentPath() + 'Create',
+                            data: { model: tranModel },
+                            datatype: "json",
+                            success: function (res) {
 
-                            if (res.status == "success") {
-                                alert('Save Successfully..');
-                                window.location = Handler.currentPath() + 'List';
+                                if (res.status == "success") {
+                                    alert('Save Successfully..');
+                                    window.location = Handler.currentPath() + 'List';
+                                }
+                                else
+                                    alert(res.msg);
                             }
-                            else
-                                alert(res.msg);
-                        }
-                    });
+                        });
+                    }
+                    else
+                        alert("Insert Valid Product Data..");
                 }
                 else
-                    alert("Insert Valid Product Data..");
+                    alert("Please Select Series");
             }
             else
                 alert("Please Select Party");

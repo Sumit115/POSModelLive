@@ -80,7 +80,9 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="control-label">Entry Date</label>
-                        @Html.TextBoxFor(m => m.EntryDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" })
+                     @*   @Html.TextBoxFor(m => m.EntryDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" })
+                     *@
+                        <input type="Date" asp-for="EntryDate" class="form-control trn" />
                         <span asp-validation-for="EntryDate" class="text-danger"></span>
                     </div>
                 </div>

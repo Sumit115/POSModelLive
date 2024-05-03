@@ -6,32 +6,25 @@ using SSRepository.Models;
 using SSRepository.IRepository.Master;
 using Newtonsoft.Json;
 using System.Data;
+using SSAdmin.Areas;
 using Microsoft.AspNetCore.Http;
 
 namespace SSAdmin.Areas.Transactions.Controllers
 {
     [Area("Transactions")]
-    public class PurchaseOrderController : BaseTranController<IPurchaseOrderRepository, IGridLayoutRepository>
+    public class SalesInvController : BaseTranController<ISalesInvoiceRepository, IGridLayoutRepository>
     {
-        private readonly IPurchaseOrderRepository _repository;
+        public readonly ISalesInvoiceRepository _repository;
 
-        public PurchaseOrderController(IPurchaseOrderRepository repository, IGridLayoutRepository gridLayoutRepository) : base(repository, gridLayoutRepository)
+        public SalesInvController(ISalesInvoiceRepository repository, IGridLayoutRepository gridLayoutRepository) : base(repository, gridLayoutRepository)
         {
             _repository = repository;
-            TranType = "P";
-            TranAlias = "PORD";
-            StockFlag = "C";
-            FKFormID = (long)Handler.Form.PurchaseOrder;
-            PostInAc = false;
+
         }
 
-        public async Task<IActionResult> List()
-        {
-            return View();
-        }
 
         [HttpPost]
-        public async Task<JsonResult> List(string FDate, string TDate)
+        public JsonResult List(string FDate, string TDate)
         {
             return Json(new
             {
@@ -43,38 +36,11 @@ namespace SSAdmin.Areas.Transactions.Controllers
         public string Export(string ColumnList, string HeaderList, string Name, string Type)
         {
             string FileName = "";
-           
+
             return FileName;
         }
 
-
-        [HttpGet]
-        [Route("Transactions/PurchaseOrder/Create/{id?}/{FKSeriesID?}/{isPopup?}")]
-        public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
-        {
-            TransactionModel Trans = new TransactionModel();
-            var PageType = "";
-            try
-            {
-                if (id != 0 && pageview.ToLower() == "log")
-                {
-                    PageType = "Log";
-                }
-                else
-                {
-                    Trans = _repository.GetSingleRecord(id, FKSeriesID);
-                }
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", ex.Message);
-            }
-            setDefault(Trans);
-            BindViewBags(Trans);
-            return View(Trans);
-        }
-
-        private void setDefault(TransactionModel model)
+        public void setDefault(TransactionModel model)
         {
             model.ExtProperties.TranType = TranType;
             model.ExtProperties.TranAlias = TranAlias;

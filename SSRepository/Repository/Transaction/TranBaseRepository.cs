@@ -28,7 +28,7 @@ namespace SSRepository.Repository.Transaction
         public string SPAddUpd = "";
         public string SPList = "";
         public string SPById = "";
-        
+
         public TranBaseRepository(AppDbContext dbContext) : base(dbContext)
         {
 
@@ -96,7 +96,7 @@ namespace SSRepository.Repository.Transaction
             }
             return dt;
         }
-        public string GetData(long PkId, long FkSeriesId,ref string ErrMsg)
+        public string GetData(long PkId, long FkSeriesId, ref string ErrMsg)
         {
             DataSet ds = new DataSet();
             string data = "";
@@ -126,11 +126,11 @@ namespace SSRepository.Repository.Transaction
                 {
                     setProductinfo(model, model.TranDetails[rowIndex]);
                 }
-                if (fieldName == "Batch"  )
+                if (fieldName == "Batch")
                 {
                     setProductinfoByBatch(model, model.TranDetails[rowIndex]);
                 }
-                if (  fieldName == "Color")
+                if (fieldName == "Color")
                 {
                     setProductinfoByColor(model, model.TranDetails[rowIndex]);
                 }
@@ -138,6 +138,11 @@ namespace SSRepository.Repository.Transaction
                 {
                     model.TranDetails[rowIndex].ModeForm = 2;
                 }
+                if (fieldName == "TradeDisc")
+                {
+                    model.TranDetails[rowIndex].TradeDiscAmt = 0;
+                }
+               
                 CalculateExe(model);
                 setGridTotal(model);
             }
@@ -174,6 +179,9 @@ namespace SSRepository.Repository.Transaction
                     }
                     detail.GstRate = (detail.SaleRate < 1000 ? 5 : 18);
                     detail.Rate = Math.Round(Convert.ToDecimal(detail.SaleRate) * (100 / (100 + detail.GstRate)), 2);
+                    detail.TradeDisc = 0;
+                    detail.TradeDiscAmt = 0;
+                    detail.TradeDiscType = "";
                     detail.Qty = 1;
 
                 }
@@ -197,7 +205,7 @@ namespace SSRepository.Repository.Transaction
                 }
                 else
                 {
-                   // detail.Batch = "";
+                    // detail.Batch = "";
                     detail.FkLotId = 0;
                     var product = new ProductRepository(__dbContext).GetSingleRecord(detail.FkProductId);
                     if (product != null)
@@ -229,7 +237,7 @@ namespace SSRepository.Repository.Transaction
                 }
                 else
                 {
-                   // detail.Color = "";
+                    // detail.Color = "";
                     detail.FkLotId = (!string.IsNullOrEmpty(detail.Batch) & detail.FkLotId > 0) ? detail.FkLotId : 0;
                     var product = new ProductRepository(__dbContext).GetSingleRecord(detail.FkProductId);
                     if (product != null)
@@ -245,14 +253,18 @@ namespace SSRepository.Repository.Transaction
         }
         public void CalculateExe(TransactionModel model)
         {
-            foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2))
+            foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
             {
-                item.GrossAmt = Math.Round(item.Rate * item.Qty, 2);
+                decimal amt = item.Rate * item.Qty;
+                decimal decAmt = item.TradeDisc > 0 ? (amt * item.TradeDisc / 100) : item.TradeDiscAmt;
+                item.TradeDiscAmt = decAmt; 
+                item.GrossAmt = Math.Round(amt - item.TradeDiscAmt, 2);//Math.Round(item.Rate * item.Qty, 2) ;
                 item.GstAmt = Math.Round(item.GrossAmt * item.GstRate / 100, 2);
                 item.SCRate = Math.Round(item.GstRate / 2, 2);
                 item.SCAmt = Math.Round(item.GstAmt / 2, 2);
                 item.NetAmt = Math.Round(item.GrossAmt + item.GstAmt, 2);
             }
+            model.TranDetails = model.TranDetails.Where(x => x.FkProductId > 0).ToList();
         }
 
         public void setGridTotal(TransactionModel model)
@@ -270,12 +282,43 @@ namespace SSRepository.Repository.Transaction
 
         public object FooterChange(TransactionModel model, string fieldName)
         {
-            //if (fieldName == "ApplyPromo")
-            //{
-            //    //GEtApplyprome(model)
-            //    CalculateExe(model);
+            if (fieldName == "CashDiscType" || fieldName == "CashDiscount")
+            {
+                if (model.CashDiscType == "LIR")
+                {
+                    foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId>0))
+                    {
+                        item.TradeDisc =0;
+                        item.TradeDiscAmt = model.CashDiscount;
+                    }
+                    model.CashDiscount = 0;
+                    model.CashDiscountAmt = 0;
+                    CalculateExe(model);
+                }
+                else if (model.CashDiscType == "LIP")
+                {
+                    foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
+                    {
+                        item.TradeDisc = model.CashDiscount;
+                        item.TradeDiscAmt = 0;
+                    }
+                    model.CashDiscount = 0;
+                    model.CashDiscountAmt = 0;
+                    CalculateExe(model);
+                }
+                else if (model.CashDiscType == "F")
+                {
+                    foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
+                    {
+                        item.Rate = model.CashDiscount;
+                    }
+                    model.CashDiscount = 0;
+                    model.CashDiscountAmt = 0;
+                    CalculateExe(model);
+                }
 
-            //}
+
+            }
 
             setGridTotal(model);
             return model;
@@ -298,16 +341,16 @@ namespace SSRepository.Repository.Transaction
         public object SetParty(TransactionModel model, long FkPartyId)
         {
             var vendor = new PartyModel();
-            if(model.ExtProperties.TranAlias == "PINV")
+            if (model.ExtProperties.TranAlias == "PINV" || model.ExtProperties.TranAlias == "PORD")
                 vendor = GetVendor(FkPartyId);
             else
                 vendor = GetCustomer(FkPartyId);
 
             if (vendor != null)
-            { 
-                model.PartyAddress = vendor.Address == null ? "" : vendor.Address.ToString();  
+            {
+                model.PartyAddress = vendor.Address == null ? "" : vendor.Address.ToString();
                 model.PartyName = vendor.Name;
-                model.PartyGSTN = vendor.Gstno == null? "" : vendor.Gstno.ToString();
+                model.PartyGSTN = vendor.Gstno == null ? "" : vendor.Gstno.ToString();
                 model.PartyMobile = vendor.Mobile;
                 model.PartyCredit = 0;
                 model.FkPartyId = FkPartyId;
@@ -319,32 +362,32 @@ namespace SSRepository.Repository.Transaction
         public PartyModel? GetVendor(long PkVendorId)
         {
             PartyModel? data = (from cou in __dbContext.TblVendorMas
-                        where cou.PkVendorId == PkVendorId
-                        select (new PartyModel
-                        {
-                            PkId = cou.PkVendorId,
-                            Name = cou.Name,
-                            Mobile = cou.Mobile,
-                            Address = cou.Address,
-                            Gstno = cou.Gstno
-                        }
-                       )).FirstOrDefault();
+                                where cou.PkVendorId == PkVendorId
+                                select (new PartyModel
+                                {
+                                    PkId = cou.PkVendorId,
+                                    Name = cou.Name,
+                                    Mobile = cou.Mobile,
+                                    Address = cou.Address,
+                                    Gstno = cou.Gstno
+                                }
+                               )).FirstOrDefault();
             return data;
         }
 
         public PartyModel? GetCustomer(long PkId)
         {
             PartyModel? data = (from cou in __dbContext.TblCustomerMas
-                                 where cou.PkCustomerId == PkId
-                                 select (new PartyModel
-                                 {
-                                     PkId = cou.PkCustomerId,
-                                     Name = cou.Name,
-                                     Mobile = cou.Mobile,
-                                     Address = cou.Address,
-                                     Gstno = cou.Gstno
-                                 }
-                                )).FirstOrDefault();
+                                where cou.PkCustomerId == PkId
+                                select (new PartyModel
+                                {
+                                    PkId = cou.PkCustomerId,
+                                    Name = cou.Name,
+                                    Mobile = cou.Mobile,
+                                    Address = cou.Address,
+                                    Gstno = cou.Gstno
+                                }
+                               )).FirstOrDefault();
             return data;
         }
 
@@ -369,14 +412,14 @@ namespace SSRepository.Repository.Transaction
                                  {
                                      PkSeriesId = cou.PkSeriesId,
                                      Series = cou.Series,
-                                     FkBranchId= cou.FkBranchId
+                                     FkBranchId = cou.FkBranchId
                                  }
                                 )).FirstOrDefault();
             return data;
         }
 
 
-        public List<ProdLotDtlModel> Get_ProductLotDtlList(int PKProductId,string Batch, string Color)
+        public List<ProdLotDtlModel> Get_ProductLotDtlList(int PKProductId, string Batch, string Color)
         {
 
             List<ProdLotDtlModel> data = (from cou in __dbContext.TblProdLotDtl
@@ -473,13 +516,16 @@ namespace SSRepository.Repository.Transaction
                 new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Gross Amt", Fields="GrossAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                 new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="GST Rate", Fields="GstRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                 new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="GST Amount", Fields="GstAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Net Amount", Fields="NetAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-               new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Batch", Fields="Batch",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="LN" },
-                new ColumnStructure{ pk_Id=11, Orderby= 11, Heading ="Color", Fields="Color",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="LN" },
-                new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="MfgDate", Fields="MfgDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="D1" },
-                //new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="ExpiryDate", Fields="ExpiryDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-               // new ColumnStructure{ pk_Id=14, Orderby =14, Heading ="MRP", Fields="MRP",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=15, Orderby =15, Heading ="SaleRate", Fields="SaleRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Disc %", Fields="TradeDisc",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="F.2" },
+                new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Disc Amt", Fields="TradeDiscAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Disc Type", Fields="TradeDiscType",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Net Amount", Fields="NetAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+               new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Batch", Fields="Batch",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="LN" },
+                new ColumnStructure{ pk_Id=14, Orderby= 14, Heading ="Color", Fields="Color",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="LN" },
+                new ColumnStructure{ pk_Id=15, Orderby =15, Heading ="MfgDate", Fields="MfgDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="D1" },
+                //new ColumnStructure{ pk_Id=16, Orderby =13, Heading ="ExpiryDate", Fields="ExpiryDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+               // new ColumnStructure{ pk_Id=17, Orderby =14, Heading ="MRP", Fields="MRP",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=18, Orderby =18, Heading ="SaleRate", Fields="SaleRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                 new ColumnStructure{ pk_Id=16, Orderby =16, Heading ="Action", Fields="Delete",Width=10,IsActive=1, SearchType=0,Sortable=0,CtrlType="" },
 
             };
@@ -496,17 +542,20 @@ namespace SSRepository.Repository.Transaction
                 new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Gross Amt", Fields="GrossAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                 new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="GST Rate", Fields="GstRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                 new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="GST Amount", Fields="GstAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Net Amount", Fields="NetAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Batch", Fields="Batch",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="L" },
-                 new ColumnStructure{ pk_Id=11, Orderby= 11, Heading ="Color", Fields="Color",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="L" },
-               new ColumnStructure{ pk_Id=16, Orderby =16, Heading ="Action", Fields="Delete",Width=10,IsActive=1, SearchType=0,Sortable=0,CtrlType="" },
+                 new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Disc %", Fields="TradeDisc",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="F.2" },
+                new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Disc Amt", Fields="TradeDiscAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Disc Type", Fields="TradeDiscType",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+               new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Net Amount", Fields="NetAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Batch", Fields="Batch",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="L" },
+                 new ColumnStructure{ pk_Id=14, Orderby= 14, Heading ="Color", Fields="Color",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="L" },
+               new ColumnStructure{ pk_Id=15, Orderby =15, Heading ="Action", Fields="Delete",Width=10,IsActive=1, SearchType=0,Sortable=0,CtrlType="" },
 
             };
             }
             return list.OrderBy(x => x.Orderby).ToList();
         }
 
-       
+
 
         public List<ProductModel> ProductList()
         {

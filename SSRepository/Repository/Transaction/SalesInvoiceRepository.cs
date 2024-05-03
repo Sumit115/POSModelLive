@@ -9,6 +9,7 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Net.Http.Headers;
 using SSRepository.Repository.Master;
+using Azure;
 
 namespace SSRepository.Repository.Transaction
 {
@@ -50,6 +51,41 @@ namespace SSRepository.Repository.Transaction
             }
             return data;
         }
+
+
+        public object SetLastSeries(TransactionModel model, long UserId, string TranAlias)
+        {
+            var obj = (from cou in __dbContext.TblSalesInvoicetrn
+                       join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
+                       where cou.FKUserId == UserId && ser.TranAlias == TranAlias
+                       orderby cou.PkId descending
+                       select new
+                       {
+                           cou,
+                           ser
+                       }).FirstOrDefault();
+            if (obj != null)
+            {
+                if (obj.ser != null)
+                {
+                    model.SeriesName = obj.ser.Series == null ? "" : obj.ser.Series.ToString();
+                    model.FKLocationID = obj.ser.FkBranchId;
+                    model.FKSeriesId = obj.ser.PkSeriesId;
+
+                }
+            }
+            if (model.FKSeriesId == 0)
+            {
+                var _entity = __dbContext.TblSeriesMas.Where(x => x.TranAlias == TranAlias).FirstOrDefault();
+                if (_entity != null)
+                {
+                    model.SeriesName = _entity.Series == null ? "" : _entity.Series.ToString();
+                    model.FKLocationID = _entity.FkBranchId;
+                    model.FKSeriesId = _entity.PkSeriesId;
+                }
+            }
+            return model;
+        }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>();
@@ -77,8 +113,5 @@ namespace SSRepository.Repository.Transaction
             }
             return list;
         }
-
-
-
     }
 }

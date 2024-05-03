@@ -12,14 +12,11 @@ using Microsoft.AspNetCore.Http;
 namespace SSAdmin.Areas.Transactions.Controllers
 {
     [Area("Transactions")]
-    public class SalesInvoiceController : BaseTranController<ISalesInvoiceRepository, IGridLayoutRepository>
+    public class SalesInvoiceController : SalesInvController
     {
-        private readonly ISalesInvoiceRepository _repository;
 
         public SalesInvoiceController(ISalesInvoiceRepository repository, IGridLayoutRepository gridLayoutRepository) : base(repository, gridLayoutRepository)
         {
-            _repository = repository;
-
             TranType = "S";
             TranAlias = "SINV";
             StockFlag = "O";
@@ -27,26 +24,9 @@ namespace SSAdmin.Areas.Transactions.Controllers
             PostInAc = true;
         }
 
-        public IActionResult List()
+        public virtual IActionResult List()
         {
             return View();
-        }
-
-        [HttpPost]
-        public JsonResult List(string FDate, string TDate)
-        {
-            return Json(new
-            {
-                status = "success",
-                data = _repository.GetList(FDate, TDate, "")
-            });
-        }
-
-        public string Export(string ColumnList, string HeaderList, string Name, string Type)
-        {
-            string FileName = "";
-
-            return FileName;
         }
 
 
@@ -76,37 +56,5 @@ namespace SSAdmin.Areas.Transactions.Controllers
             return View(Trans);
         }
 
-        private void setDefault(TransactionModel model)
-        {
-            model.ExtProperties.TranType = TranType;
-            model.ExtProperties.TranAlias = TranAlias;
-            model.ExtProperties.StockFlag = StockFlag;
-            model.ExtProperties.FKFormID = FKFormID;
-            model.ExtProperties.PostInAc = PostInAc;
-        }
-
-        [HttpPost]
-        public JsonResult Create(TransactionModel model)
-        {
-            try
-            {
-                string Error = _repository.Create(model);
-                return Json(new
-                {
-                    status = "success",
-                    msg = Error
-                });
-
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", ex.Message);
-            }
-            return Json(new
-            {
-                status = "success"
-            });
-
-        }
     }
 }

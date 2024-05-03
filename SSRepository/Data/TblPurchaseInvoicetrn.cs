@@ -10,59 +10,38 @@ namespace SSRepository.Data
     {
         [Key]
         public long PkId { get; set; }
-        public long FKSeriesId { get; set; }//=0
-        public long EntryNo { get; set; }//backend se 1,2,3,
-
-        [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime EntryDate { get; set; }//txt  //only fincial year date
-
-        public string TranAlias { get; set; }//=SORD if Invoice then SOIV
-
-        public int FkPartyId { get; set; }//Same As CarMistri Customer
-
-        public string? GRNo { get; set; }//txt
-
-        [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? GRDate { get; set; }//txt
-
-        public decimal GrossAmt { get; set; }//txt =taxableAmount
-
-        public decimal SgstAmt { get; set; }//txt   //only single Sgstamt
-
-        public decimal TaxAmt { get; set; }  //txt   //if Igst Then Igst else SgstAmt+SgstAmt
-
-        public decimal CashDiscount { get; set; }//txt
-        public string CashDiscType { get; set; } = "R";//ddl  //ruppe=>R,Perstange=>P
-
-        public decimal CashDiscountAmt { get; set; }//Automatic Calculaction
-        public decimal TotalDiscount { get; set; }//=CashDiscountAmt
-
-        public decimal RoundOfDiff { get; set; }//txt
-        public decimal Shipping { get; set; }//txt 
-        public decimal OtherCharge { get; set; }//=0
-        public decimal NetAmt { get; set; }//txt //=GrossAmt+TaxAmt-TotalDiscount-RoundOfDiff+Shipping+OtherCharge
-        public bool Cash { get; set; }
-        public decimal CashAmt { get; set; }//Id Check Cash then put value on Cash Amt
-        public bool Credit { get; set; }
-        public decimal CreditAmt { get; set; }//Aso check NetAmt=CashAmt+CreditAmt+ChequeAmt
-
-        [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? CreditDate { get; set; }//txt if check Credit then Required
-        public bool Cheque { get; set; }
-        public decimal ChequeAmt { get; set; }
+        public long FKSeriesId { get; set; }
+        public long EntryNo { get; set; }
+        public System.DateTime EntryDate { get; set; }
+        public System.TimeSpan EntryTime { get; set; }
+        public long FkPartyId { get; set; }
+        public string? GRNo { get; set; }
+        public System.DateTime GRDate { get; set; }
+        public Nullable<decimal> GrossAmt { get; set; }
+        public Nullable<decimal> SgstAmt { get; set; }
+        public Nullable<decimal> TaxAmt { get; set; }
+        public Nullable<decimal> CashDiscount { get; set; }
+        public string? CashDiscType { get; set; }
+        public Nullable<decimal> CashDiscountAmt { get; set; }
+        public Nullable<decimal> TotalDiscount { get; set; }
+        public Nullable<decimal> RoundOfDiff { get; set; }
+        public Nullable<decimal> Shipping { get; set; }
+        public Nullable<decimal> OtherCharge { get; set; }
+        public Nullable<decimal> NetAmt { get; set; }
+        public Nullable<bool> Cash { get; set; }
+        public Nullable<decimal> CashAmt { get; set; }
+        public Nullable<bool> Credit { get; set; }
+        public Nullable<decimal> CreditAmt { get; set; }
+        public Nullable<System.DateTime> CreditDate { get; set; }
+        public Nullable<bool> Cheque { get; set; }
+        public Nullable<decimal> ChequeAmt { get; set; }
         public string? ChequeNo { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? ChequeDate { get; set; }
-        public long FKBankChequeID { get; set; }//=0
-
+        public Nullable<System.DateTime> ChequeDate { get; set; }
+        public Nullable<long> FKBankChequeID { get; set; }
         public string? Remark { get; set; }
-
-        public string? Statu { get; set; }//
+        public string? InvStatus { get; set; }
+        public bool DraftMode { get; set; }
+        public string? TrnStatus { get; set; }
 
     }
 }

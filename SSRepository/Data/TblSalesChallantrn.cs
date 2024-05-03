@@ -17,9 +17,8 @@ namespace SSRepository.Data
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime EntryDate { get; set; }//txt  //only fincial year date
 
-        public string TranAlias { get; set; }//=SORD if Challan then SOIV
 
-        public int FkPartyId { get; set; }//Same As CarMistri Customer
+        public long FkPartyId { get; set; }//Same As CarMistri Customer
 
         public string? GRNo { get; set; }//txt
 
@@ -61,8 +60,5 @@ namespace SSRepository.Data
         public long FKBankChequeID { get; set; }//=0
 
         public string? Remark { get; set; }
-
-        public string? Statu { get; set; }//
-
     }
 }

@@ -25,5 +25,7 @@ namespace SSRepository.IRepository
         List<SeriesModel> SeriesList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "");
 
         object SetSeries(TransactionModel model, long FKSeriesId);
+        object SetLastSeries(TransactionModel model, long UserId, string TranAlias);
+
     }
 }

@@ -81,6 +81,13 @@ namespace SSAdmin.Areas.Transactions.Controllers
             model.ExtProperties.StockFlag = StockFlag;
             model.ExtProperties.FKFormID = FKFormID;
             model.ExtProperties.PostInAc = PostInAc;
+            if (model.PkId == 0)
+            {
+                _repository.SetLastSeries(model, LoginId, TranAlias);
+                model.EntryDate = DateTime.Now;
+                model.GRDate = DateTime.Now;
+            }
+
         }
 
         [HttpPost]
@@ -88,16 +95,30 @@ namespace SSAdmin.Areas.Transactions.Controllers
         {
             try
             {
+                //var aa = JsonConvert.SerializeObject(model);
+
                 string Error = _repository.Create(model);
-                return Json(new
+                if (string.IsNullOrEmpty(Error))
                 {
-                    status = "success",
-                    msg = Error
-                });
+                    return Json(new
+                    {
+                        status = "success",
+                        msg = Error
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        status = "error",
+                        msg = Error
+                    });
+                }
 
             }
             catch (Exception ex)
             {
+
                 ModelState.AddModelError("", ex.Message);
             }
             return Json(new
