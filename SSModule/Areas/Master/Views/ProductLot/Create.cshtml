@@ -119,7 +119,7 @@
                             <input asp-for="Barcode" id="txtBarcode" class="form-control" />
                         </div>
                         <div>
-                            <input type="button" onclick="GetBarCode()" value="Generate"/>
+                            <input type="button" id="btnGeneratebar" onclick="GetBarCode()" value="Generate"/>
                         </div>
                     </div>
                     <div class="col-md-8">
@@ -166,6 +166,31 @@
                     if (res != null || res != "") {
                         $("#txtBarcode").val(res);
                     }
+                }
+            })
+        }
+
+        function ViewProductLot()
+        {
+            $.ajax({
+                type: "POST",
+                url: '/Master/ProductLot/GetSingleRecord',
+                data: { "fkProdId": $("#FKProductId").val() },
+                datatype: "json",
+                success: function (res) {
+                    console.log(JSON.parse(res));
+                    var prodobject = JSON.parse(res);
+                    if (prodobject.CodingScheme == "fixed") {
+                        $("#txtBarcode").val(prodobject.Barcode);
+                        $("#txtBarcode").attr("disabled", true);
+                        $("#btnGeneratebar").attr("disabled", true);
+                    } else {
+                        $("#txtBarcode").val("");
+                        $("#txtBarcode").attr("disabled", false);
+                        $("#btnGeneratebar").attr("disabled", false);
+                    }
+
+
                 }
             })
         }

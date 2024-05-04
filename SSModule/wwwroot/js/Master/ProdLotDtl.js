@@ -55,12 +55,7 @@ function ViewProductLot() {
             datatype: "json",
             success: function (res) {
                 console.log(res);
-                //if (res.status == "success") {
-                //var jo = JSON.parse(res.data);
                 bindGrid1(GridId, res, IdProperty);
-                //}
-                //else
-                //    alert(res.msg);
             }
         })
 

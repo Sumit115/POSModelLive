@@ -82,7 +82,8 @@ namespace SSAdmin
             Region = 21,
             Area = 22,
             Locality = 23,
-            OpeningStock=24,
+            Location=24,
+            OpeningStock=25,
 
             SalesOrder = 100,
             SalesInvoice = 101,
@@ -91,7 +92,10 @@ namespace SSAdmin
             SalesChallan = 104,
 
             SalesStock = 200,
-            PurchaseStock = 200,
+            PurchaseStock = 201,
+
+            //
+
 
             //200-report
         }
@@ -211,6 +215,5 @@ namespace SSAdmin
             return selected;
 
         }
-
     }
 }

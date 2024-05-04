@@ -34,9 +34,9 @@
 <div class="p-3">
     <form asp-action="Create" class="g-3" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PKStockId" />
-          <input type="hidden" name="FKProdID" id="hdnFKProdID" />
-            <input type="hidden" name="FKLotID" id="hdnFKLotID" />
+        <input type="hidden" asp-for="PKStockId" value="0" id="hdnPKStockId" />
+          <input type="hidden" name="FKProdID" value="0" id="hdnFKProdID" />
+            <input type="hidden" name="FKLotID" value="0" id="hdnFKLotID" />
         <div class="row">
             <div class="col-md-12">
                 <div class="row">

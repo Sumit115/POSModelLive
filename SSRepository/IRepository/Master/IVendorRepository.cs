@@ -16,5 +16,7 @@ namespace SSRepository.IRepository.Master
 
         string DeleteRecord(long PKID);
 
+        string GetAlias(string FormName = "");
+
     }
 }

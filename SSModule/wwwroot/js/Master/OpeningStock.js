@@ -3,8 +3,11 @@ var GridId = "WUCHM1", GridHeight = "50vh", pageNo = 1, pageSize = 1000, filterc
 
 $(document).ready(function () {
     $("#btnSave").on("click", function () {
-        $("#hdnFKLotID").val($("#FKLotID").val());
-        $("#hdnFKProdID").val($("#FKProductId").val());
+        if ($("#hdnFKLotID").val() == "0" || $("#hdnFKProdID").val() == "0") {
+            $("#hdnFKLotID").val($("#FKLotID").val());
+            $("#hdnFKProdID").val($("#FKProductId").val());
+        }
+       
     });
    
 });
@@ -92,11 +95,17 @@ function GetLocationData() {
         data: _d,
         datatype: "json",
         success: function (res) {
-           
+            $("#hdnPKStockId").val("0");
+            $("#hdnFKProdID").val(0);
+            $("#hdnFKLotID").val(0);
             if (res == null || res == "") {
+
                 res = [];
             } else {
                 res = JSON.parse(res);
+                $("#hdnPKStockId").val(res[0].PKStockId);
+                $("#hdnFKProdID").val(res[0].FKProdID);
+                $("#hdnFKLotID").val(res[0].FKLotID);
                 $("#txtInStock").val(res[0].InStock);
                 $("#txtOutStock").val(res[0].OutStock);
                 $("#txtCurStock").val(res[0].CurStock);

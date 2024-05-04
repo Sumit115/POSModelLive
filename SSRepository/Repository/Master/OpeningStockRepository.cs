@@ -63,7 +63,6 @@ namespace SSRepository.Repository.Master
 
         public TblProdStockDtlModel GetSingleRecord(long PKStockId)
         {
-
             TblProdStockDtlModel data = new TblProdStockDtlModel();
             data = (from cou in __dbContext.TblProdStockDtl
                     where cou.PkstockId == PKStockId
@@ -138,10 +137,10 @@ namespace SSRepository.Repository.Master
             var list = new List<ColumnStructure>
             {
                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="PKStockId", Fields="PKStockId",Width=10,IsActive=0, SearchType=0,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="FKProdID", Fields="FKProductId",Width=10,IsActive=0, SearchType=0,Sortable=1,CtrlType="~" },
+                 new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="FKProdID", Fields="FKProductId",Width=10,IsActive=0, SearchType=0,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="FKLocationId", Fields="FKLocationId",Width=10,IsActive=0, SearchType=0,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="FKLotID", Fields="FKLotID",Width=10,IsActive=0, SearchType=0,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="StockDate", Fields="StockDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                 new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="FKLotID", Fields="FKLotID",Width=10,IsActive=0, SearchType=0,Sortable=1,CtrlType="~" },
+                 new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="StockDate", Fields="StockDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="OpStock ", Fields="OpStock",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="InStock ", Fields="InStock",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="OutStock ", Fields="OutStock",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },

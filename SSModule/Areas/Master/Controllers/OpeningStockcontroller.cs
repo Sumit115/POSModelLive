@@ -30,7 +30,7 @@ namespace SSAdmin.Areas.Master.Controllers
         public async Task<IActionResult> Create()
         {
             var model = new TblProdStockDtlModel();
-            ViewBag.GetDrpLocation = _LocationRepository.GetDrpLocation(1, 1000);
+            ViewBag.GetDrpLocation = _LocationRepository.GetList(1, 1000);
             return View(model);
         }
 
@@ -58,7 +58,7 @@ namespace SSAdmin.Areas.Master.Controllers
             }
 
             var model = new TblProdStockDtlModel();
-            ViewBag.GetDrpLocation = _LocationRepository.GetDrpLocation(1, 1000);
+            ViewBag.GetDrpLocation = _LocationRepository.GetList(1, 1000);
             return View(model);
         }
 

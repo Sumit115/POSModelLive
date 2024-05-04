@@ -14,6 +14,7 @@ using Newtonsoft.Json.Linq;
 using Azure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Collections;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace SSAdmin.Areas.Master.Controllers
 {
@@ -109,6 +110,13 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             return _productRepository.GetList(pageSize, pageNo, search);
         }
+
+        [HttpPost]
+        public string GetSingleRecord(long fkProdId)
+        {
+            return JsonConvert.SerializeObject(_productRepository.GetSingleRecord(fkProdId));
+        }
+
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {
             return _repository.ColumnList(GridName);

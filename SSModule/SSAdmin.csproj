@@ -42,6 +42,8 @@
     <None Include="Areas\Master\Views\Employee\List.cshtml" />
     <None Include="Areas\Master\Views\Locality\Create.cshtml" />
     <None Include="Areas\Master\Views\Locality\List.cshtml" />
+    <None Include="Areas\Master\Views\Location\Create.cshtml" />
+    <None Include="Areas\Master\Views\OpeningStock\Create.cshtml" />
     <None Include="Areas\Master\Views\ProductLot\Create.cshtml" />
     <None Include="Areas\Master\Views\Product\Create.cshtml" />
     <None Include="Areas\Master\Views\Product\List.cshtml" />
@@ -117,6 +119,7 @@
     <None Include="wwwroot\js\jquery-ui.js" />
     <None Include="wwwroot\js\jquery.datetimepicker.js" />
     <None Include="wwwroot\js\Master\browser.js" />
+    <None Include="wwwroot\js\Master\OpeningStock.js" />
     <None Include="wwwroot\js\Master\ProdLotDtl.js" />
     <None Include="wwwroot\js\Master\ProductMas.js" />
     <None Include="wwwroot\js\Report\Report.js" />
