@@ -13,13 +13,13 @@ namespace SSRepository.Data
         //public long PkId { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime DateModified { get; set; }
+        public DateTime ModifiedDate { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime DateCreated { get; set; }
-        public int Src { get; set; }
-        public long FKUserId { get; set; }
+        public DateTime CreationDate { get; set; }
+        public long FKCreatedByID { get; set; }
+        public long FKUserID { get; set; }
 
     }
     public class TblNon

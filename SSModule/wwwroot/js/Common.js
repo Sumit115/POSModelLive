@@ -695,11 +695,6 @@ function C_setInputFormat() {
 
         this.value = v.replace(/[^0-9\.]/g, '');
     });
-    $('.datepicker').datetimepicker({
-        timepicker: false,
-        format: 'd/m/Y',
-        formatDate: 'Y/m/d'
-    });
 
     $(".upper").change(function () { $(this).val($(this).val().toUpperCase()) });
 

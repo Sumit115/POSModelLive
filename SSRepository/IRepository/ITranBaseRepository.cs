@@ -10,11 +10,14 @@ namespace SSRepository.IRepository
         TransactionModel GetSingleRecord(long PkId, long FkSeriesId);
         object BarcodeScan(TransactionModel model, long barcode);
         object FooterChange(TransactionModel model, string fieldName);
+        object PaymentDetail(TransactionModel model);
 
         object ApplyRateDiscount(TransactionModel model, string type, decimal discount);
 
         object ColumnChange(TransactionModel model, int rowIndex, string fieldName);
-        List<ProdLotDtlModel> Get_ProductLotDtlList(int PKProductId, string Batch, string Color);
+        List<ProdLotDtlModel> ProductBatchList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0);
+        List<ProdLotDtlModel> ProductColorList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0);
+        List<ProdLotDtlModel> ProductMRPList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0);
 
         List<ColumnStructure> ColumnList(string GridName = "");
 
@@ -22,7 +25,8 @@ namespace SSRepository.IRepository
 
         object SetParty(TransactionModel model, long FkPartyId);
 
-        List<ProductModel> ProductList();
+        List<ProductModel> ProductList(int pageSize, int pageNo = 1, string search = "");
+        List<BankModel> BankList();
 
         List<SeriesModel> SeriesList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "");
 

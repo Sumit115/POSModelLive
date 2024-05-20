@@ -87,7 +87,7 @@ namespace SSAdmin.Areas.Master.Controllers
             try
             {
                 model.FKUserId = 1;
-                model.src = 1;
+                model.FKCreatedByID = 1;
                 model.FkRoleId = 0;
                 model.IsAdmin = 0;
                 model.FkRegId = 1;

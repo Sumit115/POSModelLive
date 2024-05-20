@@ -14,29 +14,29 @@ namespace SSRepository.Data
 
         public string? Alias { get; set; }
 
-        public string Product { get; set; }
+        public string? Product { get; set; }
 
         public string? Brand { get; set; }
 
         public string? Strength { get; set; }
 
-        public string Unit1 { get; set; }
+        public string? Unit1 { get; set; }
 
         public decimal ProdConv1 { get; set; }
 
-        public string Unit2 { get; set; }
+        public string? Unit2 { get; set; }
 
         public bool SellLoose { get; set; }
 
         public decimal? ProdConv2 { get; set; }
 
-        public string Unit3 { get; set; }
+        public string? Unit3 { get; set; }
 
-        public string CaseLot { get; set; }
+        public string? CaseLot { get; set; }
 
-        public string NameToDisplay { get; set; }
+        public string? NameToDisplay { get; set; }
 
-        public string NameToPrint { get; set; }
+        public string? NameToPrint { get; set; }
 
         public bool IsExpiryApplied { get; set; }
 
@@ -60,7 +60,7 @@ namespace SSRepository.Data
 
         public long? FKMfgGroupId { get; set; }
 
-        public string ShelfID { get; set; }
+        public string? ShelfID { get; set; }
 
         public int? MinStock { get; set; }
 
@@ -76,13 +76,13 @@ namespace SSRepository.Data
 
         public decimal SuggestedRate { get; set; }
 
-        public string MRPSaleRateUnit { get; set; }
+        public string? MRPSaleRateUnit { get; set; }
 
         public decimal PurchaseRate { get; set; }
 
         public decimal CostRate { get; set; }
 
-        public string PurchaseRateUnit { get; set; }
+        public string? PurchaseRateUnit { get; set; }
 
         public bool AddLT { get; set; }
 
@@ -100,7 +100,7 @@ namespace SSRepository.Data
 
         public string? HeightUnit { get; set; }
 
-        public string Status { get; set; }
+        public string? Status { get; set; }
 
         public DateTime? DiscDate { get; set; }
 
@@ -130,9 +130,9 @@ namespace SSRepository.Data
 
         public long? FkUnitId { get; set; }
 
-        public string Genration { get; set; }
+        public string? Genration { get; set; }
 
-        public string CodingScheme { get; set; }
+        public string? CodingScheme { get; set; }
 
         public DateTime DateModified { get; set; }
 
@@ -151,4 +151,3 @@ namespace SSRepository.Data
         public long? FKTaxID { get; set; }
     }
 }
-

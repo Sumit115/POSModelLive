@@ -44,10 +44,10 @@ namespace SSRepository.Repository.Master
                                        select (new ProductModel
                                        {
                                            PkProductId = cou.PkProductId,
-                                           FKUserId = cou.FKUserId,
-                                           src = cou.Src,
-                                           DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                                           DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
+                                           FKUserId = cou.FKUserID,
+                                           FKCreatedByID = cou.FKCreatedByID,
+                                           ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                           CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                            Product = cou.Product,
                                            NameToDisplay = cou.NameToDisplay,
                                            NameToPrint = cou.NameToPrint,
@@ -96,10 +96,10 @@ namespace SSRepository.Repository.Master
                     select (new ProductModel
                     {
                         PkProductId = cou.PkProductId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
-                        DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                        DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
+                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         Product = cou.Product,
                         NameToDisplay = cou.NameToDisplay,
                         NameToPrint = cou.NameToPrint,
@@ -248,7 +248,7 @@ namespace SSRepository.Repository.Master
             Tbl.PurchaseRate = model.PurchaseRate;
             Tbl.PurchaseRateUnit = "";
             Tbl.KeepStock = model.KeepStock;
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate= DateTime.Now;
             Tbl.Genration = model.Genration;
             Tbl.CodingScheme = model.CodingScheme;
             Tbl.FkUnitId = model.FkUnitId;
@@ -263,9 +263,9 @@ namespace SSRepository.Repository.Master
                 {
                     Tbl.PkProductId = 1;
                 }
-                Tbl.Src = model.src;
-                Tbl.FKUserId = model.FKUserId;
-                Tbl.DateCreated = DateTime.Now;
+                Tbl.FKCreatedByID = model.FKCreatedByID;
+                Tbl.FKUserID = model.FKUserId;
+                Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
@@ -296,6 +296,8 @@ namespace SSRepository.Repository.Master
                 new ColumnStructure{ pk_Id=14, Orderby =14, Heading ="TradeRate", Fields="TradeRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=15, Orderby =15, Heading ="DistributionRate", Fields="DistributionRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=16, Orderby =16, Heading ="PurchaseRate	", Fields="PurchaseRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=12, Orderby =17, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=13, Orderby =18, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
 
             };
             return list;
@@ -316,10 +318,10 @@ namespace SSRepository.Repository.Master
                     select (new ProductModel
                     {
                         PkProductId = cou.PkProductId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
-                        DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                        DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
+                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         Product = cou.Product,
                         NameToDisplay = cou.NameToDisplay,
                         NameToPrint = cou.NameToPrint,
@@ -407,19 +409,19 @@ namespace SSRepository.Repository.Master
             string result = new String('9', DefBarcodeLen - DefBarcode.ToString().Length);
             MaxDefBarcode = Convert.ToInt64(DefBarcode.ToString() + result);
 
-            dynamic OutParam;
-            dynamic OutParam1;
+            dynamic OutParam =0;
+            dynamic OutParam1 = 0;
 
             try
             {
-                if (BranchNo > 0)
-                {
-                    OutParam = (from b in __dbContext.TblProdLotDtl where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 5)) == DefBarcode select b.Barcode).Max();
-                }
-                else
-                {
-                    OutParam = (from b in __dbContext.TblProdLotDtl where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 1)) == DefBarcode select b.Barcode).Max();
-                }
+                //if (BranchNo > 0)
+                //{
+                //    OutParam = (from b in __dbContext.TblProdLotDtl where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 5)) == DefBarcode select b.Barcode).Max();
+                //}
+                //else
+                //{
+                //    OutParam = (from b in __dbContext.TblProdLotDtl where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 1)) == DefBarcode select b.Barcode).Max();
+                //}
             }
             catch
             {

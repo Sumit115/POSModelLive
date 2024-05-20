@@ -397,3 +397,109 @@ label {
     width: fit-content;
     height: fit-content;
 }
+
+
+
+.Editor_Slick_custdropdown::-webkit-scrollbar {
+    width: 0px;
+    height: 8px;
+}
+
+
+.Editor_Slick_custdropdown::-webkit-scrollbar-track {
+    background: #fff;
+}
+
+
+.Editor_Slick_custdropdown::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.Editor_Slick_custdropdown ul {
+    padding: 0px;
+    margin-bottom: 0px;
+}
+.Editor_Slick_custdropdown li::-webkit-scrollbar {
+    width: 4px;
+    height: 8px;
+}
+
+
+.Editor_Slick_custdropdown li::-webkit-scrollbar-track {
+    background: #fff;
+}
+
+
+.Editor_Slick_custdropdown li::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.Editor_Slick_custdropdown table th, .Editor_Slick_custdropdown table td {
+    min-width: 160px;
+    max-width: 160px;
+    padding: 3px 8px;
+    overflow: hidden;
+}
+
+.Editor_Slick_custdropdown table th {
+    font-size: 14px;
+    font-weight: 600;
+    color: #000;
+    text-transform: uppercase;
+    background: #36b7b3 !important;
+}
+
+.Editor_Slick_custdropdown table td {
+    font-size: 14px;
+    font-weight: 400;
+    color: #000;
+}
+
+.Editor_Slick_custdropdown table thead {
+    z-index: 999;
+    position: relative;
+}
+
+.Editor_Slick_custdropdown li a:focus {
+    background: #4385f4;
+}
+
+.Editor_Slick_custdropdown li a {
+    min-width: 100%;
+    float: left;
+    width: auto;
+    text-decoration: none;
+}
+
+.Editor_Slick_custdropdown_item {
+    display: block;
+    width: 100%;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+    position: relative;
+}
+
+.Editor_Slick_custdropdown_head {
+    position: relative;
+    list-style: none;
+}
+
+
+.Editor_Slick_custdropdown_item:focus {
+    color: #fff;
+    text-decoration: none;
+    background: #4385f4;
+}
+
+.Editor_Slick_custdropdown_item:hover {
+    color: #16181b;
+    text-decoration: none;
+    background-color: #f8f9fa;
+}

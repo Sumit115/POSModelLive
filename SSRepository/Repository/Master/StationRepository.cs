@@ -42,8 +42,8 @@ namespace SSRepository.Repository.Master
                                         select (new StationModel
                                         {
                                             PkStationId = cou.PkStationId,
-                                            FKUserId = cou.FKUserId,
-                                            src = cou.Src,
+                                            FKUserId = cou.FKUserID,
+                                            FKCreatedByID = cou.FKCreatedByID,
                                             StationName = cou.StationName,
                                             FkDistrictId = cou.FkDistrictId,
                                             DistrictName = catGrp.DistrictName,
@@ -64,8 +64,8 @@ namespace SSRepository.Repository.Master
                                         select (new StationModel
                                         {
                                             PkStationId = cou.PkStationId,
-                                            FKUserId = cou.FKUserId,
-                                            src = cou.Src,
+                                            FKUserId = cou.FKUserID,
+                                            FKCreatedByID = cou.FKCreatedByID,
                                             StationName = cou.StationName,
                                             FkDistrictId = cou.FkDistrictId,
                                             DistrictName = catGrp.DistrictName,
@@ -84,8 +84,8 @@ namespace SSRepository.Repository.Master
                     select (new StationModel
                     {
                         PkStationId = cou.PkStationId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
                         StationName = cou.StationName,
                         FkDistrictId = cou.FkDistrictId,
                         DistrictName = catGrp.DistrictName,
@@ -183,12 +183,12 @@ namespace SSRepository.Repository.Master
             Tbl.PkStationId = model.PkStationId;
             Tbl.StationName = model.StationName;
             Tbl.FkDistrictId = model.FkDistrictId;
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate= DateTime.Now;
             if (Mode == "Create")
             {
-                Tbl.Src = model.src;
-                Tbl.FKUserId = model.FKUserId;
-                Tbl.DateCreated = DateTime.Now;
+                Tbl.FKCreatedByID = model.FKCreatedByID;
+                Tbl.FKUserID = model.FKUserId;
+                Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
@@ -208,6 +208,8 @@ namespace SSRepository.Repository.Master
             {
                    new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="District", Fields="DistrictName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Station", Fields="StationName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                         };
             return list;
         }

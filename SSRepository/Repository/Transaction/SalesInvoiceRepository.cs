@@ -57,7 +57,7 @@ namespace SSRepository.Repository.Transaction
         {
             var obj = (from cou in __dbContext.TblSalesInvoicetrn
                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
-                       where cou.FKUserId == UserId && ser.TranAlias == TranAlias
+                       where cou.FKUserID == UserId && ser.TranAlias == TranAlias
                        orderby cou.PkId descending
                        select new
                        {

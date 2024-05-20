@@ -1,4 +1,4 @@
-﻿using SSRepository.Data;
+﻿ using SSRepository.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

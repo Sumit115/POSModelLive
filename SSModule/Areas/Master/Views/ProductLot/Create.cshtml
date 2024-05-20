@@ -1,7 +1,7 @@
 ﻿@model SSRepository.Models.ProdLotDtlModel
 
 @{
-    ViewData["Title"] = "Article";
+    ViewData["Title"] = "Article Lot";
     ViewData["bdClass"] = "page";
 }
 
@@ -9,7 +9,7 @@
 
     <div class="col-md-3">
         <div class="form-group">
-            <label class="control-label">Sub Section <span asp-validation-for="FKProductId" class="text-danger"></span></label>
+            <label class="control-label">Article <span asp-validation-for="FKProductId" class="text-danger"></span></label>
             @await Html.PartialAsync("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKProductId" }, { "Class", "form-control" }, { "event", "ViewProductLot()" },
             { "value", Model.FKProductId }, { "text", Model.ProductName }, { "uri", "" }})
         </div>
@@ -27,14 +27,14 @@
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="control-label">Article  No  <span asp-validation-for="LotNo" class="text-danger"></span></label>
+                            <label class="control-label">Lot  No  <span asp-validation-for="LotNo" class="text-danger"></span></label>
                             <input asp-for="LotNo" class="form-control" />
 
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="control-label">Article  Name <span asp-validation-for="LotName" class="text-danger"></span></label>
+                            <label class="control-label">Lot  Name <span asp-validation-for="LotName" class="text-danger"></span></label>
                             <input asp-for="LotName" class="form-control" />
 
                         </div>
@@ -170,7 +170,7 @@
             })
         }
 
-        function ViewProductLot()
+        function ViewProductLot2()
         {
             $.ajax({
                 type: "POST",

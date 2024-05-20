@@ -143,12 +143,12 @@ namespace SSRepository.Repository.Master
             Tbl.PkCategoryGroupId = model.PkCategoryGroupId;
             Tbl.CategoryGroupName = model.CategoryGroupName;
             Tbl.FkCategoryGroupId = model.FkCategoryGroupId;
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate= DateTime.Now;
+            Tbl.FKCreatedByID = 1;
             if (Mode == "Create")
             {
-                Tbl.Src = 1;
-                Tbl.FKUserId = 1;
-                Tbl.DateCreated = DateTime.Now;
+                Tbl.FKUserID = 1;
+                Tbl.CreationDate = DateTime.Now;
                 AddData(Tbl, false);
             }
             else
@@ -167,6 +167,8 @@ namespace SSRepository.Repository.Master
             {
                 new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Section Group", Fields="CategoryGroupName",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                 new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Parent Group", Fields="PCategoryGroupName",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
             };
             return list;
         }

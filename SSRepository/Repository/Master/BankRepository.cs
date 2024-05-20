@@ -41,8 +41,8 @@ namespace SSRepository.Repository.Master
                                     select (new BankModel
                                     {
                                         PkBankId = cou.PkBankId,
-                                        FKUserId = cou.FKUserId,
-                                        src = cou.Src,
+                                        FKUserId = cou.FKUserID,
+                                        FKCreatedByID = cou.FKCreatedByID,
                                         BankName = cou.BankName,
                                         IFSCCode = cou.IFSCCode,
                                     }
@@ -60,8 +60,8 @@ namespace SSRepository.Repository.Master
                     select (new BankModel
                     {
                         PkBankId = cou.PkBankId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
                         BankName = cou.BankName,
                         IFSCCode = cou.IFSCCode,
 
@@ -147,12 +147,12 @@ namespace SSRepository.Repository.Master
             Tbl.BankName = model.BankName;
             Tbl.IFSCCode = model.IFSCCode;
 
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate= DateTime.Now;
             if (Mode == "Create")
             {
-                Tbl.Src = model.src;
-                Tbl.FKUserId = model.FKUserId;
-                Tbl.DateCreated = DateTime.Now;
+                Tbl.FKCreatedByID = model.FKCreatedByID;
+                Tbl.FKUserID = model.FKUserId;
+                Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
@@ -170,9 +170,11 @@ namespace SSRepository.Repository.Master
         {
             var list = new List<ColumnStructure>
             {
-                 // new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="DateCreated",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                 // new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Bank Name", Fields="BankName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=2, Orderby =1, Heading ="IFSC Code", Fields="IFSCCode",Width=40,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="IFSC Code", Fields="IFSCCode",Width=40,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                       };
             return list;
         }

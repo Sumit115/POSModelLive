@@ -50,6 +50,8 @@ namespace SSAdmin.Areas.Transactions.Controllers
             if (model.PkId == 0)
             {
                 _repository.SetLastSeries(model, LoginId, TranAlias);
+                model.Cash = model.Credit = model.Cheque = model.CreditCard = false;
+
             }
         }
 

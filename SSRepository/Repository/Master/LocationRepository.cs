@@ -51,8 +51,8 @@ namespace SSRepository.Repository.Master
                                                 Fax = Loc.Fax,
                                                 Email = Loc.Email,
                                                 Website = Loc.Website,
-                                                DateModified=Loc.DATE_MODIFIED.ToString("dd-MMM-yyyy"),
-                                                DateCreated=Loc.CreationDate.ToString("dd-MMM-yyyy")
+                                                ModifiDate= Loc.DATE_MODIFIED.ToString("dd-MMM-yyyy"),
+                                                CreateDate=Loc.CreationDate.ToString("dd-MMM-yyyy")
                                             }
                                            )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
           
@@ -90,8 +90,8 @@ namespace SSRepository.Repository.Master
                         FKAccountID = cou.FkAccountID,
                         FKBranchID = cou.FkBranchID,
                         IsAllAccount = cou.IsAllAccount,
-                        DateModified = cou.DATE_MODIFIED.ToString("dd-MMM-yyyy"),
-                        DateCreated = cou.CreationDate.ToString("dd-MMM-yyyy"),
+                        ModifiDate = cou.DATE_MODIFIED.ToString("dd-MMM-yyyy"),
+                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         
                     })).FirstOrDefault();
             return data;
@@ -202,8 +202,9 @@ namespace SSRepository.Repository.Master
                   new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Fax", Fields="Fax",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Email", Fields="Email",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Website", Fields="Website",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Created", Fields="DateCreated",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Modified", Fields="DateModified",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+
                         };
             return list;
         }

@@ -40,8 +40,8 @@ namespace SSRepository.Repository.Master
                                        select (new CountryModel
                                        {
                                            PkCountryId = cou.PkCountryId,
-                                           FKUserId = cou.FKUserId,
-                                           src = cou.Src,
+                                           FKUserId = cou.FKUserID,
+                                           FKCreatedByID = cou.FKCreatedByID,
                                            CountryName = cou.CountryName,
                                            CapitalName = cou.CapitalName,
                                        }
@@ -59,8 +59,8 @@ namespace SSRepository.Repository.Master
                     select (new CountryModel
                     {
                         PkCountryId = cou.PkCountryId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
                         CountryName = cou.CountryName,
                         CapitalName = cou.CapitalName,
                     })).FirstOrDefault();
@@ -157,12 +157,12 @@ namespace SSRepository.Repository.Master
             Tbl.PkCountryId = model.PkCountryId;
             Tbl.CountryName = model.CountryName;
             Tbl.CapitalName = model.CapitalName;
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate= DateTime.Now;
             if (Mode == "Create")
             {
-                Tbl.Src = model.src;
-                Tbl.FKUserId = model.FKUserId;
-                Tbl.DateCreated = DateTime.Now;
+                Tbl.FKCreatedByID = model.FKCreatedByID;
+                Tbl.FKUserID = model.FKUserId;
+                Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
@@ -182,6 +182,8 @@ namespace SSRepository.Repository.Master
             {
                    new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Country", Fields="CountryName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=2, Orderby =1, Heading ="Capital", Fields="CapitalName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                         };
             return list;
         }

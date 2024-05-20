@@ -13,14 +13,14 @@
                 <span asp-validation-for="GrossAmt" class="text-danger"></span>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-2 d-none" >
             <div class="form-group">
                 <label class="control-label">Cash Discount </label>
                 <input asp-for="CashDiscount" class="form-control FotChng" />
                 <span asp-validation-for="CashDiscount" class="text-danger"></span>
             </div>
         </div>
-        <div class="col-md-1">
+        <div class="col-md-1 d-none">
             <div class="form-group">
                 <label class="control-label">Disc Type </label>
                 <select asp-for="CashDiscType" class="form-control FotChng">
@@ -33,7 +33,7 @@
                 <span asp-validation-for="CashDiscType" class="text-danger"></span>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 d-none ">
             <div class="form-group">
                 <label class="control-label">Cash Discount Amt </label>
                 <input asp-for="CashDiscountAmt" class="form-control" readonly="readonly" />

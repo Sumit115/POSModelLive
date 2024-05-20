@@ -69,22 +69,23 @@ namespace SSRepository.Models
         public decimal Shipping { get; set; }//txt 
         public decimal OtherCharge { get; set; }//=0
         public decimal NetAmt { get; set; }//txt //=GrossAmt+TaxAmt-TotalDiscount-RoundOfDiff+Shipping+OtherCharge
+
         public bool Cash { get; set; }
-        public decimal CashAmt { get; set; }//Id Check Cash then put value on Cash Amt
+        public Nullable<decimal> CashAmt { get; set; }
         public bool Credit { get; set; }
-        public decimal CreditAmt { get; set; }//Aso check NetAmt=CashAmt+CreditAmt+ChequeAmt
-
-        [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? CreditDate { get; set; }//txt if check Credit then Required
+        public Nullable<decimal> CreditAmt { get; set; }
+        public Nullable<System.DateTime> CreditDate { get; set; }
+        public Nullable<long> FKPostAccID { get; set; }
         public bool Cheque { get; set; }
-        public decimal ChequeAmt { get; set; }
+        public Nullable<decimal> ChequeAmt { get; set; }
         public string? ChequeNo { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? ChequeDate { get; set; }
-        public long FKBankChequeID { get; set; }//=0
+        public Nullable<System.DateTime> ChequeDate { get; set; }
+        public Nullable<long> FKBankChequeID { get; set; }
+        public bool CreditCard { get; set; }
+        public Nullable<decimal> CreditCardAmt { get; set; }
+        public string? CreditCardNo { get; set; }
+        public Nullable<System.DateTime> CreditCardDate { get; set; }
+        public Nullable<long> FKBankCreditCardID { get; set; }
 
         public string? Remark { get; set; }
 

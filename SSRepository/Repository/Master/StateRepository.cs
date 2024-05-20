@@ -43,8 +43,8 @@ namespace SSRepository.Repository.Master
                                      select (new StateModel
                                      {
                                          PkStateId = cou.PkStateId,
-                                         FKUserId = cou.FKUserId,
-                                         src = cou.Src,
+                                         FKUserId = cou.FKUserID,
+                                         FKCreatedByID = cou.FKCreatedByID,
                                          StateName = cou.StateName,
                                          CapitalName = cou.CapitalName,
                                          StateType = cou.StateType,
@@ -68,8 +68,8 @@ namespace SSRepository.Repository.Master
                                      select (new StateModel
                                      {
                                          PkStateId = cou.PkStateId,
-                                         FKUserId = cou.FKUserId,
-                                         src = cou.Src,
+                                         FKUserId = cou.FKUserID,
+                                         FKCreatedByID = cou.FKCreatedByID,
                                          StateName = cou.StateName,
                                          CapitalName = cou.CapitalName,
                                          StateType = cou.StateType,
@@ -91,8 +91,8 @@ namespace SSRepository.Repository.Master
                     select (new StateModel
                     {
                         PkStateId = cou.PkStateId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
                         StateName = cou.StateName,
                         CapitalName = cou.CapitalName,
                         StateType = cou.StateType,
@@ -213,12 +213,12 @@ namespace SSRepository.Repository.Master
             Tbl.CapitalName = model.CapitalName;
             Tbl.StateType = model.StateType;
             Tbl.StateCode = model.StateCode;
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate= DateTime.Now;
             if (Mode == "Create")
             {
-                Tbl.Src = model.src;
-                Tbl.FKUserId = model.FKUserId;
-                Tbl.DateCreated = DateTime.Now;
+                Tbl.FKCreatedByID = model.FKCreatedByID;
+                Tbl.FKUserID = model.FKUserId;
+                Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
@@ -240,6 +240,8 @@ namespace SSRepository.Repository.Master
               new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Capital", Fields="CapitalName",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
               new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Type", Fields="StateType",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Country", Fields="CountryName",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+               new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                         };
             return list;
         }

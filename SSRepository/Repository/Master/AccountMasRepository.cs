@@ -46,8 +46,8 @@ namespace SSRepository.Repository.Master
                                           select (new AccountMasModel
                                           {
                                               PkAccountId = cou.PkAccountId,
-                                              FKUserId = cou.FKUserId,
-                                              src = cou.Src,
+                                              FKUserId = cou.FKUserID,
+                                              FKCreatedByID = cou.FKCreatedByID,
                                               Account = cou.Account,
                                               Alias = cou.Alias,
                                               FkAccountGroupId = cou.FkAccountGroupId,
@@ -87,8 +87,8 @@ namespace SSRepository.Repository.Master
                     select (new AccountMasModel
                     {
                         PkAccountId = cou.PkAccountId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
                         Account = cou.Account,
                         Alias = cou.Alias,
                         FkAccountGroupId = cou.FkAccountGroupId,
@@ -231,7 +231,7 @@ namespace SSRepository.Repository.Master
             Tbl.PkAccountId = model.PkAccountId;
             Tbl.Account = model.Account;
             Tbl.FkAccountGroupId = model.FkAccountGroupId;
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate= DateTime.Now;
             Tbl.Station = model.Station;
             Tbl.Locality = model.Locality;
             Tbl.Alias = model.Alias;
@@ -247,13 +247,13 @@ namespace SSRepository.Repository.Master
             Tbl.DiscDate = model.DiscDate;
             Tbl.FKBankID = model.FKBankID;
             Tbl.AccountNo = model.AccountNo;
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate= DateTime.Now;
+            Tbl.FKUserID = model.FKUserId;
             if (Mode == "Create")
             {
                 Tbl.PkAccountId = getIdOfSeriesByEntity("PkcountryId", null, Tbl, "TblAccountMas");
-                Tbl.Src = model.src;
-                Tbl.FKUserId = model.FKUserId;
-                Tbl.DateCreated = DateTime.Now;
+                Tbl.FKCreatedByID = model.FKCreatedByID;
+                Tbl.CreationDate = DateTime.Now;
 
                 AddData(Tbl, false);
             }
@@ -297,10 +297,10 @@ namespace SSRepository.Repository.Master
                         objLoc.PKAccountLocLnkId = lc.PKAccountLocLnkId;
                         objLoc.FkAccountId = Tbl.PkAccountId;
                         objLoc.FKLocationID = lc.FKLocationID;
-                        objLoc.Src = model.src;
-                        objLoc.FKUserId = model.FKUserId;
-                        objLoc.DateCreated = DateTime.Now;
-                        objLoc.DateModified = DateTime.Now;
+                        objLoc.FKCreatedByID = model.FKCreatedByID;
+                        objLoc.FKUserID = model.FKUserId;
+                        objLoc.CreationDate = DateTime.Now;
+                        objLoc.ModifiedDate = DateTime.Now;
                         //if (objLoc.PKAccountLocLnkId > 0)
                         //    lstEditLocation.Add(objLoc);
                         //else
@@ -345,16 +345,16 @@ namespace SSRepository.Repository.Master
                     //   lstAdd.Add(locObj);
                     if (item.Mode == 1)
                     {
-                        locObj.DateModified = DateTime.Now;
+                        locObj.ModifiedDate= DateTime.Now;
                         lstEdit.Add(locObj);
                     }
                     else if (item.Mode == 0)
                     {
                         //  locObj.PKAccountDtlId = getIdOfSeriesByEntity("PKAccountDtlId", null, Tbl, "TblAccountDtl");
-                        locObj.Src = model.src;
-                        locObj.FKUserId = model.FKUserId;
-                        locObj.DateCreated = DateTime.Now;
-                        locObj.DateModified = DateTime.Now;
+                        locObj.FKCreatedByID = model.FKCreatedByID;
+                        locObj.FKUserID = model.FKUserId;
+                        locObj.CreationDate = DateTime.Now;
+                        locObj.ModifiedDate= DateTime.Now;
                         lstAdd.Add(locObj);
                     }
 
@@ -406,16 +406,16 @@ namespace SSRepository.Repository.Master
                     if (!string.IsNullOrEmpty(item.Description) && locObj.PKAccountLicDtlId == 0)
                     {
                         //  locObj.PKAccountLicDtlId = getIdOfSeriesByEntity("PKAccountLicDtlId", null, Tbl, "TblAccountLicDtl");
-                        locObj.Src = model.src;
-                        locObj.FKUserId = model.FKUserId;
-                        locObj.DateCreated = DateTime.Now;
-                        locObj.DateModified = DateTime.Now;
+                        locObj.FKCreatedByID = model.FKCreatedByID;
+                        locObj.FKUserID = model.FKUserId;
+                        locObj.CreationDate = DateTime.Now;
+                        locObj.ModifiedDate= DateTime.Now;
                         lstAdd.Add(locObj);
                     }
                     else if (!string.IsNullOrEmpty(item.Description) && locObj.PKAccountLicDtlId > 0)
                     {
                         //  locObj.PKAccountLicDtlId = getIdOfSeriesByEntity("PKAccountLicDtlId", null, Tbl, "TblAccountLicDtl");
-                        locObj.DateModified = DateTime.Now;
+                        locObj.ModifiedDate= DateTime.Now;
                         lstAdd.Add(locObj);
                     }
                 }
@@ -441,6 +441,8 @@ namespace SSRepository.Repository.Master
                 new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Pincode", Fields="Pincode",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                 new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Phone", Fields="Phone1",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                 new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Mobile", Fields="Phone2",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=10, Orderby =11, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
             };
             return list;
         }

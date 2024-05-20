@@ -41,10 +41,10 @@ namespace SSRepository.Repository.Master
                                       select (new BrandModel
                                       {
                                           PkBrandId = cou.PkBrandId,
-                                          FKUserId = cou.FKUserId,
-                                          src = cou.Src,
-                                          DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                                          DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
+                                          FKUserId = cou.FKUserID,
+                                          FKCreatedByID = cou.FKCreatedByID,
+                                          ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                          CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                           BrandName = cou.BrandName, 
                                       }
                                      )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
@@ -61,10 +61,10 @@ namespace SSRepository.Repository.Master
                     select (new BrandModel
                     {
                         PkBrandId = cou.PkBrandId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
-                        DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                        DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
+                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         BrandName = cou.BrandName,
                        
                     })).FirstOrDefault();
@@ -147,12 +147,12 @@ namespace SSRepository.Repository.Master
             Tbl.PkBrandId = model.PkBrandId;
             Tbl.BrandName = model.BrandName;
          
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate= DateTime.Now;
             if (Mode == "Create")
             {
-                Tbl.Src = model.src;
-                Tbl.FKUserId = model.FKUserId;
-                Tbl.DateCreated = DateTime.Now;
+                Tbl.FKCreatedByID = model.FKCreatedByID;
+                Tbl.FKUserID = model.FKUserId;
+                Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
@@ -170,9 +170,11 @@ namespace SSRepository.Repository.Master
         {
             var list = new List<ColumnStructure>
             {
-                 // new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="DateCreated",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                 // new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Brand Name", Fields="BrandName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                      };
+                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+            };
             return list;
         }
 

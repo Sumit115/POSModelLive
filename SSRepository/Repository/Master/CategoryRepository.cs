@@ -42,10 +42,10 @@ namespace SSRepository.Repository.Master
                                         select (new CategoryModel
                                         {
                                             PkCategoryId = cou.PkCategoryId,
-                                            FKUserId = cou.FKUserId,
-                                            src = cou.Src,
-                                            DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                                            DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
+                                            FKUserId = cou.FKUserID,
+                                            FKCreatedByID = cou.FKCreatedByID,
+                                            ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                            CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                             Category = cou.CategoryName,
                                             FkCategoryGroupId = cou.FkCategoryGroupId,
                                             GroupName = catGrp.CategoryGroupName,
@@ -63,10 +63,10 @@ namespace SSRepository.Repository.Master
                     select (new CategoryModel
                     {
                         PkCategoryId = cou.PkCategoryId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
-                        DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                        DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
+                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         Category = cou.CategoryName,
                         FkCategoryGroupId = cou.FkCategoryGroupId,
                     })).FirstOrDefault();
@@ -133,12 +133,12 @@ namespace SSRepository.Repository.Master
             Tbl.PkCategoryId = model.PkCategoryId;
             Tbl.CategoryName = model.Category;
             Tbl.FkCategoryGroupId = model.FkCategoryGroupId;
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate= DateTime.Now;
             if (Mode == "Create")
             {
-                Tbl.Src = model.src;
-                Tbl.FKUserId = model.FKUserId;
-                Tbl.DateCreated = DateTime.Now;
+                Tbl.FKCreatedByID = model.FKCreatedByID;
+                Tbl.FKUserID = model.FKUserId;
+                Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
@@ -158,8 +158,10 @@ namespace SSRepository.Repository.Master
             {                   
                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Section Name", Fields="Category",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                   new ColumnStructure{ pk_Id=1, Orderby =2, Heading ="Section Group", Fields="GroupName",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=1, Orderby =3, Heading ="Created", Fields="DateCreated",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=1, Orderby =4, Heading ="Modified", Fields="DateModified",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=1, Orderby =3, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=1, Orderby =4, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                         };
             return list;
         }

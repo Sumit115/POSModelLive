@@ -1084,6 +1084,7 @@
                 case "T": col.editor = Slick.Editors.Text; break;
                 case "BT": col.editor = Slick.Editors.ButtonEditor;
                     col.formatter = Slick.Formatters.ButtonFormatter; break;
+                case "BD": col.formatter = Slick.Formatters.DeleteFormatter; break;
                 case "I":
                     col.decimalPlaces = 0;
                     col.editor = Slick.Editors.Integer; break;
@@ -1100,6 +1101,7 @@
                 case "C": col.editor = Slick.Editors.ComboSelect; break;
                 case "L": col.editor = Slick.Editors.TextList; break;
                 case "LN": col.editor = Slick.Editors.TextListNew; break;
+                case "CD": col.editor = Slick.Editors.Dropdown2; break;
                 case "MS": col.editor = Slick.Editors.MultiSelect; break;
                 case "B": col.editor = Slick.Editors.CheckboxEditor;
                     col.formatter = Slick.Formatters.CheckmarkAll; break;

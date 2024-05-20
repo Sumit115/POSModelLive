@@ -17,7 +17,7 @@ $(document).ready(function () {
         tranModel[fieldName] = $(this).val();
         FooterChange(fieldName)
     });
-    $(".ratediscount").change(function () { 
+    $(".ratediscount").change(function () {
         var type = $("#RateDiscountType").val();
         var value = $("#RateDiscountValue").val();
         ApplyRateDiscount(type, value);
@@ -42,7 +42,7 @@ function Load() {
     tranModel = JSON.parse($("#hdData").val());
     if (PkId > 0) {
         $(tranModel.TranDetails).each(function (i, v) {
-            v["ProductName"] = parseInt(v.FkProductId);
+            v["Product"] = parseInt(v.FkProductId);
             v["ModeForm"] = 1;
             v["Delete"] = 'Delete';
         });
@@ -59,7 +59,7 @@ function BindGrid(GridId, data) {
 
     $("#" + GridId).empty();
     Common.Grid(tranModel.ExtProperties.FKFormID, "dtl", function (s) {
-        var ProductList = JSON.parse($("#hdProductList").val());
+        //var ProductList = JSON.parse($("#hdProductList").val());
         var ProductLotList = [];
         cg = new coGrid("#" + GridId);
         UDI = cg;
@@ -71,15 +71,62 @@ function BindGrid(GridId, data) {
         cg._MinRows = 50;
         cg.setIdProperty("SrNo");
         cg.setCtrlType(s.setCtrlType);
-        cg.setOptionArray(0, ProductList, "ProductName", false, "Product", "PkProductId", "1");
-        cg.setOptionArray(12, [], "Batch", false, "Batch", "PkLotId", "1");
-        cg.setOptionArray(13, [], "Color", false, "Color", "PkLotId", "1");
+        //columns.push({ id: v.FieldName, name: v.Caption, field: v.FieldName, width: colwidth, editor: Slick.Editors.Dropdown2, 
+        //cssClass: "text-edit", fieldval: "FKSalesPerID", event: SalesPersonList, KeyID: "PKID", KeyValue: "Employee", 
+        //Keyfield: "Employee,Code,Prefix,Address,Pincode,Email,PAN,DOB,DOW,DOJ,PaymentMode,EmpGender,MaritalStatus,Phone1,Phone2,
+        //Fax, BloodGroups, Bank, BankAccNo, PFAccNo, ESIAccNo, SecurityID, Reference, Locality, Station, Department, Designation, 
+        //Qualification, Branch, Status, UserName"
+        //});
+        var f = s.ColumnFields.split('~');
+        var s = s.setCtrlType.split('~');
+        var arrmapData = []
+        var DrpIndex = {};
+        for (kk = 0; kk < s.length; kk++) {
+            var sl = s[kk];
+            var fl = f[kk];
+            if (sl == "C" || sl == "L" || sl == "CD") {
+                DrpIndex[fl] = kk;
+                switch (fl) {
+                    case "Product":
+                        cg.columns[kk]["event"] = trandtldropList;
+                        cg.columns[kk]["fieldval"] = "FkProductId";
+                        cg.columns[kk]["KeyID"] = "PkProductId";
+                        cg.columns[kk]["KeyValue"] = "Product";
+                        //cg.columns[KK]["Keyfield"] = "Product";
+                        //cg.setOptionArray(kk, ProductList, "ProductName", false, "Product", "PkProductId", "1");
+                        //arrmapData.push({ data: ProductList, textColumn: "ProductName_Text", srcValueColumn: "ProductName_Text", destValueColumn: "PkProductId", destTextColumn: "Product" });
+                        break
+                    case "Batch":
+                        cg.columns[kk]["event"] = trandtldropList;
+                        cg.columns[kk]["fieldval"] = "Batch";
+                        cg.columns[kk]["KeyID"] = "PkLotId";
+                        cg.columns[kk]["KeyValue"] = "Batch";
+                        cg.columns[kk]["Keyfield"] = "Batch";
+                        cg.columns[kk]["RowValue"] = "FkProductId";
+                        
+                        break
+                    case "Color":
+                        cg.columns[kk]["event"] = trandtldropList;
+                        cg.columns[kk]["fieldval"] = "Color";
+                        cg.columns[kk]["KeyID"] = "Color";
+                        cg.columns[kk]["KeyValue"] = "Color";
+                        cg.columns[kk]["Keyfield"] = "Color";
+                        cg.columns[kk]["RowValue"] = "FkProductId";
+                        break
+                    case "MRP":
+                        cg.columns[kk]["event"] = trandtldropList;
+                        cg.columns[kk]["fieldval"] = "MRP";
+                        cg.columns[kk]["KeyID"] = "MRP";
+                        cg.columns[kk]["KeyValue"] = "MRP";
+                        cg.columns[kk]["Keyfield"] = "MRP";
+                        cg.columns[kk]["RowValue"] = "FkProductId";
+                        break
+                }
+            }
+        }
         var obdt = cg.populateDataFromJson({
             srcData: data,
-            mapData: [{ data: ProductList, textColumn: "ProductName_Text", srcValueColumn: "ProductName_Text", destValueColumn: "PkProductId", destTextColumn: "Product" },
-            { data: [], textColumn: "Batch_Text", srcValueColumn: "Batch_Text", destValueColumn: "PkLotId", destTextColumn: "Batch" },
-            { data: [], textColumn: "Color_Text", srcValueColumn: "Color_Text", destValueColumn: "PkLotId", destTextColumn: "Color" },
-            ]
+            mapData: arrmapData
         });
         cg.applyAddNewRow();
         cg.bind(data);
@@ -109,53 +156,27 @@ function BindGrid(GridId, data) {
         }
         /*---------------    ---------------   ---------------   ---------------*/
         cg.outGrid.onBeforeEditCell.subscribe(function (e, args) {
-            if (args.cell != undefined && args.cell > 0) {
+            if (args.cell != undefined) {
                 var field = cg.columns[args.cell].field;
 
-                if (!Common.isNullOrEmpty(args.item["ProductName_Text"])) {
-                    if (field == "Batch" || field == "Color") {
-                        console.log(args.item["Batch"]);
-                        var FkProductId = Common.isNullOrEmpty(args.item["ProductName"]) ? 0 : parseFloat(args.item["ProductName"]);
-                        var Batch = args.item["Batch"];
-                        var Color = args.item["Color"];
-
-
-                        Common.ajax(Handler.currentPath() + "ProductLotDtlList?FkProductId=" + FkProductId + "&Batch=" + Batch + "&Color=" + Color + "", {}, "Please Wait...", function (res) {
-                            Handler.hide();
-
-
-                            // cg.setOptionArray(args.cell, res, "Color", false, "Color", "Color", "1");
-                            cg.setOptionArray(12, res, "Batch_Text", false, "Batch", "PkLotId", "1");
-                            cg.setOptionArray(13, res, "Color_Text", false, "Color", "PkLotId", "1");
-                            //  cg.setOptionArray(0, ProductList, "ProductName", false, "Product", "PkProductId", "1");
-                            //  cg.outGrid.gotoCell(args.row, args.cell, true)
-
-
-
-                        });
-
-                    }
-                }
-                else {
+                if (field != "Product" && Common.isNullOrEmpty(args.item["Product"])) {
                     alert("Select Product Frist");
-
                     cg_ClearRow(args)
-                    cg.outGrid.gotoCell(args.row, 0, true)
+                    cg.outGrid.gotoCell(args.row, DrpIndex["Product"], true);
                 }
-
             }
         });
         //---------------    ---------------   ---------------   ---------------/
         cg.outGrid.onCellChange.subscribe(function (e, args) {
             if (args.cell != undefined) {
-
+                
                 var field = cg.columns[args.cell].field;
-                if (field == "ProductName_Text") {
-                    var FkProductId = Common.isNullOrEmpty(args.item["ProductName"]) ? 0 : parseFloat(args.item["ProductName"]);
+                if (field == "Product") {
+                    var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
 
                     var data = cg.getData().filter(function (element) { return (element.FkProductId == FkProductId && element.mode != 2); });
 
-                    if (data.length <= 0) {
+                    if (data.length <= 1) {
                         ColumnChange(args, args.row, "Product");
                     }
                     else {
@@ -165,44 +186,17 @@ function BindGrid(GridId, data) {
                     }
                 }
                 else if (field == "Qty") {
-                   
-                  //  var index = cg.columns.findIndex(args);
                     ColumnChange(args, args.row, "Qty");
                 }
                 else if (field == "TradeDisc") {
                     ColumnChange(args, args.row, "TradeDisc");
                 }
                 else if (field == "Batch") {
-                   
-                    var FkLotId = Common.isNullOrEmpty(args.item["Batch_Text"]) ? 0 : parseFloat(args.item["Batch_Text"]);
-                    if (FkLotId > 0 || TranType == "Purchase") {
-                        args.item["FkLotId"] = FkLotId > 0 ? FkLotId : 0;
-                        cg.updateRefreshDataRow(args.row);
-                        ColumnChange(args, args.row, "Batch");
-                    } else {
-                        args.item["Batch_Text"] = "";
-                        args.item["Batch"] = "";
-                        cg.updateRefreshDataRow(args.row);
-                    }
+                    ColumnChange(args, args.row, "Batch");
                 }
                 else if (field == "Color") {
-                    var FkLotId = Common.isNullOrEmpty(args.item["Color_Text"]) ? 0 : parseFloat(args.item["Color_Text"]);
-                    if (FkLotId > 0 || TranType == "Purchase") {
-                        args.item["FkLotId"] = FkLotId > 0 ? FkLotId : 0;
-                        cg.updateRefreshDataRow(args.row);
-                        ColumnChange(args, args.row, "Color");
-
-                    } else {
-                        args.item["Color_Text"] = "";
-                        args.item["Color"] = "";
-                        cg.updateRefreshDataRow(args.row);
-                    }
+                    ColumnChange(args, args.row, "Color");
                 }
-
-
-                //cg.updateRefreshDataRow(args.row);
-                //cg.updateAndRefreshTotal();
-
             }
         });
 
@@ -212,7 +206,7 @@ function BindGrid(GridId, data) {
             if (args.cell != undefined) {
                 var field = cg.columns[args.cell].field;
 
-                var PkProductId = args.grid.getDataItem(args.row)["PkProductId"];
+                var PkProductId = args.grid.getDataItem(args.row)["FkProductId"];
                 var SrNo = args.grid.getDataItem(args.row)["SrNo"];
 
 
@@ -224,16 +218,11 @@ function BindGrid(GridId, data) {
 
             e.preventDefault();
             var j = cg.outGrid.getCellFromEvent(e);
-
-
-            // if (j.cell == 1 || j.cell == 2) {
             $("#contextMenu")
                 .data("row", j.row)
                 .css("top", e.pageY - 90)
                 .css("left", e.pageX - 60)
                 .show();
-            // }
-
             $("body").one("click", function () {
                 $("#contextMenu").hide();
             });
@@ -249,7 +238,6 @@ function BindGrid(GridId, data) {
             var row = $(this).data("row");
             var command = $(e.target).attr("data");
             if (command == "EditColumn") {
-
                 Common.GridColSetup(tranModel.ExtProperties.FKFormID, '', function () {
                     var _dtl = GetDataFromGrid();
                     BindGrid('DDT', _dtl);
@@ -266,7 +254,6 @@ function cg_ClearRow(args) {
     args.item["PkId"] = 0;
     args.item["mode"] = 0;
     args.item["FkProductId"] = 0;
-    args.item["ProductName_Text"] = "";
     args.item["Product"] = 0;
     args.item["MRP"] = "";
     args.item["Rate"] = "";
@@ -301,7 +288,8 @@ function BarcodeScan(barcode) {
                 });
                 BindGrid('DDT', tranModel.TranDetails);
 
-                setFooterData(tranModel)
+                setFooterData(tranModel);
+                setPaymentDetail(tranModel);
 
             }
             else
@@ -323,7 +311,8 @@ function ColumnChange(args, rowIndex, fieldName) {
 
                 if (res.status == "success") {
                     tranModel = res.data;
-                    setFooterData(tranModel)
+                    setFooterData(tranModel);
+                    setPaymentDetail(tranModel);
                     setGridRowData(args, tranModel.TranDetails, rowIndex, fieldName);
 
                 }
@@ -335,9 +324,9 @@ function ColumnChange(args, rowIndex, fieldName) {
 }
 
 function FooterChange(fieldName) {
-    debugger;
-     console.log(tranModel);
-   
+
+    console.log(tranModel);
+
     $.ajax({
         type: "POST",
         url: Handler.currentPath() + 'FooterChange',
@@ -345,7 +334,7 @@ function FooterChange(fieldName) {
         datatype: "json", success: function (res) {
             console.log(res);
             if (res.status == "success") {
-                debugger;
+
                 tranModel = res.data;
 
                 //if (fieldName == "CashDiscType" || fieldName == "CashDiscount") {
@@ -356,9 +345,9 @@ function FooterChange(fieldName) {
                 //    //$("#hdData").val(JSON.stringify(tranModel));
                 //    //Load();
                 //}
-                debugger;
-                console.log(tranModel);
-                setFooterData(tranModel)
+
+                setFooterData(tranModel);
+                setPaymentDetail(tranModel);
 
             }
             else
@@ -366,31 +355,20 @@ function FooterChange(fieldName) {
         }
     })
 }
-function ApplyRateDiscount(Type, Discount) {
+function PaymentDetail() {
     console.log(tranModel);
-   
+
     $.ajax({
         type: "POST",
-        url: Handler.currentPath() + 'ApplyRateDiscount',
-        data: { model: tranModel, type: Type, discount: Discount },
+        url: Handler.currentPath() + 'SetPaymentDetail',
+        data: { model: tranModel },
         datatype: "json", success: function (res) {
-           
+
             if (res.status == "success") {
                 tranModel = res.data;
-               // console.log(tranModel.TranDetails);
 
-                debugger;
-                //if (fieldName == "CashDiscType" || fieldName == "CashDiscount") {
-                    $(tranModel.TranDetails).each(function (i, v) {
-                        v["ProductName"] = parseInt(v.FkProductId);
-                    });
-                    BindGrid('DDT', tranModel.TranDetails);
-                    //$("#hdData").val(JSON.stringify(tranModel));
-                    //Load();
-                /*}*/
-
-                setFooterData(tranModel)
-
+                setPaymentDetail(tranModel);
+                $('.model-paymentdetail').modal('toggle');;
             }
             else
                 alert(res.msg);
@@ -401,6 +379,11 @@ function setFooterData(data) {
     Common.Set(".trn-footer", data, "");
     return false;
 }
+function setPaymentDetail(data) {
+    Common.Set(".model-paymentdetail", data, "");
+    return false;
+}
+
 
 function setGridRowData(args, data, rowIndex, fieldName) {
 
@@ -408,7 +391,7 @@ function setGridRowData(args, data, rowIndex, fieldName) {
         args.grid.getDataItem(args.row).ModeForm = 2
     }
     else {
-        args.item["PkProductId"] = data[rowIndex].PkProductId;
+        args.item["FkProductId"] = data[rowIndex].FkProductId;
         args.item["Rate"] = data[rowIndex].Rate;
         args.item["MRP"] = data[rowIndex].MRP;
         args.item["Qty"] = data[rowIndex].Qty;
@@ -442,11 +425,10 @@ function GetDataFromGrid(ifForsave) {
     var _d = [];
     cg.getData().filter(function (element) {
         if (ifForsave) {
-            if (!Handler.isNullOrEmpty(element.ProductName) && !Handler.isNullOrEmpty(element.Qty)) {
+            if (!Handler.isNullOrEmpty(element.Product) && !Handler.isNullOrEmpty(element.Qty)) {
 
                 if (element.FkProductId > 0) { element.SrNo = element.SrNo; }
                 else { SrNo++; element.SrNo = SrNo; }
-                element.FkProductId = parseInt(element.ProductName);
                 _d.push(element);
                 return element
             }
@@ -454,10 +436,9 @@ function GetDataFromGrid(ifForsave) {
         else {
 
 
-            if (!Handler.isNullOrEmpty(element.ProductName)) {
+            if (!Handler.isNullOrEmpty(element.Product)) {
                 if (element.FkProductId > 0) { element.SrNo = element.SrNo; }
                 else { SrNo++; element.SrNo = SrNo; }
-                element.FkProductId = parseInt(element.ProductName);
                 _d.push(element);
                 return element
             }
@@ -516,8 +497,8 @@ function setdisablecolumn(cg, cc, hash, index, type) {
     var focu = {};
 
     if (cc["mode"] == 1) {
-        h["ProductName_Text"] = "sobc";
-        focu["ProductName_Text"] = { "focusable": false };
+        h["Product"] = "sobc";
+        focu["Product"] = { "focusable": false };
     }
     else if (cc["mode"] == 2) {
         for (k = 0; k < cg.columns.length - 2; k++) {
@@ -569,4 +550,17 @@ function setSeries() {
                 alert(res.msg);
         }
     });
+}
+
+function trandtldropList(data) {
+    var output = []
+    $.ajax({
+        url: Handler.currentPath() + 'trandtldropList', data: data, async: false, dataType: 'JSON', success: function (result) {
+
+            output = result;
+
+        }, error: function (request, status, error) {
+        }
+    });
+    return output;
 }

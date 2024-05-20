@@ -10,13 +10,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Font Awesome Icons -->
-    <link href="~/plugins/fontawesome-free/css/all.css" rel="stylesheet" />
+    <link href="~/css/fontawesome-free/css/all.css" rel="stylesheet" />
     <!-- Theme style -->
     <link href="~/dist/css/adminlte.min.css" rel="stylesheet" />
     <link href="~/SlickGrid/slick.grid.css" rel="stylesheet" />
-    @* <link href="~/css/jquery-ui.css" rel="stylesheet" /> *@
     <link href="~/css/root.css" rel="stylesheet" />
 
 </head>
@@ -135,13 +134,13 @@
                                         <li class="nav-item">
                                             <a asp-area="Master" asp-controller="Product" asp-action="List" class="nav-link">
                                                 <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Sub Section<i class="right fas fa-external-link-alt tablink"></i></p>
+                                                <p>Article<i class="right fas fa-external-link-alt tablink"></i></p>
                                             </a>
                                         </li>
                                         <li class="nav-item">
                                             <a asp-area="Master" asp-controller="ProductLot" asp-action="Create" class="nav-link">
                                                 <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Article<i class="right fas fa-external-link-alt tablink"></i></p>
+                                                <p>Article Lot<i class="right fas fa-external-link-alt tablink"></i></p>
                                             </a>
                                         </li>
                                     </ul>
@@ -446,15 +445,11 @@
     <ul id="contextMenu">
         <li id="contextEdit" data="Edit">Edit</li>
     </ul>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
     <script src="~/dist/js/adminlte.js"></script>
     <script src="~/js/common.js"></script>
-    @* <script src="~/js/jquery-ui.js"></script> *@
-    <script src="~/tautocomplete/tautocomplete.js"></script>
-    <script src="~/js/jquery.datetimepicker.js"></script>
-    @* <script type="text/javascript" src="/script/StringEncryption.js"></script>
-    *@
+    
     <script type="text/javascript" src="~/SlickGrid/slick.cogrid.js"></script>
 
     <script type="text/javascript" src="~/SlickGrid/slick.cofreezgrid.js"></script>

@@ -37,10 +37,10 @@ namespace SSRepository.Repository.Master
                                     select (new UserModel
                                     {
                                         PkUserId = cou.PkUserId,
-                                        FKUserId = cou.FKUserId,
-                                        src = cou.Src,
-                                        DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                                        DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
+                                        FKUserId = cou.FKUserID,
+                                        FKCreatedByID = cou.FKCreatedByID,
+                                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                         UserId = cou.UserId,
                                         Pwd = cou.Pwd,
                                         FkRegId = cou.FkRegId,
@@ -76,10 +76,10 @@ namespace SSRepository.Repository.Master
                     select (new UserModel
                     {
                         PkUserId = cou.PkUserId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
-                        DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                        DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
+                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         UserId = cou.UserId,
                         Pwd = cou.Pwd,
                         FkRegId = cou.FkRegId,
@@ -182,12 +182,12 @@ namespace SSRepository.Repository.Master
             Tbl.ExpirePwddt = model.ExpirePwddt;
             Tbl.FkEmployeeId = model.FkEmployeeId;
             Tbl.IsAdmin = model.IsAdmin;
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate= DateTime.Now;
             if (Mode == "Create")
             {
-                Tbl.Src = model.src;
-                Tbl.FKUserId = model.FKUserId;
-                Tbl.DateCreated = DateTime.Now;
+                Tbl.FKCreatedByID = model.FKCreatedByID;
+                Tbl.FKUserID = model.FKUserId;
+                Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
@@ -204,11 +204,12 @@ namespace SSRepository.Repository.Master
         {
             var list = new List<ColumnStructure>
             {
-                 new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="DateCreated",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Branch", Fields="BranchName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Employee", Fields="EmployeeName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
      new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="User Id", Fields="UserId",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
      new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Password", Fields="Pwd",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+     new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
 
             };
             return list;

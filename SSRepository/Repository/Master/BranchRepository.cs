@@ -58,10 +58,10 @@ namespace SSRepository.Repository.Master
                                       select (new BranchModel
                                       {
                                           PkBranchId = cou.PkBranchId,
-                                          FKUserId = cou.FKUserId,
-                                          src = cou.Src,
-                                          DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                                          DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
+                                          FKUserId = cou.FKUserID,
+                                          FKCreatedByID = cou.FKCreatedByID,
+                                          ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                          CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                           BranchName = cou.BranchName,
                                           ContactPerson = cou.ContactPerson,
                                           Email = cou.Email,
@@ -90,10 +90,10 @@ namespace SSRepository.Repository.Master
                     select (new BranchModel
                     {
                         PkBranchId = cou.PkBranchId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
-                        DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                        DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
+                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         BranchName = cou.BranchName,
                         ContactPerson = cou.ContactPerson,
                         Email = cou.Email,
@@ -195,12 +195,12 @@ namespace SSRepository.Repository.Master
             Tbl.FkRegId = model.FkRegId;
             Tbl.BranchCode = model.BranchCode;
             Tbl.Location = model.Location;
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate= DateTime.Now;
             if (Mode == "Create")
             {
-                Tbl.Src = model.src;
-                Tbl.FKUserId = model.FKUserId;
-                Tbl.DateCreated = DateTime.Now;
+                Tbl.FKCreatedByID = model.FKCreatedByID;
+                Tbl.FKUserID = model.FKUserId;
+                Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
@@ -218,18 +218,19 @@ namespace SSRepository.Repository.Master
         {
             var list = new List<ColumnStructure>
             {
-                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="DateCreated",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                   new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Branch Code", Fields="BranchCode",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Branch Name", Fields="BranchName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Contact Person", Fields="ContactPerson",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Email", Fields="Email",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Mobile", Fields="Mobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=55, Orderby =6, Heading ="Location", Fields="Location",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=6, Orderby =7, Heading ="Address", Fields="Address",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="State", Fields="State",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=7, Orderby =9, Heading ="City", Fields="City",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=9, Orderby =10, Heading ="Pin", Fields="Pin",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  //new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Country", Fields="Country",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Branch Name", Fields="BranchName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Contact Person", Fields="ContactPerson",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Email", Fields="Email",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Mobile", Fields="Mobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Location", Fields="Location",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Address", Fields="Address",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="State", Fields="State",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="City", Fields="City",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Pin", Fields="Pin",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                      };
             return list;
         }

@@ -147,6 +147,8 @@ namespace SSRepository.Repository.Master
                  new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="CurStock ", Fields="CurStock",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="AdjStock ", Fields="AdjStock",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="LocationName ", Fields="LocationName",Width=11,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                 new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
             };
             return list;
         }

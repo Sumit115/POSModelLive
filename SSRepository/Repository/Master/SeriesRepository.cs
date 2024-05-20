@@ -58,10 +58,10 @@ namespace SSRepository.Repository.Master
                                       select (new SeriesModel
                                       {
                                           PkSeriesId = cou.PkSeriesId,
-                                          FKUserId = cou.FKUserId,
-                                          src = cou.Src,
-                                          DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                                          DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
+                                          FKUserId = cou.FKUserID,
+                                          FKCreatedByID = cou.FKCreatedByID,
+                                          ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                          CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                           Series = cou.Series,
                                           SeriesNo = cou.SeriesNo,
                                           FkBranchId = cou.FkBranchId,
@@ -92,10 +92,10 @@ namespace SSRepository.Repository.Master
                     select (new SeriesModel
                     {
                         PkSeriesId = cou.PkSeriesId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
-                        DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                        DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
+                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         Series = cou.Series,
                         SeriesNo = cou.SeriesNo,
                         FkBranchId = cou.FkBranchId,
@@ -186,12 +186,12 @@ namespace SSRepository.Repository.Master
             Tbl.DefaultQty = model.DefaultQty;
             Tbl.AllowZeroRate = model.AllowZeroRate;
             Tbl.AllowFreeQty = model.AllowFreeQty;
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate= DateTime.Now;
             if (Mode == "Create")
             {
-                Tbl.Src = model.src;
-                Tbl.FKUserId = model.FKUserId;
-                Tbl.DateCreated = DateTime.Now;
+                Tbl.FKCreatedByID = model.FKCreatedByID;
+                Tbl.FKUserID = model.FKUserId;
+                Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
@@ -209,7 +209,6 @@ namespace SSRepository.Repository.Master
         {
             var list = new List<ColumnStructure>
             {
-                    new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="DateCreated",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                     new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Series", Fields="Series",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                     new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Series No ", Fields="SeriesNo",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                     new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Billing Rate", Fields="BillingRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
@@ -222,6 +221,8 @@ namespace SSRepository.Repository.Master
                     //new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Default Qty", Fields="DefaultQty",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                     //new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Allow Zero Rate", Fields="AllowZeroRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                     //new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Allow Free Qty", Fields="AllowFreeQty",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                    new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
             };
             return list;
         }

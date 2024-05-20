@@ -30,7 +30,8 @@ namespace SSAdmin.Areas
         protected void BindViewBags(object Trans)
         {
             ViewBag.Data = JsonConvert.SerializeObject(Trans);
-            ViewBag.ProductList = JsonConvert.SerializeObject(_repository.ProductList());
+            ViewBag.ProductList = JsonConvert.SerializeObject(_repository.ProductList(1,1,""));
+            ViewBag.BankList = _repository.BankList();
         }
 
         public JsonResult ColumnChange(TransactionModel model, int rowIndex, string fieldName)
@@ -53,6 +54,17 @@ namespace SSAdmin.Areas
             });
 
         }
+        [HttpPost]
+        public JsonResult SetPaymentDetail(TransactionModel model)
+        {
+            return Json(new
+            {
+                status = "success",
+                data = _repository.PaymentDetail(model)
+            });
+
+        }
+
         public JsonResult BarcodeScan(TransactionModel model, long barcode)
         {
             try
@@ -85,12 +97,7 @@ namespace SSAdmin.Areas
             });
 
         }
-        [HttpPost]
-        public async Task<JsonResult> ProductLotDtlList(int FkProductId, string Batch, string Color)
-        {
-            var data = _repository.Get_ProductLotDtlList(FkProductId, Batch, Color);
-            return new JsonResult(data);
-        }
+       
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {
             return _repository.ColumnList(GridName);
@@ -113,6 +120,7 @@ namespace SSAdmin.Areas
             return _repository.PartyList(pageSize, pageNo, search, TranType);
         }
 
+
         [HttpPost]
         public object FKSeriesId(int pageSize, int pageNo = 1, string search = "")
         {
@@ -129,5 +137,22 @@ namespace SSAdmin.Areas
             });
 
         }
+
+        [HttpGet]
+        public object trandtldropList(int pageSize, int pageNo = 1, string search = "", string name = "", string RowParam = "")
+        {
+            if (name == "Product")
+                return _repository.ProductList(pageSize, pageNo, search);
+            else if (name == "Batch")
+                return _repository.ProductBatchList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
+            else if (name == "Color")
+                return _repository.ProductColorList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
+            else if (name == "MRP")
+                return _repository.ProductMRPList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
+            else
+                return null;
+        }
+        
+
     }
 }

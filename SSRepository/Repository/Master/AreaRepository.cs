@@ -42,8 +42,8 @@ namespace SSRepository.Repository.Master
                                         select (new AreaModel
                                         {
                                             PkAreaId = cou.PkAreaId,
-                                            FKUserId = cou.FKUserId,
-                                            src = cou.Src,
+                                            FKUserId = cou.FKUserID,
+                                            FKCreatedByID = cou.FKCreatedByID,
                                             AreaName = cou.AreaName,
                                             Description = cou.Description,
                                             FkRegionId = cou.FkRegionId,
@@ -65,8 +65,8 @@ namespace SSRepository.Repository.Master
                                         select (new AreaModel
                                         {
                                             PkAreaId = cou.PkAreaId,
-                                            FKUserId = cou.FKUserId,
-                                            src = cou.Src,
+                                            FKUserId = cou.FKUserID,
+                                            FKCreatedByID = cou.FKCreatedByID,
                                             AreaName = cou.AreaName,
                                             Description = cou.Description,
                                             FkRegionId = cou.FkRegionId,
@@ -86,8 +86,8 @@ namespace SSRepository.Repository.Master
                     select (new AreaModel
                     {
                         PkAreaId = cou.PkAreaId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
                         AreaName = cou.AreaName,
                         Description = cou.Description,
                         FkRegionId = cou.FkRegionId,
@@ -202,12 +202,12 @@ namespace SSRepository.Repository.Master
             Tbl.AreaName = model.AreaName;
             Tbl.FkRegionId = model.FkRegionId;
             Tbl.Description = model.Description;
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate= DateTime.Now;
             if (Mode == "Create")
             {
-                Tbl.Src = model.src;
-                Tbl.FKUserId = model.FKUserId;
-                Tbl.DateCreated = DateTime.Now;
+                Tbl.FKCreatedByID = model.FKCreatedByID;
+                Tbl.FKUserID = model.FKUserId;
+                Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
@@ -228,6 +228,8 @@ namespace SSRepository.Repository.Master
                    new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Region", Fields="RegionName",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Area", Fields="AreaName",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Description", Fields="Description",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                 new ColumnStructure{ pk_Id=1, Orderby =4, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=1, Orderby =5, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                         };
             return list;
         }

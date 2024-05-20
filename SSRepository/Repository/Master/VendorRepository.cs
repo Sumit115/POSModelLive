@@ -56,10 +56,10 @@ namespace SSRepository.Repository.Master
                                             PkId = cou.PkVendorId,
                                             Code = cou.Code,
                                             Name = cou.Name,
-                                            FKUserId = cou.FKUserId,
-                                            src = cou.Src,
-                                            DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                                            DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"),
+                                            FKUserId = cou.FKUserID,
+                                            FKCreatedByID = cou.FKCreatedByID,
+                                            ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                            CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                             Marital = cou.Marital,
                                             Gender = cou.Gender,
                                             Dob = cou.Dob,
@@ -98,10 +98,10 @@ namespace SSRepository.Repository.Master
                         PkId = cou.PkVendorId,
                         Code = cou.Code,
                         Name = cou.Name,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
-                        DateModified = cou.DateModified.ToString("dd-MMM-yyyy"),
-                        DateCreated = cou.DateCreated.ToString("dd-MMM-yyyy"), 
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
+                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"), 
                         Marital = cou.Marital,
                         Gender = cou.Gender,
                         Dob = cou.Dob,
@@ -219,16 +219,16 @@ namespace SSRepository.Repository.Master
             Tbl.FkCityId = model.FkCityId;
             Tbl.StateName = model.StateName;
             Tbl.Pin = model.Pin;
-             Tbl.DateModified = DateTime.Now;
+             Tbl.ModifiedDate= DateTime.Now;
             if (Mode == "Create")
             {
-                Tbl.Src = model.src;
+                Tbl.FKCreatedByID = model.FKCreatedByID;
                 Tbl.Code = model.Code;
-                Tbl.FKUserId = model.FKUserId;
+                Tbl.FKUserID = model.FKUserId;
                 Tbl.IsAadharVerify = 0;
                 Tbl.IsPanVerify = 0;
                 Tbl.Status = 1;
-                Tbl.DateCreated= DateTime.Now;
+                Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
@@ -279,7 +279,6 @@ namespace SSRepository.Repository.Master
         {
             var list = new List<ColumnStructure>
             {
-                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="DateCreated",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Code", Fields="Code",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Name", Fields="Name",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 //new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Father Name", Fields="FatherName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
@@ -292,6 +291,8 @@ namespace SSRepository.Repository.Master
                 new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Aadhar", Fields="Aadhar",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Panno", Fields="Panno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Gstno", Fields="Gstno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
  };
             return list;
         }

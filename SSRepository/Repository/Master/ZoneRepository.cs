@@ -40,8 +40,8 @@ namespace SSRepository.Repository.Master
                                        select (new ZoneModel
                                        {
                                            PkZoneId = cou.PkZoneId,
-                                           FKUserId = cou.FKUserId,
-                                           src = cou.Src,
+                                           FKUserId = cou.FKUserID,
+                                           FKCreatedByID = cou.FKCreatedByID,
                                            ZoneName = cou.ZoneName,
                                            Description = cou.Description,
                                        }
@@ -59,8 +59,8 @@ namespace SSRepository.Repository.Master
                     select (new ZoneModel
                     {
                         PkZoneId = cou.PkZoneId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
                         ZoneName = cou.ZoneName,
                         Description = cou.Description,
                     })).FirstOrDefault();
@@ -157,12 +157,12 @@ namespace SSRepository.Repository.Master
             Tbl.PkZoneId = model.PkZoneId;
             Tbl.ZoneName = model.ZoneName;
             Tbl.Description = model.Description;
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate= DateTime.Now;
             if (Mode == "Create")
             {
-                Tbl.Src = model.src;
-                Tbl.FKUserId = model.FKUserId;
-                Tbl.DateCreated = DateTime.Now;
+                Tbl.FKCreatedByID = model.FKCreatedByID;
+                Tbl.FKUserID = model.FKUserId;
+                Tbl.CreationDate = DateTime.Now;
                 //obj.PkZoneId = ID = getIdOfSeriesByEntity("PkZoneId", null, obj);
                 AddData(Tbl, false);
             }
@@ -182,6 +182,8 @@ namespace SSRepository.Repository.Master
             {
                    new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Zone", Fields="ZoneName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=2, Orderby =1, Heading ="Description", Fields="Description",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                         };
             return list;
         }

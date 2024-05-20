@@ -42,18 +42,17 @@ namespace SSRepository.Models
     public class BaseModel
     {
         public BaseModel() {
-            FKUserId = 1;
-            src = 1;
         }
 
-        public string? DateCreated { get; set; }//DateCreated
+        public string? CreateDate { get; set; }//DateCreated
 
-        public string? DateModified { get; set; }
+        public string? ModifiDate { get; set; }
 
 
-        public string? UserName { get; set; }
+        public string? CreateBy { get; set; }
+        public string? ModifiBy { get; set; }
         public long FKUserId { get; set; }
-        public int src { get; set; }
+        public long FKCreatedByID { get; set; }
     }
 
      

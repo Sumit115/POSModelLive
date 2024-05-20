@@ -43,8 +43,8 @@ namespace SSRepository.Repository.Master
                                     select (new CityModel
                                     {
                                         PkCityId = cou.PkCityId,
-                                        FKUserId = cou.FKUserId,
-                                        src = cou.Src,
+                                        FKUserId = cou.FKUserID,
+                                        FKCreatedByID = cou.FKCreatedByID,
                                         CityName = cou.CityName,
                                         StateName = cou.StateName,
                                     }
@@ -62,8 +62,8 @@ namespace SSRepository.Repository.Master
                     select (new CityModel
                     {
                         PkCityId = cou.PkCityId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
                         CityName = cou.CityName,
                         StateName = cou.StateName,
 
@@ -159,12 +159,12 @@ namespace SSRepository.Repository.Master
             Tbl.CityName = model.CityName;
             Tbl.StateName = model.StateName;
 
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate= DateTime.Now;
             if (Mode == "Create")
             {
-                Tbl.Src = model.src;
-                Tbl.FKUserId = model.FKUserId;
-                Tbl.DateCreated = DateTime.Now;
+                Tbl.FKCreatedByID = model.FKCreatedByID;
+                Tbl.FKUserID = model.FKUserId;
+                Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
@@ -182,9 +182,11 @@ namespace SSRepository.Repository.Master
         {
             var list = new List<ColumnStructure>
             {
-                 // new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="DateCreated",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                 // new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="State Name", Fields="StateName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                   new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="City Name", Fields="CityName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                       };
             return list;
         }

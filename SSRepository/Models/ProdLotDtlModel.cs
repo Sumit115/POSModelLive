@@ -22,12 +22,12 @@ namespace SSRepository.Models
         [Required(ErrorMessage = "Article No Required")]
         public string? LotNo { get; set; }//=''
         //  public long MasterLotID { get; set; }
-        public long? Barcode { get; set; }//16 digit uniq no.
+        public string? Barcode { get; set; }//16 digit uniq no.
 
         [Required(ErrorMessage = "Size Required")]
-        public string? Batch { get; set; }//cntrltype= L
+        public string Batch { get; set; }//cntrltype= L
         [Required(ErrorMessage = "Color Required")]
-        public string? Color { get; set; }
+        public string Color { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? MfgDate { get; set; }

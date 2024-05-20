@@ -86,6 +86,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 _repository.SetLastSeries(model, LoginId, TranAlias);
                 model.EntryDate = DateTime.Now;
                 model.GRDate = DateTime.Now;
+                model.Cash = model.Credit = model.Cheque = model.CreditCard = false;
             }
 
         }

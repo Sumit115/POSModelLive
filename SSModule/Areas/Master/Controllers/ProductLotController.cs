@@ -43,7 +43,7 @@ namespace SSAdmin.Areas.Master.Controllers
             try
             {
                 model.FKUserId = 1;
-                model.src = 1;
+                model.FKCreatedByID = 1;
                 model.SaleRate = model.SaleRate == null ? 0 : model.SaleRate;
                 model.PurchaseRate = model.PurchaseRate == null ? 0 : model.PurchaseRate;
                 model.TradeRate = model.TradeRate == null ? 0 : model.TradeRate;

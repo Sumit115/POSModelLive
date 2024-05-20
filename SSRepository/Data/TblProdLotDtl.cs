@@ -16,9 +16,9 @@ namespace SSRepository.Data
         public string? LotName { get; set; }//=''
         public string? LotNo { get; set; }//=''
         //  public long MasterLotID { get; set; }
-        public long? Barcode { get; set; }//16 digit uniq no.
-        public string? Batch { get; set; }//cntrltype= L
-        public string? Color { get; set; }
+        public string Barcode { get; set; }//16 digit uniq no.
+        public string Batch { get; set; }//cntrltype= L
+        public string Color { get; set; }
         public DateTime? MfgDate { get; set; }
         public DateTime? ExpiryDate { get; set; }//=''
         public decimal? ProdConv1 { get; set; }//=0

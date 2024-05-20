@@ -44,8 +44,8 @@ namespace SSRepository.Repository.Master
                                             select (new AccountGroupModel
                                             {
                                                 PkAccountGroupId = cou.PkAccountGroupId,
-                                                FKUserId = cou.FKUserId,
-                                                src = cou.Src,
+                                                FKUserId = cou.FKUserID,
+                                                FKCreatedByID = cou.FKCreatedByID,
                                                 AccountGroupName = cou.AccountGroupName,
                                                 FkAccountGroupId = cou.FkAccountGroupId,
                                                 PAccountGroupName = AccGrp.AccountGroupName,
@@ -69,8 +69,8 @@ namespace SSRepository.Repository.Master
                     select (new AccountGroupModel
                     {
                         PkAccountGroupId = cou.PkAccountGroupId,
-                        FKUserId = cou.FKUserId,
-                        src = cou.Src,
+                        FKUserId = cou.FKUserID,
+                        FKCreatedByID = cou.FKCreatedByID,
                         AccountGroupName = cou.AccountGroupName,
                         FkAccountGroupId = cou.FkAccountGroupId,
                         GroupType = cou.GroupType,
@@ -162,12 +162,12 @@ namespace SSRepository.Repository.Master
             Tbl.NatureOfGroup = model.NatureOfGroup;
             Tbl.PrintDtl = model.PrintDtl;
             Tbl.NetCrDrBalanceForRpt = model.NetCrDrBalanceForRpt;
-            Tbl.DateModified = DateTime.Now;
+            Tbl.ModifiedDate = DateTime.Now;
+            Tbl.FKUserID = model.FKUserId;
             if (Mode == "Create")
             {
-                Tbl.Src = model.src;
-                Tbl.FKUserId = model.FKUserId;
-                Tbl.DateCreated = DateTime.Now;
+                Tbl.FKCreatedByID = model.FKCreatedByID;
+                Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
@@ -192,6 +192,8 @@ namespace SSRepository.Repository.Master
                    new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Nature Of Group", Fields="NatureOfGroup_FullName",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Show Details In Report", Fields="PrintDtl_Status",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Net Cr/Dr Balance For Report", Fields="NetCrDrBalanceForRpt_Status",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
             };
             return list;
         }
