@@ -362,6 +362,18 @@
                                         <p>Challan<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a asp-area="Transactions" asp-controller="SalesCrNote" asp-action="List" class="nav-link">
+                                        <i class="fas fa-clipboard-list nav-icon"></i>
+                                        <p>Credit Note<i class="right fas fa-external-link-alt tablink"></i></p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-area="Transactions" asp-controller="SalesReturn" asp-action="List" class="nav-link">
+                                        <i class="fas fa-clipboard-list nav-icon"></i>
+                                        <p>Return<i class="right fas fa-external-link-alt tablink"></i></p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                         <li class="nav-item">
@@ -383,6 +395,41 @@
                                     <a asp-area="Transactions" asp-controller="PurchaseInvoice" asp-action="List" class="nav-link">
                                         <i class="fas fa-clipboard-list nav-icon"></i>
                                         <p>Invoice<i class="right fas fa-external-link-alt tablink"></i></p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-columns"></i>
+                                <p>
+                                    Voucher
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a asp-area="Transactions" asp-controller="JournalVoucher" asp-action="List" class="nav-link">
+                                        <i class="fas fa-clipboard-list nav-icon"></i>
+                                        <p>Journal Voucher<i class="right fas fa-external-link-alt tablink"></i></p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-area="Transactions" asp-controller="ReceiptVoucher" asp-action="List" class="nav-link">
+                                        <i class="fas fa-clipboard-list nav-icon"></i>
+                                        <p>Receipt Voucher<i class="right fas fa-external-link-alt tablink"></i></p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-area="Transactions" asp-controller="PaymentVoucher" asp-action="List" class="nav-link">
+                                        <i class="fas fa-clipboard-list nav-icon"></i>
+                                        <p>Payment Voucher<i class="right fas fa-external-link-alt tablink"></i></p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-area="Transactions" asp-controller="ContraVoucher" asp-action="List" class="nav-link">
+                                        <i class="fas fa-clipboard-list nav-icon"></i>
+                                        <p>Contra Voucher<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                             </ul>
@@ -449,7 +496,7 @@
     <script src="~/js/bootstrap.bundle.min.js"></script>
     <script src="~/dist/js/adminlte.js"></script>
     <script src="~/js/common.js"></script>
-    
+
     <script type="text/javascript" src="~/SlickGrid/slick.cogrid.js"></script>
 
     <script type="text/javascript" src="~/SlickGrid/slick.cofreezgrid.js"></script>

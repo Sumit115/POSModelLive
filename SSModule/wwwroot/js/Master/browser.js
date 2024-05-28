@@ -1,6 +1,6 @@
 ﻿
 var FormId = $("#hdFormId").val();
-var GridId = "WUCHM", GridHeight = "90vh", pageNo = 1, pageSize = 1000, filterclass = "filter", IdProperty = "";
+var GridId = "WUCHM", GridHeight = "90vh", pageNo = 1, pageSize = 10000, filterclass = "filter", IdProperty = "";
 
 function ShowGridColumn() {
     Common.GridColSetup(parseInt(FormId), '', function () {
@@ -52,10 +52,12 @@ function bindGrid(GridId, data, IdProperty) {
         cg.outGrid.onDblClick.subscribe(function (e, args) {
             if (args.cell != undefined) {
                 var pk_Id = args.grid.getDataItem(args.row)[IdProperty];  
-                if (window.location.href.indexOf("Transactions") > 0) {
+                if (window.location.href.indexOf("Transactions") > 0 && window.location.href.indexOf("Voucher") <= 0) {
                     var FKSeriesId = args.grid.getDataItem(args.row)["FKSeriesId"];
                     window.location.href = "Create/" + pk_Id + "/" + FKSeriesId;
                 }
+                else if ( window.location.href.indexOf("Voucher") > 0)  
+                    { }
                 else
                     window.location.href = "Create/" + pk_Id;
             }

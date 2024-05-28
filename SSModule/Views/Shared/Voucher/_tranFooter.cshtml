@@ -1,0 +1,19 @@
+﻿@model SSRepository.Models.TransactionModel
+
+@{
+    Layout = null;
+}
+<div class="col-md-12 trn-footer">
+    <div class="row">
+
+
+
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="control-label">Narration </label>
+                <textarea asp-for="Remark" class="form-control"></textarea>
+                <span asp-validation-for="Remark" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</div>

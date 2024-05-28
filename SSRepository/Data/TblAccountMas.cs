@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SSRepository.Data
 {
+    //tblAccount_sts ->TblAccountSts
     [Table("tblAccount_mas", Schema = "dbo")]
     public partial class TblAccountMas : TblBase, IEntity
     {

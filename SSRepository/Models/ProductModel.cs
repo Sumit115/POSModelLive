@@ -60,7 +60,9 @@ namespace SSRepository.Models
 
         [StringLength(20)]
         public string? CodingScheme { get; set; }
-        
-            
+
+        public long? FKInvoiceID { get; set; }// 
+        public long? InvoiceSrNo { get; set; }
+        public long? FKInvoiceSrID { get; set; }
     }
 }

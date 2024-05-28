@@ -30,7 +30,7 @@ namespace SSAdmin.Areas
         protected void BindViewBags(object Trans)
         {
             ViewBag.Data = JsonConvert.SerializeObject(Trans);
-            ViewBag.ProductList = JsonConvert.SerializeObject(_repository.ProductList(1,1,""));
+            ViewBag.ProductList = JsonConvert.SerializeObject(_repository.ProductList());
             ViewBag.BankList = _repository.BankList();
         }
 
@@ -40,6 +40,15 @@ namespace SSAdmin.Areas
             {
                 status = "success",
                 data = _repository.ColumnChange(model, rowIndex, fieldName)
+            });
+
+        }
+        public JsonResult VoucherColumnChange(TransactionModel model, int rowIndex, string fieldName)
+        {
+            return Json(new
+            {
+                status = "success",
+                data = _repository.VoucherColumnChange(model, rowIndex, fieldName)
             });
 
         }
@@ -97,7 +106,12 @@ namespace SSAdmin.Areas
             });
 
         }
-       
+        [HttpPost]
+        public async Task<JsonResult> ProductLotDtlList(int FkProductId, string Batch, string Color)
+        {
+            var data = _repository.Get_ProductLotDtlList(FkProductId, Batch, Color);
+            return new JsonResult(data);
+        }
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {
             return _repository.ColumnList(GridName);
@@ -120,7 +134,6 @@ namespace SSAdmin.Areas
             return _repository.PartyList(pageSize, pageNo, search, TranType);
         }
 
-
         [HttpPost]
         public object FKSeriesId(int pageSize, int pageNo = 1, string search = "")
         {
@@ -138,21 +151,26 @@ namespace SSAdmin.Areas
 
         }
 
-        [HttpGet]
-        public object trandtldropList(int pageSize, int pageNo = 1, string search = "", string name = "", string RowParam = "")
+        [HttpPost]
+        public async Task<JsonResult> InvoiceProductList(long FkPartyId, long FKInvoiceID, DateTime? InvoiceDate = null)
         {
-            if (name == "Product")
-                return _repository.ProductList(pageSize, pageNo, search);
-            else if (name == "Batch")
-                return _repository.ProductBatchList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
-            else if (name == "Color")
-                return _repository.ProductColorList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
-            else if (name == "MRP")
-                return _repository.ProductMRPList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
-            else
-                return null;
+            try
+            {
+                var data = _repository.ProductList(FkPartyId, FKInvoiceID, InvoiceDate);
+                return new JsonResult(data);
+            }
+            catch (Exception ex) { return new JsonResult(new object()); }
         }
-        
 
+        [HttpPost]
+        public async Task<JsonResult> InvoiceList(long FkPartyId, DateTime? InvoiceDate = null)
+        {
+            try
+            {
+                var data = _repository.InvoiceList(FkPartyId, InvoiceDate);
+                return new JsonResult(data);
+            }
+            catch (Exception ex) { return new JsonResult(new object()); }
+        }
     }
 }

@@ -1,12 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SSRepository.Data
 {
     [Table("tblWallet_mas", Schema = "dbo")]
     public partial class TblWalletMas: TblBase
     {
-        public int fkformId { get; set; }
-        public long fkId { get; set; }
+        [Key]
+        public long PkId { get; set; }
+        public long FkAccountId { get; set; }
 
         public decimal Cr { get; set; }
 
@@ -16,3 +18,4 @@ namespace SSRepository.Data
 
     }
 }
+ 

@@ -88,6 +88,7 @@ namespace SSRepository.Repository.Master
 
             SeriesModel data = new SeriesModel();
             data = (from cou in __dbContext.TblSeriesMas
+                    join branch in __dbContext.TblBranchMas on cou.FkBranchId equals branch.PkBranchId 
                     where cou.PkSeriesId == PkSeriesId
                     select (new SeriesModel
                     {
@@ -109,6 +110,7 @@ namespace SSRepository.Repository.Master
                         DefaultQty = cou.DefaultQty,
                         AllowZeroRate = cou.AllowZeroRate,
                         AllowFreeQty = cou.AllowFreeQty,
+                        BranchName= branch.BranchName
                     })).FirstOrDefault();
             return data;
         }

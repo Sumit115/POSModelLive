@@ -90,6 +90,12 @@ namespace SSAdmin
             PurchaseOrder = 102,
             PurchaseInvoice = 103,
             SalesChallan = 104,
+            SalesCrNote = 105,
+            SalesReturn = 106,
+            JournalVoucher = 107,
+            ReceiptVoucher = 108,
+            PaymentVoucher = 109,
+            ContraVoucher = 110,
 
             SalesStock = 200,
             PurchaseStock = 201,

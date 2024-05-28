@@ -83,6 +83,9 @@ namespace SSRepository.Repository.Master
 
             AccountMasModel data = new AccountMasModel();
             data = (from cou in __dbContext.TblAccountMas
+                    join CatPGrp in __dbContext.TblAccountGroupMas on cou.FkAccountGroupId equals CatPGrp.PkAccountGroupId
+                     into tempAccGrp
+                    from AccGrp in tempAccGrp.DefaultIfEmpty()
                     where cou.PkAccountId == PkAccountId
                     select (new AccountMasModel
                     {
@@ -140,7 +143,10 @@ namespace SSRepository.Repository.Master
                                                  No = ad.No,
                                                  IssueDate = ad.IssueDate,
                                                  ValidTill = ad.ValidTill,
-                                             })).ToList()
+                                             })).ToList(),
+
+                        AccountGroupName = AccGrp.AccountGroupName,
+
                     })).FirstOrDefault();
             return data;
         }

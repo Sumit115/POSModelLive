@@ -12,11 +12,11 @@ using Microsoft.AspNetCore.Http;
 namespace SSAdmin.Areas.Transactions.Controllers
 {
     [Area("Transactions")]
-    public class SalesInvController : BaseTranController<ISalesInvoiceRepository, IGridLayoutRepository>
+    public class SalesRtnController : BaseTranController<ISalesCrNoteRepository, IGridLayoutRepository>
     {
-        public readonly ISalesInvoiceRepository _repository;
+        public readonly ISalesCrNoteRepository _repository;
 
-        public SalesInvController(ISalesInvoiceRepository repository, IGridLayoutRepository gridLayoutRepository) : base(repository, gridLayoutRepository)
+        public SalesRtnController(ISalesCrNoteRepository repository, IGridLayoutRepository gridLayoutRepository) : base(repository, gridLayoutRepository)
         {
             _repository = repository;
 
@@ -47,11 +47,11 @@ namespace SSAdmin.Areas.Transactions.Controllers
             model.ExtProperties.StockFlag = StockFlag;
             model.ExtProperties.FKFormID = FKFormID;
             model.ExtProperties.PostInAc = PostInAc;
+            model.TranAlias = TranAlias;
             if (model.PkId == 0)
             {
                 _repository.SetLastSeries(model, LoginId, TranAlias);
-                model.Cash = model.Credit = model.Cheque = model.CreditCard = false;
-
+                model.Cash = model.Credit = model.Cheque = model.CreditCard = false; 
             }
         }
 

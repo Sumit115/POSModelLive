@@ -1,0 +1,29 @@
+﻿@model SSRepository.Models.TransactionModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input type="hidden" id="hdTranType" value="Sales" />
+
+<div class="p-3">
+    <form class="row g-3 form" id="loginform1">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PkId" />
+        <input type="hidden" id="hdData" value="@ViewBag.Data" />
+        <input type="hidden" id="hdControllerName" value="SalesReturn" />
+        <partial name="~/Views/Shared/Transactions/_tranHeader.cshtml" />
+        <partial name="~/Views/Shared/Transactions/_tranGrid.cshtml" />
+        <partial name="~/Views/Shared/Transactions/_tranFooter.cshtml" />
+
+    </form>
+</div>
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/js/transaction/transaction.js"></script>
+
+}

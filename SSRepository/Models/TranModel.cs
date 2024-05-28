@@ -15,11 +15,10 @@ namespace SSRepository.Models
         public TransactionModel()
         {
             TranDetails = new List<TranDetails>();
+            VoucherDetails = new List<VoucherDetails>();
             ExtProperties = new ExtPropertie();
             EntryDate = DateTime.Now;
-            GRDate = DateTime.Now;
-
-
+            GRDate = DateTime.Now; 
         }
         public long PkId { get; set; }
         public long FKSeriesId { get; set; }
@@ -94,6 +93,8 @@ namespace SSRepository.Models
         public ExtPropertie ExtProperties { get; set; }
 
         public List<TranDetails> TranDetails { get; set; }
+        public List<VoucherDetails> VoucherDetails { get; set; }
+
     }
 
     public class ExtPropertie

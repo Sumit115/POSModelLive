@@ -60,9 +60,11 @@ builder.Services.AddScoped<IProductLotRepository, ProductLotRepository>();
 builder.Services.AddScoped<ISalesStockRepository, SalesStockRepository>();
 builder.Services.AddScoped<IPurchaseStockRepository, PurchaseStockRepository>();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
-builder.Services.AddScoped<IOpeningStockRepository, OpeningStockRepository>();
+builder.Services.AddScoped<ISalesCrNoteRepository, SalesCrNoteRepository>();
 //builder.Services.AddScoped<IStationRepository, StationRepository>();
-//builder.Services.AddScoped<IAccountGroupRepository, AccountGroupRepository>();
+builder.Services.AddScoped<IAccountGroupRepository, AccountGroupRepository>();
+builder.Services.AddScoped<IAccountMasRepository, AccountMasRepository>();
+builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();

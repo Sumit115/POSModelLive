@@ -13,13 +13,13 @@ using Azure;
 
 namespace SSRepository.Repository.Transaction
 {
-    public class SalesInvoiceRepository : TranBaseRepository, ISalesInvoiceRepository
+    public class SalesCrNoteRepository : TranBaseRepository, ISalesCrNoteRepository
     {
-        public SalesInvoiceRepository(AppDbContext dbContext) : base(dbContext)
+        public SalesCrNoteRepository(AppDbContext dbContext) : base(dbContext)
         {
-            SPAddUpd = "usp_SalesInvoiceAddUpd";
-            SPList = "usp_SalesInvoiceList";
-            SPById = "usp_SalesInvoiceById";
+            SPAddUpd = "usp_SalesCrNoteAddUpd";
+            SPList = "usp_SalesCrNoteList";
+            SPById = "usp_SalesCrNoteById";
         }
 
         public override string ValidData(TransactionModel objmodel)
@@ -55,7 +55,7 @@ namespace SSRepository.Repository.Transaction
 
         public object SetLastSeries(TransactionModel model, long UserId, string TranAlias)
         {
-            var obj = (from cou in __dbContext.TblSalesInvoicetrn
+            var obj = (from cou in __dbContext.TblSalesCrNotetrn
                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
                        where cou.FKUserID == UserId && ser.TranAlias == TranAlias
                        orderby cou.PkId descending
@@ -86,29 +86,12 @@ namespace SSRepository.Repository.Transaction
             }
             return model;
         }
-
-        public object InvoiceListByPartyId_Date(long FkPartyId, DateTime? InvoiceDate = null)
-        {
-
-            var data = (from sale in __dbContext.TblSalesInvoicetrn
-                        join c in __dbContext.TblSeriesMas on sale.FKSeriesId equals c.PkSeriesId
-                        where sale.FkPartyId == FkPartyId && sale.EntryDate.Date == (InvoiceDate != null ? InvoiceDate.Value.Date : sale.EntryDate.Date)
-                        orderby sale.EntryDate
-                        select (new
-                        {
-                            FKInvoiceID = sale.PkId,
-                            Inum = c.Series + sale.EntryNo,
-                        }
-                       )).ToList();
-            return data;
-        }
-
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>();
             if (GridName.ToString().ToLower() == "dtl")
             {
-                list = TrandtlColumnList("S");
+                list = TrandtlColumnList("R");
             }
             else
             {

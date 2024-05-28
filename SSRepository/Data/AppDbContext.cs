@@ -59,14 +59,18 @@ namespace SSRepository.Data
 
         public virtual DbSet<TblSysDefaults> TblSysDefaults { get; set; } = null!;
         public virtual DbSet<TblLocationMas> TblLocationMas { get; set; } = null!;
-       // public virtual DbSet<TblStationMas> TblStationMas { get; set; } = null!;
-
+        // public virtual DbSet<TblStationMas> TblStationMas { get; set; } = null!;
+        public virtual DbSet<TblSalesCrNotetrn> TblSalesCrNotetrn { get; set; } = null!;
+        public virtual DbSet<TblSalesCrNotedtl> TblSalesCrNotedtl { get; set; } = null!;
+        public virtual DbSet<TblVoucherTrn> TblVoucherTrn { get; set; } = null!;
+        public virtual DbSet<TblVoucherDtl> TblVoucherDtl { get; set; } = null!;
+        public virtual DbSet<TblWalletMas> TblWalletMas { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                // optionsBuilder.UseSqlServer("server=DESKTOP-OM06UCD\\SQLEXPRESS;database=POSdb;Trusted_Connection=True;TrustServerCertificate=True");
-               optionsBuilder.UseSqlServer("Data Source=154.61.77.18;database=jaipursoftdata;uid=jaipurdatauser;pwd=btof5zxmgjlyusvnehdc;TrustServerCertificate=True");
+               // optionsBuilder.UseSqlServer("server=DESKTOP-OM06UCD\\SQLEXPRESS;database=POSdb1;Trusted_Connection=True;TrustServerCertificate=True");
+                optionsBuilder.UseSqlServer("Data Source=154.61.77.18;database=jaipursoftdata;uid=jaipurdatauser;pwd=btof5zxmgjlyusvnehdc;TrustServerCertificate=True");
             }
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

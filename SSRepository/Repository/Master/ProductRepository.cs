@@ -32,7 +32,7 @@ namespace SSRepository.Repository.Master
 
         public List<ProductModel> GetList(int pageSize, int pageNo = 1, string search = "")
         {
-           
+
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<ProductModel> data = (from cou in __dbContext.TblProductMas
@@ -86,6 +86,69 @@ namespace SSRepository.Repository.Master
             return data;
         }
 
+        public List<ProductModel> GetListByPartyId_InSaleInvoice(long FkPartyId, int pageSize, int pageNo = 1, string search = "", long FkInvoiceId = 0, DateTime? InvoiceDate = null)
+        {
+
+            if (search != null) search = search.ToLower();
+            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+            List<ProductModel> data = (from saledtl in __dbContext.TblSalesInvoicedtl
+                                       join sale in __dbContext.TblSalesInvoicetrn on saledtl.FkId equals sale.PkId
+                                       join cou in __dbContext.TblProductMas on saledtl.FkProductId equals cou.PkProductId
+                                       join cat in __dbContext.TblCategoryMas on cou.FKProdCatgId equals cat.PkCategoryId
+                                       join Pbrand in __dbContext.TblBrandMas on cou.FkBrandId equals Pbrand.PkBrandId
+                                                             into tembrand
+                                       from brand in tembrand.DefaultIfEmpty()
+                                       where sale.FkPartyId == FkPartyId
+                                       && sale.PkId == (FkInvoiceId > 0 ? FkInvoiceId : sale.PkId)
+                                       && sale.EntryDate.Date == (InvoiceDate != null ? InvoiceDate.Value.Date : sale.EntryDate.Date)
+                                       orderby cou.PkProductId
+                                       select (new ProductModel
+                                       {
+                                           PkProductId = cou.PkProductId,
+                                           FKUserId = cou.FKUserID,
+                                           FKCreatedByID = cou.FKCreatedByID,
+                                           ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                           CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
+                                           Product = cou.Product,
+                                           NameToDisplay = cou.NameToDisplay,
+                                           NameToPrint = cou.NameToPrint,
+                                           Image = cou.Image,
+                                           Alias = cou.Alias,
+                                           Strength = cou.Strength,
+                                           Barcode = cou.Barcode,
+                                           Status = cou.Status,
+                                           FKProdCatgId = cou.FKProdCatgId,
+                                           HSNCode = cou.HSNCode,
+                                           FkBrandId = cou.FkBrandId,
+                                           ShelfID = cou.ShelfID,
+                                           TradeDisc = cou.TradeDisc,
+                                           MinStock = cou.MinStock,
+                                           MaxStock = cou.MaxStock,
+                                           MinDays = cou.MinDays,
+                                           MaxDays = cou.MaxDays,
+                                           CaseLot = cou.CaseLot,
+                                           BoxSize = cou.BoxSize,
+                                           Description = cou.Description,
+                                           Unit1 = cou.Unit1,
+                                           ProdConv1 = cou.ProdConv1,
+                                           Unit2 = cou.Unit2,
+                                           ProdConv2 = cou.ProdConv2,
+                                           Unit3 = cou.Unit3,
+                                           MRP = cou.MRP,
+                                           SaleRate = cou.SaleRate,
+                                           TradeRate = cou.TradeRate,
+                                           DistributionRate = cou.DistributionRate,
+                                           PurchaseRate = cou.PurchaseRate,
+                                           KeepStock = cou.KeepStock,
+                                           CategoryName = cat.CategoryName,
+                                           BrandName = brand.BrandName,
+                                           FKInvoiceID = sale.PkId,
+                                           InvoiceSrNo = saledtl.SrNo,
+                                           FKInvoiceSrID = sale.FKSeriesId,
+                                       }
+                                      )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+            return data;
+        }
 
         public ProductModel GetSingleRecord(long PkProductId)
         {
@@ -132,9 +195,9 @@ namespace SSRepository.Repository.Master
                         DistributionRate = cou.DistributionRate,
                         PurchaseRate = cou.PurchaseRate,
                         KeepStock = cou.KeepStock,
-                        Genration= cou.Genration,
+                        Genration = cou.Genration,
                         CodingScheme = cou.CodingScheme,
-                        FkUnitId= cou.FkUnitId
+                        FkUnitId = cou.FkUnitId
                     })).FirstOrDefault();
 
             return data;
@@ -248,7 +311,7 @@ namespace SSRepository.Repository.Master
             Tbl.PurchaseRate = model.PurchaseRate;
             Tbl.PurchaseRateUnit = "";
             Tbl.KeepStock = model.KeepStock;
-            Tbl.ModifiedDate= DateTime.Now;
+            Tbl.ModifiedDate = DateTime.Now;
             Tbl.Genration = model.Genration;
             Tbl.CodingScheme = model.CodingScheme;
             Tbl.FkUnitId = model.FkUnitId;
@@ -409,8 +472,8 @@ namespace SSRepository.Repository.Master
             string result = new String('9', DefBarcodeLen - DefBarcode.ToString().Length);
             MaxDefBarcode = Convert.ToInt64(DefBarcode.ToString() + result);
 
-            dynamic OutParam =0;
-            dynamic OutParam1 = 0;
+            dynamic OutParam;
+            dynamic OutParam1;
 
             try
             {
@@ -428,7 +491,7 @@ namespace SSRepository.Repository.Master
                 OutParam = InitBarcode.ToString();
             }
 
-            if (OutParam == null)
+            //if (OutParam == null)
                 OutParam = Convert.ToInt64(InitBarcode);
 
             try
@@ -439,10 +502,10 @@ namespace SSRepository.Repository.Master
                 }
                 else
                 {
-               
+
                     ProdBarcode = (from b in __dbContext.TblProductMas where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 1)) == DefBarcode select (long)b.Barcode).Max();
                 }
-               
+
             }
             catch (Exception ex)
             {

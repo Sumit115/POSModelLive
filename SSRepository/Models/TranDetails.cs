@@ -60,6 +60,15 @@ namespace SSRepository.Models
         public string Product { get; set; }
         public string Batch_Text { get; set; }
         public string Color_Text { get; set; }
+        public string ProductName_Text { get; set; }
+
+        public Nullable<long> FKInvoiceID { get; set; }
+        public Nullable<long> InvoiceSrNo { get; set; }
+        public Nullable<long> FKInvoiceSrID { get; set; }
+        public string FKInvoiceID_Text { get; set; }
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? InvoiceDate { get; set; }//Opt | Only Sale Return
 
     }
 }

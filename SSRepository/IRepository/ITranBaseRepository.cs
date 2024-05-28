@@ -15,9 +15,7 @@ namespace SSRepository.IRepository
         object ApplyRateDiscount(TransactionModel model, string type, decimal discount);
 
         object ColumnChange(TransactionModel model, int rowIndex, string fieldName);
-        List<ProdLotDtlModel> ProductBatchList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0);
-        List<ProdLotDtlModel> ProductColorList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0);
-        List<ProdLotDtlModel> ProductMRPList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0);
+        List<ProdLotDtlModel> Get_ProductLotDtlList(int PKProductId, string Batch, string Color);
 
         List<ColumnStructure> ColumnList(string GridName = "");
 
@@ -25,13 +23,19 @@ namespace SSRepository.IRepository
 
         object SetParty(TransactionModel model, long FkPartyId);
 
-        List<ProductModel> ProductList(int pageSize, int pageNo = 1, string search = "");
+        List<ProductModel> ProductList(long FkPartyId = 0, long FkInvoiceId = 0, DateTime? InvoiceDate = null);
+        object InvoiceList(long FkPartyId = 0, DateTime? InvoiceDate = null);
+
         List<BankModel> BankList();
 
         List<SeriesModel> SeriesList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "");
 
         object SetSeries(TransactionModel model, long FKSeriesId);
         object SetLastSeries(TransactionModel model, long UserId, string TranAlias);
+
+
+        object VoucherColumnChange(TransactionModel model, int rowIndex, string fieldName);
+        List<AccountMasModel> AccountList();
 
     }
 }

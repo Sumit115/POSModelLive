@@ -24,5 +24,8 @@ namespace SSRepository.Models
         public bool DefaultQty { get; set; }//=true
         public bool AllowZeroRate { get; set; }//=true
         public bool AllowFreeQty { get; set; }//=true
+
+        public string BranchName { get; set; }//=true
+
     }
 }

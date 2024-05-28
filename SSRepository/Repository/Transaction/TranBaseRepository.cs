@@ -1,6 +1,5 @@
 ﻿using Azure;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
@@ -39,22 +38,27 @@ namespace SSRepository.Repository.Transaction
 
         public string Create(TransactionModel model)
         {
-            CalculateExe(model);
-            ValidateData(model);
-            setGridTotal(model);
-            setPaymentDetail(model);
-            long Id = 0;
             string Error = "";
-            long SeriesNo = 0;
-            SaveData(model, ref Id, ref Error, ref SeriesNo);
+
+            Error = ValidateData(model);
+            if (Error == "")
+            {
+                CalculateExe(model);
+                setGridTotal(model);
+                setPaymentDetail(model);
+                long Id = 0;
+                long SeriesNo = 0;
+                SaveData(model, ref Id, ref Error, ref SeriesNo);
+            }
             return Error;
         }
 
         public string ValidateData(TransactionModel objmodel)
         {
             //
-            ValidData(objmodel);
-            return "";
+            string Error = "";
+            Error = ValidData(objmodel);
+            return Error;
         }
 
         public virtual string ValidData(TransactionModel objmodel)
@@ -76,7 +80,7 @@ namespace SSRepository.Repository.Transaction
         public void SaveData(TransactionModel JsonData, ref long Id, ref string ErrMsg, ref long SeriesNo)
         {
 
-
+            var aa = JsonConvert.SerializeObject(JsonData);
             using (SqlConnection con = new SqlConnection(conn))
             {
                 con.Open();
@@ -155,7 +159,7 @@ namespace SSRepository.Repository.Transaction
 
                         detail.SrNo = model.TranDetails.ToList().Count > 0 ? model.TranDetails.ToList().Max(x => x.SrNo) + 1 : 1;
                         detail.FkProductId = product.PkProductId;
-                        detail.Product = product.Product;
+                        detail.ProductName_Text = product.Product;
                         detail.Qty = 1;
                         detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
                         var _lotEntity = __dbContext.TblProdLotDtl.Where(x => x.FKProductId == product.PkProductId).FirstOrDefault();
@@ -207,6 +211,10 @@ namespace SSRepository.Repository.Transaction
                 {
                     setProductinfo(model, model.TranDetails[rowIndex]);
                 }
+                if (fieldName == "ProductReturn")
+                {
+                    setReturnProductinfo(model, model.TranDetails[rowIndex]);
+                }
                 if (fieldName == "Batch")
                 {
                     setProductinfoByBatch(model, model.TranDetails[rowIndex]);
@@ -223,7 +231,14 @@ namespace SSRepository.Repository.Transaction
                 {
                     model.TranDetails[rowIndex].TradeDiscAmt = 0;
                 }
-
+                if (fieldName == "FKInvoiceID")
+                {
+                    setProductinfoByColor(model, model.TranDetails[rowIndex]);
+                }
+                if (fieldName == "Inum")
+                {
+                    setInvoiceinfo(model, model.TranDetails[rowIndex]);
+                }
                 CalculateExe(model);
                 setGridTotal(model);
                 setPaymentDetail(model);
@@ -304,7 +319,55 @@ namespace SSRepository.Repository.Transaction
                 }
             }
         }
+        public void setReturnProductinfo(TransactionModel model, TranDetails? detail)
+        {
+            if (detail != null)
+            {
+                var _invoice = (from saledtl in __dbContext.TblSalesInvoicedtl
+                                join sale in __dbContext.TblSalesInvoicetrn on saledtl.FkId equals sale.PkId
+                                join series in __dbContext.TblSeriesMas on sale.FKSeriesId equals series.PkSeriesId
+                                join cou in __dbContext.TblProductMas on saledtl.FkProductId equals cou.PkProductId
 
+                                where sale.FkPartyId == model.FkPartyId
+                                && saledtl.SrNo == detail.InvoiceSrNo
+                                select (new
+                                {
+                                    sale,
+                                    saledtl,
+                                    series,
+                                    cou
+                                }
+                               )).FirstOrDefault();
+
+
+                if (_invoice != null)
+                {
+                    var product = _invoice.cou;
+
+                    detail.FkProductId = product.PkProductId;
+                    detail.Qty = 1;
+                    detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
+
+                    detail.MRP = _invoice.saledtl.MRP != null ? Convert.ToDecimal(_invoice.saledtl.MRP) : 0;
+                    detail.SaleRate = _invoice.saledtl.SaleRate;
+                    detail.FkLotId = 0;
+                    detail.Batch = _invoice.saledtl.Batch;
+                    detail.Color = _invoice.saledtl.Color;
+
+                    detail.GstRate = (_invoice.saledtl.Rate < 1000 ? 5 : 18);
+                    detail.Rate = Math.Round(Convert.ToDecimal(_invoice.saledtl.Rate) * (100 / (100 + (_invoice.saledtl.ICRate != null ? Convert.ToDecimal(_invoice.saledtl.ICRate) : 0))), 2);
+                    detail.TradeDisc = 0;
+                    detail.TradeDiscAmt = 0;
+                    detail.TradeDiscType = "";
+                    detail.Qty = 1;
+
+                    detail.InvoiceDate = _invoice.sale.EntryDate.Date;
+                    detail.FKInvoiceID_Text = _invoice.series.Series + _invoice.sale.EntryNo;
+                    detail.FKInvoiceSrID = _invoice.sale.FKSeriesId;
+
+                }
+            }
+        }
         public void setProductinfoByBatch(TransactionModel model, TranDetails? detail)
         {
             if (detail != null)
@@ -370,6 +433,33 @@ namespace SSRepository.Repository.Transaction
 
             }
         }
+        public void setInvoiceinfo(TransactionModel model, TranDetails? detail)
+        {
+            if (detail != null)
+            {
+
+                var _invoice = (from sale in __dbContext.TblSalesInvoicetrn
+                                join c in __dbContext.TblSeriesMas on sale.FKSeriesId equals c.PkSeriesId
+                                where sale.FkPartyId == model.FkPartyId && sale.PkId == detail.FKInvoiceID
+                                orderby sale.EntryDate
+                                select (new
+                                {
+                                    FKInvoiceID = sale.PkId,
+                                    Inum = c.Series + sale.EntryNo,
+                                    sale.EntryDate,
+                                    sale.FKSeriesId,
+                                }
+                               )).FirstOrDefault();
+                if (_invoice != null)
+                {
+                    detail.InvoiceDate = _invoice.EntryDate.Date;
+                    detail.FKInvoiceID_Text = _invoice.Inum;
+                    detail.FKInvoiceSrID = _invoice.FKSeriesId;
+                }
+
+
+            }
+        }
 
         public void CalculateExe(TransactionModel model)
         {
@@ -384,7 +474,8 @@ namespace SSRepository.Repository.Transaction
                 item.SCAmt = Math.Round(item.GstAmt / 2, 2);
                 item.NetAmt = Math.Round(item.GrossAmt + item.GstAmt, 2);
             }
-            model.TranDetails = model.TranDetails.Where(x => x.FkProductId > 0).ToList();
+
+            // model.TranDetails = model.TranDetails.Where(x => x.FkProductId > 0).ToList();
         }
 
         public void setGridTotal(TransactionModel model)
@@ -598,7 +689,49 @@ namespace SSRepository.Repository.Transaction
             return data;
         }
 
-        
+        public List<ProdLotDtlModel> Get_ProductLotDtlList(int PKProductId, string Batch, string Color)
+        {
+
+            List<ProdLotDtlModel> data = (from cou in __dbContext.TblProdLotDtl
+                                          where cou.FKProductId == PKProductId
+                                          && cou.Batch == (!string.IsNullOrEmpty(Batch) ? Batch : cou.Batch)
+                                          && cou.Color == (!string.IsNullOrEmpty(Color) ? Color : cou.Color)
+                                          // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                          orderby cou.PkLotId
+                                          select (new ProdLotDtlModel
+                                          {
+                                              PkLotId = cou.PkLotId,
+                                              FKProductId = cou.FKProductId,
+                                              LotAlias = cou.LotAlias,
+                                              Barcode = cou.Barcode,
+                                              Batch = cou.Batch,
+                                              Color = cou.Color,
+                                              MfgDate = cou.MfgDate,
+                                              ExpiryDate = cou.ExpiryDate,
+                                              ProdConv1 = cou.ProdConv1,
+                                              MRP = cou.MRP,
+                                              LtExtra = cou.LtExtra,
+                                              AddLT = cou.AddLT,
+                                              SaleRate = cou.SaleRate,
+                                              PurchaseRate = cou.PurchaseRate,
+                                              FkmfgGroupId = cou.FkmfgGroupId,
+                                              TradeRate = cou.TradeRate,
+                                              DistributionRate = cou.DistributionRate,
+                                              PurchaseRateUnit = cou.PurchaseRateUnit,
+                                              MRPSaleRateUnit = cou.MRPSaleRateUnit,
+                                              InTrnId = cou.InTrnId,
+                                              InTrnFKSeriesID = cou.InTrnFKSeriesID,
+                                              InTrnsno = cou.InTrnsno,
+                                              Remarks = cou.Remarks,
+                                              FKUserId = cou.FKUserID,
+                                              FKCreatedByID = cou.FKCreatedByID,
+                                              ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                              CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
+                                          }
+                                         )).ToList();
+            return data;
+        }
+
         public ProdLotDtlModel Get_ProductLotDtl_SingleRecord(long PkLotId)
         {
             ProdLotDtlModel data = new ProdLotDtlModel();
@@ -631,8 +764,8 @@ namespace SSRepository.Repository.Transaction
                 data.InTrnFKSeriesID = entity.odr.InTrnFKSeriesID;
                 data.InTrnsno = entity.odr.InTrnsno;
                 data.Remarks = entity.odr.Remarks;
-                data.ModifiDate= entity.odr.ModifiedDate.ToString("dd-MMM-yyyy");
-                data.CreateDate= entity.odr.CreationDate.ToString("dd-MMM-yyyy");
+                data.ModifiDate = entity.odr.ModifiedDate.ToString("dd-MMM-yyyy");
+                data.CreateDate = entity.odr.CreationDate.ToString("dd-MMM-yyyy");
                 data.FKCreatedByID = entity.odr.FKCreatedByID;
                 data.FKUserId = entity.odr.FKUserID;
             }
@@ -665,14 +798,39 @@ namespace SSRepository.Repository.Transaction
 
                 };
             }
+            else if (TranType == "R")
+            {
+                list = new List<ColumnStructure>
+                {
+                    new ColumnStructure{ pk_Id=1,   Orderby =1,  Heading ="InvoiceDate",  Fields="InvoiceDate",         Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="D1"  },
+                    new ColumnStructure{ pk_Id=2,   Orderby =2,  Heading ="FKInvoiceID",  Fields="FKInvoiceID_Text",    Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="C"  },
+                    new ColumnStructure{ pk_Id=3,   Orderby =3,  Heading ="ArticalNo",    Fields="ProductName_Text",    Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="C"  },
+                    new ColumnStructure{ pk_Id=4,   Orderby =4,  Heading ="Size",         Fields="Batch",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="C"  },
+                    new ColumnStructure{ pk_Id=5,   Orderby =5,  Heading ="Color",        Fields="Color",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="C"  },
+                    new ColumnStructure{ pk_Id=6,   Orderby =6,  Heading ="MRP",          Fields="MRP",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=7,   Orderby =7,  Heading ="Rate",         Fields="Rate",                Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
+                    new ColumnStructure{ pk_Id=8,   Orderby =8,  Heading ="QTY",          Fields="Qty",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
+                    new ColumnStructure{ pk_Id=9,   Orderby =9,  Heading ="Free Qty",     Fields="FreeQty",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
+                    new ColumnStructure{ pk_Id=10,  Orderby =10, Heading ="Disc %",       Fields="TradeDisc",           Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
+                    new ColumnStructure{ pk_Id=12,  Orderby =12, Heading ="Disc Amt",     Fields="TradeDiscAmt",        Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=13,  Orderby =13, Heading ="Disc Type",    Fields="TradeDiscType",       Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=14,  Orderby =14, Heading ="Gross Amt",    Fields="GrossAmt",            Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=15,  Orderby =15, Heading ="GST Rate",     Fields="GstRate",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=16,  Orderby =16, Heading ="GST Amount",   Fields="GstAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=17,  Orderby =17, Heading ="Net Amount",   Fields="NetAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=18,  Orderby =18, Heading ="Barcode",      Fields="Barcode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="T"  },
+                    new ColumnStructure{ pk_Id=19,  Orderby =19, Heading ="Del",          Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" }
+
+                };
+            }
             else
             {
                 list = new List<ColumnStructure>
                 {
-                    new ColumnStructure{ pk_Id=1,   Orderby =1,  Heading ="ArticalNo",    Fields="Product",    Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
-                    new ColumnStructure{ pk_Id=2,   Orderby =2,  Heading ="Size",         Fields="Batch",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
-                    new ColumnStructure{ pk_Id=3,   Orderby =3,  Heading ="Color",        Fields="Color",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
-                    new ColumnStructure{ pk_Id=4,   Orderby =4,  Heading ="MRP",          Fields="MRP",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
+                    new ColumnStructure{ pk_Id=1,   Orderby =1,  Heading ="ArticalNo",    Fields="ProductName_Text",    Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="C"  },
+                    new ColumnStructure{ pk_Id=2,   Orderby =2,  Heading ="Size",         Fields="Batch",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="C"  },
+                    new ColumnStructure{ pk_Id=3,   Orderby =3,  Heading ="Color",        Fields="Color",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="C"  },
+                    new ColumnStructure{ pk_Id=4,   Orderby =4,  Heading ="MRP",          Fields="MRP",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="L"  },
                     new ColumnStructure{ pk_Id=5,   Orderby =5,  Heading ="Rate",         Fields="Rate",                Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
                     new ColumnStructure{ pk_Id=6,   Orderby =6,  Heading ="QTY",          Fields="Qty",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
                     new ColumnStructure{ pk_Id=7,   Orderby =7,  Heading ="Free Qty",     Fields="FreeQty",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
@@ -691,94 +849,20 @@ namespace SSRepository.Repository.Transaction
             return list.OrderBy(x => x.Orderby).ToList();
         }
 
-        public List<ProductModel> ProductList(int pageSize, int pageNo = 1, string search = "")
+        public List<ProductModel> ProductList(long FkPartyId = 0, long FkInvoiceId = 0, DateTime? InvoiceDate = null)
         {
             ProductRepository rep = new ProductRepository(__dbContext);
-            return rep.GetList(pageSize, pageNo, search);
+            if (FkPartyId > 0 || FkInvoiceId > 0)
+                return rep.GetListByPartyId_InSaleInvoice(FkPartyId, 10000, 1, "", FkInvoiceId, InvoiceDate);
+            else
+                return rep.GetList(1000, 1);
         }
-
-
-        public List<ProdLotDtlModel> ProductBatchList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0)
+        public object InvoiceList(long FkPartyId, DateTime? InvoiceDate = null)
         {
-            if (search != null) search = search.ToLower();
-            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
-            List<ProdLotDtlModel> data = (from cou in __dbContext.TblProdLotDtl
-                                          where cou.FKProductId == PKProductId
-                                          where (EF.Functions.Like(cou.Batch.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                          orderby cou.PkLotId
-                                          select (new ProdLotDtlModel
-                                          {
-                                              PkLotId = cou.PkLotId,
-                                              Batch = cou.Batch,
-                                              Color = cou.Color,
-                                              MRP = cou.MRP,
-                                              SaleRate = cou.SaleRate,
-                                              PurchaseRate = cou.PurchaseRate,
-                                              FkmfgGroupId = cou.FkmfgGroupId,
-                                              TradeRate = cou.TradeRate,
-                                              DistributionRate = cou.DistributionRate,
-                                              PurchaseRateUnit = cou.PurchaseRateUnit,
-                                              MRPSaleRateUnit = cou.MRPSaleRateUnit,
-                                              Remarks = cou.Remarks
-                                          }
-                                         )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
-            return data;
-        }
+            SalesInvoiceRepository rep = new SalesInvoiceRepository(__dbContext);
+            return rep.InvoiceListByPartyId_Date(FkPartyId, InvoiceDate);
 
-        public List<ProdLotDtlModel> ProductColorList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0)
-        {
-            if (search != null) search = search.ToLower();
-            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
-            List<ProdLotDtlModel> data = (from cou in __dbContext.TblProdLotDtl
-                                          where cou.FKProductId == PKProductId
-                                          where (EF.Functions.Like(cou.Color.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                          orderby cou.PkLotId
-                                          select (new ProdLotDtlModel
-                                          {
-                                              PkLotId = cou.PkLotId,
-                                              Batch = cou.Batch,
-                                              Color = cou.Color,
-                                              MRP = cou.MRP,
-                                              SaleRate = cou.SaleRate,
-                                              PurchaseRate = cou.PurchaseRate,
-                                              FkmfgGroupId = cou.FkmfgGroupId,
-                                              TradeRate = cou.TradeRate,
-                                              DistributionRate = cou.DistributionRate,
-                                              PurchaseRateUnit = cou.PurchaseRateUnit,
-                                              MRPSaleRateUnit = cou.MRPSaleRateUnit,
-                                              Remarks = cou.Remarks
-                                          }
-                                         )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
-            return data;
         }
-
-        public List<ProdLotDtlModel> ProductMRPList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0)
-        {
-            if (search != null) search = search.ToLower();
-            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
-            List<ProdLotDtlModel> data = (from cou in __dbContext.TblProdLotDtl
-                                          where cou.FKProductId == PKProductId
-                                          where (EF.Functions.Like(cou.MRP.ToString().Trim().ToLower(), Convert.ToString(search) + "%"))
-                                          orderby cou.PkLotId
-                                          select (new ProdLotDtlModel
-                                          {
-                                              PkLotId = cou.PkLotId,
-                                              Batch = cou.Batch,
-                                              Color = cou.Color,
-                                              MRP = cou.MRP,
-                                              SaleRate = cou.SaleRate,
-                                              PurchaseRate = cou.PurchaseRate,
-                                              FkmfgGroupId = cou.FkmfgGroupId,
-                                              TradeRate = cou.TradeRate,
-                                              DistributionRate = cou.DistributionRate,
-                                              PurchaseRateUnit = cou.PurchaseRateUnit,
-                                              MRPSaleRateUnit = cou.MRPSaleRateUnit,
-                                              Remarks = cou.Remarks
-                                          }
-                                         )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
-            return data;
-        }
-
         public List<BankModel> BankList()
         {
             BankRepository rep = new BankRepository(__dbContext);
@@ -790,5 +874,85 @@ namespace SSRepository.Repository.Transaction
             SeriesRepository rep = new SeriesRepository(__dbContext);
             return rep.GetList(pageSize, pageNo, search, TranAlias);
         }
+
+
+        public List<AccountMasModel> AccountList()
+        {
+            AccountMasRepository rep = new AccountMasRepository(__dbContext);
+            return rep.GetList(1000, 1);
+        }
+
+        public object VoucherColumnChange(TransactionModel model, int rowIndex, string fieldName)
+        {
+            try
+            {
+                if (fieldName == "Account")
+                {
+                    setAccountinfo(model, model.VoucherDetails[rowIndex]);
+                }
+
+                if (fieldName == "Delete")
+                {
+                    model.VoucherDetails[rowIndex].ModeForm = 2;
+                }
+
+                if (fieldName == "Credit")
+                {
+                    model.VoucherDetails[rowIndex].DebitAmt = 0;
+                    model.VoucherDetails[rowIndex].VoucherAmt = model.VoucherDetails[rowIndex].CreditAmt;
+                }
+                if (fieldName == "Debit")
+                {
+                    model.VoucherDetails[rowIndex].CreditAmt = 0;
+                    model.VoucherDetails[rowIndex].VoucherAmt = -model.VoucherDetails[rowIndex].DebitAmt;
+                }
+                model.VoucherDetails[rowIndex].CurrentBalance = model.VoucherDetails[rowIndex].Balance + model.VoucherDetails[rowIndex].VoucherAmt;
+                VoucherCalculateExe(model);
+            }
+            catch (Exception ex) { }
+            return model;
+        }
+        public void setAccountinfo(TransactionModel model, VoucherDetails? detail)
+        {
+            if (detail != null)
+            {
+                var account = new AccountMasRepository(__dbContext).GetSingleRecord(detail.FkAccountId);
+                if (account != null)
+                {
+                    var series = new SeriesRepository(__dbContext).GetSingleRecord(model.FKSeriesId);
+                    decimal Balance = 0;
+                    var _chek = model.VoucherDetails.ToList().Where(x => x.FkAccountId == detail.FkAccountId && x.SrNo > 0 && x.ModeForm != 2).ToList();
+                    if (_chek.Count > 1)
+                    {
+                        Balance = _chek.OrderByDescending(x => x.SrNo).Skip(1).FirstOrDefault().CurrentBalance;
+                    }
+                    else
+                    {
+                        Balance = __dbContext.TblWalletMas.Where(x => x.FkAccountId == detail.FkAccountId).FirstOrDefault().BalAmount;
+                    }
+
+                    detail.ModeForm = 0;
+                    // detail.SrNo = model.VoucherDetails.ToList().Count > 0 ? model.VoucherDetails.ToList().Max(x => x.SrNo) + 1 : 1;
+                    detail.VoucherAmt = 0;
+                    detail.CreditAmt = 0;
+                    detail.DebitAmt = 0;
+                    detail.CurrentBalance = detail.Balance = Balance;
+                    detail.Location = series.BranchName;
+                    detail.AccountGroupName = account.AccountGroupName;
+                    detail.AccountName_Text = account.Account;
+
+                }
+            }
+        }
+
+        public void VoucherCalculateExe(TransactionModel model)
+        {
+            model.NetAmt = model.VoucherDetails.Where(x => x.ModeForm != 2 && x.FkAccountId > 0).ToList().Sum(x => x.CreditAmt);
+
+
+
+            // model.TranDetails = model.TranDetails.Where(x => x.FkProductId > 0).ToList();
+        }
+
     }
 }
