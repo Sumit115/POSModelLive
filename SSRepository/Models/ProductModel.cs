@@ -65,5 +65,6 @@ namespace SSRepository.Models
         public string? NameToPrint { get; set; }//backend =product
         public string? Image { get; set; }
         public string? Dome1124 { get; set; }
+        public string? Dome1125 { get; set; }
     }
 }
