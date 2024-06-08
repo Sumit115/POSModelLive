@@ -66,5 +66,7 @@ namespace SSRepository.Models
         public string? Image { get; set; }
         public string? Dome1124 { get; set; }
         public string? Dome1125 { get; set; }
+
+        public string? Dome1126 { get; set; }
     }
 }
