@@ -11,13 +11,10 @@ namespace SSRepository.Models
      public class ProductModel : BaseModel
     {
          public long PkProductId { get; set; }
-        public string Product { get; set; }
-        public string? NameToDisplay { get; set; }//backend =product
-        public string? NameToPrint { get; set; }//backend =product
-        public string? Image { get; set; }
+        public string Product { get; set; }      
         public string? Alias { get; set; }//=''
         public string? Strength { get; set; }//txt
-        public long Barcode { get; set; }//txt
+        public string Barcode { get; set; }//txt
         public string Status { get; set; }
         [Required]
         public long FkCatGroupId { get; set; }
@@ -64,5 +61,8 @@ namespace SSRepository.Models
         public long? FKInvoiceID { get; set; }// 
         public long? InvoiceSrNo { get; set; }
         public long? FKInvoiceSrID { get; set; }
+        public string? NameToDisplay { get; set; }//backend =product
+        public string? NameToPrint { get; set; }//backend =product
+        public string? Image { get; set; }
     }
 }

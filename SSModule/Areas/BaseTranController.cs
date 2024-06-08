@@ -74,7 +74,7 @@ namespace SSAdmin.Areas
 
         }
 
-        public JsonResult BarcodeScan(TransactionModel model, long barcode)
+        public JsonResult BarcodeScan(TransactionModel model, string barcode)
         {
             try
             {
@@ -156,7 +156,7 @@ namespace SSAdmin.Areas
         {
             try
             {
-                var data = _repository.ProductList(FkPartyId, FKInvoiceID, InvoiceDate);
+                var data = _repository.ProductList(FkPartyId, FKInvoiceID, "",InvoiceDate);
                 return new JsonResult(data);
             }
             catch (Exception ex) { return new JsonResult(new object()); }
@@ -171,6 +171,21 @@ namespace SSAdmin.Areas
                 return new JsonResult(data);
             }
             catch (Exception ex) { return new JsonResult(new object()); }
+        }
+
+        [HttpGet]        
+        public object trandtldropList(int pageSize, int pageNo = 1, string search = "", string name = "", string RowParam = "")
+        {
+            if (name == "Product")
+                return _repository.ProductList(pageSize, pageNo, search);
+            else if (name == "Batch")
+                return _repository.ProductBatchList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
+            else if (name == "Color")
+                return _repository.ProductColorList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
+            else if (name == "MRP")
+                return _repository.ProductMRPList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
+            else
+                return null;
         }
     }
 }

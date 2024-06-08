@@ -1,5 +1,6 @@
 ﻿using Azure;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
@@ -143,7 +144,7 @@ namespace SSRepository.Repository.Transaction
             return data;
         }
 
-        public object BarcodeScan(TransactionModel model, long barcode)
+        public object BarcodeScan(TransactionModel model, string barcode)
         {
             try
             {
@@ -849,13 +850,94 @@ namespace SSRepository.Repository.Transaction
             return list.OrderBy(x => x.Orderby).ToList();
         }
 
-        public List<ProductModel> ProductList(long FkPartyId = 0, long FkInvoiceId = 0, DateTime? InvoiceDate = null)
+        public List<ProductModel> ProductList(long FkPartyId = 0, long FkInvoiceId = 0, string search = "", DateTime? InvoiceDate = null)
         {
             ProductRepository rep = new ProductRepository(__dbContext);
             if (FkPartyId > 0 || FkInvoiceId > 0)
                 return rep.GetListByPartyId_InSaleInvoice(FkPartyId, 10000, 1, "", FkInvoiceId, InvoiceDate);
             else
-                return rep.GetList(1000, 1);
+                return rep.GetList(1000, 1, search);
+        }
+
+        public List<ProdLotDtlModel> ProductBatchList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0)
+        {
+            if (search != null) search = search.ToLower();
+            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+            List<ProdLotDtlModel> data = (from cou in __dbContext.TblProdLotDtl
+                                          where cou.FKProductId == PKProductId
+                                          where (EF.Functions.Like(cou.Batch.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                          orderby cou.PkLotId
+                                          select (new ProdLotDtlModel
+                                          {
+                                              PkLotId = cou.PkLotId,
+                                              Batch = cou.Batch,
+                                              Color = cou.Color,
+                                              MRP = cou.MRP,
+                                              SaleRate = cou.SaleRate,
+                                              PurchaseRate = cou.PurchaseRate,
+                                              FkmfgGroupId = cou.FkmfgGroupId,
+                                              TradeRate = cou.TradeRate,
+                                              DistributionRate = cou.DistributionRate,
+                                              PurchaseRateUnit = cou.PurchaseRateUnit,
+                                              MRPSaleRateUnit = cou.MRPSaleRateUnit,
+                                              Remarks = cou.Remarks
+                                          }
+                                         )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+            return data;
+        }
+
+        public List<ProdLotDtlModel> ProductColorList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0)
+        {
+            if (search != null) search = search.ToLower();
+            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+            List<ProdLotDtlModel> data = (from cou in __dbContext.TblProdLotDtl
+                                          where cou.FKProductId == PKProductId
+                                          where (EF.Functions.Like(cou.Color.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                          orderby cou.PkLotId
+                                          select (new ProdLotDtlModel
+                                          {
+                                              PkLotId = cou.PkLotId,
+                                              Batch = cou.Batch,
+                                              Color = cou.Color,
+                                              MRP = cou.MRP,
+                                              SaleRate = cou.SaleRate,
+                                              PurchaseRate = cou.PurchaseRate,
+                                              FkmfgGroupId = cou.FkmfgGroupId,
+                                              TradeRate = cou.TradeRate,
+                                              DistributionRate = cou.DistributionRate,
+                                              PurchaseRateUnit = cou.PurchaseRateUnit,
+                                              MRPSaleRateUnit = cou.MRPSaleRateUnit,
+                                              Remarks = cou.Remarks
+                                          }
+                                         )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+            return data;
+        }
+
+        public List<ProdLotDtlModel> ProductMRPList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0)
+        {
+            if (search != null) search = search.ToLower();
+            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+            List<ProdLotDtlModel> data = (from cou in __dbContext.TblProdLotDtl
+                                          where cou.FKProductId == PKProductId
+                                          where (EF.Functions.Like(cou.MRP.ToString().Trim().ToLower(), Convert.ToString(search) + "%"))
+                                          orderby cou.PkLotId
+                                          select (new ProdLotDtlModel
+                                          {
+                                              PkLotId = cou.PkLotId,
+                                              Batch = cou.Batch,
+                                              Color = cou.Color,
+                                              MRP = cou.MRP,
+                                              SaleRate = cou.SaleRate,
+                                              PurchaseRate = cou.PurchaseRate,
+                                              FkmfgGroupId = cou.FkmfgGroupId,
+                                              TradeRate = cou.TradeRate,
+                                              DistributionRate = cou.DistributionRate,
+                                              PurchaseRateUnit = cou.PurchaseRateUnit,
+                                              MRPSaleRateUnit = cou.MRPSaleRateUnit,
+                                              Remarks = cou.Remarks
+                                          }
+                                         )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+            return data;
         }
         public object InvoiceList(long FkPartyId, DateTime? InvoiceDate = null)
         {

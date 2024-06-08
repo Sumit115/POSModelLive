@@ -47,7 +47,7 @@ function Load() {
     tranModel = JSON.parse($("#hdData").val());
     if (PkId > 0) {
         $(tranModel.TranDetails).each(function (i, v) {
-            v["ProductName"] = parseInt(v.FkProductId);
+            v["Product"] = parseInt(v.FkProductId);
             v["ModeForm"] = 1;
             v["Delete"] = 'Delete';
         });
@@ -64,7 +64,7 @@ function BindGrid(GridId, data) {
 
     $("#" + GridId).empty();
     Common.Grid(tranModel.ExtProperties.FKFormID, "dtl", function (s) {
-        var ProductList = (ControllerName == "SalesReturn" || ControllerName == "SalesCrNote") ? [] : JSON.parse($("#hdProductList").val());
+        //var ProductList = (ControllerName == "SalesReturn" || ControllerName == "SalesCrNote") ? [] : JSON.parse($("#hdProductList").val());
         var ProductLotList = [];
         cg = new coGrid("#" + GridId);
         UDI = cg;
@@ -160,14 +160,14 @@ function BindGrid(GridId, data) {
             if (args.cell != undefined) {
                 var field = cg.columns[args.cell].field;
 
-                if (field != "InvoiceDate" && field != "FKInvoiceID_Text" && field != "ProductName_Text" && Common.isNullOrEmpty(args.item["ProductName_Text"])) {
+                if (field != "InvoiceDate" && field != "FKInvoiceID_Text" && field != "Product" && Common.isNullOrEmpty(args.item["Product"])) {
                     alert("Select Product Frist");
                     cg_ClearRow(args)
-                    cg.outGrid.gotoCell(args.row, DrpIndex["ProductName_Text"], true);
+                    cg.outGrid.gotoCell(args.row, DrpIndex["Product"], true);
                 }
                 else if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
                     if (tranModel.FkPartyId > 0) {
-                        if (field == "ProductName_Text") {
+                        if (field == "Product") {
                             var InvoiceDate = args.item["InvoiceDate"];
                             var FKInvoiceID = args.item["FKInvoiceID"];
                             Common.ajax(Handler.currentPath() + "InvoiceProductList?FkPartyId=" + tranModel.FkPartyId + "&FKInvoiceID=" + FKInvoiceID + "&InvoiceDate=" + InvoiceDate + "", {}, "Please Wait...", function (res) {
@@ -196,14 +196,14 @@ function BindGrid(GridId, data) {
                 else {
                     if (field == "Batch" || field == "Color") {
                         console.log(args.item["Batch"]);
-                        var FkProductId = Common.isNullOrEmpty(args.item["ProductName"]) ? 0 : parseFloat(args.item["ProductName"]);
-                        var Batch = args.item["Batch"];
-                        var Color = args.item["Color"];
-                        Common.ajax(Handler.currentPath() + "ProductLotDtlList?FkProductId=" + FkProductId + "&Batch=" + Batch + "&Color=" + Color + "", {}, "Please Wait...", function (res) {
-                            Handler.hide();
-                            cg.setOptionArray(DrpIndex["Batch_Text"], res, "Batch_Text", false, "Batch", "PkLotId", "1");
-                            cg.setOptionArray(DrpIndex["Color_Text"], res, "Color_Text", false, "Color", "PkLotId", "1");
-                        });
+                        var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
+                        //var Batch = args.item["Batch"];
+                        //var Color = args.item["Color"];
+                        //Common.ajax(Handler.currentPath() + "ProductLotDtlList?FkProductId=" + FkProductId + "&Batch=" + Batch + "&Color=" + Color + "", {}, "Please Wait...", function (res) {
+                        //    Handler.hide();
+                        //    cg.setOptionArray(DrpIndex["Batch_Text"], res, "Batch_Text", false, "Batch", "PkLotId", "1");
+                        //    cg.setOptionArray(DrpIndex["Color_Text"], res, "Color_Text", false, "Color", "PkLotId", "1");
+                        //});
                     }
                 }
             }
@@ -213,7 +213,7 @@ function BindGrid(GridId, data) {
             if (args.cell != undefined) {
 
                 var field = cg.columns[args.cell].field;
-                if (field == "ProductName_Text") {
+                if (field == "Product") {
                     if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
                         var InvoiceSrNo = Common.isNullOrEmpty(args.item["ProductName"]) ? 0 : parseFloat(args.item["ProductName"]);
                         //var data = ProductList.filter(function (element) { return (element.InvoiceSrNo == InvoiceSrNo); });
@@ -230,7 +230,7 @@ function BindGrid(GridId, data) {
                         //}
 
                     } else {
-                        var FkProductId = Common.isNullOrEmpty(args.item["ProductName"]) ? 0 : parseFloat(args.item["ProductName"]);
+                        var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
                         var data = cg.getData().filter(function (element) { return (element.FkProductId == FkProductId && element.mode != 2); });
                         if (data.length <= 0) {
                             //if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
@@ -652,4 +652,17 @@ function setSeries() {
                 alert(res.msg);
         }
     });
+}
+
+function trandtldropList(data) {
+    var output = []
+    $.ajax({
+        url: Handler.currentPath() + 'trandtldropList', data: data, async: false, dataType: 'JSON', success: function (result) {
+
+            output = result;
+
+        }, error: function (request, status, error) {
+        }
+    });
+    return output;
 }

@@ -8,7 +8,7 @@ namespace SSRepository.IRepository
         string Create(TransactionModel model);
         DataTable GetList(string FromDate, string ToDate, string SeriesFilter = "");
         TransactionModel GetSingleRecord(long PkId, long FkSeriesId);
-        object BarcodeScan(TransactionModel model, long barcode);
+        object BarcodeScan(TransactionModel model, string barcode);
         object FooterChange(TransactionModel model, string fieldName);
         object PaymentDetail(TransactionModel model);
 
@@ -23,7 +23,11 @@ namespace SSRepository.IRepository
 
         object SetParty(TransactionModel model, long FkPartyId);
 
-        List<ProductModel> ProductList(long FkPartyId = 0, long FkInvoiceId = 0, DateTime? InvoiceDate = null);
+        List<ProductModel> ProductList(long FkPartyId = 0, long FkInvoiceId = 0, string search = "", DateTime? InvoiceDate = null);
+        List<ProdLotDtlModel> ProductBatchList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0);
+        List<ProdLotDtlModel> ProductColorList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0);
+        List<ProdLotDtlModel> ProductMRPList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0);
+
         object InvoiceList(long FkPartyId = 0, DateTime? InvoiceDate = null);
 
         List<BankModel> BankList();

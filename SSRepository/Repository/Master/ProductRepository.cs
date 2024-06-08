@@ -55,7 +55,7 @@ namespace SSRepository.Repository.Master
                                            Alias = cou.Alias,
                                            Strength = cou.Strength,
                                            Barcode = cou.Barcode,
-                                           Status = cou.Status,
+                                           Status = cou.Status?? "",
                                            FKProdCatgId = cou.FKProdCatgId,
                                            HSNCode = cou.HSNCode,
                                            FkBrandId = cou.FkBrandId,
@@ -65,7 +65,7 @@ namespace SSRepository.Repository.Master
                                            MaxStock = cou.MaxStock,
                                            MinDays = cou.MinDays,
                                            MaxDays = cou.MaxDays,
-                                           CaseLot = cou.CaseLot,
+                                           CaseLot = cou.CaseLot?? "",
                                            BoxSize = cou.BoxSize,
                                            Description = cou.Description,
                                            Unit1 = cou.Unit1,
@@ -372,7 +372,7 @@ namespace SSRepository.Repository.Master
             return rep.GetList(pageSize, pageNo, search);
         }
 
-        public ProductModel GetSingleRecord_ByBarcode(long Barcode)
+        public ProductModel GetSingleRecord_ByBarcode(string Barcode)
         {
 
             ProductModel data = new ProductModel();
@@ -496,15 +496,15 @@ namespace SSRepository.Repository.Master
 
             try
             {
-                if (BranchNo > 0)
-                {
-                    ProdBarcode = (from b in __dbContext.TblProductMas where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 5)) == DefBarcode select (long)b.Barcode).Max();
-                }
-                else
-                {
+                //if (BranchNo > 0)
+                //{
+                //    ProdBarcode = (from b in __dbContext.TblProductMas where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 5)) == DefBarcode select (long)b.Barcode).Max();
+                //}
+                //else
+                //{
 
-                    ProdBarcode = (from b in __dbContext.TblProductMas where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 1)) == DefBarcode select (long)b.Barcode).Max();
-                }
+                //    ProdBarcode = (from b in __dbContext.TblProductMas where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 1)) == DefBarcode select (long)b.Barcode).Max();
+                //}
 
             }
             catch (Exception ex)
@@ -512,18 +512,18 @@ namespace SSRepository.Repository.Master
                 ProdBarcode = InitBarcode;
             }
 
-            if (InitBarcode > OutParam && InitBarcode > ProdBarcode)
-            {
-                OutParam = InitBarcode;
-            }
-            else if (OutParam > ProdBarcode)
-            {
-                OutParam = OutParam;
-            }
-            else
-            {
-                OutParam = ProdBarcode;
-            }
+            //if (InitBarcode > OutParam && InitBarcode > ProdBarcode)
+            //{
+            //    OutParam = InitBarcode;
+            //}
+            //else if (OutParam > ProdBarcode)
+            //{
+            //    OutParam = OutParam;
+            //}
+            //else
+            //{
+            //    OutParam = ProdBarcode;
+            //}
 
             if (OutParam >= MaxDefBarcode)
             {
