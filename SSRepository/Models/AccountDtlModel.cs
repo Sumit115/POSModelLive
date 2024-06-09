@@ -21,5 +21,8 @@ namespace SSRepository.Models
         public int  Mode { get; set; }
         public string? Location { get; set; }
 
+
+        public string? Demo { get; set; }
+
     }
 }
