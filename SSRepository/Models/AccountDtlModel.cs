@@ -26,5 +26,7 @@ namespace SSRepository.Models
 
         public string? Demo1 { get; set; }
 
+        public string? Demo2 { get; set; }
+
     }
 }
