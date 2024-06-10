@@ -30,7 +30,6 @@ namespace SSRepository.Models
         public string? Demo3 { get; set; }
         public string? Demo4 { get; set; }
         public string? Demo5 { get; set; }
-        public string? Demo6 { get; set; }
 
     }
 }
