@@ -73,11 +73,12 @@ namespace SSAdmin.Areas.Transactions.Controllers
                         {
                             var _md = new WalkingCustomerModel();
                             _md.Mobile = model.PartyMobile;
-                            _md.Name = model.PartyMobile;
+                            _md.Name = model.PartyName;
                             _md.Address = model.PartyAddress;
                             _md.Dob = model.PartyDob;
                             _md.MarriageDate = model.PartyMarriageDate;
-
+                            _md.FKCreatedByID = _md.FKUserId = LoginId;
+                            _md.FkLocationId = model.FKLocationID;
                             model.FkPartyId = _repository.SaveWalkingCustomer(_md);
                         }
                         else

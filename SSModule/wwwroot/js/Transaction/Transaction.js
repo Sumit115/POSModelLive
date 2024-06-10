@@ -743,6 +743,10 @@ function GetWalkingCustomerDetail(Mobile) {
                 $("#PartyDob").val(res.Dob);
                 $("#PartyMarriageDate").val(res.MarriageDate); 
 
+                tranModel["PartyName"] = res.Name; 
+                tranModel["PartyAddress"] = res.Address; 
+                tranModel["PartyDob"] = res.Dob;
+                tranModel["PartyMarriageDate"] = res.MarriageDate;
                 $("#PartyName,#PartyAddress,#PartyDob,#PartyMarriageDate").attr("readonly","readonly"); 
 
 

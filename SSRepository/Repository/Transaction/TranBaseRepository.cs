@@ -1158,7 +1158,7 @@ namespace SSRepository.Repository.Transaction
             Tbl.CreationDate = DateTime.Now;
             //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
             __dbContext.Add(Tbl);
-            SaveDataAsync();
+            __dbContext.SaveChanges();
 
             return Tbl.PkId;
 
