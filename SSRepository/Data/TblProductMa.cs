@@ -48,7 +48,7 @@ namespace SSRepository.Data
         public decimal CostRate { get; set; }
         public string? PurchaseRateUnit { get; set; }
         public Nullable<bool> AddLT { get; set; }
-        public long Barcode { get; set; }
+        public string? Barcode { get; set; }
         public Nullable<decimal> Weight { get; set; }
         public Nullable<decimal> Height { get; set; }
         public Nullable<decimal> Width { get; set; }

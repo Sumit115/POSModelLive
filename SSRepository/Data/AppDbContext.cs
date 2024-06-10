@@ -19,10 +19,12 @@ namespace SSRepository.Data
         public virtual DbSet<TblEmployeeMas> TblEmployeeMas { get; set; } = null!;
         public virtual DbSet<TblUserMas> TblUserMas { get; set; } = null!;
         public virtual DbSet<TblCustomerMas> TblCustomerMas { get; set; } = null!;
+        public virtual DbSet<TblWalkingCustomerMas> TblWalkingCustomerMas { get; set; } = null!;
         public virtual DbSet<TblVendorMas> TblVendorMas { get; set; } = null!;
         public virtual DbSet<TblFormMas> TblFormMas { get; set; } = null!;
         public virtual DbSet<TblGridStructer> TblGridStructer { get; set; } = null!;
         public virtual DbSet<TblCategoryMas> TblCategoryMas { get; set; } = null!;
+        public virtual DbSet<TblCategorySizeLnk> TblCategorySizeLnk { get; set; } = null!;
         public virtual DbSet<TblCategoryGroupMas> TblCategoryGroupMas { get; set; } = null!;
         public virtual DbSet<TblProductMas> TblProductMas { get; set; } = null!;
         public virtual DbSet<TblBankMas> TblBankMas { get; set; } = null!;

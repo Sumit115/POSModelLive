@@ -266,7 +266,8 @@
                                                 <input readonly="readonly" id="AccountDtl_lst_@(i)__type" name="AccountDtl_lst[@i].type" type="text" value="@Model.AccountDtl_lst[i].type" tabindex="-1">
                                             </td>
                                             <td class="tabel-td-xs">
-                                                <input id="AccountDtl_lst_@(i)__Mode" name="AccountDtl_lst[@i].Mode" type="hidden" value="@Model.AccountDtl_lst[i].Mode"> <span class="action-icon" onclick="UpdateLocation(this,@i,'edit')">
+                                                <input id="AccountDtl_lst_@(i)__Mode" name="AccountDtl_lst[@i].Mode" type="hidden" value="@Model.AccountDtl_lst[i].Mode"> 
+                                                <span class="action-icon" onclick="UpdateLocation(this,@i,'edit')">
                                                     <i class="fa fa-edit"></i>
                                                 </span>  &nbsp; | &nbsp; <span class="action-icon" onclick="UpdateLocation(this,@i,'del')">
                                                     <i class="fa fa-trash"></i>
@@ -415,3 +416,5 @@
     </script>
 
                 }
+
+

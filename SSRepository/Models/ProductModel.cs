@@ -17,7 +17,7 @@ namespace SSRepository.Models
         public string? Image { get; set; }
         public string? Alias { get; set; }//=''
         public string? Strength { get; set; }//txt
-        public long Barcode { get; set; }//txt
+        public string? Barcode { get; set; }//txt
         public string Status { get; set; }
         [Required]
         public long FkCatGroupId { get; set; }

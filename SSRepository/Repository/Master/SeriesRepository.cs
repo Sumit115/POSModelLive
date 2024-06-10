@@ -46,14 +46,15 @@ namespace SSRepository.Repository.Master
             return error;
         }
 
-        public List<SeriesModel> GetList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "")
+        public List<SeriesModel> GetList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
         {
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<SeriesModel> data = (from cou in __dbContext.TblSeriesMas
                                       where EF.Functions.Like(cou.Series.Trim().ToLower(), search + "%")
                                       && (TranAlias == "" || cou.TranAlias == TranAlias)
-                                          // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                      && (DocumentType == "" || cou.DocumentType == DocumentType)
+                                      // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                       orderby cou.PkSeriesId
                                       select (new SeriesModel
                                       {

@@ -30,7 +30,7 @@ namespace SSRepository.Repository.Master
             return error;
         }
 
-        public List<CategoryModel> GetList(int pageSize, int pageNo = 1, string search = "",long CategoryGroupId =0)
+        public List<CategoryModel> GetList(int pageSize, int pageNo = 1, string search = "", long CategoryGroupId = 0)
         {
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
@@ -69,6 +69,15 @@ namespace SSRepository.Repository.Master
                         CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         Category = cou.CategoryName,
                         FkCategoryGroupId = cou.FkCategoryGroupId,
+                        CategorySize_lst = (from ad in __dbContext.TblCategorySizeLnk
+                                                //  join loc in __dbContext.TblBranchMas on ad.FKLocationID equals loc.PkBranchId
+                                            where (ad.FkCategoryId == cou.PkCategoryId)
+                                            select (new CategorySizeLnkModel
+                                            {
+                                                PkId = ad.PkId,
+                                                Size = ad.Size,
+                                                FkCategoryId = ad.FkCategoryId,
+                                            })).ToList(),
                     })).FirstOrDefault();
             return data;
         }
@@ -133,13 +142,13 @@ namespace SSRepository.Repository.Master
             Tbl.PkCategoryId = model.PkCategoryId;
             Tbl.CategoryName = model.Category;
             Tbl.FkCategoryGroupId = model.FkCategoryGroupId;
-            Tbl.ModifiedDate= DateTime.Now;
+            Tbl.ModifiedDate = DateTime.Now;
             if (Mode == "Create")
             {
                 Tbl.FKCreatedByID = model.FKCreatedByID;
                 Tbl.FKUserID = model.FKUserId;
                 Tbl.CreationDate = DateTime.Now;
-                //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
+                Tbl.PkCategoryId = getIdOfSeriesByEntity("PkCategoryId", null, Tbl, "TblCategoryMas");
                 AddData(Tbl, false);
             }
             else
@@ -150,12 +159,64 @@ namespace SSRepository.Repository.Master
                 UpdateData(Tbl, false);
                 //AddMasterLog(oldModel, __FormID, tblCountry.FKCategoryID, oldModel.PkCategoryId, oldModel.FKCategoryID, oldModel.DATE_MODIFIED);
             }
+
+
+            if (model.CategorySize_lst != null)
+            {
+                List<TblCategorySizeLnk> lstAdd = new List<TblCategorySizeLnk>();
+               // List<TblCategorySizeLnk> lstEdit = new List<TblCategorySizeLnk>();
+                List<TblCategorySizeLnk> lstDel = new List<TblCategorySizeLnk>();
+                foreach (var item in model.CategorySize_lst)
+                {
+                    TblCategorySizeLnk locObj = new TblCategorySizeLnk();
+                    locObj.Size = item.Size;
+                    locObj.FkCategoryId = Tbl.PkCategoryId;
+                    locObj.PkId = item.PkId;
+
+
+                    //   lstAdd.Add(locObj);
+                    if (item.Mode == 1)
+                    {
+                        //locObj.ModifiedDate = DateTime.Now;
+                        //lstEdit.Add(locObj);
+                    }
+                    else if (item.Mode == 0)
+                    {
+                        //  locObj.PKAccountDtlId = getIdOfSeriesByEntity("PKAccountDtlId", null, Tbl, "TblAccountDtl");
+                        locObj.FKCreatedByID = model.FKCreatedByID;
+                        locObj.FKUserID = model.FKUserId;
+                        locObj.CreationDate = DateTime.Now;
+                        locObj.ModifiedDate = DateTime.Now;
+                        lstAdd.Add(locObj);
+                    }
+
+                    else
+                    {
+                        var res1 = (from x in __dbContext.TblCategorySizeLnk
+                                    where x.FkCategoryId == locObj.FkCategoryId && x.Size == locObj.Size
+                                    && x.PkId==locObj.PkId
+                                    select x).Count();
+                        if (res1 > 0)
+                        {
+                            lstDel.Add(locObj);
+                        }
+                    }
+
+                }
+
+                if (lstDel.Count() > 0)
+                    DeleteData(lstDel, true);
+                //if (lstEdit.Count() > 0)
+                //    UpdateData(lstEdit, true);
+                if (lstAdd.Count() > 0)
+                    AddData(lstAdd, true);
+            }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKCategoryID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>
-            {                   
+            {
                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Section Name", Fields="Category",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                   new ColumnStructure{ pk_Id=1, Orderby =2, Heading ="Section Group", Fields="GroupName",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=1, Orderby =3, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },

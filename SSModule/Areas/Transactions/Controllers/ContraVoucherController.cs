@@ -36,7 +36,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
             return Json(new
             {
                 status = "success",
-                data = _repository.GetList(FDate, TDate, TranAlias)
+                data = _repository.GetList(FDate, TDate, TranAlias, DocumentType)
             });
         }
 
@@ -69,13 +69,14 @@ namespace SSAdmin.Areas.Transactions.Controllers
         private void setDefault(TransactionModel model)
         {
             model.ExtProperties.TranType = TranType;
-            model.ExtProperties.TranAlias = TranAlias;
+            model.TranAlias = model.ExtProperties.TranAlias = TranAlias;
+            model.ExtProperties.DocumentType = DocumentType;
             model.ExtProperties.StockFlag = StockFlag;
             model.ExtProperties.FKFormID = FKFormID;
             model.ExtProperties.PostInAc = PostInAc;
             if (model.PkId == 0)
             {
-                _repository.SetLastSeries(model, LoginId, TranAlias);
+                _repository.SetLastSeries(model, LoginId, TranAlias,DocumentType);
                 model.EntryDate = DateTime.Now;
                 model.GRDate = DateTime.Now;
                 model.Cash = model.Credit = model.Cheque = model.CreditCard = false;

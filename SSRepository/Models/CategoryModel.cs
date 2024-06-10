@@ -19,6 +19,9 @@ namespace SSRepository.Models
         [Range(1, int.MaxValue, ErrorMessage = "Please Select Section Group")]  
         public long FkCategoryGroupId { get; set; }
         public string? GroupName { get; set; }
+
+        public List<CategorySizeLnkModel>? CategorySize_lst { get; set; }
+
     }
 
 }

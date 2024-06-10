@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SSRepository.Models
 {
-    public class TransactionModel : BaseModel
+    public class TransactionModel  
     {
         public TransactionModel()
         {
@@ -38,11 +38,13 @@ namespace SSRepository.Models
 
         public string PartyName { get; set; }
 
-        public string? PartyMobile { get; set; }
+        public string  PartyMobile { get; set; }
 
         public string PartyAddress { get; set; }
 
         public string PartyGSTN { get; set; }
+        public string? PartyDob { get; set; }
+        public string? PartyMarriageDate { get; set; }
 
         public int PartyCredit { get; set; }
 
@@ -90,6 +92,10 @@ namespace SSRepository.Models
 
         public string? Statu { get; set; }
 
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime CreationDate { get; set; }
+        public long FKUserId { get; set; }
         public ExtPropertie ExtProperties { get; set; }
 
         public List<TranDetails> TranDetails { get; set; }
@@ -105,7 +111,7 @@ namespace SSRepository.Models
         public bool PostInAc { get; set; }
         public long FKFormID { get; set; }
         public string LastEntryNo { get; set; }
-        public string DocType { get; set; }
+        public string DocumentType { get; set; }
     }
    
 }

@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Walking Sales Invoice List";
+    ViewData["bdClass"] = "browser";
+}
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="row p-2 filter">
+            <div class="col-md-2">
+                <input name="FDate" type="date" id="FDate" class="form-control" maxlength="10" placeholder="From Date*" required="" title="From Date*">
+                <span class="field-validation-valid text-danger" data-valmsg-for="FDate"></span>
+            </div>
+            <div class="col-md-2">
+                <input name="TDate" type="date" id="TDate" class="form-control" maxlength="10" placeholder="To Date*" required="" title="To Date*">
+                <span class="field-validation-valid text-danger" data-valmsg-for="TDate"></span>
+            </div>
+            <div class="col-md-1">
+                <input type="button" value="Search" class="btn btn-success" onclick="View()">
+            </div>
+        </div>
+    </div>
+</div>
+<hr style="margin: 1px 0px;" />
+
+<partial name="~/Views/Shared/partial/_Grid.cshtml" />
+
+@section Scripts {
+    <script src="~/js/master/browser.js"></script>
+    <script>
+        $(document).ready(function () {
+            IdProperty = "PkId";
+            GridHeight = "85vh"
+            var dt = new Date;
+            document.getElementById("FDate").valueAsDate = new Date();
+            document.getElementById("TDate").valueAsDate = new Date();
+            View();
+        });
+    </script>
+}

@@ -37,10 +37,10 @@ namespace SSRepository.Repository.Master
                                           select (new ProdLotDtlModel
                                           {
                                               PkLotId = cou.PkLotId,
-                                              FKUserId = cou.FKUserID,
-                                              FKCreatedByID = cou.FKCreatedByID,
-                                              ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                                              CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
+                                              //FKUserId = cou.FKUserID,
+                                              //FKCreatedByID = cou.FKCreatedByID,
+                                              //ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                              //CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                               FKProductId = cou.FKProductId,
                                               LotAlias = cou.LotAlias,
                                               Barcode = cou.Barcode,
@@ -86,10 +86,10 @@ namespace SSRepository.Repository.Master
                         select new ProdLotDtlModel
                         {
                             PkLotId = cou.PkLotId,
-                            FKUserId = cou.FKUserID,
-                            FKCreatedByID = cou.FKCreatedByID,
-                            ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                            CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
+                            //FKUserId = cou.FKUserID,
+                            //FKCreatedByID = cou.FKCreatedByID,
+                            //ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                            //CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                             FKProductId = cou.FKProductId,
                             LotAlias = cou.LotAlias,
                             LotName = cou.LotName,
@@ -129,10 +129,10 @@ namespace SSRepository.Repository.Master
                     select (new ProdLotDtlModel
                     {
                         PkLotId = cou.PkLotId,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
-                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
+                        //FKUserId = cou.FKUserID,
+                        //FKCreatedByID = cou.FKCreatedByID,
+                        //ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                        //CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         FKProductId = cou.FKProductId,
                         LotAlias = cou.LotAlias,
                         LotName = cou.LotName,
@@ -242,13 +242,13 @@ namespace SSRepository.Repository.Master
             Tbl.InTrnFKSeriesID = model.InTrnFKSeriesID;
             Tbl.InTrnsno = model.InTrnsno;
             Tbl.Remarks = model.Remarks;
-            Tbl.FKUserID = model.FKUserId;
-            Tbl.ModifiedDate= DateTime.Now;
+            //Tbl.FKUserID = model.FKUserId;
+            //Tbl.ModifiedDate= DateTime.Now;
             if (Mode == "Create")
             {
-                Tbl.FKCreatedByID = model.FKCreatedByID;
-                Tbl.FKUserID = model.FKUserId;
-                Tbl.CreationDate = DateTime.Now;
+                //Tbl.FKCreatedByID = model.FKCreatedByID;
+                //Tbl.FKUserID = model.FKUserId;
+                //Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }

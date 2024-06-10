@@ -96,6 +96,7 @@ namespace SSAdmin
             ReceiptVoucher = 108,
             PaymentVoucher = 109,
             ContraVoucher = 110,
+            WalkingSalesInvoice = 111,
 
             SalesStock = 200,
             PurchaseStock = 201,

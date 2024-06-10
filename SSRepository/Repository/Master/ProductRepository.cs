@@ -40,6 +40,7 @@ namespace SSRepository.Repository.Master
                                        join Pbrand in __dbContext.TblBrandMas on cou.FkBrandId equals Pbrand.PkBrandId
                                                              into tembrand
                                        from brand in tembrand.DefaultIfEmpty()
+                                       where (EF.Functions.Like(cou.Product.Trim().ToLower(), Convert.ToString(search) + "%"))
                                        orderby cou.PkProductId
                                        select (new ProductModel
                                        {
@@ -86,7 +87,7 @@ namespace SSRepository.Repository.Master
             return data;
         }
 
-        public List<ProductModel> GetListByPartyId_InSaleInvoice(long FkPartyId, int pageSize, int pageNo = 1, string search = "", long FkInvoiceId = 0, DateTime? InvoiceDate = null)
+        public List<ProductModel> GetListByPartyId_InSaleInvoice(int pageSize, int pageNo = 1, string search = "", long FkPartyId=0, long FkInvoiceId = 0, DateTime? InvoiceDate = null)
         {
 
             if (search != null) search = search.ToLower();
@@ -372,7 +373,7 @@ namespace SSRepository.Repository.Master
             return rep.GetList(pageSize, pageNo, search);
         }
 
-        public ProductModel GetSingleRecord_ByBarcode(long Barcode)
+        public ProductModel GetSingleRecord_ByBarcode(string Barcode)
         {
 
             ProductModel data = new ProductModel();
@@ -496,15 +497,15 @@ namespace SSRepository.Repository.Master
 
             try
             {
-                if (BranchNo > 0)
-                {
-                    ProdBarcode = (from b in __dbContext.TblProductMas where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 5)) == DefBarcode select (long)b.Barcode).Max();
-                }
-                else
-                {
+                //if (BranchNo > 0)
+                //{
+                //    ProdBarcode = (from b in __dbContext.TblProductMas where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 5)) == DefBarcode select (long)b.Barcode).Max();
+                //}
+                //else
+                //{
 
-                    ProdBarcode = (from b in __dbContext.TblProductMas where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 1)) == DefBarcode select (long)b.Barcode).Max();
-                }
+                //    ProdBarcode = (from b in __dbContext.TblProductMas where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 1)) == DefBarcode select (long)b.Barcode).Max();
+                //}
 
             }
             catch (Exception ex)
@@ -512,26 +513,26 @@ namespace SSRepository.Repository.Master
                 ProdBarcode = InitBarcode;
             }
 
-            if (InitBarcode > OutParam && InitBarcode > ProdBarcode)
-            {
-                OutParam = InitBarcode;
-            }
-            else if (OutParam > ProdBarcode)
-            {
-                OutParam = OutParam;
-            }
-            else
-            {
-                OutParam = ProdBarcode;
-            }
+            //if (InitBarcode > OutParam && InitBarcode > ProdBarcode)
+            //{
+            //    OutParam = InitBarcode;
+            //}
+            //else if (OutParam > ProdBarcode)
+            //{
+            //    OutParam = OutParam;
+            //}
+            //else
+            //{
+            //    OutParam = ProdBarcode;
+            //}
 
-            if (OutParam >= MaxDefBarcode)
-            {
-                OutParam = 0;
-            }
-            else
-                OutParam = OutParam + 1;
-            string ReturnVar = Convert.ToString(OutParam);
+            //if (OutParam >= MaxDefBarcode)
+            //{
+            //    OutParam = 0;
+            //}
+            //else
+            //    OutParam = OutParam + 1;
+             string ReturnVar = Convert.ToString(OutParam);
 
             return ReturnVar;
 

@@ -72,6 +72,7 @@ namespace SSAdmin.Areas.Master.Controllers
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
             CategoryModel Model = new CategoryModel();
+            Model.CategorySize_lst = new List<CategorySizeLnkModel>();
             try
             {
                 ViewBag.CategoryGroupList = _repositoryCategoryGroup.GetDrpCategoryGroup(1, 1000);

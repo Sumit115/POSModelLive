@@ -17,6 +17,7 @@ namespace SSAdmin.Areas
         public string TranType = "";
         public string TranAlias = "";
         public string StockFlag = "";
+        public string DocumentType = "B";
         public bool PostInAc = false;
 
         public BaseTranController(TRepository repository, TGridLayoutRepository GridLayoutRepository) : base(GridLayoutRepository)
@@ -30,7 +31,7 @@ namespace SSAdmin.Areas
         protected void BindViewBags(object Trans)
         {
             ViewBag.Data = JsonConvert.SerializeObject(Trans);
-            ViewBag.ProductList = JsonConvert.SerializeObject(_repository.ProductList());
+         //   ViewBag.ProductList = JsonConvert.SerializeObject(_repository.ProductList());
             ViewBag.BankList = _repository.BankList();
         }
 
@@ -74,7 +75,7 @@ namespace SSAdmin.Areas
 
         }
 
-        public JsonResult BarcodeScan(TransactionModel model, long barcode)
+        public JsonResult BarcodeScan(TransactionModel model, string barcode)
         {
             try
             {
@@ -112,6 +113,14 @@ namespace SSAdmin.Areas
             var data = _repository.Get_ProductLotDtlList(FkProductId, Batch, Color);
             return new JsonResult(data);
         }
+
+        [HttpPost]
+        public async Task<JsonResult> CategorySizeListByProduct(long FkProductId)
+        {
+            var data = _repository.Get_CategorySizeList_ByProduct(FkProductId);
+            return new JsonResult(data);
+        }
+
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {
             return _repository.ColumnList(GridName);
@@ -137,7 +146,7 @@ namespace SSAdmin.Areas
         [HttpPost]
         public object FKSeriesId(int pageSize, int pageNo = 1, string search = "")
         {
-            return _repository.SeriesList(pageSize, pageNo, search, TranAlias);
+            return _repository.SeriesList(pageSize, pageNo, search, TranAlias,DocumentType);
         }
 
         [HttpPost]
@@ -151,26 +160,50 @@ namespace SSAdmin.Areas
 
         }
 
-        [HttpPost]
-        public async Task<JsonResult> InvoiceProductList(long FkPartyId, long FKInvoiceID, DateTime? InvoiceDate = null)
+        //[HttpPost]
+        //public async Task<JsonResult> InvoiceProductList(long FkPartyId, long FKInvoiceID, DateTime? InvoiceDate = null)
+        //{
+        //    try
+        //    {
+        //        var data = _repository.ProductList(FkPartyId, FKInvoiceID, "",InvoiceDate);
+        //        return new JsonResult(data);
+        //    }
+        //    catch (Exception ex) { return new JsonResult(new object()); }
+        //}
+
+        //[HttpPost]
+        //public async Task<JsonResult> InvoiceList(long FkPartyId, DateTime? InvoiceDate = null)
+        //{
+        //    try
+        //    {
+        //        var data = _repository.InvoiceList(FkPartyId, InvoiceDate);
+        //        return new JsonResult(data);
+        //    }
+        //    catch (Exception ex) { return new JsonResult(new object()); }
+        //}
+
+        [HttpGet]        
+        public object trandtldropList(int pageSize, int pageNo = 1, string search = "", string name = "", string RowParam = "", string ExtraParam = "")
         {
-            try
-            {
-                var data = _repository.ProductList(FkPartyId, FKInvoiceID, InvoiceDate);
-                return new JsonResult(data);
-            }
-            catch (Exception ex) { return new JsonResult(new object()); }
+            int value = 0;
+            if (name == "Product")
+                return _repository.ProductList(pageSize, pageNo, search);
+            else if (name == "Batch" && int.TryParse(RowParam, out   value))
+                return _repository.ProductBatchList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
+            else if (name == "Color" && int.TryParse(RowParam, out   value))
+                return _repository.ProductColorList(pageSize, pageNo, search, Convert.ToInt64(RowParam),ExtraParam);
+            else if (name == "MRP" && int.TryParse(RowParam, out value))
+                return _repository.ProductMRPList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
+            else
+                return null;
         }
 
         [HttpPost]
-        public async Task<JsonResult> InvoiceList(long FkPartyId, DateTime? InvoiceDate = null)
+        public async Task<JsonResult> GeWalkingCustomerbyMobile(string Mobile)
         {
-            try
-            {
-                var data = _repository.InvoiceList(FkPartyId, InvoiceDate);
-                return new JsonResult(data);
-            }
-            catch (Exception ex) { return new JsonResult(new object()); }
+            var data = _repository.GeWalkingCustomer_byMobile(Mobile);
+            return new JsonResult(data);
         }
+
     }
 }
