@@ -731,27 +731,27 @@ function trandtldropList(data) {
 function GetWalkingCustomerDetail(Mobile) {
  
     if (tranModel.ExtProperties.DocumentType == "C") {
-        $("#FkPartyId").val('0');
-        $("#PartyName,#PartyAddress,#PartyDob,#PartyMarriageDate").removeAttr("readonly"); 
+        //$("#FkPartyId").val('0');
+        //$("#PartyName,#PartyAddress,#PartyDob,#PartyMarriageDate").removeAttr("readonly"); 
 
-        Common.ajax(Handler.currentPath() + "GeWalkingCustomerbyMobile?Mobile=" + Mobile + "", {}, "Please Wait...", function (res) {
-            Handler.hide();
-            if (res != null) {
-                $("#FkPartyId").val(res.PkId);
-                $("#PartyName").val(res.Name);
-                $("#PartyAddress").val(res.Address);
-                $("#PartyDob").val(res.Dob);
-                $("#PartyMarriageDate").val(res.MarriageDate); 
+        //Common.ajax(Handler.currentPath() + "GeWalkingCustomerbyMobile?Mobile=" + Mobile + "", {}, "Please Wait...", function (res) {
+        //    Handler.hide();
+        //    if (res != null) {
+        //        $("#FkPartyId").val(res.PkId);
+        //        $("#PartyName").val(res.Name);
+        //        $("#PartyAddress").val(res.Address);
+        //        $("#PartyDob").val(res.Dob);
+        //        $("#PartyMarriageDate").val(res.MarriageDate); 
 
-                tranModel["PartyName"] = res.Name; 
-                tranModel["PartyAddress"] = res.Address; 
-                tranModel["PartyDob"] = res.Dob;
-                tranModel["PartyMarriageDate"] = res.MarriageDate;
-                $("#PartyName,#PartyAddress,#PartyDob,#PartyMarriageDate").attr("readonly","readonly"); 
+        //        tranModel["PartyName"] = res.Name; 
+        //        tranModel["PartyAddress"] = res.Address; 
+        //        tranModel["PartyDob"] = res.Dob;
+        //        tranModel["PartyMarriageDate"] = res.MarriageDate;
+        //        $("#PartyName,#PartyAddress,#PartyDob,#PartyMarriageDate").attr("readonly","readonly"); 
 
 
-            }
+        //    }
              
-        });
+        //});
     }
 }

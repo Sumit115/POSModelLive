@@ -76,6 +76,7 @@ namespace SSRepository.Repository.Master
                                           DefaultQty = cou.DefaultQty,
                                           AllowZeroRate = cou.AllowZeroRate,
                                           AllowFreeQty = cou.AllowFreeQty,
+                                          DocumentType = cou.DocumentType,
 
                                       }
                                      )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();

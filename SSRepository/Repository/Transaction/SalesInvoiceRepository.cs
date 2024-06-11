@@ -11,6 +11,7 @@ using System.Net.Http.Headers;
 using SSRepository.Repository.Master;
 using Azure;
 using System.Xml.Linq;
+using System.Runtime.ConstrainedExecution;
 
 namespace SSRepository.Repository.Transaction
 {
@@ -58,7 +59,7 @@ namespace SSRepository.Repository.Transaction
             }
             if (model.FKSeriesId == 0)
             {
-                var _entity = __dbContext.TblSeriesMas.Where(x => x.TranAlias == TranAlias).FirstOrDefault();
+                var _entity = __dbContext.TblSeriesMas.Where(x => x.TranAlias == TranAlias && x.DocumentType == DocumentType).FirstOrDefault();
                 if (_entity != null)
                 {
                     model.SeriesName = _entity.Series == null ? "" : _entity.Series.ToString();

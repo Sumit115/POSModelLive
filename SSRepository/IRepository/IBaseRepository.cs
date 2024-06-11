@@ -9,10 +9,11 @@ namespace SSRepository.IRepository
         
         Task<string> CreateAsync(object tblmas, string Mode, Int64 ID, string dbType = "");
         object GetDrpState();
+       
 
     }
     public interface IBaseRepository
     {
-
+        string GetSysDefaultsByKey(string SysDefKey);
     }
 }

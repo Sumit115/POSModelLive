@@ -66,24 +66,25 @@ namespace SSAdmin.Areas.Transactions.Controllers
             {
                 if (model.ExtProperties.DocumentType == "C")
                 {
-                    if (model.FkPartyId <= 0)
-                    {
-                        var _checkMobile = _repository.GeWalkingCustomer_byMobile(model.PartyMobile);
-                        if (_checkMobile == null)
-                        {
-                            var _md = new WalkingCustomerModel();
-                            _md.Mobile = model.PartyMobile;
-                            _md.Name = model.PartyName;
-                            _md.Address = model.PartyAddress;
-                            _md.Dob = model.PartyDob;
-                            _md.MarriageDate = model.PartyMarriageDate;
-                            _md.FKCreatedByID = _md.FKUserId = LoginId;
-                            _md.FkLocationId = model.FKLocationID;
-                            model.FkPartyId = _repository.SaveWalkingCustomer(_md);
-                        }
-                        else
-                            model.FkPartyId = _checkMobile.PkId;
-                    }
+                    //if (model.FkPartyId <= 0)
+                    //{
+                    //    var _checkMobile = _repository.GeWalkingCustomer_byMobile(model.PartyMobile);
+                    //    if (_checkMobile == null)
+                    //    {
+                    //        var _md = new WalkingCustomerModel();
+                    //        _md.Mobile = model.PartyMobile;
+                    //        _md.Name = model.PartyName;
+                    //        _md.Address = model.PartyAddress;
+                    //        _md.Dob = model.PartyDob;
+                    //        _md.MarriageDate = model.PartyMarriageDate;
+                    //        _md.FKCreatedByID = _md.FKUserId = LoginId;
+                    //        _md.FkLocationId = model.FKLocationID;
+                    //        model.FkPartyId = _repository.SaveWalkingCustomer(_md);
+                    //    }
+                    //    else
+                    //        model.FkPartyId = _checkMobile.PkId;
+                    //}
+                    model.FkPartyId = 1;// Convert.ToInt64(_repository.GetSysDefaultsByKey("WalkInCustomer"));
                 }
                 string Error = _repository.Create(model);
                 if (string.IsNullOrEmpty(Error))

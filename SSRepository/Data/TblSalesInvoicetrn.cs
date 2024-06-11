@@ -42,7 +42,13 @@ namespace SSRepository.Data
         public string? InvStatus { get; set; }
         public bool DraftMode { get; set; }
         public string?  TrnStatus { get; set; }
-      
+
+        public string? PartyName { get; set; } 
+        public string? PartyMobile { get; set; } 
+        public string? PartyAddress { get; set; } 
+        public string? PartyDob { get; set; }
+        public string? PartyMarriageDate { get; set; }
+
 
     }
 }

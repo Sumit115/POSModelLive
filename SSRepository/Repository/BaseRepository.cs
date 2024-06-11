@@ -647,6 +647,14 @@ namespace SSRepository.Repository
 
         }
 
+        public string GetSysDefaultsByKey(string SysDefKey)
+        {
+
+            return (from x in __dbContext.TblSysDefaults
+                    where x.SysDefKey == SysDefKey
+                    select  x).FirstOrDefault().SysDefValue;
+        }
+
     }
 
 }
