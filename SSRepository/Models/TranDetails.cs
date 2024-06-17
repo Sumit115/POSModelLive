@@ -32,6 +32,8 @@ namespace SSRepository.Models
         public DateTime? ExpiryDate { get; set; }//Opt | Only Purchase
         public decimal MRP { get; set; }
         public decimal? SaleRate { get; set; }//Only Purchase
+        public decimal? TradeRate { get; set; }//Only Purchase
+        public decimal? DistributionRate { get; set; }//Only Purchase
         //New End
 
         public decimal Rate { get; set; }//=Prodct Price according Series Selection

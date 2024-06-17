@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>File Upload</h2>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+
+        <form method="post"  asp-action="FileUpload" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="file" name="SingleFile" class="form-control" />
+            <button type="submit" name="Upload" class="btn btn-primary">Upload</button>
+        </form>
+    </div>
+</div>
+
+ 

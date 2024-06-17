@@ -45,7 +45,7 @@ $(document).ready(function () {
         $(this).focus();
     });
     $("#PartyMobile").change(function () {
-        GetWalkingCustomerDetail($(this).val()); 
+        GetWalkingCustomerDetail($(this).val());
     });
 });
 
@@ -292,8 +292,33 @@ function BindGrid(GridId, data) {
                 else if (field == "Qty") {
                     ColumnChange(args, args.row, "Qty");
                 }
+                else if (field == "MRP") {
+                    var MRP = parseFloat(args.item["MRP"]);
+                    var Rate = parseFloat(args.item["Rate"]);
+                    if (MRP < Rate) {
+                        args.item["MRP"] = Rate;
+                        alert('Invalid MRP');
+                    }
+                    ColumnChange(args, args.row, "MRP");
+                }
                 else if (field == "Rate") {
+                    debugger;
+                    var MRP = parseFloat(args.item["MRP"]);
+                    var Rate = parseFloat(args.item["Rate"]);
+                    if (MRP < Rate) {
+                        args.item["Rate"] = MRP;
+                        alert('Invalid Rate');
+                    }
                     ColumnChange(args, args.row, "Rate");
+                }
+                else if (field == "SaleRate") {
+                    //  ColumnChange(args, args.row, "SaleRate");
+                }
+                else if (field == "TradeRate") {
+                    //    ColumnChange(args, args.row, "TradeRate");
+                }
+                else if (field == "DistributerRate") {
+                    // ColumnChange(args, args.row, "DistributerRate");
                 }
                 else if (field == "TradeDisc") {
                     ColumnChange(args, args.row, "TradeDisc");
@@ -406,6 +431,8 @@ function cg_ClearRow(args) {
     args.item["Batch_Text"] = "";
     args.item["Batch"] = "";
     args.item["SaleRate"] = "";
+    args.item["TradeRate"] = "";
+    args.item["DistributionRate"] = "";
     args.item["MfgDate"] = "";
     args.item["FKInvoiceID"] = 0;
     args.item["InvoiceSrNo"] = 0;
@@ -551,6 +578,8 @@ function setGridRowData(args, data, rowIndex, fieldName) {
         args.item["MfgDate"] = data[rowIndex].MfgDate;
         args.item["ExpiryDate"] = data[rowIndex].ExpiryDate;
         args.item["SaleRate"] = data[rowIndex].SaleRate;
+        args.item["TradeRate"] = data[rowIndex].TradeRate;
+        args.item["DistributionRate"] = data[rowIndex].DistributionRate;
         args.item["InvoiceDate"] = data[rowIndex].InvoiceDate;
         args.item["FKInvoiceID_Text"] = data[rowIndex].FKInvoiceID_Text;
         args.item["FKInvoiceSrID"] = data[rowIndex].FKInvoiceSrID;
@@ -600,17 +629,17 @@ function GetDataFromGrid(ifForsave) {
 }
 
 function SaveRecord() {
-  
+
     Common.Get(".form", "", function (flag, _d) {
-        
+
         if (flag) {
-          
+
             tranModel.PkId = $('#PkId').val();
             tranModel.FkPartyId = $('#FkPartyId').val();
             tranModel.EntryDate = $('#EntryDate').val();
             tranModel.GRDate = $('#GRDate').val();
             tranModel.TranDetails = [];
-            if ((tranModel.FkPartyId > 0) || (tranModel.ExtProperties.DocumentType=="C")) {
+            if ((tranModel.FkPartyId > 0) || (tranModel.ExtProperties.DocumentType == "C")) {
                 if (tranModel.FKSeriesId > 0) {
                     tranModel.TranDetails = GetDataFromGrid(true);
 
@@ -725,11 +754,11 @@ function trandtldropList(data) {
         }
     });
     return output;
-     
+
 }
 
 function GetWalkingCustomerDetail(Mobile) {
- 
+
     if (tranModel.ExtProperties.DocumentType == "C") {
         //$("#FkPartyId").val('0');
         //$("#PartyName,#PartyAddress,#PartyDob,#PartyMarriageDate").removeAttr("readonly"); 
@@ -751,7 +780,7 @@ function GetWalkingCustomerDetail(Mobile) {
 
 
         //    }
-             
+
         //});
     }
 }
