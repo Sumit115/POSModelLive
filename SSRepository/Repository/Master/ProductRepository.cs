@@ -289,7 +289,7 @@ namespace SSRepository.Repository.Master
             Tbl.FKProdCatgId = model.FKProdCatgId;
             Tbl.FKTaxID = model.FKTaxID;
             Tbl.HSNCode = model.HSNCode;
-            Tbl.FkBrandId = model.FkBrandId;
+            Tbl.FkBrandId = model.FkBrandId>0? model.FkBrandId:null;
             Tbl.ShelfID = model.ShelfID;
             Tbl.TradeDisc = model.TradeDisc;
             Tbl.MinStock = model.MinStock;

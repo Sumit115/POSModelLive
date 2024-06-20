@@ -5,6 +5,7 @@ using SSRepository.Data;
 using SSRepository.IRepository;
 using SSRepository.Models;
 using System.Data;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace SSRepository.Repository
@@ -72,8 +73,10 @@ namespace SSRepository.Repository
         {
             try
             {
+                long MaxID = 0;
+
                 //int? BranchNo = 0;
-                //var SysDefValue = _context.TblSysDefaults.FirstOrDefault(a => a.SysDefKey == "BranchNo").SysDefValue;
+                //var SysDefValue = __dbContext.TblSysDefaults.FirstOrDefault(a => a.SysDefKey == "BranchNo").SysDefValue;
 
 
                 //if (SysDefValue != null)
@@ -81,7 +84,7 @@ namespace SSRepository.Repository
                 //    try
                 //    {
                 //        //BranchNo = _context.TblBranchMas.FirstOrDefault(a => a.PkbranchId == Convert.ToInt64(SysDefValue)).No;
-                //        BranchNo = _context.TblBranchMas.Where(a => a.PkbranchId == Convert.ToInt64(SysDefValue)).Select(a => a.No).First();
+                //        BranchNo = __dbContext.TblBranchMas.Where(a => a.PkBranchId == Convert.ToInt64(SysDefValue)).Select(a => a.No).First();
                 //    }
                 //    catch
                 //    {
@@ -92,7 +95,7 @@ namespace SSRepository.Repository
                 //Int64 BranchID = 10000000 * Convert.ToInt32(BranchNo);
                 //Int64 MaxBranchID = 10000000 * Convert.ToInt32(BranchNo + 1);
 
-                //IQueryable queryableData = _context.Query(entity.GetType());
+                //IQueryable queryableData = __dbContext.Query(entity.GetType());
 
                 //var tbl = Expression.Parameter(entity.GetType(), "tbl");
                 //var prop = Expression.Property(tbl, ColumnName);
@@ -111,7 +114,7 @@ namespace SSRepository.Repository
                 ////var abc = queryableData.Provider.CreateQuery(whereCallExpression);
                 //var lstMaxID = queryableData.Provider.CreateQuery(whereCallExpression).ToDynamicList();//.Aggregate("Max", ColumnName);
 
-                //long MaxID = 0;
+                ////long MaxID = 0;
                 //if (lstMaxID.Count == 0)
                 //{
                 //    MaxID = BranchID;
@@ -123,7 +126,9 @@ namespace SSRepository.Repository
                 //}
 
                 //return Convert.ToInt64(MaxID) + 1;
-                long MaxID = 0;
+
+                //Static bt Table Name 
+
                 if (TableName == "TblAccountMas")
                 {
                     MaxID = __dbContext.TblAccountMas.ToList().Count > 0 ? __dbContext.TblAccountMas.ToList().Max(x => x.PkAccountId) : 0;
@@ -139,6 +144,10 @@ namespace SSRepository.Repository
                 else if (TableName == "TblAccountLicDtl")
                 {
                     MaxID = __dbContext.TblAccountLicDtl.ToList().Count > 0 ? __dbContext.TblAccountLicDtl.ToList().Max(x => x.PKAccountLicDtlId) : 0;
+                }
+                else if (TableName == "TblCategoryMas")
+                {
+                    MaxID = __dbContext.TblCategoryMas.ToList().Count > 0 ? __dbContext.TblCategoryMas.ToList().Max(x => x.PkCategoryId) : 0;
                 }
 
                 return Convert.ToInt64(MaxID) + 1;

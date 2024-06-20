@@ -207,7 +207,7 @@ namespace SSRepository.Repository.Master
                 if (lstDel.Count() > 0)
                     DeleteData(lstDel, true);
                 //if (lstEdit.Count() > 0)
-                //    UpdateData(lstEdit, true);
+                //    UpdateData(lstEdit, true); 
                 if (lstAdd.Count() > 0)
                     AddData(lstAdd, true);
             }
