@@ -23,7 +23,7 @@ namespace SSRepository.Repository.Transaction
             return error;
 
         }
-     
+
 
         public object SetLastSeries(TransactionModel model, long UserId, string TranAlias, string DocumentType)
         {

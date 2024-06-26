@@ -656,6 +656,7 @@ function C_Ajax(url, Postdata, Loadmsg, callBackFunction) {
         url: url,
         dataType: "json",
         contentType: 'application/json; charset=utf-8',
+        async: false,
         success: function (data) {
             callBackFunction(data)
         },

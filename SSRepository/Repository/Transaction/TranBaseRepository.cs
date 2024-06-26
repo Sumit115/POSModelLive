@@ -59,7 +59,27 @@ namespace SSRepository.Repository.Transaction
         {
             //
             string Error = "";
-            Error = ValidData(objmodel);
+            try
+            {
+                if (objmodel.TranDetails != null)
+                {
+                    foreach (var item in objmodel.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
+                    {
+                        if (string.IsNullOrEmpty(item.Color))
+                        {
+                            throw new Exception("Color Required on Product " + item.Product);
+                        }
+                        if (string.IsNullOrEmpty(item.Batch))
+                        {
+                            throw new Exception("Batch Required on Product " + item.Product);
+                        }
+                    }
+
+                }
+
+                Error = ValidData(objmodel);
+            }
+            catch (Exception ex) { Error = ex.Message; }
             return Error;
         }
 
@@ -78,21 +98,7 @@ namespace SSRepository.Repository.Transaction
                     Error = "Please Enter Valid Credit Detail";
 
 
-                if (objmodel.TranDetails != null)
-                {
-                    foreach (var item in objmodel.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
-                    {
-                        if (string.IsNullOrEmpty(item.Color))
-                        {
-                            throw new Exception("Color Required on Product " + item.Product);
-                        }
-                        if (string.IsNullOrEmpty(item.Batch))
-                        {
-                            throw new Exception("Batch Required on Product " + item.Product);
-                        }
-                    }
-
-                }
+              
             }
             catch (Exception ex) { Error = ex.Message; }
             return Error;

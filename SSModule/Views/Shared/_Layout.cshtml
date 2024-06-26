@@ -2,11 +2,11 @@
 
 @if (Context.Session.GetString("LoginId") == null || Context.Session.GetString("LoginId") == "")
 {
-    //Context.Session.SetString("LoginId", Convert.ToString(1));
-    //Context.Session.SetInt32("IsAdmin", Convert.ToInt32(1));
-    //Context.Session.SetString("Photo", "/Admin/dist/img/avatar04.png");
+     Context.Session.SetString("LoginId", Convert.ToString(1));
+     Context.Session.SetInt32("IsAdmin", Convert.ToInt32(1));
+     Context.Session.SetString("Photo", "/Admin/dist/img/avatar04.png");
 
-    Context.Response.Redirect("/Auth");
+    //Context.Response.Redirect("/Auth");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -468,7 +468,7 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item">
+                       @* <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-columns"></i>
                                 <p>
@@ -479,14 +479,14 @@
                             <ul class="nav nav-treeview">
 
                                 <li class="nav-item">
-                                    <a asp-area="ImportExport" asp-controller="Import" asp-action="Index" class="nav-link">
+                                    <a asp-area="Transactions" asp-controller="Import" asp-action="Files" class="nav-link">
                                         <i class="fas fa-clipboard-list nav-icon"></i>
                                         <p>Import<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                                 
                             </ul>
-                        </li>
+                        </li>*@
                     </ul>
                 </nav>
             </div>

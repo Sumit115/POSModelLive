@@ -115,7 +115,7 @@ function BindGrid(GridId, data) {
                             cg.columns[kk]["fieldval"] = "FkLotId";
                             cg.columns[kk]["KeyID"] = "PkLotId";
                             cg.columns[kk]["KeyValue"] = "Batch";
-                            cg.columns[kk]["Keyfield"] = "Batch";
+                            cg.columns[kk]["Keyfield"] = "Batch,Color,MRP,SaleRate,PurchaseRate";
                             cg.columns[kk]["RowValue"] = "FkProductId";
                             cg.columns[kk]["ExtraValue"] = "TranAlias,TranType"; //tranModel.ExtProperties.TranAlias;
                         }
@@ -126,7 +126,7 @@ function BindGrid(GridId, data) {
                             cg.columns[kk]["fieldval"] = "FkLotId";
                             cg.columns[kk]["KeyID"] = "PkLotId";
                             cg.columns[kk]["KeyValue"] = "Color";
-                            cg.columns[kk]["Keyfield"] = "Color";
+                            cg.columns[kk]["Keyfield"] = "Color,Batch,MRP,SaleRate,PurchaseRate";
                             cg.columns[kk]["RowValue"] = "FkProductId";
                         }
                         break
@@ -135,13 +135,16 @@ function BindGrid(GridId, data) {
                         if (tranModel.ExtProperties.StockFlag == "I") {
                             cg.columns[kk]["fieldval"] = "MRP";
                             cg.columns[kk]["KeyID"] = "MRP";
+                            cg.columns[kk]["Keyfield"] = "MRP";
+
                         } else {
                             cg.columns[kk]["fieldval"] = "FkLotId";
                             cg.columns[kk]["KeyID"] = "PkLotId";
+                            cg.columns[kk]["Keyfield"] = "MRP,Color,Batch,SaleRate,PurchaseRate";
+
                         }
                         cg.columns[kk]["KeyValue"] = "MRP";
-                        cg.columns[kk]["Keyfield"] = "MRP";
-                        cg.columns[kk]["RowValue"] = "FkProductId";
+                         cg.columns[kk]["RowValue"] = "FkProductId";
 
                         break
                 }
@@ -180,6 +183,7 @@ function BindGrid(GridId, data) {
         /*---------------    ---------------   ---------------   ---------------*/
         cg.outGrid.onBeforeEditCell.subscribe(function (e, args) {
             if (args.cell != undefined) {
+                debugger;
                 var field = cg.columns[args.cell].field;
 
                 if (field != "InvoiceDate" && field != "FKInvoiceID_Text" && field != "Product" && Common.isNullOrEmpty(args.item["Product"])) {
@@ -467,6 +471,7 @@ function ColumnChange(args, rowIndex, fieldName) {
     tranModel.TranDetails = GetDataFromGrid();
 
     if (tranModel.TranDetails.length > 0) {
+        $(".loader").show();
         $.ajax({
             type: "POST",
             url: Handler.currentPath() + 'ColumnChange',
@@ -484,6 +489,8 @@ function ColumnChange(args, rowIndex, fieldName) {
                 }
                 else
                     alert(res.msg);
+
+                $(".loader").hide();
             }
         });
     }

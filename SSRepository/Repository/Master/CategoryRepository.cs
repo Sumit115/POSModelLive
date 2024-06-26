@@ -164,7 +164,7 @@ namespace SSRepository.Repository.Master
             if (model.CategorySize_lst != null)
             {
                 List<TblCategorySizeLnk> lstAdd = new List<TblCategorySizeLnk>();
-               // List<TblCategorySizeLnk> lstEdit = new List<TblCategorySizeLnk>();
+                // List<TblCategorySizeLnk> lstEdit = new List<TblCategorySizeLnk>();
                 List<TblCategorySizeLnk> lstDel = new List<TblCategorySizeLnk>();
                 foreach (var item in model.CategorySize_lst)
                 {
@@ -194,7 +194,7 @@ namespace SSRepository.Repository.Master
                     {
                         var res1 = (from x in __dbContext.TblCategorySizeLnk
                                     where x.FkCategoryId == locObj.FkCategoryId && x.Size == locObj.Size
-                                    && x.PkId==locObj.PkId
+                                    && x.PkId == locObj.PkId
                                     select x).Count();
                         if (res1 > 0)
                         {
@@ -223,7 +223,7 @@ namespace SSRepository.Repository.Master
                   new ColumnStructure{ pk_Id=1, Orderby =4, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                        };
+            };
             return list;
         }
 
