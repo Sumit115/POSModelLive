@@ -627,7 +627,7 @@ var Handler = {
                 flag = true;
         return flag;
     },
-    convertToSpace: function(v) {
+    convertToSpace: function (v) {
         return v.replace(/([A-Z])/g, ' $1').trim();
     },
     bowser: function () {
@@ -1052,7 +1052,7 @@ function C_GridColSetup(n, n2, f) {
 
     var url = "GridStrucher?FormId=" + n;
     if (n2 != '' && n2 != undefined && n2 != null) {
-        url += "&TranType=" + n2;
+        url += "&GridName=" + n2;
 
     }
     Common.ajax(Handler.currentPath() + url, {}, "Please Wait...", function (res) {
@@ -1131,7 +1131,8 @@ function C_GridColSetup(n, n2, f) {
                     var _d = {
                         PkGridId: $('#hdPkGridId').val(),
                         JsonData: jsonData,
-                        FkFormId: $("#hdFormId").val()
+                        FkFormId: $("#hdFormId").val(),
+                        GridName: $("#hdGridName").val()
                     };
                     //
                     $.ajax({
@@ -1178,7 +1179,7 @@ function C_ShowFilterPopup(type) {
             datatype: "json",
             success: function (res) {
 
-                if (res.status == "success") { 
+                if (res.status == "success") {
                     $('#hd' + type + 'List').val(JSON.stringify(res.data));
                     htm = fn_GetPopuphtml(type, res.data);
                     showpopupWithData(htm);
@@ -1186,7 +1187,7 @@ function C_ShowFilterPopup(type) {
                 }
                 else
                     alert(res.msg);
-               
+
             }
         });
 

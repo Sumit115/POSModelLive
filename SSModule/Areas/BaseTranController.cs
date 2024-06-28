@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SSRepository.IRepository;
@@ -31,7 +32,7 @@ namespace SSAdmin.Areas
         protected void BindViewBags(object Trans)
         {
             ViewBag.Data = JsonConvert.SerializeObject(Trans);
-         //   ViewBag.ProductList = JsonConvert.SerializeObject(_repository.ProductList());
+            //   ViewBag.ProductList = JsonConvert.SerializeObject(_repository.ProductList());
             ViewBag.BankList = _repository.BankList();
         }
 
@@ -146,7 +147,7 @@ namespace SSAdmin.Areas
         [HttpPost]
         public object FKSeriesId(int pageSize, int pageNo = 1, string search = "")
         {
-            return _repository.SeriesList(pageSize, pageNo, search, TranAlias,DocumentType);
+            return _repository.SeriesList(pageSize, pageNo, search, TranAlias, DocumentType);
         }
 
         [HttpPost]
@@ -182,18 +183,34 @@ namespace SSAdmin.Areas
         //    catch (Exception ex) { return new JsonResult(new object()); }
         //}
 
-        [HttpGet]        
+        [HttpGet]
         public object trandtldropList(int pageSize, int pageNo = 1, string search = "", string name = "", string RowParam = "", string ExtraParam = "")
         {
             int value = 0;
             if (name == "Product")
                 return _repository.ProductList(pageSize, pageNo, search);
-            else if (name == "Batch" && int.TryParse(RowParam, out   value))
+            else if (name == "Batch" && int.TryParse(RowParam, out value))
                 return _repository.ProductBatchList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
-            else if (name == "Color" && int.TryParse(RowParam, out   value))
-                return _repository.ProductColorList(pageSize, pageNo, search, Convert.ToInt64(RowParam),ExtraParam);
-            else if (name == "MRP" && int.TryParse(RowParam, out value))
-                return _repository.ProductMRPList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
+            else if (name == "Color")
+            {
+                string[] _r = RowParam.Split("~");
+                if (int.TryParse(_r[0], out value))
+                {   return _repository.ProductColorList(pageSize, pageNo, search, Convert.ToInt64(_r[0]), ExtraParam, _r.Length>1?_r[1]:"");
+                }
+                else
+                    return null;
+            }
+            else if (name == "MRP"  )
+            {
+                string[] _r = RowParam.Split("~");
+                if (int.TryParse(_r[0], out value))
+                {
+                    return _repository.ProductMRPList(pageSize, pageNo, search, Convert.ToInt64(_r[0]), _r.Length > 1 ? _r[1] : "", _r.Length > 2 ? _r[2] : "");
+                }
+                else
+                    return null;
+                //return _repository.ProductMRPList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
+            }
             else
                 return null;
         }

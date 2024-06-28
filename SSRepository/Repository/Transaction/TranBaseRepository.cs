@@ -65,13 +65,13 @@ namespace SSRepository.Repository.Transaction
                 {
                     foreach (var item in objmodel.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
                     {
-                        if (string.IsNullOrEmpty(item.Color))
-                        {
-                            throw new Exception("Color Required on Product " + item.Product);
-                        }
+                        //if (string.IsNullOrEmpty(item.Color))
+                        //{
+                        //    throw new Exception("Color Required on Product " + item.Product);
+                        //}
                         if (string.IsNullOrEmpty(item.Batch))
                         {
-                            throw new Exception("Batch Required on Product " + item.Product);
+                            throw new Exception("Size Required on Product " + item.Product);
                         }
                     }
 
@@ -98,7 +98,7 @@ namespace SSRepository.Repository.Transaction
                     Error = "Please Enter Valid Credit Detail";
 
 
-              
+
             }
             catch (Exception ex) { Error = ex.Message; }
             return Error;
@@ -372,6 +372,11 @@ namespace SSRepository.Repository.Transaction
                 var product = new ProductRepository(__dbContext).GetSingleRecord(detail.FkProductId);
                 if (product != null)
                 {
+                    string BillingRate = (model.TranAlias == "PORD" || model.TranAlias == "PINV") ? "PurchaseRate" : "SaleRate";
+
+                    var _Series = new SeriesRepository(__dbContext).GetSingleRecord(model.FKSeriesId);
+                    if (_Series != null) { BillingRate = _Series.BillingRate; }
+
                     var _checkSrNo = model.TranDetails.ToList().Where(x => x.FkProductId > 0 && x.Qty > 0).ToList();
                     if (_checkSrNo.Count > 0)
                     {
@@ -379,6 +384,8 @@ namespace SSRepository.Repository.Transaction
 
                     }
                     else { detail.SrNo = 1; }
+
+
                     detail.FkProductId = product.PkProductId;
                     detail.Qty = 1;
                     detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
@@ -389,6 +396,13 @@ namespace SSRepository.Repository.Transaction
                     {
                         detail.MRP = _lotEntity.MRP;
                         detail.SaleRate = _lotEntity.SaleRate > 0 ? _lotEntity.SaleRate : 0;
+                      
+                        if (BillingRate == "MRP") { detail.SaleRate = _lotEntity.MRP > 0 ? _lotEntity.MRP : 0; }
+                        if (BillingRate == "SaleRate") { detail.SaleRate = _lotEntity.SaleRate > 0 ? _lotEntity.SaleRate : 0; }
+                        if (BillingRate == "TradeRate") { detail.SaleRate = _lotEntity.TradeRate > 0 ? _lotEntity.TradeRate : 0; }
+                        if (BillingRate == "DistributionRate") { detail.SaleRate = _lotEntity.DistributionRate > 0 ? _lotEntity.DistributionRate : 0; }
+                        if (BillingRate == "PurchaseRate") { detail.SaleRate = _lotEntity.PurchaseRate > 0 ? _lotEntity.PurchaseRate : 0; }
+                        
                         detail.FkLotId = _lotEntity.PkLotId;
                         detail.Color = _lotEntity.Color;
                         detail.Batch = _lotEntity.Batch;
@@ -396,20 +410,35 @@ namespace SSRepository.Repository.Transaction
                         {
                             detail.FkLotId = 0;
                         }
-                     }
+                    }
                     else
                     {
                         detail.MRP = product.MRP;
                         detail.SaleRate = product.SaleRate;
+                        if (BillingRate == "MRP") { detail.SaleRate = product.MRP > 0 ? product.MRP : 0; }
+                        if (BillingRate == "SaleRate") { detail.SaleRate = product.SaleRate > 0 ? product.SaleRate : 0; }
+                        if (BillingRate == "TradeRate") { detail.SaleRate = product.TradeRate > 0 ? product.TradeRate : 0; }
+                        if (BillingRate == "DistributionRate") { detail.SaleRate = product.DistributionRate > 0 ? product.DistributionRate : 0; }
+                        if (BillingRate == "PurchaseRate") { detail.SaleRate = product.PurchaseRate > 0 ? product.PurchaseRate : 0; }
+
                         detail.FkLotId = 0;
                         detail.Batch = "";
                         detail.Color = "";
                     }
                     detail.GstRate = (detail.SaleRate < 1000 ? 5 : 18);
                     detail.Rate = Math.Round(Convert.ToDecimal(detail.SaleRate) * (100 / (100 + detail.GstRate)), 2);
+
                     detail.TradeDisc = 0;
                     detail.TradeDiscAmt = 0;
                     detail.TradeDiscType = "";
+
+                    if (model.FkPartyId > 0 && (model.TranAlias == "SORD" || model.TranAlias == "SINV"))
+                    {
+                        var _cust = new CustomerRepository(__dbContext).GetSingleRecord(model.FkPartyId);
+                        detail.TradeDisc = _cust.Disc;
+
+                    }
+
                     detail.Qty = 1;
                     detail.TradeRate = detail.DistributionRate = detail.SaleRate;
 
@@ -470,16 +499,29 @@ namespace SSRepository.Repository.Transaction
             if (detail != null)
             {
 
-                var _productLot = __dbContext.TblProdLotDtl.Where(x => x.FKProductId == detail.FkProductId && x.PkLotId == detail.FkLotId).FirstOrDefault();
-                if (_productLot != null)
+                var _lotEntity = __dbContext.TblProdLotDtl.Where(x => x.FKProductId == detail.FkProductId && x.PkLotId == detail.FkLotId).FirstOrDefault();
+                if (_lotEntity != null)
                 {
+                    string BillingRate = (model.TranAlias == "PORD" || model.TranAlias == "PINV") ? "PurchaseRate" : "SaleRate";
 
-                    detail.MRP = _productLot.MRP;
-                    detail.SaleRate = _productLot.SaleRate > 0 ? _productLot.SaleRate : 0;
+                    var _Series = new SeriesRepository(__dbContext).GetSingleRecord(model.FKSeriesId);
+                    if (_Series != null) { BillingRate = _Series.BillingRate; }
+
+
+
+                    detail.MRP = _lotEntity.MRP;
+                    detail.SaleRate = _lotEntity.SaleRate > 0 ? _lotEntity.SaleRate : 0;
+
+                    if (BillingRate == "MRP") { detail.SaleRate = _lotEntity.MRP > 0 ? _lotEntity.MRP : 0; }
+                    if (BillingRate == "SaleRate") { detail.SaleRate = _lotEntity.SaleRate > 0 ? _lotEntity.SaleRate : 0; }
+                    if (BillingRate == "TradeRate") { detail.SaleRate = _lotEntity.TradeRate > 0 ? _lotEntity.TradeRate : 0; }
+                    if (BillingRate == "DistributionRate") { detail.SaleRate = _lotEntity.DistributionRate > 0 ? _lotEntity.DistributionRate : 0; }
+                    if (BillingRate == "PurchaseRate") { detail.SaleRate = _lotEntity.PurchaseRate > 0 ? _lotEntity.PurchaseRate : 0; }
+
                     detail.GstRate = (detail.SaleRate < 1000 ? 5 : 18);
                     detail.Rate = Math.Round(Convert.ToDecimal(detail.SaleRate) * (100 / (100 + detail.GstRate)), 2);
-                    detail.Color = _productLot.Color;
-                    detail.Batch = _productLot.Batch;
+                    detail.Color = _lotEntity.Color;
+                    detail.Batch = _lotEntity.Batch;
                 }
 
             }
@@ -540,7 +582,7 @@ namespace SSRepository.Repository.Transaction
                 decimal amt = item.Rate * item.Qty;
                 decimal decAmt = item.TradeDisc > 0 ? (amt * item.TradeDisc / 100) : item.TradeDiscAmt;
 
-                item.GstRate = (item.Rate < 1000 ? 5 : 18); 
+                item.GstRate = (item.Rate < 1000 ? 5 : 18);
                 item.TradeDiscAmt = decAmt;
                 item.GrossAmt = Math.Round(amt - item.TradeDiscAmt, 2);//Math.Round(item.Rate * item.Qty, 2) ;
                 item.GstAmt = Math.Round(item.GrossAmt * item.GstRate / 100, 2);
@@ -847,7 +889,7 @@ namespace SSRepository.Repository.Transaction
             return data;
         }
 
-    
+
         public List<ProductModel> ProductList(int pageSize, int pageNo = 1, string search = "", long FkPartyId = 0, long FkInvoiceId = 0, DateTime? InvoiceDate = null)
         {
             ProductRepository rep = new ProductRepository(__dbContext);
@@ -888,7 +930,7 @@ namespace SSRepository.Repository.Transaction
             return data;
         }
 
-        public List<ProdLotDtlModel> ProductColorList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0, string TranAlias = "")
+        public List<ProdLotDtlModel> ProductColorList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0, string TranAlias = "", string Batch = "")
         {
             List<ProdLotDtlModel> data = new List<ProdLotDtlModel>();
 
@@ -899,6 +941,7 @@ namespace SSRepository.Repository.Transaction
                 data = (from cou in __dbContext.TblProdLotDtl
                         where cou.FKProductId == PKProductId
                         && (EF.Functions.Like(cou.Color.Trim().ToLower(), Convert.ToString(search) + "%"))
+                        && (cou.Batch == Batch || Batch == "")
                         orderby cou.PkLotId
                         select (new ProdLotDtlModel
                         {
@@ -920,25 +963,27 @@ namespace SSRepository.Repository.Transaction
             else
             {
                 data = (from cou in __dbContext.TblProdLotDtl
-                              where cou.FKProductId == PKProductId
-                       && (EF.Functions.Like(cou.Color.Trim().ToLower(), Convert.ToString(search) + "%"))
-                              group cou.Color by cou.Color into g
-                               select (new ProdLotDtlModel
-                               {
-                                     Color = g.Key, 
-                               }
-                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList(); 
+                        where cou.FKProductId == PKProductId
+                 && (EF.Functions.Like(cou.Color.Trim().ToLower(), Convert.ToString(search) + "%"))
+                        group cou.Color by cou.Color into g
+                        select (new ProdLotDtlModel
+                        {
+                            Color = g.Key,
+                        }
+                )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             }
             return data;
         }
 
-        public List<ProdLotDtlModel> ProductMRPList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0)
+        public List<ProdLotDtlModel> ProductMRPList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0, string Batch = "", string Color = "")
         {
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<ProdLotDtlModel> data = (from cou in __dbContext.TblProdLotDtl
                                           where cou.FKProductId == PKProductId
-                                          where (EF.Functions.Like(cou.MRP.ToString().Trim().ToLower(), Convert.ToString(search) + "%"))
+                                          && (cou.Batch == Batch || Batch == "")
+                                          && (cou.Color == Color || Color == "")
+                                          && (EF.Functions.Like(cou.MRP.ToString().Trim().ToLower(), Convert.ToString(search) + "%"))
                                           orderby cou.PkLotId
                                           select (new ProdLotDtlModel
                                           {
@@ -1180,8 +1225,8 @@ namespace SSRepository.Repository.Transaction
                 {
                     new ColumnStructure{ pk_Id=1,   Orderby =1,  Heading ="ArticalNo",    Fields="Product",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
                     new ColumnStructure{ pk_Id=2,   Orderby =2,  Heading ="Size",         Fields="Batch",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
-                    new ColumnStructure{ pk_Id=3,   Orderby =3,  Heading ="Color",        Fields="Color",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
-                    new ColumnStructure{ pk_Id=4,   Orderby =4,  Heading ="MRP",          Fields="MRP",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
+                    new ColumnStructure{ pk_Id=3,   Orderby =3,  Heading ="Color",        Fields="Color",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=4,   Orderby =4,  Heading ="MRP",          Fields="MRP",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
                     new ColumnStructure{ pk_Id=5,   Orderby =5,  Heading ="Rate",         Fields="Rate",                Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""},
                     new ColumnStructure{ pk_Id=6,   Orderby =6,  Heading ="QTY",          Fields="Qty",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
                     new ColumnStructure{ pk_Id=7,   Orderby =7,  Heading ="Free Qty",     Fields="FreeQty",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},

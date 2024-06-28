@@ -7,6 +7,8 @@ $(document).ready(function () {
     Load();
 
     TranAlias = tranModel.ExtProperties.TranAlias;
+    $("#hdFormId").val(tranModel.ExtProperties.FKFormID);
+    $("#hdGridName").val('dtl');
     ControllerName = $("#hdControllerName").val();
     if ((TranAlias == "SRTN" || TranAlias == "SCRN" || TranAlias == "PORD" || TranAlias == "PINV")) {
         $("#txtSearchBarcode").hide();
@@ -115,7 +117,7 @@ function BindGrid(GridId, data) {
                             cg.columns[kk]["fieldval"] = "FkLotId";
                             cg.columns[kk]["KeyID"] = "PkLotId";
                             cg.columns[kk]["KeyValue"] = "Batch";
-                            cg.columns[kk]["Keyfield"] = "Batch,Color,MRP,SaleRate,PurchaseRate";
+                            cg.columns[kk]["Keyfield"] = "Batch,Color,MRP,SaleRate,PurchaseRate,TradeRate,DistributionRate";
                             cg.columns[kk]["RowValue"] = "FkProductId";
                             cg.columns[kk]["ExtraValue"] = "TranAlias,TranType"; //tranModel.ExtProperties.TranAlias;
                         }
@@ -126,8 +128,9 @@ function BindGrid(GridId, data) {
                             cg.columns[kk]["fieldval"] = "FkLotId";
                             cg.columns[kk]["KeyID"] = "PkLotId";
                             cg.columns[kk]["KeyValue"] = "Color";
-                            cg.columns[kk]["Keyfield"] = "Color,Batch,MRP,SaleRate,PurchaseRate";
-                            cg.columns[kk]["RowValue"] = "FkProductId";
+                            cg.columns[kk]["Keyfield"] = "Color";//,Batch,MRP,SaleRate,PurchaseRate";
+                            cg.columns[kk]["RowValue"] = "FkProductId,Batch";
+                            cg.columns[kk]["ExtraValue"] = ""; //tranModel.ExtProperties.TranAlias; 
                         }
                         break
                     case "MRP":
@@ -140,17 +143,17 @@ function BindGrid(GridId, data) {
                         } else {
                             cg.columns[kk]["fieldval"] = "FkLotId";
                             cg.columns[kk]["KeyID"] = "PkLotId";
-                            cg.columns[kk]["Keyfield"] = "MRP,Color,Batch,SaleRate,PurchaseRate";
+                            cg.columns[kk]["Keyfield"] = "MRP";//,Color,Batch,SaleRate,PurchaseRate";
 
                         }
                         cg.columns[kk]["KeyValue"] = "MRP";
-                         cg.columns[kk]["RowValue"] = "FkProductId";
+                        cg.columns[kk]["RowValue"] = "FkProductId,Batch,Color";
 
                         break
                 }
             }
         }
-        var obdt = cg.populateDataFromJson({
+        var obdt = cg.populateDataFromJson({ 
             srcData: data,
             mapData: arrmapData
         });
@@ -221,7 +224,7 @@ function BindGrid(GridId, data) {
                 }
                 else {
                     if (field == "Batch" || field == "Color" || field == "MRP") {
-
+                        debugger;
                         if (tranModel.ExtProperties.StockFlag == "I") {
                             args.item["FkLotId"] = 0;
                             var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
@@ -400,7 +403,7 @@ function BindGrid(GridId, data) {
             var row = $(this).data("row");
             var command = $(e.target).attr("data");
             if (command == "EditColumn") {
-                Common.GridColSetup(tranModel.ExtProperties.FKFormID, '', function () {
+                Common.GridColSetup(tranModel.ExtProperties.FKFormID, "dtl", function () {
                     var _dtl = GetDataFromGrid();
                     BindGrid('DDT', _dtl);
                 });
@@ -751,6 +754,7 @@ function setSeries() {
 }
 
 function trandtldropList(data) {
+    debugger;
     var output = []
     $.ajax({
         url: Handler.currentPath() + 'trandtldropList', data: data, async: false, dataType: 'JSON', success: function (result) {

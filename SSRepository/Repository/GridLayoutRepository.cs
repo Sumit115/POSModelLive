@@ -78,7 +78,9 @@ formbase:
             else
             {
                 var _entity = __dbContext.TblGridStructer
-               .Where(cou => cou.FkUserId == model.FkUserId && cou.FkFormId == model.FkFormId).FirstOrDefault();
+               .Where(cou => cou.FkUserId == model.FkUserId && cou.FkFormId == model.FkFormId
+               && cou.GridName== model.GridName
+               ).FirstOrDefault();
                 if (_entity != null)
                 {
                     //UserModel oldModel = GetSingleRecord(Tbl.PkId);
