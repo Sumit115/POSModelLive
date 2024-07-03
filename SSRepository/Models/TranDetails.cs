@@ -75,5 +75,9 @@ namespace SSRepository.Models
         public long ReturnTypeID { get; set; }
         public decimal TaxableAmt { get; set; }//=Prodct Price according Series Selection
 
+
+        public string? BrandName { get; set; }
+        public string? HSNCode { get; set; } 
+
     }
 }

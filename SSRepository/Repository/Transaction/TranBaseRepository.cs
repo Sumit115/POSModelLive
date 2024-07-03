@@ -199,6 +199,13 @@ namespace SSRepository.Repository.Transaction
                 {
                     List<TransactionModel> aa = JsonConvert.DeserializeObject<List<TransactionModel>>(dd);
                     data = aa[0];
+                    if (data.BranchDetails != null)
+                    {
+                        if (data.BranchDetails.Count > 0)
+                        {
+                            data.Branch = data.BranchDetails.FirstOrDefault();
+                        }
+                    }
                 }
             }
             else
@@ -396,13 +403,13 @@ namespace SSRepository.Repository.Transaction
                     {
                         detail.MRP = _lotEntity.MRP;
                         detail.SaleRate = _lotEntity.SaleRate > 0 ? _lotEntity.SaleRate : 0;
-                      
+
                         if (BillingRate == "MRP") { detail.SaleRate = _lotEntity.MRP > 0 ? _lotEntity.MRP : 0; }
                         if (BillingRate == "SaleRate") { detail.SaleRate = _lotEntity.SaleRate > 0 ? _lotEntity.SaleRate : 0; }
                         if (BillingRate == "TradeRate") { detail.SaleRate = _lotEntity.TradeRate > 0 ? _lotEntity.TradeRate : 0; }
                         if (BillingRate == "DistributionRate") { detail.SaleRate = _lotEntity.DistributionRate > 0 ? _lotEntity.DistributionRate : 0; }
                         if (BillingRate == "PurchaseRate") { detail.SaleRate = _lotEntity.PurchaseRate > 0 ? _lotEntity.PurchaseRate : 0; }
-                        
+
                         detail.FkLotId = _lotEntity.PkLotId;
                         detail.Color = _lotEntity.Color;
                         detail.Batch = _lotEntity.Batch;
@@ -590,7 +597,7 @@ namespace SSRepository.Repository.Transaction
                 item.SCAmt = Math.Round(item.GstAmt / 2, 2);
                 item.NetAmt = Math.Round(item.GrossAmt + item.GstAmt, 2);
                 item.FKLocationID = model.FKLocationID;
-                item.TaxableAmt = Math.Round(item.Rate - (item.SchemeDiscAmt + item.TradeDiscAmt + item.LotDiscAmt), 2);
+                item.TaxableAmt = Math.Round(amt - (item.SchemeDiscAmt + item.TradeDiscAmt + item.LotDiscAmt), 2);
             }
 
             // model.TranDetails = model.TranDetails.Where(x => x.FkProductId > 0).ToList();

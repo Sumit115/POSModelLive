@@ -93,7 +93,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 ModelState.AddModelError("", ex.Message);
             }
             //BindViewBags(0, tblCityMas);
-            ViewBag.StateList =  _repository.GetDrpState();
+            ViewBag.StateList = Handler.GetDrpState();
             return View(Model);
         }
 
@@ -140,7 +140,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 ModelState.AddModelError("", ex.Message);
             }
             //BindViewBags(tblCityMas.PKID, tblCityMas);
-            ViewBag.StateList = _repository.GetDrpState();
+            ViewBag.StateList = Handler.GetDrpState();
             return View(model);
         }
 

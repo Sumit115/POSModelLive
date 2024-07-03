@@ -50,7 +50,7 @@ function Load() {
 }
 
 function BindGrid(GridId, data) {
-    debugger;
+    
     $("#" + GridId).empty();
     Common.Grid(tranModel.ExtProperties.FKFormID, "dtl", function (s) {
         var AccountList = JSON.parse($("#hdAccountList").val());
@@ -134,7 +134,7 @@ function BindGrid(GridId, data) {
 
                 var field = cg.columns[args.cell].field;
                 if (field == "AccountName_Text") {
-                    debugger;
+                    
                         var FkAccountId = Common.isNullOrEmpty(args.item["AccountName"]) ? 0 : parseFloat(args.item["AccountName"]);
                         //var data = cg.getData().filter(function (element) { return (element.FkAccountId == FkAccountId && element.mode != 2); });
                         //if (data.length <= 0) {
@@ -240,7 +240,7 @@ function ColumnChange(args, rowIndex, fieldName) {
 
                 if (res.status == "success") {
                     tranModel = res.data; 
-                    debugger;
+                    
                     setGridRowData(args, tranModel.VoucherDetails, rowIndex, fieldName);
 
                 }

@@ -1213,7 +1213,7 @@ function C_ShowFilterPopup(type) {
         });
     }
     function fn_GetPopuphtml(type, _data) {
-        debugger;
+        
         var htm = '';
         htm += '<div class="mb-4 card"><div class="card-body">';
         htm += '<div class="row mb-3">';
@@ -1232,7 +1232,7 @@ function C_ShowFilterPopup(type) {
             htm += '<thead><tr><th>Select</th><th>Name To Display</th><th>HSN</th><th>Section</th></tr></thead>';
             htm += '<tbody >';
             $(_data).each(function (i, v) {
-                debugger;
+                
                 var _isexists = $.grep(JSON.parse($('#hd' + type + 'Filter').val()), function (item) { return item.PKID == v.PkProductId; }).length > 0 ? true : false;
 
                 htm += '<tr class="trFilter"> ';
@@ -1250,7 +1250,7 @@ function C_ShowFilterPopup(type) {
             htm += '<thead><tr><th>Select</th><th>Customer</th><th>Mobile</th><th>Email</th><th>City</th></tr></thead>';
             htm += '<tbody >';
             $(_data).each(function (i, v) {
-                debugger;
+                
                 var _isexists = $.grep(JSON.parse($('#hd' + type + 'Filter').val()), function (item) { return item.PKID == v.PkCustomerId; }).length > 0 ? true : false;
 
                 htm += '<tr class="trFilter"> ';
@@ -1269,7 +1269,7 @@ function C_ShowFilterPopup(type) {
             htm += '<thead><tr><th>Select</th><th>Vendor</th><th>Mobile</th><th>Email</th><th>City</th></tr></thead>';
             htm += '<tbody >';
             $(_data).each(function (i, v) {
-                debugger;
+                
                 var _isexists = $.grep(JSON.parse($('#hd' + type + 'Filter').val()), function (item) { return item.PKID == v.PkVendorId; }).length > 0 ? true : false;
 
                 htm += '<tr class="trFilter"> ';

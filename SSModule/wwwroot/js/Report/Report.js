@@ -20,7 +20,7 @@ function Load() {
     $('#' + GridId).empty();
     Common.Get("." + filterclass, "", function (flag, _d) {
         if (flag) {
-            debugger;
+            
             console.log(_d);
             _d["pageNo"] = pageNo;
             _d["pageSize"] = pageSize;
@@ -64,7 +64,7 @@ function bindGrid(GridId, data, IdProperty) {
 function ExportToExcel() {
     Common.Get("." + filterclass, "", function (flag, _d) {
         if (flag) {
-            debugger;
+            
             ProductFilter = $("#hdProductFilter").val();
             CustomerFilter = $("#hdCustomerFilter").val();
 

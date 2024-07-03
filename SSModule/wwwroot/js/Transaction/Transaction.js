@@ -15,7 +15,7 @@ $(document).ready(function () {
     } else { $("#txtSearchBarcode").show(); $("#txtSearchBarcode").focus(); }
 
     $('#btnServerSave').click(function (e) {
-        debugger;
+        
         if ($("#loginform1").valid()) {
             SaveRecord();
         }
@@ -186,7 +186,7 @@ function BindGrid(GridId, data) {
         /*---------------    ---------------   ---------------   ---------------*/
         cg.outGrid.onBeforeEditCell.subscribe(function (e, args) {
             if (args.cell != undefined) {
-                debugger;
+                
                 var field = cg.columns[args.cell].field;
 
                 if (field != "InvoiceDate" && field != "FKInvoiceID_Text" && field != "Product" && Common.isNullOrEmpty(args.item["Product"])) {
@@ -224,7 +224,7 @@ function BindGrid(GridId, data) {
                 }
                 else {
                     if (field == "Batch" || field == "Color" || field == "MRP") {
-                        debugger;
+                        
                         if (tranModel.ExtProperties.StockFlag == "I") {
                             args.item["FkLotId"] = 0;
                             var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
@@ -309,7 +309,7 @@ function BindGrid(GridId, data) {
                     ColumnChange(args, args.row, "MRP");
                 }
                 else if (field == "Rate") {
-                    debugger;
+                    
                     var MRP = parseFloat(args.item["MRP"]);
                     var Rate = parseFloat(args.item["Rate"]);
                     if (MRP < Rate) {
@@ -331,7 +331,7 @@ function BindGrid(GridId, data) {
                     ColumnChange(args, args.row, "TradeDisc");
                 }
                 else if (field == "Batch") {
-                    debugger;
+                    
                     var FkLotId = args.item["FkLotId"];
                     if (FkLotId > 0) {
                         ColumnChange(args, args.row, "Batch");
@@ -344,7 +344,7 @@ function BindGrid(GridId, data) {
                     }
                 }
                 else if (field == "Color") {
-                    debugger;
+                    
                     var FkLotId = args.item["FkLotId"];
                     if (FkLotId > 0) {
                         ColumnChange(args, args.row, "Color");
@@ -754,7 +754,7 @@ function setSeries() {
 }
 
 function trandtldropList(data) {
-    debugger;
+    
     var output = []
     $.ajax({
         url: Handler.currentPath() + 'trandtldropList', data: data, async: false, dataType: 'JSON', success: function (result) {

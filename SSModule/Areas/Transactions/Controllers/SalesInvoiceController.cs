@@ -9,6 +9,7 @@ using System.Data;
 using SSAdmin.Areas;
 using Microsoft.AspNetCore.Http;
 
+
 namespace SSAdmin.Areas.Transactions.Controllers
 {
     [Area("Transactions")]

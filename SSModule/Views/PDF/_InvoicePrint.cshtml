@@ -1,0 +1,475 @@
+﻿@model SSRepository.Models.TransactionModel
+@{
+    Layout = null;
+}
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <style>
+        h3 {
+            padding: 0;
+            margin: 0;
+            font-weight: 500;
+            font-size: 18px;
+        }
+
+        body {
+            margin-top: 50px;
+            width: 1200px;
+            border: 1px solid;
+        }
+
+        .table-item {
+            width: 100%;
+        }
+
+            .table-item th {
+                border-right: 1px solid #000;
+                border-bottom: 1px solid;
+                text-align: center;
+            }
+
+            .table-item td {
+                border-right: 1px solid #000;
+                border-bottom: 1px solid;
+            }
+
+        .table-item-top-bottom {
+            width: 100%;
+        }
+
+            .table-item-top-bottom th {
+                border: 0;
+                border-bottom: 1px solid;
+                text-align: center;
+            }
+
+            .table-item-top-bottom td {
+                border: 0;
+                border-bottom: 1px solid;
+            }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .font-weight-bold {
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+<body>
+    <div style="   ">
+        <table style="width:100%;border-bottom: 1px solid #000;padding: 10px;">
+            <tbody>
+
+                <tr>
+
+                    <td style="text-align:left;width:50%">
+                        <img src="https://www.bharatdress.com/assets/images/logo.png" style="margin-bottom: 15px;" />
+                        <h2 style="padding: 0;margin: 0;text-align:left">@Model.Branch.BranchName</h2>
+                        <h3 style="padding: 0;margin: 0;    font-weight: 500;text-transform: uppercase;">
+                            @Model.Branch.Address
+                            <span>,</span>
+                            @Model.Branch.City<span>,</span>@Model.Branch.State<span>-</span>@Model.Branch.Pin
+                        </h3>
+                        <h3 style="padding: 0;margin: 0;    font-weight: 500;font-size: 16px;">
+                            Mobile : @Model.Branch.Mobile<br>
+                            GSTIN :  <br>
+                            IRN : <br>
+                            Acknowledgement No :<br>
+                            Acknowledgement Date : <br>
+                            <span style="width: 50%;display: inline-block;">
+                                Original for Reciver
+                            </span>
+                            <span style="width: 25%;display: inline-block;">
+                                E-Way No:
+                            </span>
+                            <span style="text-align: end;width: 21%;display: inline-block;">
+                                Date :
+                            </span>
+                        </h3>
+                    </td>
+                    <td style="width:25%">
+                    </td>
+                    <td style="width:25%">
+                        @* <img src="https://www.fitfaat.com/Upload/GymQRCode/QR_1.png" style="height: 150px;" />*@
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+
+        <table style="width: 100%;border-bottom: 1px solid #000;">
+            <tr>
+                <td style="width: 25%;padding-top: 10px;">
+                    <h3>Tax is Payble on Reverse Charge</h3>
+                </td>
+                <td style="width: 25%;padding-top: 10px;border-right: 1px solid #000;">
+                    <h3> : </h3>
+                </td>
+                <td style="width: 25%;padding-top: 10px;" colspan="2">
+                    <h3>Transportation Mode</h3>
+                </td>
+                <td style="width: 25%;padding-top: 10px;" colspan="2">
+                    <h3> : </h3>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 25%;">
+                    <h3>Invoice Serial Number</h3>
+                </td>
+                <td style="width: 25%;border-right: 1px solid #000;">
+                    <h3> : @Model.SeriesName@Model.EntryNo</h3>
+                </td>
+                <td style="width: 25%;" colspan="2">
+                    <h3> </h3>
+                </td>
+                <td style="width: 25%;" colspan="2">
+                    <h3>   </h3>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 25%;">
+                    <h3>Invoice Date</h3>
+                </td>
+                <td style="width: 25%;border-right: 1px solid #000;">
+                    <h3> : @Model.EntryDate.ToString("dd/MM/yyyy")</h3>
+                </td>
+                <td style="width: 25%;" colspan="2">
+                    <h3>Veh. No</h3>
+                </td>
+                <td style="width: 25%;" colspan="2">
+                    <h3> : </h3>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 25%;">
+                    <h3>State Code</h3>
+                </td>
+                <td style="width: 25%;border-right: 1px solid #000;">
+                    <h3> :  @Handler.GetStateCode(Model.Branch.State)<span style="padding-right:20px"></span>@Model.Branch.State</h3>
+                </td>
+                <td style="width: 15%;">
+                    <h3>GR/RR No</h3>
+                </td>
+                <td style="width: 10%;">
+                    <h3>:  @Model.GRNo</h3>
+                </td>
+                <td style="width: 10%;">
+                    <h3> Date </h3>
+                </td>
+                <td style="width: 15%;">
+                    <h3> : @(Model.GRDate != null ? Model.GRDate.ToString("dd/MM/yyyy") : "")</h3>
+                </td>
+            </tr>
+            <tr>
+
+                <td style="width: 50%;border-right: 1px solid #000;border-top: 1px solid;border-bottom: 1px solid;text-align: center;" colspan="2">
+                    <h3 style="font-weight:bold">Details Of Customer (Bill to)</h3>
+                </td>
+                <td style="width: 50%;border-right: 1px solid #000;border-top: 1px solid;border-bottom: 1px solid;text-align: center;" colspan="4">
+                    <h3 style="font-weight:bold">Details Of Consignee (Ship to)</h3>
+                </td>
+            </tr>
+            <tr>
+
+                <td style="border-right: 1px solid;" colspan="2">
+                    <span style="width: 20%;display: inline-block;"><h3 style="font-weight:bold">Name</h3></span>
+                    <span style="width: 79%;display: inline-block;"><h3 style=" ">: @Model.PartyName</h3></span>
+                </td>
+                <td style="border-right: 1px solid;" colspan="4">
+                    <span style="width: 20%;display: inline-block;"> <h3 style="font-weight:bold">Name</h3></span>
+                    <span style="width: 79%;display: inline-block;"><h3 style=" ">: @Model.PartyName</h3></span>
+                </td>
+
+            </tr>
+            <tr>
+
+                <td style="border-right: 1px solid;" colspan="2">
+                    <span style="width: 20%;display: inline-block;"><h3 style="font-weight:bold">Address</h3></span>
+                    <span style="width: 79%;display: inline-block;"><h3 style=" ">: @Model.PartyAddress</h3></span>
+                </td>
+                <td style="border-right: 1px solid;" colspan="4">
+                    <span style="width: 20%;display: inline-block;"><h3 style="font-weight:bold">Address</h3></span>
+                    <span style="width: 79%;display: inline-block;"><h3 style=" ">: @Model.PartyAddress</h3></span>
+                </td>
+
+            </tr>
+            <tr>
+
+                <td style="border-right: 1px solid;" colspan="2">
+                    <span style="width: 20%;display: inline-block;"><h3 style="font-weight:bold">Phone</h3></span>
+                    <span style="width: 79%;display: inline-block;"><h3 style=" ">: @Model.PartyMobile</h3></span>
+                </td>
+                <td style="border-right: 1px solid;" colspan="4">
+                    <span style="width: 20%;display: inline-block;"><h3 style="font-weight:bold">Phone</h3></span>
+                    <span style="width: 79%;display: inline-block;"><h3 style=" ">: @Model.PartyMobile</h3></span>
+                </td>
+
+            </tr>
+            <tr>
+
+                <td style="border-right: 1px solid;" colspan="2">
+                    <span style="width: 20%;display: inline-block;"><h3 style="font-weight:bold">State Name</h3></span>
+                    <span style="width: 79%;display: inline-block;"><h3 style=" ">: @Model.PartyStateName</h3></span>
+                </td>
+                <td style="border-right: 1px solid;" colspan="4">
+                    <span style="width: 20%;display: inline-block;"><h3 style="font-weight:bold">State Name</h3></span>
+                    <span style="width: 79%;display: inline-block;"><h3 style=" ">: @Model.PartyStateName</h3></span>
+                </td>
+
+            </tr>
+            <tr>
+
+                <td style="border-right: 1px solid;" colspan="2">
+                    <span style="width: 20%;display: inline-block;"><h3 style="font-weight:bold">GSTIN</h3></span>
+                    <span style="width: 29%;display: inline-block;"><h3 style=" ">: @Model.PartyGSTN</h3></span>
+                    <span style="width: 29%;display: inline-block;"><h3 style="font-weight:bold">Place Of Supply</h3></span>
+                    <span style="width: 19%;display: inline-block;"><h3 style=" ">: @Handler.GetStateCode(Model.PartyStateName)</h3></span>
+                </td>
+                <td style="border-right: 1px solid;" colspan="4">
+                    <span style="width: 20%;display: inline-block;"><h3 style="font-weight:bold">GSTIN</h3></span>
+                    <span style="width: 29%;display: inline-block;"><h3 style=" ">: @Model.PartyGSTN</h3></span>
+                    <span style="width: 29%;display: inline-block;"><h3 style="font-weight:bold">Place Of Supply</h3></span>
+                    <span style="width: 19%;display: inline-block;"><h3 style=" ">: @Handler.GetStateCode(Model.PartyStateName)</h3></span>
+                </td>
+
+            </tr>
+        </table>
+        <table class="table-item" style="width: 100%;border-bottom: 0;">
+            <tr>
+                <th rowspan="2">S.N.</th>
+                <th rowspan="2" colspan="2">Description of Goods</th>
+                <th rowspan="2">Brand</th>
+                <th rowspan="2">Hsn Code</th>
+                <th rowspan="2">Qty</th>
+                <th rowspan="2">UOM</th>
+                <th rowspan="2">Rate</th>
+                <th rowspan="2">Disc %</th>
+                <th rowspan="2">Disc. Amt</th>
+                <th rowspan="2">Taxable Value</th>
+                <th colspan="2">CGST</th>
+                <th colspan="2">SGST</th>
+                <th rowspan="2">Total Amt.</th>
+            </tr>
+            <tr>
+
+                <th>Rate %</th>
+                <th>Amt</th>
+                <th>Rate %</th>
+                <th>Amt</th>
+
+            </tr>
+
+            @if (Model.TranDetails != null)
+            {
+                <tbody>
+                    @foreach (var item in Model.TranDetails)
+                    {
+                        <tr>
+                            <td>@item.SrNo</td>
+                            <td colspan="2">@item.Product</td>
+                            <td>@item.BrandName</td>
+                            <td>@item.HSNCode</td>
+                            <td>@item.Qty</td>
+                            <td>PCS</td>
+                            <td>@item.Rate</td>
+                            <td>@item.TradeDisc</td>
+                            <td>@item.TradeDiscAmt</td>
+                            <td>@item.TaxableAmt</td>
+                            <td>@item.SCRate</td>
+                            <td>@item.SCAmt</td>
+                            <td>@item.SCRate</td>
+                            <td>@item.SCAmt</td>
+                            <td class="text-right">@item.NetAmt</td>
+                        </tr>
+                    }
+
+                </tbody>
+
+                <tr>
+                    <td></td>
+                    <td colspan="2" class="text-right font-weight-bold">Total :</td>
+                    <td></td>
+                    <td colspan="2" class="text-right font-weight-bold"> @Model.TranDetails.Sum(x=>x.Qty)</td>
+                    <td> </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="font-weight-bold">@Model.GrossAmt</td>
+                    <td colspan="2" class="text-right font-weight-bold"> @(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                    <td colspan="2" class="text-right font-weight-bold"> @(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                    <td class="text-right font-weight-bold">@Model.NetAmt</td>
+                </tr>
+
+            }
+           
+        </table>
+        <p class="text-left font-weight-bold" style="padding:5px; margin:0;border-bottom: 1px solid;">Invoice Value (In Words) : @(SSAdmin.Handler.ConvertNumbertoWords(Convert.ToInt32(Model.NetAmt)))</p>
+        <table class="table-item">
+            <tr>
+                <td style="width:75%;    padding-right: 15px;">
+
+                    <table class="table-item-top-bottom" style="border: 1px solid #000;border-bottom: 0; width: 100%;margin-top: 10px;text-align: center;margin-bottom: 25px;">
+                        <tr>
+                            <th></th>
+                            <th>TAXABLE VALUE</th>
+                            <th>IGST %</th>
+                            <th>IGST AMT</th>
+                            <th>CGST %</th>
+                            <th>CGST AMT</th>
+                            <th>SGST %</th>
+                            <th>SGST AMT</th>
+                        </tr>
+                        <tr>
+                            <td> </td>
+
+                            <td>@Model.GrossAmt</td>
+                            <td> </td>
+                            <td> </td>
+                            <td> </td>
+                            <td>@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                            <td> </td>
+                            <td>@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold">Total </td>
+                            <td class="font-weight-bold">@Model.GrossAmt</td>
+                            <td class="font-weight-bold"> </td>
+                            <td class="font-weight-bold"> </td>
+                            <td class="font-weight-bold"> </td>
+                            <td class="font-weight-bold">@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                            <td class="font-weight-bold"> </td>
+                            <td class="font-weight-bold">@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold">GST Collection : </td>
+                            <td class="font-weight-bold text-left" colspan="7"> @(SSAdmin.Handler.ConvertNumbertoWords(Convert.ToInt32(Model.TaxAmt)))</td>
+                        </tr>
+                    </table>
+
+                    <table class="table-item-top-bottom" style="border: 1px solid #000;border-bottom: 0; width: 100%;margin-top: 10px;text-align: center;margin-bottom: 25px;">
+                        <tr>
+                            <th>OTH.Charge</th>
+                            <th>HSN</th>
+                            <th>IGST %</th>
+                            <th>IGST AMT</th>
+                            <th>CGST %</th>
+                            <th>CGST AMT</th>
+                            <th>SGST %</th>
+                            <th>SGST AMT</th>
+                        </tr>
+                        <tr>
+                            <td colspan="8" style="padding:25px;"> </td>
+
+                        </tr>
+
+
+                    </table>
+                </td>
+                <td style="width:25%;    padding-bottom: 6%;">
+                    <table class="table-item" style="width: 100%;margin-top: -3px;text-align: center;margin-bottom: 25px;padding-right: 1px;">
+
+                        <tr>
+                            <td class="text-left font-weight-bold" style="padding-left: 15px;">Freight Charges</td>
+                            <td class="text-right">0.00 </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left font-weight-bold" style="padding-left: 15px;">Other Charges</td>
+                            <td class="text-right">0.00 </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left font-weight-bold" style="padding-left: 15px;">Total Amt. Before Tax</td>
+                            <td class="text-right">@Model.GrossAmt </td>
+                        </tr>
+                        <tr>
+                            <td class="text-left font-weight-bold" style="padding-left: 15px;">Add GST</td>
+                            <td class="text-right">@Model.TaxAmt</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left font-weight-bold" style="padding-left: 15px;">Round  Off</td>
+                            <td class="text-right">@Model.RoundOfDiff</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left font-weight-bold" style="padding-left: 15px;">Total Amt. After Tax</td>
+                            <td class="text-right font-weight-bold">@Model.NetAmt</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <table class="table-item-top-bottom" style="border: 1px solid #000;border-bottom: 0; width: 85%;margin-top: 10px;text-align: center; ">
+            <tr>
+                <th>HSN/SAC</th>
+                <th>QTY</th>
+                <th>TAXABLE VALUE</th>
+                <th>IGST %</th>
+                <th>IGST AMT</th>
+                <th>CGST %</th>
+                <th>CGST AMT</th>
+                <th>SGST %</th>
+                <th>SGST AMT</th>
+                <th>TOTAL</th>
+            </tr>
+            <tr>
+                <td> </td>
+                <td>@Model.TranDetails.Sum(x=>x.Qty)</td>
+                <td>@Model.GrossAmt</td>
+                <td></td>
+                <td>@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                <td></td>
+                <td>@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                <td></td>
+                <td>@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                <td>@Model.NetAmt</td>
+            </tr>
+            <tr>
+                <td class="font-weight-bold">Total</td>
+                <td class="font-weight-bold">@Model.TranDetails.Sum(x=>x.Qty)</td>
+                <td class="font-weight-bold">@Model.GrossAmt</td>
+                <td class="font-weight-bold"></td>
+                <td class="font-weight-bold"></td>
+                <td class="font-weight-bold"> </td>
+                <td class="font-weight-bold">@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                <td class="font-weight-bold"> </td>
+                <td class="font-weight-bold">@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                <td class="font-weight-bold">@Model.NetAmt</td>
+            </tr>
+
+        </table>
+        <p class="font-weight-bold" style="padding: 7px;margin: 0;">
+            MRP Total     <span style="margin-left:25px">@Model.TranDetails.Sum(x=>(x.MRP>0?x.MRP:0))</span>
+        </p>
+
+        <table style="border: 1px solid #000;border-bottom: 0; width: 100%;margin-top: 10px;    padding-top: 10px;text-align: center; ">
+            <tr>
+                <td class="font-weight-bold text-left">Terms & Conditions:</td>
+                <td class="text-right">" Certified that the particulars given above are True & Correct "</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding:100px"></td>
+            </tr>
+            <tr>
+                <td class="font-weight-bold text-left">Approved by </td>
+                <td class="font-weight-bold text-right">DRESS.COM INDIA PVT LTD</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding:10px"></td>
+            </tr>
+            <tr>
+                <td class="font-weight-bold text-left">Remarks</td>
+                <td class="font-weight-bold text-right">Authorised Signatory</td>
+            </tr>
+        </table>
+    </div>
+
+
+</body>
+</html>
