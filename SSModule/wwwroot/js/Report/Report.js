@@ -23,7 +23,11 @@ function ShowGridColumn() {
 }
 function ViewData(_d, Export) {
     if (Export == "excel") {
-        var downloadUrl = '/Report/' + Controller + '/Export?FromDate=' + _d.FromDate + '&ToDate=' + _d.ToDate + '&ReportType=' + _d.ReportType + '&TranAlias=' + _d.TranAlias + '&ProductFilter=' + ProductFilter + '&CustomerFilter=' + CustomerFilter + '';
+        var param = "";
+        $.each(_d, function (i, val) {
+            param= i + "=" + val + "&";
+        });
+        var downloadUrl = '/Report/' + Controller + '/Export?' + param + '';
         var a = document.createElement("a");
         a.href = downloadUrl;
         a.download = "ReportFile.xls";
