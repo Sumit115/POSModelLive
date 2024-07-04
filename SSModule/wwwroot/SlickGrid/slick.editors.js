@@ -1394,7 +1394,7 @@
 
                 if (result == "" || result == null) {
                     if (evnt !== 'scroll')
-                        $dvList.html("<span class='drp-not-found'> Data Not Found </span>");
+                        $ul.html("<span class='drp-not-found'>  </span>");
                 }
                 else {
                     var html = '';
@@ -1441,7 +1441,7 @@
                     }
                     else {
                         if (evnt !== 'scroll')
-                            html = "<span class='drp-not-found'> Data Not Found </span>";
+                            html = "<span class='drp-not-found'>  </span>";
                     }
                     if (evnt === 'scroll')
                         $ul.append(html);
@@ -1498,7 +1498,7 @@
             }
             else {
                 if (evnt !== 'scroll') {
-                    $dvList.html("<span class='drp-not-found'> Data Not Found </span>");
+                    $ul.html("<span class='drp-not-found'>  </span>");
                 }
                 return false;
             }

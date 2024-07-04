@@ -1,0 +1,39 @@
+﻿@model SSRepository.Models.FileModel
+@{
+    ViewData["Title"] = "Import";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<form asp-action="Files" enctype="multipart/form-data">
+    @*
+    <div class="row mt-2">
+        <div class="col-12">
+            <label class="col-form-label">Enter File Name For Save</label>
+            <input asp-for="FileName" class="form-control" />
+            <span asp-validation-for="FileName" class="text-danger"></span>
+        </div>
+    </div>
+    *@ <div class="col-md-3">
+        <div class="form-group">
+            <label class="control-label">Series </label>
+
+            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKSeriesId" }, { "Class", "val-cus-drp" }, { "event", "setSeries()" },
+            { "value", Model.FKSeriesId }, { "text", Model.SeriesName }, { "uri", "" }})
+            <span asp-validation-for="FKSeriesId" class="text-danger"></span>
+
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-12">
+            <label class="col-form-label">Select File</label>
+            <input asp-for="File" class="form-control" accept=".json" />
+            <span asp-validation-for="File" class="text-danger"></span>
+        </div>
+    </div>
+
+
+    <div class="row mt-2">
+        <div class="col-12">
+            <button type="submit" class="btn btn-success">Upload File</button>
+        </div>
+    </div>
+</form>

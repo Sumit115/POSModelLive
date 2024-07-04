@@ -51,13 +51,12 @@ function bindGrid(GridId, data, IdProperty) {
         cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
         cg.outGrid.onDblClick.subscribe(function (e, args) {
             if (args.cell != undefined) {
-                var pk_Id = args.grid.getDataItem(args.row)[IdProperty];  
+                var pk_Id = args.grid.getDataItem(args.row)[IdProperty];
                 if (window.location.href.indexOf("Transactions") > 0 && window.location.href.indexOf("Voucher") <= 0) {
                     var FKSeriesId = args.grid.getDataItem(args.row)["FKSeriesId"];
                     window.location.href = "Create/" + pk_Id + "/" + FKSeriesId;
                 }
-                else if ( window.location.href.indexOf("Voucher") > 0)  
-                    { }
+                else if (window.location.href.indexOf("Voucher") > 0) { }
                 else
                     window.location.href = "Create/" + pk_Id;
             }
@@ -70,7 +69,7 @@ function bindGrid(GridId, data, IdProperty) {
                 .data("row", j.row)
                 .css("top", e.pageY)
                 .css("left", e.pageX)
-                .show();           
+                .show();
 
             $("body").one("click", function () {
                 $("#contextMenu").hide();
@@ -86,11 +85,13 @@ function bindGrid(GridId, data, IdProperty) {
             }
             var row = $(this).data("row");
             var command = $(e.target).attr("data");
+
             var pk_Id = UDI.outGrid.getDataItem(row)[IdProperty];
+            var FkSeriesId = UDI.outGrid.getDataItem(row).FKSeriesId;
             if (command == "Edit") {
                 window.location.href = "Create/" + pk_Id;
             }
-            if (command == "Delete") {
+            else if (command == "Delete") {
                 $.ajax({
                     type: "POST",
                     url: 'DeleteRecord',
@@ -105,7 +106,26 @@ function bindGrid(GridId, data, IdProperty) {
                             alert(res);
                     }
                 })
-               
+
+            }
+            else if (command == "InvoiceDownload") {
+                $(".loader").show();
+                $.ajax({
+                    type: "POST",
+                    url: '/pdf/TranInvoice_Pdf_Url',
+                    data: { PkId: pk_Id, FkSeriesId: FkSeriesId },
+                    datatype: "json",
+                    success: function (res) {
+
+                        if (res.status == "success") {
+                            window.open(res.data.InvoiceUrl, '_blank');
+                        }
+                        else
+                            alert(res);
+                        $(".loader").hide();
+                    }
+                })
+
             }
         });
     });
@@ -114,8 +134,8 @@ function bindGrid(GridId, data, IdProperty) {
 function ExportToExcel() {
     Common.Get("." + filterclass, "", function (flag, _d) {
         if (flag) {
-            debugger;
-          //  var url = $(location).attr('href').replace('List', 'Export');
+
+            //  var url = $(location).attr('href').replace('List', 'Export');
             var downloadUrl = 'Export';
             var a = document.createElement("a");
             a.href = downloadUrl;

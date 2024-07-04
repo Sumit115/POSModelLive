@@ -36,7 +36,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
             return Json(new
             {
                 status = "success",
-                data = _repository.GetList(FDate, TDate, "")
+                data = _repository.GetList(FDate, TDate, TranAlias, DocumentType)
             });
         }
 
@@ -77,13 +77,16 @@ namespace SSAdmin.Areas.Transactions.Controllers
         private void setDefault(TransactionModel model)
         {
             model.ExtProperties.TranType = TranType;
-            model.ExtProperties.TranAlias = TranAlias;
+            model.TranAlias = model.ExtProperties.TranAlias = TranAlias;
+            model.ExtProperties.DocumentType = DocumentType;
             model.ExtProperties.StockFlag = StockFlag;
             model.ExtProperties.FKFormID = FKFormID;
             model.ExtProperties.PostInAc = PostInAc;
+            model.FKUserId = LoginId;
+            model.CreationDate = DateTime.Now;
             if (model.PkId == 0)
             {
-                _repository.SetLastSeries(model, LoginId, TranAlias);
+                _repository.SetLastSeries(model, LoginId, TranAlias, DocumentType);
                 model.EntryDate = DateTime.Now;
                 model.GRDate = DateTime.Now;
                 model.Cash = model.Credit = model.Cheque = model.CreditCard = false;
@@ -94,38 +97,28 @@ namespace SSAdmin.Areas.Transactions.Controllers
         [HttpPost]
         public JsonResult Create(TransactionModel model)
         {
+            ResModel res = new ResModel();
             try
             {
-                //var aa = JsonConvert.SerializeObject(model);
 
                 string Error = _repository.Create(model);
                 if (string.IsNullOrEmpty(Error))
                 {
-                    return Json(new
-                    {
-                        status = "success",
-                        msg = Error
-                    });
+                    res.status = "success";
                 }
                 else
                 {
-                    return Json(new
-                    {
-                        status = "error",
-                        msg = Error
-                    });
+                    res.status = "warr";
+                    res.msg = Error;
                 }
 
             }
             catch (Exception ex)
             {
-
-                ModelState.AddModelError("", ex.Message);
+                res.status = "warr";
+                res.msg = ex.Message;
             }
-            return Json(new
-            {
-                status = "success"
-            });
+            return Json(res);
 
         }
     }

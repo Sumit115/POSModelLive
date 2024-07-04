@@ -5,6 +5,7 @@ using SSRepository.Data;
 using SSRepository.IRepository;
 using SSRepository.Models;
 using System.Data;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace SSRepository.Repository
@@ -72,8 +73,10 @@ namespace SSRepository.Repository
         {
             try
             {
+                long MaxID = 0;
+
                 //int? BranchNo = 0;
-                //var SysDefValue = _context.TblSysDefaults.FirstOrDefault(a => a.SysDefKey == "BranchNo").SysDefValue;
+                //var SysDefValue = __dbContext.TblSysDefaults.FirstOrDefault(a => a.SysDefKey == "BranchNo").SysDefValue;
 
 
                 //if (SysDefValue != null)
@@ -81,7 +84,7 @@ namespace SSRepository.Repository
                 //    try
                 //    {
                 //        //BranchNo = _context.TblBranchMas.FirstOrDefault(a => a.PkbranchId == Convert.ToInt64(SysDefValue)).No;
-                //        BranchNo = _context.TblBranchMas.Where(a => a.PkbranchId == Convert.ToInt64(SysDefValue)).Select(a => a.No).First();
+                //        BranchNo = __dbContext.TblBranchMas.Where(a => a.PkBranchId == Convert.ToInt64(SysDefValue)).Select(a => a.No).First();
                 //    }
                 //    catch
                 //    {
@@ -92,7 +95,7 @@ namespace SSRepository.Repository
                 //Int64 BranchID = 10000000 * Convert.ToInt32(BranchNo);
                 //Int64 MaxBranchID = 10000000 * Convert.ToInt32(BranchNo + 1);
 
-                //IQueryable queryableData = _context.Query(entity.GetType());
+                //IQueryable queryableData = __dbContext.Query(entity.GetType());
 
                 //var tbl = Expression.Parameter(entity.GetType(), "tbl");
                 //var prop = Expression.Property(tbl, ColumnName);
@@ -111,7 +114,7 @@ namespace SSRepository.Repository
                 ////var abc = queryableData.Provider.CreateQuery(whereCallExpression);
                 //var lstMaxID = queryableData.Provider.CreateQuery(whereCallExpression).ToDynamicList();//.Aggregate("Max", ColumnName);
 
-                //long MaxID = 0;
+                ////long MaxID = 0;
                 //if (lstMaxID.Count == 0)
                 //{
                 //    MaxID = BranchID;
@@ -123,7 +126,9 @@ namespace SSRepository.Repository
                 //}
 
                 //return Convert.ToInt64(MaxID) + 1;
-                long MaxID = 0;
+
+                //Static bt Table Name 
+
                 if (TableName == "TblAccountMas")
                 {
                     MaxID = __dbContext.TblAccountMas.ToList().Count > 0 ? __dbContext.TblAccountMas.ToList().Max(x => x.PkAccountId) : 0;
@@ -139,6 +144,10 @@ namespace SSRepository.Repository
                 else if (TableName == "TblAccountLicDtl")
                 {
                     MaxID = __dbContext.TblAccountLicDtl.ToList().Count > 0 ? __dbContext.TblAccountLicDtl.ToList().Max(x => x.PKAccountLicDtlId) : 0;
+                }
+                else if (TableName == "TblCategoryMas")
+                {
+                    MaxID = __dbContext.TblCategoryMas.ToList().Count > 0 ? __dbContext.TblCategoryMas.ToList().Max(x => x.PkCategoryId) : 0;
                 }
 
                 return Convert.ToInt64(MaxID) + 1;
@@ -451,6 +460,20 @@ namespace SSRepository.Repository
         //}
 
 
+        public DataTable GetFilterData(string strFilter)
+        {
+
+            DataTable dtFilter = new DataTable();
+            dtFilter.Columns.Add("PKID");
+            dtFilter.AcceptChanges();
+            if (strFilter != null && strFilter != "[]")
+            {
+
+                dtFilter = JsonConvert.DeserializeObject<DataTable>(strFilter);
+
+            }
+            return dtFilter;
+        }
 
 
 
@@ -611,40 +634,14 @@ namespace SSRepository.Repository
         #endregion
 
 
-        public object GetDrpState()
+       
+
+        public string GetSysDefaultsByKey(string SysDefKey)
         {
-            return new List<ddl>(){
-             new ddl { Text = "Select", Value = "" },
-             new ddl { Text = "Andhra Pradesh", Value = "Andhra Pradesh" },
-             new ddl { Text = "Arunachal Pradesh", Value = "Arunachal Pradesh" },
-             new ddl { Text = "Assam", Value = "Assam" },
-             new ddl { Text = "Bihar", Value = "Bihar" },
-             new ddl { Text = "Chhattisgarh", Value = "Chhattisgarh" },
-             new ddl { Text = "Goa", Value = "Goa" },
-             new ddl { Text = "Gujarat", Value = "Gujarat" },
-             new ddl { Text = "Haryana", Value = "Haryana" },
-             new ddl { Text = "Himachal Pradesh", Value = "Himachal Pradesh" },
-             new ddl { Text = "Jharkhand", Value = "Jharkhand" },
-             new ddl { Text = "Karnataka", Value = "Karnataka" },
-             new ddl { Text = "Kerala", Value = "Kerala" },
-             new ddl { Text = "Madhya Pradesh", Value = "Madhya Pradesh" },
-             new ddl { Text = "Maharashtra", Value = "Maharashtra" },
-             new ddl { Text = "Manipur", Value = "Manipur" },
-             new ddl { Text = "Meghalaya", Value = "Meghalaya" },
-             new ddl { Text = "Mizoram", Value = "Mizoram" },
-             new ddl { Text = "Nagaland", Value = "Nagaland" },
-             new ddl { Text = "Odisha", Value = "Odisha" },
-             new ddl { Text = "Punjab", Value = "Punjab" },
-             new ddl { Text = "Rajasthan", Value = "Rajasthan" },
-             new ddl { Text = "Sikkim", Value = "Sikkim" },
-             new ddl { Text = "Tamil Nadu", Value = "Tamil Nadu" },
-             new ddl { Text = "Telangana", Value = "Telangana" },
-             new ddl { Text = "Tripura", Value = "Tripura" },
-             new ddl { Text = "Uttar Pradesh", Value = "Uttar Pradesh" },
-             new ddl { Text = "Uttarakhand", Value = "Uttarakhand" },
-             new ddl { Text = "West Bengal", Value = "West Bengal" } };
 
-
+            return (from x in __dbContext.TblSysDefaults
+                    where x.SysDefKey == SysDefKey
+                    select x).FirstOrDefault().SysDefValue;
         }
 
     }

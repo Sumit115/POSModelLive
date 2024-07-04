@@ -10,6 +10,8 @@ using System.Data;
 using System.Net.Http.Headers;
 using SSRepository.Repository.Master;
 using Azure;
+using System.Xml.Linq;
+using System.Runtime.ConstrainedExecution;
 
 namespace SSRepository.Repository.Transaction
 {
@@ -31,33 +33,14 @@ namespace SSRepository.Repository.Transaction
             return error;
 
         }
-        public TransactionModel GetSingleRecord(long PkId, long FkSeriesId)
-        {
+       
 
-            TransactionModel data = new TransactionModel();
-            if (PkId > 0)
-            {
-                string ErrMsg = "";
-                string dd = GetData(PkId, FkSeriesId, ref ErrMsg);
-                if (dd != null)
-                {
-                    List<TransactionModel> aa = JsonConvert.DeserializeObject<List<TransactionModel>>(dd);
-                    data = aa[0];
-                }
-            }
-            else
-            {
-                //UserLastSeries
-            }
-            return data;
-        }
-
-
-        public object SetLastSeries(TransactionModel model, long UserId, string TranAlias)
+        public object SetLastSeries(TransactionModel model, long UserId, string TranAlias, string DocumentType)
         {
             var obj = (from cou in __dbContext.TblSalesInvoicetrn
                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
                        where cou.FKUserID == UserId && ser.TranAlias == TranAlias
+                       && ser.DocumentType == DocumentType
                        orderby cou.PkId descending
                        select new
                        {
@@ -76,7 +59,7 @@ namespace SSRepository.Repository.Transaction
             }
             if (model.FKSeriesId == 0)
             {
-                var _entity = __dbContext.TblSeriesMas.Where(x => x.TranAlias == TranAlias).FirstOrDefault();
+                var _entity = __dbContext.TblSeriesMas.Where(x => x.TranAlias == TranAlias && x.DocumentType == DocumentType).FirstOrDefault();
                 if (_entity != null)
                 {
                     model.SeriesName = _entity.Series == null ? "" : _entity.Series.ToString();

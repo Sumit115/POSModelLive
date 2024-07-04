@@ -52,32 +52,14 @@ namespace SSRepository.Repository.Transaction
             return Error;
 
         }
-        public TransactionModel GetSingleRecord(long PkId, long FkSeriesId)
-        {
+       
 
-            TransactionModel data = new TransactionModel();
-            if (PkId > 0)
-            {
-                string ErrMsg = "";
-                string dd = GetData(PkId, FkSeriesId, ref ErrMsg);
-                if (dd != null)
-                {
-                    List<TransactionModel> aa = JsonConvert.DeserializeObject<List<TransactionModel>>(dd);
-                    data = aa[0];
-                }
-            }
-            else
-            {
-                //UserLastSeries
-            }
-            return data;
-        }
-
-        public object SetLastSeries(TransactionModel model, long UserId, string TranAlias)
+        public object SetLastSeries(TransactionModel model, long UserId, string TranAlias, string DocumentType)
         {
             var obj = (from cou in __dbContext.TblVoucherTrn
                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
                        where cou.FKUserID == UserId && ser.TranAlias == TranAlias
+                       && ser.DocumentType == DocumentType
                        orderby cou.PkVoucherId descending
                        select new
                        {

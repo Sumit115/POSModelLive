@@ -10,27 +10,29 @@ using System.Threading.Tasks;
 
 namespace SSRepository.Models
 {
-    public class TransactionModel : BaseModel
+    public class TransactionModel
     {
         public TransactionModel()
         {
             TranDetails = new List<TranDetails>();
             VoucherDetails = new List<VoucherDetails>();
             ExtProperties = new ExtPropertie();
+            BranchDetails = new List<BranchModel>();
+            Branch = new BranchModel();
             EntryDate = DateTime.Now;
-            GRDate = DateTime.Now; 
+            GRDate = DateTime.Now;
         }
         public long PkId { get; set; }
         public long FKSeriesId { get; set; }
         public string SeriesName { get; set; }
         public long? EntryNo { get; set; }//backend se 1,2,3,
 
-        
-       // [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
+
+        // [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime EntryDate { get; set; }//txt  //only fincial year date
 
         public string TranAlias { get; set; }//=bind From Js on Series Selection
-       //New Start
+                                             //New Start
         public long FKLocationID { get; set; }//=bind From Js on Series Selection(Fk_BranchId)
         //nEw End
 
@@ -38,19 +40,22 @@ namespace SSRepository.Models
 
         public string PartyName { get; set; }
 
-        public string? PartyMobile { get; set; }
+        public string PartyMobile { get; set; }
 
         public string PartyAddress { get; set; }
 
         public string PartyGSTN { get; set; }
+        public string? PartyDob { get; set; }
+        public string? PartyMarriageDate { get; set; }
 
         public int PartyCredit { get; set; }
+        public string? PartyStateName { get; set; }
 
         public string? GRNo { get; set; }//txt
 
         //[DataType(DataType.DateTime)]
         //[DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime  GRDate { get; set; }//txt
+        public DateTime GRDate { get; set; }//txt
 
         public decimal GrossAmt { get; set; }//txt =taxableAmount
 
@@ -90,10 +95,16 @@ namespace SSRepository.Models
 
         public string? Statu { get; set; }
 
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime CreationDate { get; set; }
+        public long FKUserId { get; set; }
         public ExtPropertie ExtProperties { get; set; }
 
         public List<TranDetails> TranDetails { get; set; }
         public List<VoucherDetails> VoucherDetails { get; set; }
+        public List<BranchModel> BranchDetails { get; set; }
+        public BranchModel Branch { get; set; }
 
     }
 
@@ -105,7 +116,7 @@ namespace SSRepository.Models
         public bool PostInAc { get; set; }
         public long FKFormID { get; set; }
         public string LastEntryNo { get; set; }
-        public string DocType { get; set; }
+        public string DocumentType { get; set; }
     }
-   
+
 }

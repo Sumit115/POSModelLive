@@ -21,6 +21,8 @@
     <None Remove="wwwroot\lib\**" />
   </ItemGroup>
 
+ 
+
   <ItemGroup>
     <None Include="Areas\Master\Views\AccountGroup\Create.cshtml" />
     <None Include="Areas\Master\Views\AccountGroup\List.cshtml" />
@@ -72,6 +74,7 @@
     <None Include="Areas\Master\Views\_ViewImports.cshtml" />
     <None Include="Areas\Master\Views\_ViewStart.cshtml" />
     <None Include="Areas\Report\Views\PurchaseStock\List.cshtml" />
+    <None Include="Areas\Report\Views\RateEndStock\List.cshtml" />
     <None Include="Areas\Report\Views\SalesStock\List.cshtml" />
     <None Include="Areas\Transactions\Views\ContraVoucher\Create.cshtml" />
     <None Include="Areas\Transactions\Views\ContraVoucher\List.cshtml" />
@@ -206,6 +209,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Select.HtmlToPdf.NetCore" Version="24.1.0" />
   </ItemGroup>
 
   <ItemGroup>

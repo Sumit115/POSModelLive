@@ -29,7 +29,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
             return Json(new
             {
                 status = "success",
-                data = _repository.GetList(FDate, TDate, TranAlias)
+                data = _repository.GetList(FDate, TDate, TranAlias, DocumentType)
             });
         }
 
@@ -43,13 +43,16 @@ namespace SSAdmin.Areas.Transactions.Controllers
         public void setDefault(TransactionModel model)
         {
             model.ExtProperties.TranType = TranType;
-            model.ExtProperties.TranAlias = TranAlias;
+            model.TranAlias = model.ExtProperties.TranAlias = TranAlias;
+            model.ExtProperties.DocumentType = DocumentType;
             model.ExtProperties.StockFlag = StockFlag;
             model.ExtProperties.FKFormID = FKFormID;
             model.ExtProperties.PostInAc = PostInAc;
+            model.FKUserId = LoginId;
+            model.CreationDate = DateTime.Now;
             if (model.PkId == 0)
             {
-                _repository.SetLastSeries(model, LoginId, TranAlias);
+                _repository.SetLastSeries(model, LoginId, TranAlias, DocumentType);
                 model.Cash = model.Credit = model.Cheque = model.CreditCard = false;
 
             }
@@ -58,25 +61,49 @@ namespace SSAdmin.Areas.Transactions.Controllers
         [HttpPost]
         public JsonResult Create(TransactionModel model)
         {
+            ResModel res = new ResModel();
             try
             {
-                model.FKUserId = LoginId;
-                string Error = _repository.Create(model);
-                return Json(new
+                if (model.ExtProperties.DocumentType == "C")
                 {
-                    status = "success",
-                    msg = Error
-                });
+                    //if (model.FkPartyId <= 0)
+                    //{
+                    //    var _checkMobile = _repository.GeWalkingCustomer_byMobile(model.PartyMobile);
+                    //    if (_checkMobile == null)
+                    //    {
+                    //        var _md = new WalkingCustomerModel();
+                    //        _md.Mobile = model.PartyMobile;
+                    //        _md.Name = model.PartyName;
+                    //        _md.Address = model.PartyAddress;
+                    //        _md.Dob = model.PartyDob;
+                    //        _md.MarriageDate = model.PartyMarriageDate;
+                    //        _md.FKCreatedByID = _md.FKUserId = LoginId;
+                    //        _md.FkLocationId = model.FKLocationID;
+                    //        model.FkPartyId = _repository.SaveWalkingCustomer(_md);
+                    //    }
+                    //    else
+                    //        model.FkPartyId = _checkMobile.PkId;
+                    //}
+                    model.FkPartyId = 1;// Convert.ToInt64(_repository.GetSysDefaultsByKey("WalkInCustomer"));
+                }
+                string Error = _repository.Create(model);
+                if (string.IsNullOrEmpty(Error))
+                {
+                    res.status = "success";
+                }
+                else
+                {
+                    res.status = "warr";
+                    res.msg = Error;
+                }
 
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                res.status = "warr";
+                res.msg = ex.Message;
             }
-            return Json(new
-            {
-                status = "success"
-            });
+            return Json(res);
 
         }
     }

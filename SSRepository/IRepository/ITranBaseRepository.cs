@@ -6,7 +6,7 @@ namespace SSRepository.IRepository
     public interface ITranBaseRepository : IBaseRepository
     {
         string Create(TransactionModel model);
-        DataTable GetList(string FromDate, string ToDate, string SeriesFilter = "");
+        DataTable GetList(string FromDate, string ToDate, string SeriesFilter, string DocumentType);
         TransactionModel GetSingleRecord(long PkId, long FkSeriesId);
         object BarcodeScan(TransactionModel model, string barcode);
         object FooterChange(TransactionModel model, string fieldName);
@@ -23,23 +23,26 @@ namespace SSRepository.IRepository
 
         object SetParty(TransactionModel model, long FkPartyId);
 
-        List<ProductModel> ProductList(long FkPartyId = 0, long FkInvoiceId = 0, string search = "", DateTime? InvoiceDate = null);
+        List<ProductModel> ProductList(int pageSize, int pageNo = 1, string search = "", long FkPartyId = 0, long FkInvoiceId = 0, DateTime? InvoiceDate = null);
         List<ProdLotDtlModel> ProductBatchList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0);
-        List<ProdLotDtlModel> ProductColorList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0);
-        List<ProdLotDtlModel> ProductMRPList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0);
+        List<ProdLotDtlModel> ProductColorList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0, string TranAlias = "", string Batch = "");
+        List<ProdLotDtlModel> ProductMRPList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0, string Batch = "", string Color = "");
 
         object InvoiceList(long FkPartyId = 0, DateTime? InvoiceDate = null);
 
         List<BankModel> BankList();
 
-        List<SeriesModel> SeriesList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "");
+        List<SeriesModel> SeriesList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "");
 
         object SetSeries(TransactionModel model, long FKSeriesId);
-        object SetLastSeries(TransactionModel model, long UserId, string TranAlias);
+        object SetLastSeries(TransactionModel model, long UserId, string TranAlias, string DocumentType);
 
 
         object VoucherColumnChange(TransactionModel model, int rowIndex, string fieldName);
         List<AccountMasModel> AccountList();
 
+        public List<CategorySizeLnkModel> Get_CategorySizeList_ByProduct(long PKProductId);
+        long SaveWalkingCustomer(WalkingCustomerModel model);
+        WalkingCustomerModel GeWalkingCustomer_byMobile(string Mobile);
     }
 }

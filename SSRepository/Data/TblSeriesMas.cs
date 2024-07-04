@@ -8,19 +8,22 @@ namespace SSRepository.Data
     {
         [Key]
         public long PkSeriesId { get; set; }
-        public string Series { get; set; } //=A
-        public long SeriesNo { get; set; }// =0   
-        public long FkBranchId { get; set; }//=ddl
-        public string BillingRate { get; set; }//=MRP/SaleRate/TradeRate/DistributionRate/PurchaseRate
-        public string TranAlias { get; set; }//=SORD  ddl
-        public string? FormatName { get; set; }//=''   //Print Structer Format
-        public string? ResetNoFor { get; set; }//=''
-        public bool AllowWalkIn { get; set; }//=true
-        public bool AutoApplyPromo { get; set; }//=true
-        public bool RoundOff { get; set; }//=true
-        public bool DefaultQty { get; set; }//=true
-        public bool AllowZeroRate { get; set; }//=true
-        public bool AllowFreeQty { get; set; }//=true
+        public string? Series { get; set; }
+        public long SeriesNo { get; set; }
+        public long FkBranchId { get; set; }
+        public string? BillingRate { get; set; }
+        public string? TranAlias { get; set; }
+        public string? FormatName { get; set; }
+        public string? ResetNoFor { get; set; }
+        public bool AllowWalkIn { get; set; }
+        public bool AutoApplyPromo { get; set; }
+        public bool RoundOff { get; set; }
+        public bool DefaultQty { get; set; }
+        public bool AllowZeroRate { get; set; }
+        public bool AllowFreeQty { get; set; }
+        public Nullable<long> FKLocationID { get; set; }
+ 
+        public string? DocumentType { get; set; }
 
     }
 }

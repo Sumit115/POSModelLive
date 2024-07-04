@@ -40,6 +40,7 @@ namespace SSRepository.Repository.Master
                                        join Pbrand in __dbContext.TblBrandMas on cou.FkBrandId equals Pbrand.PkBrandId
                                                              into tembrand
                                        from brand in tembrand.DefaultIfEmpty()
+                                       where (EF.Functions.Like(cou.Product.Trim().ToLower(), Convert.ToString(search) + "%"))
                                        orderby cou.PkProductId
                                        select (new ProductModel
                                        {
@@ -86,7 +87,7 @@ namespace SSRepository.Repository.Master
             return data;
         }
 
-        public List<ProductModel> GetListByPartyId_InSaleInvoice(long FkPartyId, int pageSize, int pageNo = 1, string search = "", long FkInvoiceId = 0, DateTime? InvoiceDate = null)
+        public List<ProductModel> GetListByPartyId_InSaleInvoice(int pageSize, int pageNo = 1, string search = "", long FkPartyId=0, long FkInvoiceId = 0, DateTime? InvoiceDate = null)
         {
 
             if (search != null) search = search.ToLower();
@@ -288,7 +289,7 @@ namespace SSRepository.Repository.Master
             Tbl.FKProdCatgId = model.FKProdCatgId;
             Tbl.FKTaxID = model.FKTaxID;
             Tbl.HSNCode = model.HSNCode;
-            Tbl.FkBrandId = model.FkBrandId;
+            Tbl.FkBrandId = model.FkBrandId>0? model.FkBrandId:null;
             Tbl.ShelfID = model.ShelfID;
             Tbl.TradeDisc = model.TradeDisc;
             Tbl.MinStock = model.MinStock;
@@ -525,13 +526,13 @@ namespace SSRepository.Repository.Master
             //    OutParam = ProdBarcode;
             //}
 
-            if (OutParam >= MaxDefBarcode)
-            {
-                OutParam = 0;
-            }
-            else
-                OutParam = OutParam + 1;
-            string ReturnVar = Convert.ToString(OutParam);
+            //if (OutParam >= MaxDefBarcode)
+            //{
+            //    OutParam = 0;
+            //}
+            //else
+            //    OutParam = OutParam + 1;
+             string ReturnVar = Convert.ToString(OutParam);
 
             return ReturnVar;
 

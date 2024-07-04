@@ -4,48 +4,45 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SSRepository.Data
 {
     [Table("tblProdLot_dtl", Schema = "dbo")]
-    public partial class TblProdLotDtl : TblBase, IEntity
+    public partial class TblProdLotDtl :  IEntity
     {
 
         [Key]
         public long PkLotId { get; set; }
-
         public long FKProductId { get; set; }
-        public string? LotAlias { get; set; }//=''
-
-        public string? LotName { get; set; }//=''
-        public string? LotNo { get; set; }//=''
-        //  public long MasterLotID { get; set; }
-        public string Barcode { get; set; }//16 digit uniq no.
-        public string Batch { get; set; }//cntrltype= L
-        public string Color { get; set; }
-        public DateTime? MfgDate { get; set; }
-        public DateTime? ExpiryDate { get; set; }//=''
-        public decimal? ProdConv1 { get; set; }//=0
+        public string? LotAlias { get; set; }
+        public string? Barcode { get; set; }
+        public string? Batch { get; set; }
+        public string? Color { get; set; }
+        public Nullable<System.DateTime> MfgDate { get; set; }
+        public Nullable<System.DateTime> ExpiryDate { get; set; }
+        public Nullable<decimal> ProdConv1 { get; set; }
         public decimal MRP { get; set; }
-        public decimal? LtExtra { get; set; }//=0
-        public bool AddLT { get; set; }//=false
-        public decimal? SaleRate { get; set; }
-        public decimal? PurchaseRate { get; set; }//=Rate
-        public long? FkmfgGroupId { get; set; }//=0
-                                               // public decimal? CostRate { get; set; }
-        public decimal? TradeRate { get; set; }
-        public decimal? DistributionRate { get; set; }
-        //  public decimal? SuggestedRate { get; set; }
-        public string? PurchaseRateUnit { get; set; }//=''
-        public string? MRPSaleRateUnit { get; set; }//=''
-                                                    // public DateTime? StockDate { get; set; }
-                                                    //  public decimal? ExciseRate { get; set; }
-        public long InTrnId { get; set; }//=PurchaseId
-        public long InTrnFKSeriesID { get; set; }//=PurchaseSeriesId
-        public long InTrnsno { get; set; }//=PurchaseSeriesId
-        //public long? FksaleTaxId { get; set; }
-        //public long? FkpurchaseTaxId { get; set; }
+        public Nullable<decimal> LtExtra { get; set; }
+        public bool AddLT { get; set; }
+        public Nullable<decimal> SaleRate { get; set; }
+        public Nullable<decimal> PurchaseRate { get; set; }
+        public Nullable<long> FkmfgGroupId { get; set; }
+        public Nullable<decimal> TradeRate { get; set; }
+        public Nullable<decimal> DistributionRate { get; set; }
+        public string? PurchaseRateUnit { get; set; }
+        public string? MRPSaleRateUnit { get; set; }
+        public long InTrnId { get; set; }
+        public long InTrnFKSeriesID { get; set; }
+        public long InTrnsno { get; set; }
         public string? Remarks { get; set; }
-        //public decimal? SaleExciseRate { get; set; }
-        //public decimal? PurchaseExciseRate { get; set; }
-        // public string LotScheme { get; set; }
-
-
+        public string? LotName { get; set; }
+        public string? LotNo { get; set; }
+        public string? Style { get; set; }
+        public Nullable<System.DateTime> StockDate { get; set; }
+        public Nullable<decimal> CostRate { get; set; }
+        public Nullable<long> FKChallanID { get; set; }
+        public Nullable<decimal> LT_Extra { get; set; }
+        public Nullable<decimal> SuggestedRate { get; set; }
+        public Nullable<decimal> ExciseRate { get; set; }
+        public Nullable<long> FKSaleTaxID { get; set; }
+        public Nullable<long> FKPurchaseTaxID { get; set; }
+        public Nullable<long> MasterLotID { get; set; }
+        public Nullable<long> PkLotIdtest { get; set; }
     }
 }

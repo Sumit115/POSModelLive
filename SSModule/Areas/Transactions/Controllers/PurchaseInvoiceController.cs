@@ -35,7 +35,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
             return Json(new
             {
                 status = "success",
-                data = _repository.GetList(FDate, TDate, "")
+                data = _repository.GetList(FDate, TDate, TranAlias, DocumentType)
             });
         }
 
@@ -73,16 +73,21 @@ namespace SSAdmin.Areas.Transactions.Controllers
         }
 
         private void setDefault(TransactionModel model)
-        {   model.ExtProperties.TranType = TranType;
-            model.ExtProperties.TranAlias = TranAlias;
+        {
+            model.ExtProperties.TranType = TranType;
+            model.TranAlias = model.ExtProperties.TranAlias = TranAlias;
+            model.ExtProperties.DocumentType = DocumentType;
             model.ExtProperties.StockFlag = StockFlag;
             model.ExtProperties.FKFormID = FKFormID;
             model.ExtProperties.PostInAc = PostInAc;
+            model.FKUserId = LoginId;
+            model.CreationDate = DateTime.Now;
+
             if (model.PkId == 0)
             {
-                _repository.SetLastSeries(model, LoginId, TranAlias);
-                model.Cash = model.Credit = model.Cheque = model.CreditCard= false;
-                
+                _repository.SetLastSeries(model, LoginId, TranAlias, DocumentType);
+                model.Cash = model.Credit = model.Cheque = model.CreditCard = false;
+
             }
         }
 
@@ -92,6 +97,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
             ResModel res = new ResModel();
             try
             {
+
                 string Error = _repository.Create(model);
                 if (string.IsNullOrEmpty(Error))
                 {
@@ -106,8 +112,8 @@ namespace SSAdmin.Areas.Transactions.Controllers
             }
             catch (Exception ex)
             {
-                    res.status = "warr";
-                    res.msg = ex.Message;                
+                res.status = "warr";
+                res.msg = ex.Message;
             }
             return Json(res);
 

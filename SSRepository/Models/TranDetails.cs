@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace SSRepository.Models
 {
-    public class TranDetails : BaseModel
+    public class TranDetails 
     {
-        public long PkId { get; set; }
+       // public long PkId { get; set; }
         public long FkId { get; set; }
         public long FKSeriesId { get; set; }//=0
         public int SrNo { get; set; }
@@ -32,6 +32,8 @@ namespace SSRepository.Models
         public DateTime? ExpiryDate { get; set; }//Opt | Only Purchase
         public decimal MRP { get; set; }
         public decimal? SaleRate { get; set; }//Only Purchase
+        public decimal? TradeRate { get; set; }//Only Purchase
+        public decimal? DistributionRate { get; set; }//Only Purchase
         //New End
 
         public decimal Rate { get; set; }//=Prodct Price according Series Selection
@@ -45,6 +47,8 @@ namespace SSRepository.Models
         public string? TradeDiscType { get; set; }//=''
         public decimal TradeDiscAmt { get; set; }//=0
         public decimal LotDisc { get; set; }//=0
+        public string? LotDiscType { get; set; }//=''
+        public decimal LotDiscAmt { get; set; }//=0
         public decimal GrossAmt { get; set; }//Product Taxable Amt//82
         public decimal ICRate { get; set; }
         public decimal ICAmt { get; set; }
@@ -57,18 +61,23 @@ namespace SSRepository.Models
         //for extra Work
         public decimal GstRate { get; set; }//9
         public decimal GstAmt { get; set; }//9
-        public string Product { get; set; }
-        public string Batch_Text { get; set; }
-        public string Color_Text { get; set; }
-        public string ProductName_Text { get; set; }
-
+        public string? Product { get; set; }
+  
         public Nullable<long> FKInvoiceID { get; set; }
         public Nullable<long> InvoiceSrNo { get; set; }
         public Nullable<long> FKInvoiceSrID { get; set; }
-        public string FKInvoiceID_Text { get; set; }
+        public string? FKInvoiceID_Text { get; set; }
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? InvoiceDate { get; set; }//Opt | Only Sale Return
+         
+        public long FKLocationID { get; set; }
+        public long ReturnTypeID { get; set; }
+        public decimal TaxableAmt { get; set; }//=Prodct Price according Series Selection
+
+
+        public string? BrandName { get; set; }
+        public string? HSNCode { get; set; } 
 
     }
 }

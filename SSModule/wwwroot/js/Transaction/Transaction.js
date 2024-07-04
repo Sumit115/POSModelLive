@@ -1,21 +1,28 @@
 ﻿
 var tranModel = null;
 var ControllerName = "";
+var TranAlias = "";
 $(document).ready(function () {
+    Common.InputFormat();
+    Load();
 
+    TranAlias = tranModel.ExtProperties.TranAlias;
+    $("#hdFormId").val(tranModel.ExtProperties.FKFormID);
+    $("#hdGridName").val('dtl');
     ControllerName = $("#hdControllerName").val();
-    if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
+    if ((TranAlias == "SRTN" || TranAlias == "SCRN" || TranAlias == "PORD" || TranAlias == "PINV")) {
         $("#txtSearchBarcode").hide();
     } else { $("#txtSearchBarcode").show(); $("#txtSearchBarcode").focus(); }
-    Common.InputFormat();
+
     $('#btnServerSave').click(function (e) {
+        
         if ($("#loginform1").valid()) {
             SaveRecord();
         }
         return false;
     });
 
-    Load();
+
 
     $(".FotChng").change(function () {
         var fieldName = $(this).attr("id");
@@ -39,7 +46,9 @@ $(document).ready(function () {
         $(this).val('');
         $(this).focus();
     });
-
+    $("#PartyMobile").change(function () {
+        GetWalkingCustomerDetail($(this).val());
+    });
 });
 
 function Load() {
@@ -47,7 +56,7 @@ function Load() {
     tranModel = JSON.parse($("#hdData").val());
     if (PkId > 0) {
         $(tranModel.TranDetails).each(function (i, v) {
-            v["Product"] = parseInt(v.FkProductId);
+            //  v["Product"] = parseInt(v.FkProductId);
             v["ModeForm"] = 1;
             v["Delete"] = 'Delete';
         });
@@ -93,39 +102,58 @@ function BindGrid(GridId, data) {
                         cg.columns[kk]["fieldval"] = "FkProductId";
                         cg.columns[kk]["KeyID"] = "PkProductId";
                         cg.columns[kk]["KeyValue"] = "Product";
-                        //cg.columns[KK]["Keyfield"] = "Product";
+                        if (aaa = "Salereturn") {
+                            cg.columns[kk]["RowValue"] = "InvoiceDate,FKInvoiceID";
+                            cg.columns[kk]["ExtraValue"] = "FkpartiId";
+
+                        }
+                        //cg.columns[KK]["Keyfield"] = "Product,col";// if any saelected column show then comma seprate column name
                         //cg.setOptionArray(kk, ProductList, "ProductName", false, "Product", "PkProductId", "1");
                         //arrmapData.push({ data: ProductList, textColumn: "ProductName_Text", srcValueColumn: "ProductName_Text", destValueColumn: "PkProductId", destTextColumn: "Product" });
                         break
                     case "Batch":
-                        cg.columns[kk]["event"] = trandtldropList;
-                        cg.columns[kk]["fieldval"] = "Batch";
-                        cg.columns[kk]["KeyID"] = "PkLotId";
-                        cg.columns[kk]["KeyValue"] = "Batch";
-                        cg.columns[kk]["Keyfield"] = "Batch";
-                        cg.columns[kk]["RowValue"] = "FkProductId";
-
+                        if (tranModel.ExtProperties.StockFlag != "I") {
+                            cg.columns[kk]["event"] = trandtldropList;
+                            cg.columns[kk]["fieldval"] = "FkLotId";
+                            cg.columns[kk]["KeyID"] = "PkLotId";
+                            cg.columns[kk]["KeyValue"] = "Batch";
+                            cg.columns[kk]["Keyfield"] = "Batch,Color,MRP,SaleRate,PurchaseRate,TradeRate,DistributionRate";
+                            cg.columns[kk]["RowValue"] = "FkProductId";
+                            cg.columns[kk]["ExtraValue"] = "TranAlias,TranType"; //tranModel.ExtProperties.TranAlias;
+                        }
                         break
                     case "Color":
-                        cg.columns[kk]["event"] = trandtldropList;
-                        cg.columns[kk]["fieldval"] = "Color";
-                        cg.columns[kk]["KeyID"] = "Color";
-                        cg.columns[kk]["KeyValue"] = "Color";
-                        cg.columns[kk]["Keyfield"] = "Color";
-                        cg.columns[kk]["RowValue"] = "FkProductId";
+                        if (tranModel.ExtProperties.StockFlag != "I") {
+                            cg.columns[kk]["event"] = trandtldropList;
+                            cg.columns[kk]["fieldval"] = "FkLotId";
+                            cg.columns[kk]["KeyID"] = "PkLotId";
+                            cg.columns[kk]["KeyValue"] = "Color";
+                            cg.columns[kk]["Keyfield"] = "Color";//,Batch,MRP,SaleRate,PurchaseRate";
+                            cg.columns[kk]["RowValue"] = "FkProductId,Batch";
+                            cg.columns[kk]["ExtraValue"] = ""; //tranModel.ExtProperties.TranAlias; 
+                        }
                         break
                     case "MRP":
                         cg.columns[kk]["event"] = trandtldropList;
-                        cg.columns[kk]["fieldval"] = "MRP";
-                        cg.columns[kk]["KeyID"] = "MRP";
+                        if (tranModel.ExtProperties.StockFlag == "I") {
+                            cg.columns[kk]["fieldval"] = "MRP";
+                            cg.columns[kk]["KeyID"] = "MRP";
+                            cg.columns[kk]["Keyfield"] = "MRP";
+
+                        } else {
+                            cg.columns[kk]["fieldval"] = "FkLotId";
+                            cg.columns[kk]["KeyID"] = "PkLotId";
+                            cg.columns[kk]["Keyfield"] = "MRP";//,Color,Batch,SaleRate,PurchaseRate";
+
+                        }
                         cg.columns[kk]["KeyValue"] = "MRP";
-                        cg.columns[kk]["Keyfield"] = "MRP";
-                        cg.columns[kk]["RowValue"] = "FkProductId";
+                        cg.columns[kk]["RowValue"] = "FkProductId,Batch,Color";
+
                         break
                 }
             }
         }
-        var obdt = cg.populateDataFromJson({
+        var obdt = cg.populateDataFromJson({ 
             srcData: data,
             mapData: arrmapData
         });
@@ -158,6 +186,7 @@ function BindGrid(GridId, data) {
         /*---------------    ---------------   ---------------   ---------------*/
         cg.outGrid.onBeforeEditCell.subscribe(function (e, args) {
             if (args.cell != undefined) {
+                
                 var field = cg.columns[args.cell].field;
 
                 if (field != "InvoiceDate" && field != "FKInvoiceID_Text" && field != "Product" && Common.isNullOrEmpty(args.item["Product"])) {
@@ -194,16 +223,36 @@ function BindGrid(GridId, data) {
                     }
                 }
                 else {
-                    if (field == "Batch" || field == "Color") {
-                        console.log(args.item["Batch"]);
-                        var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
-                        //var Batch = args.item["Batch"];
-                        //var Color = args.item["Color"];
-                        //Common.ajax(Handler.currentPath() + "ProductLotDtlList?FkProductId=" + FkProductId + "&Batch=" + Batch + "&Color=" + Color + "", {}, "Please Wait...", function (res) {
-                        //    Handler.hide();
-                        //    cg.setOptionArray(DrpIndex["Batch_Text"], res, "Batch_Text", false, "Batch", "PkLotId", "1");
-                        //    cg.setOptionArray(DrpIndex["Color_Text"], res, "Color_Text", false, "Color", "PkLotId", "1");
-                        //});
+                    if (field == "Batch" || field == "Color" || field == "MRP") {
+                        
+                        if (tranModel.ExtProperties.StockFlag == "I") {
+                            args.item["FkLotId"] = 0;
+                            var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
+                            //var Batch = args.item["Batch"];
+                            //var Color = args.item["Color"];
+                            if (field == "Batch") {
+                                Common.ajax(Handler.currentPath() + "CategorySizeListByProduct?FkProductId=" + FkProductId + "", {}, "Please Wait...", function (res) {
+                                    Handler.hide();
+                                    cg.setOptionArray(DrpIndex["Batch"], res, "Batch", false, "Size", "Size", "1");
+                                });
+                            }
+                            if (field == "Color") {
+                                var data = { name: field, pageNo: 1, pageSize: 1000, search: '', RowParam: FkProductId, ExtraParam: TranAlias };
+
+                                $.ajax({
+                                    url: Handler.currentPath() + 'trandtldropList', data: data, async: false, dataType: 'JSON', success: function (res) {
+                                        Handler.hide();
+                                        cg.setOptionArray(DrpIndex["Color"], res, "Color", false, "Color", "Color", "1");
+                                    }, error: function (request, status, error) {
+                                    }
+                                });
+                                //Common.ajax(Handler.currentPath() + "ProductLotDtlList?FkProductId=" + FkProductId + "&Batch=" + Batch + "&Color=" + Color + "", {}, "Please Wait...", function (res) {
+                                //    Handler.hide();
+                                //    cg.setOptionArray(DrpIndex["Color"], res, "Color", false, "Color", "Color", "1");
+                                //});
+                            }
+
+                        }
                     }
                 }
             }
@@ -213,6 +262,7 @@ function BindGrid(GridId, data) {
             if (args.cell != undefined) {
 
                 var field = cg.columns[args.cell].field;
+
                 if (field == "Product") {
                     if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
                         var InvoiceSrNo = Common.isNullOrEmpty(args.item["ProductName"]) ? 0 : parseFloat(args.item["ProductName"]);
@@ -221,7 +271,7 @@ function BindGrid(GridId, data) {
                         //var data = cg.getData().filter(function (element) { return (element.FkProductId == FkProductId && element.InvoiceSrNo == InvoiceSrNo && element.mode != 2); });
                         //if (data.length <= 0) {
                         args.item["InvoiceSrNo"] = InvoiceSrNo;
-                            ColumnChange(args, args.row, "ProductReturn");
+                        ColumnChange(args, args.row, "ProductReturn");
                         //}
                         //else {
                         //    alert("Product Already Add In List");
@@ -230,50 +280,80 @@ function BindGrid(GridId, data) {
                         //}
 
                     } else {
-                        var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
-                        var data = cg.getData().filter(function (element) { return (element.FkProductId == FkProductId && element.mode != 2); });
-                        if (data.length <= 0) {
-                            //if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
-                            //    args.item["FkLotId"] = FkLotId > 0 ? FkLotId : 0; 
-                            //}
-                            ColumnChange(args, args.row, "Product");
-                        }
-                        else {
-                            alert("Product Already Add In List");
-                            cg_ClearRow(args);
-                            return false;
-                        }
+                        // var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
+
+                        //var data = cg.getData().filter(function (element) { return (element.FkProductId == FkProductId && element.ModeForm != 2); });
+                        //if (data.length <= 1) {
+                        //if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
+                        //    args.item["FkLotId"] = FkLotId > 0 ? FkLotId : 0; 
+                        //}
+                        ColumnChange(args, args.row, "Product");
+                        //}
+                        //else {
+                        //    alert("Product Already Add In List");
+                        //    cg_ClearRow(args);
+                        //    return false;
+                        //}
                     }
                 }
                 else if (field == "Qty") {
                     ColumnChange(args, args.row, "Qty");
                 }
+                else if (field == "MRP") {
+                    var MRP = parseFloat(args.item["MRP"]);
+                    var Rate = parseFloat(args.item["Rate"]);
+                    if (MRP < Rate) {
+                        args.item["MRP"] = Rate;
+                        alert('Invalid MRP');
+                    }
+                    ColumnChange(args, args.row, "MRP");
+                }
+                else if (field == "Rate") {
+                    
+                    var MRP = parseFloat(args.item["MRP"]);
+                    var Rate = parseFloat(args.item["Rate"]);
+                    if (MRP < Rate) {
+                        args.item["Rate"] = MRP;
+                        alert('Invalid Rate');
+                    }
+                    ColumnChange(args, args.row, "Rate");
+                }
+                else if (field == "SaleRate") {
+                    //  ColumnChange(args, args.row, "SaleRate");
+                }
+                else if (field == "TradeRate") {
+                    //    ColumnChange(args, args.row, "TradeRate");
+                }
+                else if (field == "DistributerRate") {
+                    // ColumnChange(args, args.row, "DistributerRate");
+                }
                 else if (field == "TradeDisc") {
                     ColumnChange(args, args.row, "TradeDisc");
                 }
                 else if (field == "Batch") {
-                    var FkLotId = Common.isNullOrEmpty(args.item["Batch_Text"]) ? 0 : parseFloat(args.item["Batch_Text"]);
-                    if (FkLotId > 0 || TranType == "Purchase") {
-                        args.item["FkLotId"] = FkLotId > 0 ? FkLotId : 0;
-                        cg.updateRefreshDataRow(args.row);
+                    
+                    var FkLotId = args.item["FkLotId"];
+                    if (FkLotId > 0) {
                         ColumnChange(args, args.row, "Batch");
+
                     } else {
-                        args.item["Batch_Text"] = "";
-                        args.item["Batch"] = "";
-                        cg.updateRefreshDataRow(args.row);
+                        if (tranModel.ExtProperties.TranType != "P") {
+                            args.item["Batch"] = "";
+                            cg.updateRefreshDataRow(args.row);
+                        }
                     }
                 }
                 else if (field == "Color") {
-                    var FkLotId = Common.isNullOrEmpty(args.item["Color_Text"]) ? 0 : parseFloat(args.item["Color_Text"]);
-                    if (FkLotId > 0 || TranType == "Purchase") {
-                        args.item["FkLotId"] = FkLotId > 0 ? FkLotId : 0;
-                        cg.updateRefreshDataRow(args.row);
+                    
+                    var FkLotId = args.item["FkLotId"];
+                    if (FkLotId > 0) {
                         ColumnChange(args, args.row, "Color");
 
                     } else {
-                        args.item["Color_Text"] = "";
-                        args.item["Color"] = "";
-                        cg.updateRefreshDataRow(args.row);
+                        if (tranModel.ExtProperties.TranType != "P") {
+                            args.item["Color"] = "";
+                            cg.updateRefreshDataRow(args.row);
+                        }
                     }
                 }
                 else if (field == "FKInvoiceID_Text") {
@@ -291,7 +371,9 @@ function BindGrid(GridId, data) {
 
                 var PkProductId = args.grid.getDataItem(args.row)["PkProductId"];
                 var SrNo = args.grid.getDataItem(args.row)["SrNo"];
-
+                if (field == "Delete") {
+                    ColumnChange(args, args.row, "Delete");
+                }
 
             }
         });
@@ -321,7 +403,7 @@ function BindGrid(GridId, data) {
             var row = $(this).data("row");
             var command = $(e.target).attr("data");
             if (command == "EditColumn") {
-                Common.GridColSetup(tranModel.ExtProperties.FKFormID, '', function () {
+                Common.GridColSetup(tranModel.ExtProperties.FKFormID, "dtl", function () {
                     var _dtl = GetDataFromGrid();
                     BindGrid('DDT', _dtl);
                 });
@@ -335,7 +417,7 @@ function BindGrid(GridId, data) {
 
 function cg_ClearRow(args) {
     args.item["PkId"] = 0;
-    args.item["mode"] = 0;
+    args.item["ModeForm"] = 0;
     args.item["FkProductId"] = 0;
     args.item["ProductName_Text"] = "";
     args.item["Product"] = 0;
@@ -356,6 +438,8 @@ function cg_ClearRow(args) {
     args.item["Batch_Text"] = "";
     args.item["Batch"] = "";
     args.item["SaleRate"] = "";
+    args.item["TradeRate"] = "";
+    args.item["DistributionRate"] = "";
     args.item["MfgDate"] = "";
     args.item["FKInvoiceID"] = 0;
     args.item["InvoiceSrNo"] = 0;
@@ -390,6 +474,7 @@ function ColumnChange(args, rowIndex, fieldName) {
     tranModel.TranDetails = GetDataFromGrid();
 
     if (tranModel.TranDetails.length > 0) {
+        $(".loader").show();
         $.ajax({
             type: "POST",
             url: Handler.currentPath() + 'ColumnChange',
@@ -401,12 +486,14 @@ function ColumnChange(args, rowIndex, fieldName) {
                     tranModel = res.data;
                     setFooterData(tranModel);
                     setPaymentDetail(tranModel);
-                    debugger;
+
                     setGridRowData(args, tranModel.TranDetails, rowIndex, fieldName);
 
                 }
                 else
                     alert(res.msg);
+
+                $(".loader").hide();
             }
         });
     }
@@ -481,7 +568,9 @@ function setGridRowData(args, data, rowIndex, fieldName) {
     }
     else {
 
+        args.item["SrNo"] = data[rowIndex].SrNo;
         args.item["PkProductId"] = data[rowIndex].PkProductId;
+        args.item["FkLotId"] = data[rowIndex].FkLotId;
         args.item["Rate"] = data[rowIndex].Rate;
         args.item["MRP"] = data[rowIndex].MRP;
         args.item["Qty"] = data[rowIndex].Qty;
@@ -499,14 +588,20 @@ function setGridRowData(args, data, rowIndex, fieldName) {
         args.item["MfgDate"] = data[rowIndex].MfgDate;
         args.item["ExpiryDate"] = data[rowIndex].ExpiryDate;
         args.item["SaleRate"] = data[rowIndex].SaleRate;
+        args.item["TradeRate"] = data[rowIndex].TradeRate;
+        args.item["DistributionRate"] = data[rowIndex].DistributionRate;
         args.item["InvoiceDate"] = data[rowIndex].InvoiceDate;
         args.item["FKInvoiceID_Text"] = data[rowIndex].FKInvoiceID_Text;
         args.item["FKInvoiceSrID"] = data[rowIndex].FKInvoiceSrID;
+        args.item["FKLocationID"] = data[rowIndex].FKLocationID;
+        args.item["ReturnTypeID"] = data[rowIndex].ReturnTypeID;
         args.item["Delete"] = 'Delete';
 
     }
     cg.updateRefreshDataRow(args.row);
     cg.updateAndRefreshTotal();
+    //cg.gotoCell(args.row, args.cell + 1);
+    args.grid.gotoCell(args.row, args.cell + 1, true)
     return false;
 }
 
@@ -517,12 +612,13 @@ function GetDataFromGrid(ifForsave) {
     let SrNo = number > 0 ? number : 0;
     var _d = [];
     cg.getData().filter(function (element) {
+
         if (ifForsave) {
-            if (!Handler.isNullOrEmpty(element.ProductName) && !Handler.isNullOrEmpty(element.Qty)) {
+            if (!Handler.isNullOrEmpty(element.Product) && !Handler.isNullOrEmpty(element.Qty)) {
 
                 if (element.FkProductId > 0) { element.SrNo = element.SrNo; }
                 else { SrNo++; element.SrNo = SrNo; }
-                element.FkProductId = parseInt(element.ProductName);
+                // element.FkProductId = parseInt(element.Product);
                 _d.push(element);
                 return element
             }
@@ -530,10 +626,10 @@ function GetDataFromGrid(ifForsave) {
         else {
 
 
-            if (!Handler.isNullOrEmpty(element.ProductName) || !Handler.isNullOrEmpty(element.FKInvoiceID)) {
+            if (!Handler.isNullOrEmpty(element.Product) || !Handler.isNullOrEmpty(element.FKInvoiceID)) {
                 if (element.FkProductId > 0) { element.SrNo = element.SrNo; }
                 else { SrNo++; element.SrNo = SrNo; }
-                element.FkProductId = parseInt(element.ProductName);
+                //element.FkProductId = parseInt(element.Product);
                 _d.push(element);
                 return element
             }
@@ -543,14 +639,17 @@ function GetDataFromGrid(ifForsave) {
 }
 
 function SaveRecord() {
+
     Common.Get(".form", "", function (flag, _d) {
+
         if (flag) {
+
             tranModel.PkId = $('#PkId').val();
             tranModel.FkPartyId = $('#FkPartyId').val();
             tranModel.EntryDate = $('#EntryDate').val();
             tranModel.GRDate = $('#GRDate').val();
             tranModel.TranDetails = [];
-            if (tranModel.FkPartyId > 0) {
+            if ((tranModel.FkPartyId > 0) || (tranModel.ExtProperties.DocumentType == "C")) {
                 if (tranModel.FKSeriesId > 0) {
                     tranModel.TranDetails = GetDataFromGrid(true);
 
@@ -591,11 +690,11 @@ function setdisablecolumn(cg, cc, hash, index, type) {
     var h = (hash[index] = {});
     var focu = {};
 
-    if (cc["mode"] == 1) {
+    if (cc["ModeForm"] == 1) {
         h["ProductName_Text"] = "sobc";
         focu["ProductName_Text"] = { "focusable": false };
     }
-    else if (cc["mode"] == 2) {
+    else if (cc["ModeForm"] == 2) {
         for (k = 0; k < cg.columns.length - 2; k++) {
             h[cg.columns[k]["field"]] = "sdbc";
             focu[cg.columns[k]["field"]] = { "focusable": false };
@@ -655,6 +754,7 @@ function setSeries() {
 }
 
 function trandtldropList(data) {
+    
     var output = []
     $.ajax({
         url: Handler.currentPath() + 'trandtldropList', data: data, async: false, dataType: 'JSON', success: function (result) {
@@ -665,4 +765,33 @@ function trandtldropList(data) {
         }
     });
     return output;
+
+}
+
+function GetWalkingCustomerDetail(Mobile) {
+
+    if (tranModel.ExtProperties.DocumentType == "C") {
+        //$("#FkPartyId").val('0');
+        //$("#PartyName,#PartyAddress,#PartyDob,#PartyMarriageDate").removeAttr("readonly"); 
+
+        //Common.ajax(Handler.currentPath() + "GeWalkingCustomerbyMobile?Mobile=" + Mobile + "", {}, "Please Wait...", function (res) {
+        //    Handler.hide();
+        //    if (res != null) {
+        //        $("#FkPartyId").val(res.PkId);
+        //        $("#PartyName").val(res.Name);
+        //        $("#PartyAddress").val(res.Address);
+        //        $("#PartyDob").val(res.Dob);
+        //        $("#PartyMarriageDate").val(res.MarriageDate); 
+
+        //        tranModel["PartyName"] = res.Name; 
+        //        tranModel["PartyAddress"] = res.Address; 
+        //        tranModel["PartyDob"] = res.Dob;
+        //        tranModel["PartyMarriageDate"] = res.MarriageDate;
+        //        $("#PartyName,#PartyAddress,#PartyDob,#PartyMarriageDate").attr("readonly","readonly"); 
+
+
+        //    }
+
+        //});
+    }
 }

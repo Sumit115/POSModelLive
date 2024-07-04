@@ -20,7 +20,7 @@ function ShowGridColumn() {
 }
 function ViewProductLot() {
     if ($("#FKProductId").val() > 0) {
-        debugger;
+        
         setTimeout(function () {
             $("#hidExtraFKLotID").val($("#FKProductId").val());
             $("#drpListFKLotID").find(".cusdropdown-icon").trigger("click");
