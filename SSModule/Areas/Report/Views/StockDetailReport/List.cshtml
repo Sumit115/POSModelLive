@@ -1,0 +1,74 @@
+﻿@{
+    ViewData["Title"] = "Stock Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="row p-2 filter">
+            <div class="col-md-2">
+                <input name="FromDate" type="date" id="FromDate" class="form-control" maxlength="10" placeholder="From Date*" required="" title="From Date*">
+                <span class="field-validation-valid text-danger" data-valmsg-for="FromDate"></span>
+            </div>
+            <div class="col-md-2">
+                <input name="ToDate" type="date" id="ToDate" class="form-control" maxlength="10" placeholder="To Date*" required="" title="To Date*">
+                <span class="field-validation-valid text-danger" data-valmsg-for="ToDate"></span>
+            </div>
+            <div class="col-md-1">
+                <select id="ReportType" class="form-control" onchange="Load();">
+                    <option value="S">Summary</option>
+                    <option value="M">Month Wise</option>
+                    <option value="D">Day Wise</option>
+                    @*    <option value="W">Monthly</option>
+                    <option value="Q">Quarterly</option>
+                    <option value="C">Cumulative</option>*@
+                </select>
+            </div>
+            <div class="col-md-1">
+                <select id="TranAlias" class="form-control" onchange="Load();">
+                    <option value="SINV">Sales</option>
+                    <option value="SORD">Sales Order</option>
+                    <option value="SPSL">Sales Challan</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <input type="button" value="Search" class="btn btn-success" onclick="Load()">
+            </div>
+            <div class="col-md-2">
+                <input type="button" value="Export To Excel" class="btn btn-dark" id="btnExportToExcel" onclick="ExportToExcel()">
+            </div>
+            <div class="col-md-1">
+                <input type="button" value="Product Filter" onclick="Common.ShowFilterPopup('Product')" class="btn btn-info" id="btnFilterProduct">
+            </div>
+            <div class="col-md-1">
+                <input type="button" value="Customer Filter" onclick="Common.ShowFilterPopup('Customer')" class="btn btn-info" id="btnFilterCustomer">
+            </div>
+        </div>
+    </div>
+</div>
+<hr style="margin: 1px 0px;" />
+
+<div class="row">
+    <div id="WUCHM" class="col-12">
+    </div>
+</div>
+<input type="hidden" id="hdProductFilter" value="[]" />
+<input type="hidden" id="hdCustomerFilter" value="[]" />
+
+<input type="hidden" id="hdProductList" value="[]" />
+<input type="hidden" id="hdCustomerList" value="[]" />
+@section Scripts {
+    <script src="~/js/report/report.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            IdProperty = "sno";
+            GridHeight = "85vh";
+            Controller = 'SalesStock';
+
+            //View();
+        });
+    </script>
+
+
+}

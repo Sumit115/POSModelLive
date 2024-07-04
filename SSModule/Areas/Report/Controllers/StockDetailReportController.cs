@@ -20,11 +20,11 @@ using DocumentFormat.OpenXml.Spreadsheet;
 namespace SSAdmin.Areas.Report.Controllers
 {
     [Area("Report")]
-    public class SalesStockController : BaseController
+    public class StockDetailReportController : BaseController
     {
-        private readonly ISalesStockRepository _repository;
+        private readonly IStockDetailReportRepository _repository;
 
-        public SalesStockController(ISalesStockRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
+        public StockDetailReportController(IStockDetailReportRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
             _repository = repository;
             FKFormID = (long)Handler.Form.SalesStock;
@@ -167,6 +167,5 @@ namespace SSAdmin.Areas.Report.Controllers
         {
             return _repository.ColumnList(GridName);
         }
-        
     }
 }
