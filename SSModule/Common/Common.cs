@@ -101,6 +101,7 @@ namespace SSAdmin
 
             SalesStock = 200,
             PurchaseStock = 201,
+            RateStock = 203,
 
             //
 

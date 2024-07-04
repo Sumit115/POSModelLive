@@ -65,7 +65,7 @@ builder.Services.AddScoped<ISalesCrNoteRepository, SalesCrNoteRepository>();
 builder.Services.AddScoped<IAccountGroupRepository, AccountGroupRepository>();
 builder.Services.AddScoped<IAccountMasRepository, AccountMasRepository>();
 builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
-//builder.Services.AddScoped<ITranBaseRepository, TranBaseRepository>();
+builder.Services.AddScoped<IRateEndStockRepository, RateEndStockRepository>();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();

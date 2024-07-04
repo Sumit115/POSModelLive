@@ -460,6 +460,20 @@ namespace SSRepository.Repository
         //}
 
 
+        public DataTable GetFilterData(string strFilter)
+        {
+
+            DataTable dtFilter = new DataTable();
+            dtFilter.Columns.Add("PKID");
+            dtFilter.AcceptChanges();
+            if (strFilter != null && strFilter != "[]")
+            {
+
+                dtFilter = JsonConvert.DeserializeObject<DataTable>(strFilter);
+
+            }
+            return dtFilter;
+        }
 
 
 

@@ -1161,138 +1161,6 @@ function C_GridColSetup(n, n2, f) {
     });
 }
 
-function C_ShowFilterPopup(type) {
-    var htm = '';
-    var _data = JSON.parse($('#hd' + type + 'List').val());
-    if (_data.length > 0) {
-
-        showpopupWithData(fn_GetPopuphtml(type, _data));
-    }
-    else {
-        var _d = {};
-        _d["pageNo"] = pageNo;
-        _d["pageSize"] = pageSize;
-        $.ajax({
-            type: "POST",
-            url: '/Master/' + type + '/List',
-            data: _d,
-            datatype: "json",
-            success: function (res) {
-
-                if (res.status == "success") {
-                    $('#hd' + type + 'List').val(JSON.stringify(res.data));
-                    htm = fn_GetPopuphtml(type, res.data);
-                    showpopupWithData(htm);
-
-                }
-                else
-                    alert(res.msg);
-
-            }
-        });
-
-    }
-    function showpopupWithData(htm) {
-        Handler.popUp(htm, { width: "800px", height: "500px" }, function () {
-            $("#btnSaveFilter").click(function () {
-                var type = $("#hdtype").val();
-                //  console.log(type);
-                var _List = [];
-                $("input[name=chkFilterPkId]:checked").each(function () {
-
-                    var pk_Id = $(this).val();
-                    _List.push({ PKID: pk_Id });
-                });
-                //console.log(_List);
-
-                var jsonData = JSON.stringify(_List);
-                $('#hd' + type + 'Filter').val(jsonData);
-                console.log($('#hd' + type + 'Filter').val());
-                $(".popup_d").hide();
-            });
-        });
-    }
-    function fn_GetPopuphtml(type, _data) {
-        
-        var htm = '';
-        htm += '<div class="mb-4 card"><div class="card-body">';
-        htm += '<div class="row mb-3">';
-        htm += '<div class="col-md-6">';
-        htm += '<div class="card-title"> ' + type + ' Filter</div>';
-        htm += '</div>';
-        htm += '<div class="col-md-6 text-center">';
-        htm += '<input type="button" id="btnSaveFilter" value="Done" class="btn btn-success"/>';
-        htm += '</div>';
-        htm += '</div> ';
-        htm += '<input type="hidden" name="hdtype" id="hdtype"  value="' + type + '"  />';
-        htm += '<div class="row"><div class="col-md-12 mb-2"  style="max-height:300px;overflow: auto;">';
-        htm += '<table class="table table-striped table-bordered table-hover table-full-width">';
-
-        if (type == 'Product') {
-            htm += '<thead><tr><th>Select</th><th>Name To Display</th><th>HSN</th><th>Section</th></tr></thead>';
-            htm += '<tbody >';
-            $(_data).each(function (i, v) {
-                
-                var _isexists = $.grep(JSON.parse($('#hd' + type + 'Filter').val()), function (item) { return item.PKID == v.PkProductId; }).length > 0 ? true : false;
-
-                htm += '<tr class="trFilter"> ';
-                htm += ' <td> ';
-                htm += '<input type="checkbox" name="chkFilterPkId" ' + (_isexists ? "checked" : "") + ' value="' + v.PkProductId + '"  style="height: 25px;width: 25px;"/> ';
-                htm += '</td>';
-                htm += '<td>' + v.Product + '</td>';
-                htm += '<td>' + v.HSNCode + '</td>';
-                htm += '<td>' + v.CategoryName + '</td>';
-                htm += ' </tr> ';
-            });
-            htm += '</tbody>';
-        }
-        else if (type == 'Customer') {
-            htm += '<thead><tr><th>Select</th><th>Customer</th><th>Mobile</th><th>Email</th><th>City</th></tr></thead>';
-            htm += '<tbody >';
-            $(_data).each(function (i, v) {
-                
-                var _isexists = $.grep(JSON.parse($('#hd' + type + 'Filter').val()), function (item) { return item.PKID == v.PkCustomerId; }).length > 0 ? true : false;
-
-                htm += '<tr class="trFilter"> ';
-                htm += ' <td> ';
-                htm += '<input type="checkbox" name="chkFilterPkId" ' + (_isexists ? "checked" : "") + ' value="' + v.PkCustomerId + '"  style="height: 25px;width: 25px;"/> ';
-                htm += '</td>';
-                htm += '<td>' + v.Name + '</td>';
-                htm += '<td>' + v.Mobile + '</td>';
-                htm += '<td>' + v.Email + '</td>';
-                htm += '<td>' + v.City + '</td>';
-                htm += ' </tr> ';
-            });
-            htm += '</tbody>';
-        }
-        else if (type == 'Vendor') {
-            htm += '<thead><tr><th>Select</th><th>Vendor</th><th>Mobile</th><th>Email</th><th>City</th></tr></thead>';
-            htm += '<tbody >';
-            $(_data).each(function (i, v) {
-                
-                var _isexists = $.grep(JSON.parse($('#hd' + type + 'Filter').val()), function (item) { return item.PKID == v.PkVendorId; }).length > 0 ? true : false;
-
-                htm += '<tr class="trFilter"> ';
-                htm += ' <td> ';
-                htm += '<input type="checkbox" name="chkFilterPkId" ' + (_isexists ? "checked" : "") + ' value="' + v.PkVendorId + '"  style="height: 25px;width: 25px;"/> ';
-                htm += '</td>';
-                htm += '<td>' + v.Name + '</td>';
-                htm += '<td>' + v.Mobile + '</td>';
-                htm += '<td>' + v.Email + '</td>';
-                htm += '<td>' + v.City + '</td>';
-                htm += ' </tr> ';
-            });
-            htm += '</tbody>';
-        }
-        htm += '</table>';
-        htm += '</div></div> ';
-
-        htm += '   </div></div>';
-
-        return htm;
-    }
-
-}
 
 var Common = {
     ajax: C_Ajax,
@@ -1307,8 +1175,7 @@ var Common = {
     AlertEnum: C_AlertEnum,
     showAlert: C_showAlert,
     Grid: C_Grid,
-    GridColSetup: C_GridColSetup,
-    ShowFilterPopup: C_ShowFilterPopup
+    GridColSetup: C_GridColSetup
 };
 
 

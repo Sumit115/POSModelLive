@@ -21,11 +21,11 @@ namespace SSRepository.Repository.Report
 
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
-            //S=Summary | M=Month Wise | D=Day Wise | W=Monthly | Q=Quarterly | C=Cumulative 
             var list = new List<ColumnStructure>();
+            //S=Summary | M=Month Wise | D=Day Wise | W=Monthly | Q=Quarterly | C=Cumulative
             if (GridName.ToString() == "S")
             {
-               list.Add( new ColumnStructure { pk_Id = 1, Orderby = 1, Heading = "Name To Display", Fields = "ProductName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
+                list.Add(new ColumnStructure { pk_Id = 1, Orderby = 1, Heading = "Name To Display", Fields = "ProductName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
             }
             else if (GridName.ToString() == "M")
             {
