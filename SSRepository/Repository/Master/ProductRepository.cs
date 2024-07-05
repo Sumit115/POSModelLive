@@ -5,6 +5,9 @@ using SSRepository.IRepository.Master;
 using Microsoft.AspNetCore.Http;
 using SSRepository.Models;
 using Microsoft.VisualBasic;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using System.Reflection.Metadata;
 
 namespace SSRepository.Repository.Master
 {
@@ -56,7 +59,7 @@ namespace SSRepository.Repository.Master
                                            Alias = cou.Alias,
                                            Strength = cou.Strength,
                                            Barcode = cou.Barcode,
-                                           Status = cou.Status?? "",
+                                           Status = cou.Status ?? "",
                                            FKProdCatgId = cou.FKProdCatgId,
                                            HSNCode = cou.HSNCode,
                                            FkBrandId = cou.FkBrandId,
@@ -66,7 +69,7 @@ namespace SSRepository.Repository.Master
                                            MaxStock = cou.MaxStock,
                                            MinDays = cou.MinDays,
                                            MaxDays = cou.MaxDays,
-                                           CaseLot = cou.CaseLot?? "",
+                                           CaseLot = cou.CaseLot ?? "",
                                            BoxSize = cou.BoxSize,
                                            Description = cou.Description,
                                            Unit1 = cou.Unit1,
@@ -87,7 +90,7 @@ namespace SSRepository.Repository.Master
             return data;
         }
 
-        public List<ProductModel> GetListByPartyId_InSaleInvoice(int pageSize, int pageNo = 1, string search = "", long FkPartyId=0, long FkInvoiceId = 0, DateTime? InvoiceDate = null)
+        public List<ProductModel> GetListByPartyId_InSaleInvoice(int pageSize, int pageNo = 1, string search = "", long FkPartyId = 0, long FkInvoiceId = 0, DateTime? InvoiceDate = null)
         {
 
             if (search != null) search = search.ToLower();
@@ -289,7 +292,7 @@ namespace SSRepository.Repository.Master
             Tbl.FKProdCatgId = model.FKProdCatgId;
             Tbl.FKTaxID = model.FKTaxID;
             Tbl.HSNCode = model.HSNCode;
-            Tbl.FkBrandId = model.FkBrandId>0? model.FkBrandId:null;
+            Tbl.FkBrandId = model.FkBrandId > 0 ? model.FkBrandId : null;
             Tbl.ShelfID = model.ShelfID;
             Tbl.TradeDisc = model.TradeDisc;
             Tbl.MinStock = model.MinStock;
@@ -375,7 +378,8 @@ namespace SSRepository.Repository.Master
 
         public ProductModel GetSingleRecord_ByBarcode(string Barcode)
         {
-
+            //Barcode,ProductId
+            //TblProduct>TblProdLot>tblProdQTYBarcode
             ProductModel data = new ProductModel();
             data = (from cou in __dbContext.TblProductMas
                     where cou.Barcode == Barcode
@@ -425,6 +429,26 @@ namespace SSRepository.Repository.Master
 
             return data;
         }
+
+        //GetProductDetail ->@barcode='' ,@productID,=0,@lotId=0
+        public DataTable GetProductDetail(string Barcode = "", long ProductId = 0, long LotId = 0)
+        { 
+            DataTable dt = new DataTable();
+            using (SqlConnection con = new SqlConnection(conn))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("usp_GetProductDetail", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Barcode", Barcode);
+                cmd.Parameters.AddWithValue("@ProductId", ProductId);
+                cmd.Parameters.AddWithValue("@LotId", LotId);
+                SqlDataAdapter adp = new SqlDataAdapter(cmd);
+                adp.Fill(dt);
+                con.Close();
+            }  
+            return dt;
+        }
+
         public string GetBarCode()
         {
             Int64 ProdBarcode;
@@ -493,7 +517,7 @@ namespace SSRepository.Repository.Master
             }
 
             //if (OutParam == null)
-                OutParam = Convert.ToInt64(InitBarcode);
+            OutParam = Convert.ToInt64(InitBarcode);
 
             try
             {
@@ -532,7 +556,7 @@ namespace SSRepository.Repository.Master
             //}
             //else
             //    OutParam = OutParam + 1;
-             string ReturnVar = Convert.ToString(OutParam);
+            string ReturnVar = Convert.ToString(OutParam);
 
             return ReturnVar;
 

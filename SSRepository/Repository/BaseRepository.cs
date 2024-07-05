@@ -554,7 +554,7 @@ namespace SSRepository.Repository
             get
             {
 
-                return __dbContext.Database.GetDbConnection().ConnectionString;
+                return __dbContext.Database.GetConnectionString()??"";
             }
         }
         public DataTable ExecDataTable(string cmdText)

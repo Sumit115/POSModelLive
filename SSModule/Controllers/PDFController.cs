@@ -75,7 +75,7 @@ namespace SSAdmin.Controllers
                 converter.Options.MarginRight = 10;
                 converter.Options.WebPageWidth = 1200;
                 converter.Options.AutoFitWidth = HtmlToPdfPageFitMode.AutoFit;
-                converter.Options.AutoFitHeight = HtmlToPdfPageFitMode.AutoFit;
+               // converter.Options.AutoFitHeight = HtmlToPdfPageFitMode.AutoFit;
              //   converter.Options.PdfPageOrientation = PdfPageOrientation.Landscape;
                 SelectPdf.PdfDocument doc = converter.ConvertHtmlString(htmlString);
                 doc.Save(FilePath);

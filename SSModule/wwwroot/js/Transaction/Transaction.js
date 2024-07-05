@@ -15,7 +15,7 @@ $(document).ready(function () {
     } else { $("#txtSearchBarcode").show(); $("#txtSearchBarcode").focus(); }
 
     $('#btnServerSave').click(function (e) {
-        
+
         if ($("#loginform1").valid()) {
             SaveRecord();
         }
@@ -153,7 +153,7 @@ function BindGrid(GridId, data) {
                 }
             }
         }
-        var obdt = cg.populateDataFromJson({ 
+        var obdt = cg.populateDataFromJson({
             srcData: data,
             mapData: arrmapData
         });
@@ -186,7 +186,7 @@ function BindGrid(GridId, data) {
         /*---------------    ---------------   ---------------   ---------------*/
         cg.outGrid.onBeforeEditCell.subscribe(function (e, args) {
             if (args.cell != undefined) {
-                
+
                 var field = cg.columns[args.cell].field;
 
                 if (field != "InvoiceDate" && field != "FKInvoiceID_Text" && field != "Product" && Common.isNullOrEmpty(args.item["Product"])) {
@@ -224,7 +224,7 @@ function BindGrid(GridId, data) {
                 }
                 else {
                     if (field == "Batch" || field == "Color" || field == "MRP") {
-                        
+
                         if (tranModel.ExtProperties.StockFlag == "I") {
                             args.item["FkLotId"] = 0;
                             var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
@@ -309,7 +309,7 @@ function BindGrid(GridId, data) {
                     ColumnChange(args, args.row, "MRP");
                 }
                 else if (field == "Rate") {
-                    
+
                     var MRP = parseFloat(args.item["MRP"]);
                     var Rate = parseFloat(args.item["Rate"]);
                     if (MRP < Rate) {
@@ -331,7 +331,7 @@ function BindGrid(GridId, data) {
                     ColumnChange(args, args.row, "TradeDisc");
                 }
                 else if (field == "Batch") {
-                    
+
                     var FkLotId = args.item["FkLotId"];
                     if (FkLotId > 0) {
                         ColumnChange(args, args.row, "Batch");
@@ -344,7 +344,7 @@ function BindGrid(GridId, data) {
                     }
                 }
                 else if (field == "Color") {
-                    
+
                     var FkLotId = args.item["FkLotId"];
                     if (FkLotId > 0) {
                         ColumnChange(args, args.row, "Color");
@@ -448,6 +448,9 @@ function cg_ClearRow(args) {
     cg.updateRefreshDataRow(args.row);
 }
 function BarcodeScan(barcode) {
+    $(".loader").show();
+    tranModel.TranDetails = GetDataFromGrid();
+
     $.ajax({
         type: "POST",
         url: Handler.currentPath() + 'BarcodeScan',
@@ -455,9 +458,9 @@ function BarcodeScan(barcode) {
         datatype: "json", success: function (res) {
             if (res.status == "success") {
                 tranModel = res.data;
-                $(tranModel.TranDetails).each(function (i, v) {
-                    v["ProductName"] = parseInt(v.FkProductId);
-                });
+                //$(tranModel.TranDetails).each(function (i, v) {
+                //    v["ProductName"] = parseInt(v.FkProductId);
+                //});
                 BindGrid('DDT', tranModel.TranDetails);
 
                 setFooterData(tranModel);
@@ -466,11 +469,12 @@ function BarcodeScan(barcode) {
             }
             else
                 alert(res.msg);
+            $(".loader").hide();
         }
     })
 }
 function ColumnChange(args, rowIndex, fieldName) {
-
+    debugger;
     tranModel.TranDetails = GetDataFromGrid();
 
     if (tranModel.TranDetails.length > 0) {
@@ -499,35 +503,55 @@ function ColumnChange(args, rowIndex, fieldName) {
     }
 }
 
+function ApplyRateDiscount(Type, Discount) {
+    $(".loader").show();
+    tranModel.TranDetails = GetDataFromGrid();
+
+    $.ajax({
+        type: "POST",
+        url: Handler.currentPath() + 'ApplyRateDiscount',
+        data: { model: tranModel, type: Type, discount: Discount },
+        datatype: "json", success: function (res) {
+
+            if (res.status == "success") {
+                tranModel = res.data;
+
+                BindGrid('DDT', tranModel.TranDetails);
+
+                setFooterData(tranModel);
+                setPaymentDetail(tranModel);
+
+
+            }
+            else
+                alert(res.msg);
+
+            $(".loader").hide();
+
+        }
+    })
+}
 function FooterChange(fieldName) {
 
-    console.log(tranModel);
-
+    $(".loader").show();
     $.ajax({
         type: "POST",
         url: Handler.currentPath() + 'FooterChange',
         data: { model: tranModel, fieldName: fieldName },
-        datatype: "json", success: function (res) {
+        datatype: "json",
+        success: function (res) {
             console.log(res);
             if (res.status == "success") {
+                console.log(tranModel);
 
                 tranModel = res.data;
-
-                //if (fieldName == "CashDiscType" || fieldName == "CashDiscount") {
-                //    $(tranModel.TranDetails).each(function (i, v) {
-                //        v["ProductName"] = parseInt(v.FkProductId);
-                //    });
-                //    BindGrid('DDT', tranModel.TranDetails);
-                //    //$("#hdData").val(JSON.stringify(tranModel));
-                //    //Load();
-                //}
-
                 setFooterData(tranModel);
                 setPaymentDetail(tranModel);
 
             }
             else
                 alert(res.msg);
+            $(".loader").hide();
         }
     })
 }
@@ -754,7 +778,7 @@ function setSeries() {
 }
 
 function trandtldropList(data) {
-    
+
     var output = []
     $.ajax({
         url: Handler.currentPath() + 'trandtldropList', data: data, async: false, dataType: 'JSON', success: function (result) {

@@ -25,6 +25,7 @@ namespace SSRepository.Models
         public long PkId { get; set; }
         public long FKSeriesId { get; set; }
         public string SeriesName { get; set; }
+        public string? BillingRate { get; set; }
         public long? EntryNo { get; set; }//backend se 1,2,3,
 
 
@@ -34,7 +35,9 @@ namespace SSRepository.Models
         public string TranAlias { get; set; }//=bind From Js on Series Selection
                                              //New Start
         public long FKLocationID { get; set; }//=bind From Js on Series Selection(Fk_BranchId)
-        //nEw End
+        public string? BranchStateName { get; set; }
+        //=true
+                                                   //nEw End
 
         public long FkPartyId { get; set; }
 

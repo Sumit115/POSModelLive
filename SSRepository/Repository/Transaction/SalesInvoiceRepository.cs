@@ -39,13 +39,15 @@ namespace SSRepository.Repository.Transaction
         {
             var obj = (from cou in __dbContext.TblSalesInvoicetrn
                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
+                       join branch in __dbContext.TblBranchMas on ser.FkBranchId equals branch.PkBranchId
                        where cou.FKUserID == UserId && ser.TranAlias == TranAlias
                        && ser.DocumentType == DocumentType
                        orderby cou.PkId descending
                        select new
                        {
                            cou,
-                           ser
+                           ser,
+                           branch
                        }).FirstOrDefault();
             if (obj != null)
             {
@@ -54,17 +56,31 @@ namespace SSRepository.Repository.Transaction
                     model.SeriesName = obj.ser.Series == null ? "" : obj.ser.Series.ToString();
                     model.FKLocationID = obj.ser.FkBranchId;
                     model.FKSeriesId = obj.ser.PkSeriesId;
-
+                    model.BillingRate = obj.ser.BillingRate;
+                    model.BranchStateName = obj.branch.State;
                 }
             }
             if (model.FKSeriesId == 0)
             {
-                var _entity = __dbContext.TblSeriesMas.Where(x => x.TranAlias == TranAlias && x.DocumentType == DocumentType).FirstOrDefault();
+                var _entity = (from cou in __dbContext.TblSeriesMas
+                               join branch in __dbContext.TblBranchMas on cou.FkBranchId equals branch.PkBranchId
+                               where cou.TranAlias == TranAlias
+                               select (new SeriesModel
+                               {
+                                   PkSeriesId = cou.PkSeriesId,
+                                   Series = cou.Series,
+                                   FkBranchId = cou.FkBranchId,
+                                   BillingRate = cou.BillingRate,
+                                   BranchStateName = branch.State,
+                               }
+                              )).FirstOrDefault();
                 if (_entity != null)
                 {
                     model.SeriesName = _entity.Series == null ? "" : _entity.Series.ToString();
                     model.FKLocationID = _entity.FkBranchId;
                     model.FKSeriesId = _entity.PkSeriesId;
+                    model.BillingRate = _entity.BillingRate;
+                    model.BranchStateName = _entity.BranchStateName;
                 }
             }
             return model;

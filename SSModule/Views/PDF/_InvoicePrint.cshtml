@@ -257,10 +257,13 @@
                 <th rowspan="2">Taxable Value</th>
                 <th colspan="2">CGST</th>
                 <th colspan="2">SGST</th>
+                <th colspan="2">IGST</th>
                 <th rowspan="2">Total Amt.</th>
             </tr>
             <tr>
 
+                <th>Rate %</th>
+                <th>Amt</th>
                 <th>Rate %</th>
                 <th>Amt</th>
                 <th>Rate %</th>
@@ -288,6 +291,8 @@
                             <td>@item.SCAmt</td>
                             <td>@item.SCRate</td>
                             <td>@item.SCAmt</td>
+                            <td>@item.ICRate</td>
+                            <td>@item.ICAmt</td>
                             <td class="text-right">@item.NetAmt</td>
                         </tr>
                     }
@@ -304,13 +309,14 @@
                     <td></td>
                     <td></td>
                     <td class="font-weight-bold">@Model.GrossAmt</td>
-                    <td colspan="2" class="text-right font-weight-bold"> @(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
-                    <td colspan="2" class="text-right font-weight-bold"> @(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                    <td colspan="2" class="text-right font-weight-bold"> @(Model.SgstAmt > 0 ? Model.SgstAmt : 0)</td>
+                    <td colspan="2" class="text-right font-weight-bold"> @(Model.SgstAmt > 0 ? Model.SgstAmt : 0)</td>
+                    <td colspan="2" class="text-right font-weight-bold"> @(Model.SgstAmt == 0 ? Model.TaxAmt : 0)</td>
                     <td class="text-right font-weight-bold">@Model.NetAmt</td>
                 </tr>
 
             }
-           
+
         </table>
         <p class="text-left font-weight-bold" style="padding:5px; margin:0;border-bottom: 1px solid;">Invoice Value (In Words) : @(SSAdmin.Handler.ConvertNumbertoWords(Convert.ToInt32(Model.NetAmt)))</p>
         <table class="table-item">
@@ -333,21 +339,21 @@
 
                             <td>@Model.GrossAmt</td>
                             <td> </td>
+                            <td>@(Model.SgstAmt == 0 ? Model.TaxAmt : 0) </td>
                             <td> </td>
+                            <td>@(Model.SgstAmt > 0 ? Model.SgstAmt : 0)</td>
                             <td> </td>
-                            <td>@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
-                            <td> </td>
-                            <td>@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                            <td>@(Model.SgstAmt > 0 ? Model.SgstAmt : 0)</td>
                         </tr>
                         <tr>
                             <td class="font-weight-bold">Total </td>
                             <td class="font-weight-bold">@Model.GrossAmt</td>
                             <td class="font-weight-bold"> </td>
+                            <td class="font-weight-bold"> @(Model.SgstAmt == 0 ? Model.TaxAmt : 0)</td>
                             <td class="font-weight-bold"> </td>
+                            <td class="font-weight-bold">@(Model.SgstAmt > 0 ? Model.SgstAmt : 0)</td>
                             <td class="font-weight-bold"> </td>
-                            <td class="font-weight-bold">@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
-                            <td class="font-weight-bold"> </td>
-                            <td class="font-weight-bold">@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                            <td class="font-weight-bold">@(Model.SgstAmt > 0 ? Model.SgstAmt : 0)</td>
                         </tr>
                         <tr>
                             <td class="font-weight-bold">GST Collection : </td>
@@ -423,11 +429,11 @@
                 <td>@Model.TranDetails.Sum(x=>x.Qty)</td>
                 <td>@Model.GrossAmt</td>
                 <td></td>
-                <td>@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                <td>@(Model.SgstAmt == 0 ? Model.TaxAmt : 0)</td>
                 <td></td>
-                <td>@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                <td>@(Model.SgstAmt > 0 ? Model.SgstAmt : 0)</td>
                 <td></td>
-                <td>@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                <td>@(Model.SgstAmt > 0 ? Model.SgstAmt : 0)</td>
                 <td>@Model.NetAmt</td>
             </tr>
             <tr>
@@ -435,11 +441,11 @@
                 <td class="font-weight-bold">@Model.TranDetails.Sum(x=>x.Qty)</td>
                 <td class="font-weight-bold">@Model.GrossAmt</td>
                 <td class="font-weight-bold"></td>
-                <td class="font-weight-bold"></td>
+                <td class="font-weight-bold">@(Model.SgstAmt == 0 ? Model.TaxAmt : 0)</td>
                 <td class="font-weight-bold"> </td>
-                <td class="font-weight-bold">@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                <td class="font-weight-bold">@(Model.SgstAmt > 0 ? Model.SgstAmt : 0)</td>
                 <td class="font-weight-bold"> </td>
-                <td class="font-weight-bold">@(Model.TaxAmt > 0 ? Model.TaxAmt / 2 : 0)</td>
+                <td class="font-weight-bold">@(Model.SgstAmt > 0 ? Model.SgstAmt : 0)</td>
                 <td class="font-weight-bold">@Model.NetAmt</td>
             </tr>
 
