@@ -77,6 +77,7 @@ function bindGrid(GridId, data, IdProperty) {
         });
 
         $("#contextMenu").click(function (e) {
+
             if (!$(e.target).is("li")) {
                 return;
             }
@@ -109,14 +110,15 @@ function bindGrid(GridId, data, IdProperty) {
 
             }
             else if (command == "InvoiceDownload") {
+               
                 $(".loader").show();
                 $.ajax({
                     type: "POST",
-                    url: '/pdf/TranInvoice_Pdf_Url',
+                    url: 'InvoicePrint_Pdf_Url',
                     data: { PkId: pk_Id, FkSeriesId: FkSeriesId },
                     datatype: "json",
                     success: function (res) {
-
+                      
                         if (res.status == "success") {
                             window.open(res.data.InvoiceUrl, '_blank');
                         }

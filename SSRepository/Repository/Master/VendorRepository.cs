@@ -222,6 +222,7 @@ namespace SSRepository.Repository.Master
              Tbl.ModifiedDate= DateTime.Now;
             if (Mode == "Create")
             {
+
                 Tbl.FKCreatedByID = model.FKCreatedByID;
                 Tbl.Code = model.Code;
                 Tbl.FKUserID = model.FKUserId;
@@ -230,6 +231,7 @@ namespace SSRepository.Repository.Master
                 Tbl.Status = 1;
                 Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
+                Tbl.FkAccountID = SaveAndGetAccountId(model);
                 AddData(Tbl, false);
             }
             else
@@ -317,8 +319,44 @@ namespace SSRepository.Repository.Master
             return returnAlias;
         }
 
+        private long SaveAndGetAccountId(PartyModel model)
+        {
+            object md = new AccountMasModel()
+            {
+                PkAccountId = 0,
+                Account = model.Name,
+                FkAccountGroupId = 1,
+                //Station = model.Station,
+                //Locality = model.Locality,
+                //Alias = model.Alias,
+                Address = model.Address,
+                Pincode = model.Pin,
+                Phone1 = model.Mobile,
+                //Phone2 = model.Phone2,
+                Email = model.Email,
+                //ApplyCostCenter = model.ApplyCostCenter,
+                //ApplyTCS = model.ApplyTCS,
+                //ApplyTDS = model.ApplyTDS,
+                Status = "Continue",
+                //DiscDate = model.DiscDate,
+                //FKBankID = model.FKBankID,
+                //AccountNo = model.AccountNo,
+                //ModifiedDate = DateTime.Now,
+                FKUserId = model.FKUserId,
+                FKCreatedByID = model.FKCreatedByID,
+            };
 
-        
+            long ID = 0;
+            try
+            {
+                new AccountMasRepository(__dbContext).SaveBaseData(ref md, "Create", ref ID);
+
+            }
+            catch (Exception ex) { }
+            return ID;
+        }
+
+
 
     }
 }

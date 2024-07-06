@@ -10,7 +10,7 @@ $(document).ready(function () {
     $("#hdFormId").val(tranModel.ExtProperties.FKFormID);
     $("#hdGridName").val('dtl');
     ControllerName = $("#hdControllerName").val();
-    if ((TranAlias == "SRTN" || TranAlias == "SCRN" || TranAlias == "PORD" || TranAlias == "PINV")) {
+    if ((TranAlias == "SRTN" || TranAlias == "SCRN" || TranAlias == "SORD" || TranAlias == "PORD" || TranAlias == "PINV")) {
         $("#txtSearchBarcode").hide();
     } else { $("#txtSearchBarcode").show(); $("#txtSearchBarcode").focus(); }
 

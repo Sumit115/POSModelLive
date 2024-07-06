@@ -52,44 +52,44 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<PartyModel> data = (from cou in __dbContext.TblCustomerMas
-                                        join _city in __dbContext.TblCityMas
-                                       on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
-                                       into _citytmp
-                                        from city in _citytmp.DefaultIfEmpty()
-                                        where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                        orderby cou.PkCustomerId
-                                        select (new PartyModel
-                                        {
-                                            PkId = cou.PkCustomerId,
-                                            Code = cou.Code,
-                                            Name = cou.Name,
-                                            FKUserId = cou.FKUserID,
-                                            FKCreatedByID = cou.FKCreatedByID,
-                                            ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                                            CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
-                                            Marital = cou.Marital,
-                                            Gender = cou.Gender,
-                                            Dob = cou.Dob,
-                                            Email = cou.Email,
-                                            Mobile = cou.Mobile,
-                                            Aadhar = cou.Aadhar,
-                                            Panno = cou.Panno,
-                                            Gstno = cou.Gstno,
-                                            //Passport = cou.Passport,
-                                            //AadharCardFront = cou.AadharCardFront,
-                                            //AadharCardBack = cou.AadharCardBack,
-                                            //PanCard = cou.PanCard,
-                                            //Signature = cou.Signature,
-                                            IsAadharVerify = cou.IsAadharVerify,
-                                            IsPanVerify = cou.IsPanVerify,
-                                            Status = cou.Status,
-                                            Address = cou.Address,
-                                            StateName = cou.StateName,
-                                            FkCityId = cou.FkCityId,
-                                            City = city.CityName,
-                                            Pin = cou.Pin,
-                                        }
-                                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+                                     join _city in __dbContext.TblCityMas
+                                    on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
+                                    into _citytmp
+                                     from city in _citytmp.DefaultIfEmpty()
+                                     where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                     orderby cou.PkCustomerId
+                                     select (new PartyModel
+                                     {
+                                         PkId = cou.PkCustomerId,
+                                         Code = cou.Code,
+                                         Name = cou.Name,
+                                         FKUserId = cou.FKUserID,
+                                         FKCreatedByID = cou.FKCreatedByID,
+                                         ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                         CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
+                                         Marital = cou.Marital,
+                                         Gender = cou.Gender,
+                                         Dob = cou.Dob,
+                                         Email = cou.Email,
+                                         Mobile = cou.Mobile,
+                                         Aadhar = cou.Aadhar,
+                                         Panno = cou.Panno,
+                                         Gstno = cou.Gstno,
+                                         //Passport = cou.Passport,
+                                         //AadharCardFront = cou.AadharCardFront,
+                                         //AadharCardBack = cou.AadharCardBack,
+                                         //PanCard = cou.PanCard,
+                                         //Signature = cou.Signature,
+                                         IsAadharVerify = cou.IsAadharVerify,
+                                         IsPanVerify = cou.IsPanVerify,
+                                         Status = cou.Status,
+                                         Address = cou.Address,
+                                         StateName = cou.StateName,
+                                         FkCityId = cou.FkCityId,
+                                         City = city.CityName,
+                                         Pin = cou.Pin,
+                                     }
+                                    )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
 
@@ -98,23 +98,23 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             var data = (from cou in __dbContext.TblCustomerMas
-                                     join _city in __dbContext.TblCityMas
-                                    on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
-                                    into _citytmp
-                                     from city in _citytmp.DefaultIfEmpty()
-                                     where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                     orderby cou.PkCustomerId
-                                     select (new 
-                                     {
-                                         cou.PkCustomerId,
-                                         cou.Code,
-                                         cou.Name,
-                                         cou.StateName,
-                                         cou.Address,
-                                         cou.Mobile,
-                                         cou.Email
-                                     }
-                                    )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+                        join _city in __dbContext.TblCityMas
+                       on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
+                       into _citytmp
+                        from city in _citytmp.DefaultIfEmpty()
+                        where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                        orderby cou.PkCustomerId
+                        select (new
+                        {
+                            cou.PkCustomerId,
+                            cou.Code,
+                            cou.Name,
+                            cou.StateName,
+                            cou.Address,
+                            cou.Mobile,
+                            cou.Email
+                        }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data.Select(x => (object)x).ToList();
         }
 
@@ -152,7 +152,7 @@ namespace SSRepository.Repository.Master
                         Address = cou.Address,
                         StateName = cou.StateName,
                         FkCityId = cou.FkCityId,
-                       // City = city.CityName,
+                        // City = city.CityName,
                         Pin = cou.Pin,
                         Disc = cou.Disc,
 
@@ -253,7 +253,7 @@ namespace SSRepository.Repository.Master
             Tbl.StateName = model.StateName;
             Tbl.Pin = model.Pin;
             Tbl.Disc = model.Disc;
-            Tbl.ModifiedDate= DateTime.Now;
+            Tbl.ModifiedDate = DateTime.Now;
             if (Mode == "Create")
             {
                 Tbl.FKCreatedByID = model.FKCreatedByID;
@@ -263,7 +263,8 @@ namespace SSRepository.Repository.Master
                 Tbl.IsPanVerify = 0;
                 Tbl.Status = 1;
                 Tbl.CreationDate = DateTime.Now;
-                //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
+                //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj); 
+                Tbl.FkAccountID = SaveAndGetAccountId(model); 
                 AddData(Tbl, false);
             }
             else
@@ -276,7 +277,42 @@ namespace SSRepository.Repository.Master
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKCustomerID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
+        private long SaveAndGetAccountId(PartyModel model)
+        {
+            object md = new AccountMasModel()
+            {
+                PkAccountId = 0,
+                Account = model.Name,
+                FkAccountGroupId = 1,
+                //Station = model.Station,
+                //Locality = model.Locality,
+                //Alias = model.Alias,
+                Address = model.Address,
+                Pincode = model.Pin,
+                Phone1 = model.Mobile,
+                //Phone2 = model.Phone2,
+                Email = model.Email,
+                //ApplyCostCenter = model.ApplyCostCenter,
+                //ApplyTCS = model.ApplyTCS,
+                //ApplyTDS = model.ApplyTDS,
+                Status = "Continue",
+                //DiscDate = model.DiscDate,
+                //FKBankID = model.FKBankID,
+                //AccountNo = model.AccountNo,
+                //ModifiedDate = DateTime.Now,
+                FKUserId = model.FKUserId,
+                FKCreatedByID = model.FKCreatedByID,
+            };
 
+            long ID = 0;
+            try
+            {
+                new AccountMasRepository(__dbContext).SaveBaseData(ref md, "Create", ref ID);
+
+            }
+            catch (Exception ex) { }
+            return ID;
+        }
         public DataTable AutoDropDown()
         {
             DataTable record = new DataTable("record");
@@ -298,7 +334,7 @@ namespace SSRepository.Repository.Master
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>
-            {                
+            {
                 new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Code", Fields="Code",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Name", Fields="Name",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                 new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Dob", Fields="Dob",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },

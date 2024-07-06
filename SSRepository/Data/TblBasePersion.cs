@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SSRepository.Data
 {
-    public class TblBasePersion: TblBase
+    public class TblBasePersion : TblBase
     {
         [StringLength(10)]
         public string? Code { get; set; }
@@ -60,5 +60,6 @@ namespace SSRepository.Data
 
         public decimal Disc { get; set; }
 
+        public long? FkAccountID { get; set; }
     }
 }

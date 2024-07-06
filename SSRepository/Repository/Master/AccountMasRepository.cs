@@ -237,7 +237,7 @@ namespace SSRepository.Repository.Master
             Tbl.PkAccountId = model.PkAccountId;
             Tbl.Account = model.Account;
             Tbl.FkAccountGroupId = model.FkAccountGroupId;
-            Tbl.ModifiedDate= DateTime.Now;
+            Tbl.ModifiedDate = DateTime.Now;
             Tbl.Station = model.Station;
             Tbl.Locality = model.Locality;
             Tbl.Alias = model.Alias;
@@ -253,11 +253,11 @@ namespace SSRepository.Repository.Master
             Tbl.DiscDate = model.DiscDate;
             Tbl.FKBankID = model.FKBankID;
             Tbl.AccountNo = model.AccountNo;
-            Tbl.ModifiedDate= DateTime.Now;
+            Tbl.ModifiedDate = DateTime.Now;
             Tbl.FKUserID = model.FKUserId;
             if (Mode == "Create")
             {
-                Tbl.PkAccountId = getIdOfSeriesByEntity("PkcountryId", null, Tbl, "TblAccountMas");
+                ID = Tbl.PkAccountId = getIdOfSeriesByEntity("PkcountryId", null, Tbl, "TblAccountMas");
                 Tbl.FKCreatedByID = model.FKCreatedByID;
                 Tbl.CreationDate = DateTime.Now;
 
@@ -351,7 +351,7 @@ namespace SSRepository.Repository.Master
                     //   lstAdd.Add(locObj);
                     if (item.Mode == 1)
                     {
-                        locObj.ModifiedDate= DateTime.Now;
+                        locObj.ModifiedDate = DateTime.Now;
                         lstEdit.Add(locObj);
                     }
                     else if (item.Mode == 0)
@@ -360,7 +360,7 @@ namespace SSRepository.Repository.Master
                         locObj.FKCreatedByID = model.FKCreatedByID;
                         locObj.FKUserID = model.FKUserId;
                         locObj.CreationDate = DateTime.Now;
-                        locObj.ModifiedDate= DateTime.Now;
+                        locObj.ModifiedDate = DateTime.Now;
                         lstAdd.Add(locObj);
                     }
 
@@ -415,13 +415,13 @@ namespace SSRepository.Repository.Master
                         locObj.FKCreatedByID = model.FKCreatedByID;
                         locObj.FKUserID = model.FKUserId;
                         locObj.CreationDate = DateTime.Now;
-                        locObj.ModifiedDate= DateTime.Now;
+                        locObj.ModifiedDate = DateTime.Now;
                         lstAdd.Add(locObj);
                     }
                     else if (!string.IsNullOrEmpty(item.Description) && locObj.PKAccountLicDtlId > 0)
                     {
                         //  locObj.PKAccountLicDtlId = getIdOfSeriesByEntity("PKAccountLicDtlId", null, Tbl, "TblAccountLicDtl");
-                        locObj.ModifiedDate= DateTime.Now;
+                        locObj.ModifiedDate = DateTime.Now;
                         lstAdd.Add(locObj);
                     }
                 }
