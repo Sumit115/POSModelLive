@@ -6,7 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.IO;
-using System.Net; 
+using System.Net;
 using System.Text;
 using System.Data.OleDb;
 using SSRepository;
@@ -49,7 +49,7 @@ namespace SSAdmin
             Customer,//=4
             Employee,//5
         }
-        
+
 
         public enum en_PayMode
         {
@@ -83,8 +83,8 @@ namespace SSAdmin
             Region = 21,
             Area = 22,
             Locality = 23,
-            Location=24,
-            OpeningStock=25,
+            Location = 24,
+            OpeningStock = 25,
 
             SalesOrder = 100,
             SalesInvoice = 101,
@@ -108,7 +108,31 @@ namespace SSAdmin
 
             //200-report
         }
-
+        public enum AccountGroupMasterId
+        {
+            Sundry_Creditors = 1,
+            Sundry_Debtors = 2,
+            Purchase_Accounts = 3,
+            Sales_Accounts = 4,
+            Cash_In_Hand = 5,
+            InDirect_Expenses = 6,
+            Duties_And_Taxes = 7,
+            Bank_Accounts = 8,
+        }
+        public enum AccountId
+        {
+            PURCHASE_TAXABLE_GOODS = 1,
+            SALES_TAXABLE_GOODS = 2,
+            SGST_INPUT = 3,
+            SGST_OUTPUT = 4,
+            CGST_INPUT = 5,
+            CGST_OUTPUT = 6,
+            IGST_INPUT = 7,
+            IGST_OUTPUT = 8,
+            CASH_IN_HAND = 9,
+            BANK_ACCOUNTS = 10,
+            ROUND_OFF_AC = 11            ,
+        }
         public static bool IsMobileNumber(string number)
         {
             return Regex.Match(number, @"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$").Success;
@@ -433,11 +457,11 @@ namespace SSAdmin
              new ddl { Text = "Uttar Pradesh", Value = "Uttar Pradesh" , Value2 = "09"},
              new ddl { Text = "Uttarakhand", Value = "Uttarakhand" , Value2 = "05"},
              new ddl { Text = "West Bengal", Value = "West Bengal" , Value2 = "19"}
-            }; 
+            };
         }
         public static string GetStateCode(string StateName)
-        { 
-        var _state= GetDrpState().ToList().Where(x=>x.Value==StateName).FirstOrDefault();
+        {
+            var _state = GetDrpState().ToList().Where(x => x.Value == StateName).FirstOrDefault();
             return _state != null ? _state.Value2 : "";
         }
     }

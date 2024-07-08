@@ -283,7 +283,7 @@ namespace SSRepository.Repository.Master
             {
                 PkAccountId = 0,
                 Account = model.Name,
-                FkAccountGroupId = 1,
+                FkAccountGroupId = 2,
                 //Station = model.Station,
                 //Locality = model.Locality,
                 //Alias = model.Alias,
