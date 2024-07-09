@@ -75,7 +75,7 @@ namespace SSRepository.Repository.Transaction
                         {
                             throw new Exception("Size Required on Product " + item.Product);
                         }
-                       
+
                         CalculateExe(item);
                     }
 
@@ -114,7 +114,7 @@ namespace SSRepository.Repository.Transaction
             {
                 // var _branch = new BranchRepository(__dbContext).GetSingleRecord(model.FKLocationID);
                 //  __dbContext.Dispose();
-                model.SgstAmt  = 0;
+                model.SgstAmt = 0;
                 foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
                 {
                     item.RateUnit = !string.IsNullOrEmpty(item.RateUnit) ? item.RateUnit : "1";
@@ -146,7 +146,7 @@ namespace SSRepository.Repository.Transaction
                 //con.Open();
                 if (con.State == ConnectionState.Closed)
                 {
-                    con.Open();
+                        con.Open();
                 }
                 SqlCommand cmd = new SqlCommand(SPAddUpd, con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -257,44 +257,45 @@ namespace SSRepository.Repository.Transaction
                     setProductinfo(model, model.TranDetails[rowIndex]);
                     CalculateExe(model.TranDetails[rowIndex]);
                 }
-                if (fieldName == "ProductReturn")
+                else if (fieldName == "ProductReturn")
                 {
                     setReturnProductinfo(model, model.TranDetails[rowIndex]);
                     CalculateExe(model.TranDetails[rowIndex]);
 
                 }
-                if (fieldName == "Batch")
+                else if (fieldName == "Batch")
                 {
                     setProductinfoByBatch(model, model.TranDetails[rowIndex]);
                     CalculateExe(model.TranDetails[rowIndex]);
 
                 }
-                if (fieldName == "Color")
+                else if (fieldName == "Color")
                 {
                     setProductinfoByColor(model, model.TranDetails[rowIndex]);
                     CalculateExe(model.TranDetails[rowIndex]);
 
                 }
-                if (fieldName == "Delete")
+                else if (fieldName == "Delete")
                 {
                     model.TranDetails[rowIndex].ModeForm = 2;
                 }
-                if (fieldName == "TradeDisc")
+                else if (fieldName == "TradeDisc")
                 {
                     model.TranDetails[rowIndex].TradeDiscAmt = 0;
                     CalculateExe(model.TranDetails[rowIndex]);
 
                 }
-                if (fieldName == "FKInvoiceID")
+                else if (fieldName == "FKInvoiceID")
                 {
                     setProductinfoByColor(model, model.TranDetails[rowIndex]);
                     CalculateExe(model.TranDetails[rowIndex]);
                 }
-                if (fieldName == "Inum")
+                else if (fieldName == "Inum")
                 {
                     setInvoiceinfo(model, model.TranDetails[rowIndex]);
                     CalculateExe(model.TranDetails[rowIndex]);
                 }
+                else { CalculateExe(model.TranDetails[rowIndex]); }
 
                 setGridTotal(model);
                 setPaymentDetail(model);
@@ -476,7 +477,7 @@ namespace SSRepository.Repository.Transaction
                     {
                         int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == detail.FkProductId);
                         model.TranDetails[rowIndex].Qty += 1;
-                      
+
                         CalculateExe(model.TranDetails[rowIndex]);
                     }
 
@@ -560,7 +561,7 @@ namespace SSRepository.Repository.Transaction
                     detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
                     detail.Color = dtProduct.Rows[0]["Color"].ToString();
                     detail.Batch = dtProduct.Rows[0]["Batch"].ToString();
-                      
+
                     detail.GstRate = (detail.SaleRate < 1000 ? 5 : 18);
                     detail.Rate = Math.Round(Convert.ToDecimal(detail.SaleRate) * (100 / (100 + detail.GstRate)), 2);
 
@@ -874,7 +875,7 @@ namespace SSRepository.Repository.Transaction
                                      Series = cou.Series,
                                      FkBranchId = cou.FkBranchId,
                                      BillingRate = cou.BillingRate,
-                                     BranchStateName=branch.State,
+                                     BranchStateName = branch.State,
                                  }
                                 )).FirstOrDefault();
             return data;
@@ -1160,6 +1161,7 @@ namespace SSRepository.Repository.Transaction
                     detail.Location = series.BranchName;
                     detail.AccountGroupName = account.AccountGroupName;
                     detail.AccountName_Text = account.Account;
+                    detail.FKLocationID = model.FKLocationID;
 
                 }
             }
@@ -1168,8 +1170,7 @@ namespace SSRepository.Repository.Transaction
         public void VoucherCalculateExe(TransactionModel model)
         {
             model.NetAmt = model.VoucherDetails.Where(x => x.ModeForm != 2 && x.FkAccountId > 0).ToList().Sum(x => x.CreditAmt);
-
-
+           
 
             // model.TranDetails = model.TranDetails.Where(x => x.FkProductId > 0).ToList();
         }

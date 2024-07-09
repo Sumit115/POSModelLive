@@ -51,7 +51,7 @@ namespace SSRepository.Repository.Master
                                                 Fax = Loc.Fax,
                                                 Email = Loc.Email,
                                                 Website = Loc.Website,
-                                                ModifiDate= Loc.DATE_MODIFIED.ToString("dd-MMM-yyyy"),
+                                                ModifiDate= Loc.ModifiedDate.ToString("dd-MMM-yyyy"),
                                                 CreateDate=Loc.CreationDate.ToString("dd-MMM-yyyy")
                                             }
                                            )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
@@ -68,7 +68,7 @@ namespace SSRepository.Repository.Master
                     select (new LocationModel
                     {
                         PKLocationID = cou.PkLocationID,
-                        FKUserId = cou.FKUserId,
+                        FKUserId = cou.FKUserID,
                         Location = cou.Location,
                         PkLocationID = cou.PkLocationID,
                         Address = cou.Address,
@@ -90,7 +90,7 @@ namespace SSRepository.Repository.Master
                         FKAccountID = cou.FkAccountID,
                         FKBranchID = cou.FkBranchID,
                         IsAllAccount = cou.IsAllAccount,
-                        ModifiDate = cou.DATE_MODIFIED.ToString("dd-MMM-yyyy"),
+                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                         CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         
                     })).FirstOrDefault();
@@ -172,10 +172,10 @@ namespace SSRepository.Repository.Master
             Tbl.IsAllAccount = model.IsAllAccount;
             Tbl.FKCreatedByID = model.FKUserId;
             Tbl.IsAllCostCenter=model.IsAllCostCenter;
-            Tbl.DATE_MODIFIED = DateTime.Now;
+            Tbl.ModifiedDate = DateTime.Now;
             if (Mode == "Create")
             {
-                Tbl.FKUserId = model.FKUserId;
+                Tbl.FKUserID = model.FKUserId;
                 Tbl.CreationDate = DateTime.Now;
                 AddData(Tbl, false);
             }

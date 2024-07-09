@@ -74,6 +74,8 @@ namespace SSAdmin.Areas.Transactions.Controllers
             model.ExtProperties.StockFlag = StockFlag;
             model.ExtProperties.FKFormID = FKFormID;
             model.ExtProperties.PostInAc = PostInAc;
+            model.FKUserId = LoginId;
+            model.CreationDate = DateTime.Now;
             if (model.PkId == 0)
             {
                 _repository.SetLastSeries(model, LoginId, TranAlias, DocumentType);

@@ -50,7 +50,7 @@ function Load() {
 }
 
 function BindGrid(GridId, data) {
-    
+
     $("#" + GridId).empty();
     Common.Grid(tranModel.ExtProperties.FKFormID, "dtl", function (s) {
         var AccountList = JSON.parse($("#hdAccountList").val());
@@ -134,19 +134,19 @@ function BindGrid(GridId, data) {
 
                 var field = cg.columns[args.cell].field;
                 if (field == "AccountName_Text") {
-                    
-                        var FkAccountId = Common.isNullOrEmpty(args.item["AccountName"]) ? 0 : parseFloat(args.item["AccountName"]);
-                        //var data = cg.getData().filter(function (element) { return (element.FkAccountId == FkAccountId && element.mode != 2); });
-                        //if (data.length <= 0) {
-                            
-                            ColumnChange(args, args.row, "Account");
-                        //}
-                        //else {
-                        //    alert("Account Already Add In List");
-                        //    cg_ClearRow(args);
-                        //    return false;
-                        //}
-                    
+
+                    var FkAccountId = Common.isNullOrEmpty(args.item["AccountName"]) ? 0 : parseFloat(args.item["AccountName"]);
+                    //var data = cg.getData().filter(function (element) { return (element.FkAccountId == FkAccountId && element.mode != 2); });
+                    //if (data.length <= 0) {
+
+                    ColumnChange(args, args.row, "Account");
+                    //}
+                    //else {
+                    //    alert("Account Already Add In List");
+                    //    cg_ClearRow(args);
+                    //    return false;
+                    //}
+
                 }
                 else if (field == "CreditAmt") {
                     ColumnChange(args, args.row, "Credit");
@@ -154,7 +154,7 @@ function BindGrid(GridId, data) {
                 else if (field == "DebitAmt") {
                     ColumnChange(args, args.row, "Debit");
                 }
-               
+
 
             }
         });
@@ -213,14 +213,15 @@ function cg_ClearRow(args) {
     args.item["PkId"] = 0;
     args.item["mode"] = 0;
     args.item["FkAccountId"] = 0;
-    args.item["AccountName_Text"] = "";
+    args.item["FKLocationID"] = 0;
+    args.item["Account"] = "";
     args.item["SrNo"] = 0;
     args.item["VoucherAmt"] = 0;
     args.item["CreditAmt"] = "";
     args.item["DebitAmt"] = "";
     args.item["CurrentBalance"] = "";
     args.item["Balance"] = 0;
-     args.item["AccountGroupName"] = "";
+    args.item["AccountGroupName"] = "";
     args.item["AccountName_Text"] = "";
     args.item["Delete"] = 'Delete';
     cg.updateRefreshDataRow(args.row);
@@ -239,8 +240,8 @@ function ColumnChange(args, rowIndex, fieldName) {
             success: function (res) {
 
                 if (res.status == "success") {
-                    tranModel = res.data; 
-                    
+                    tranModel = res.data;
+
                     setGridRowData(args, tranModel.VoucherDetails, rowIndex, fieldName);
 
                 }
@@ -283,8 +284,8 @@ function FooterChange(fieldName) {
     //    }
     //})
 }
- 
- 
+
+
 
 function setGridRowData(args, data, rowIndex, fieldName) {
 
@@ -292,15 +293,15 @@ function setGridRowData(args, data, rowIndex, fieldName) {
         args.grid.getDataItem(args.row).ModeForm = 2
     }
     else {
-
         args.item["SrNo"] = data[rowIndex].SrNo;
+        args.item["FKLocationID"] = data[rowIndex].FKLocationID;
         args.item["VoucherAmt"] = data[rowIndex].VoucherAmt;
         args.item["CreditAmt"] = data[rowIndex].CreditAmt;
         args.item["DebitAmt"] = data[rowIndex].DebitAmt;
         args.item["CurrentBalance"] = data[rowIndex].CurrentBalance;
         args.item["Balance"] = data[rowIndex].Balance;
-      args.item["AccountGroupName"] = data[rowIndex].AccountGroupName;
-        args.item["AccountName_Text"] = data[rowIndex].AccountName_Text; 
+        args.item["AccountGroupName"] = data[rowIndex].AccountGroupName;
+        args.item["AccountName_Text"] = data[rowIndex].AccountName_Text;
         args.item["Delete"] = 'Delete';
 
     }
@@ -329,7 +330,7 @@ function GetDataFromGrid(ifForsave) {
         else {
 
 
-            if (!Handler.isNullOrEmpty(element.AccountName) ) {
+            if (!Handler.isNullOrEmpty(element.AccountName)) {
                 if (element.FkAccountId > 0) { element.SrNo = element.SrNo; }
                 else { SrNo++; element.SrNo = SrNo; }
                 element.FkAccountId = parseInt(element.AccountName);
@@ -345,38 +346,38 @@ function SaveRecord() {
     Common.Get(".form", "", function (flag, _d) {
         if (flag) {
             tranModel.PkId = $('#PkId').val();
-           // tranModel.FkPartyId = $('#FkPartyId').val();
+            // tranModel.FkPartyId = $('#FkPartyId').val();
             tranModel.EntryDate = $('#EntryDate').val();
             tranModel.GRDate = $('#GRDate').val();
             tranModel.VoucherDetails = [];
-       
-                if (tranModel.FKSeriesId > 0) {
-                    tranModel.VoucherDetails = GetDataFromGrid(true);
 
-                    var filteredDetails = tranModel.VoucherDetails.filter(x => x.ModeForm != 2);
-                    if (tranModel.VoucherDetails.length > 0 && filteredDetails.length > 0) {
-                        $.ajax({
-                            type: "POST",
-                            url: Handler.currentPath() + 'Create',
-                            data: { model: tranModel },
-                            datatype: "json",
-                            success: function (res) {
+            if (tranModel.FKSeriesId > 0) {
+                tranModel.VoucherDetails = GetDataFromGrid(true);
 
-                                if (res.status == "success") {
-                                    alert('Save Successfully..');
-                                    window.location = Handler.currentPath() + 'List';
-                                }
-                                else
-                                    alert(res.msg);
+                var filteredDetails = tranModel.VoucherDetails.filter(x => x.ModeForm != 2);
+                if (tranModel.VoucherDetails.length > 0 && filteredDetails.length > 0) {
+                    $.ajax({
+                        type: "POST",
+                        url: Handler.currentPath() + 'Create',
+                        data: { model: tranModel },
+                        datatype: "json",
+                        success: function (res) {
+
+                            if (res.status == "success") {
+                                alert('Save Successfully..');
+                                window.location = Handler.currentPath() + 'List';
                             }
-                        });
-                    }
-                    else
-                        alert("Insert Valid Account Data..");
+                            else
+                                alert(res.msg);
+                        }
+                    });
                 }
                 else
-                    alert("Please Select Series");
-   
+                    alert("Insert Valid Account Data..");
+            }
+            else
+                alert("Please Select Series");
+
         }
         else
             alert("Some Error found.Please Check");

@@ -44,5 +44,9 @@ namespace SSRepository.Models
        
         public bool IsAllCostCenter { get; set; }
         public bool IsAllAccount { get; set; }
+
+        [Required] 
+        public int FkCityId { get; set; }
+        public string? State { get; set; }
     }
 }

@@ -10,6 +10,7 @@ using System.Data;
 using System.Net.Http.Headers;
 using SSRepository.Repository.Master;
 using System.Xml.Linq;
+using System.Runtime.ConstrainedExecution;
 
 namespace SSRepository.Repository.Transaction
 {
@@ -31,12 +32,13 @@ namespace SSRepository.Repository.Transaction
             return error;
 
         }
-        
+
         public object SetLastSeries(TransactionModel model, long UserId, string TranAlias, string DocumentType)
         {
             var obj = (from cou in __dbContext.TblPurchaseInvoicetrn
                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
                        join branch in __dbContext.TblBranchMas on ser.FkBranchId equals branch.PkBranchId
+                       join location in __dbContext.TblLocationMas on ser.FKLocationID equals location.PkLocationID
                        where cou.FKUserID == UserId && ser.TranAlias == TranAlias
                         && ser.DocumentType == DocumentType
                        orderby cou.PkId descending
@@ -44,17 +46,18 @@ namespace SSRepository.Repository.Transaction
                        {
                            cou,
                            ser,
-                           branch
+                           branch,
+                           location,
                        }).FirstOrDefault();
             if (obj != null)
             {
                 if (obj.ser != null)
                 {
                     model.SeriesName = obj.ser.Series == null ? "" : obj.ser.Series.ToString();
-                    model.FKLocationID = obj.ser.FkBranchId;
+                    model.FKLocationID = obj.location.PkLocationID;
                     model.FKSeriesId = obj.ser.PkSeriesId;
                     model.BillingRate = obj.ser.BillingRate;
-                    model.BranchStateName = obj.branch.State;
+                    model.BranchStateName = obj.location.State;
 
                 }
             }
@@ -62,23 +65,21 @@ namespace SSRepository.Repository.Transaction
             {
                 var _entity = (from cou in __dbContext.TblSeriesMas
                                join branch in __dbContext.TblBranchMas on cou.FkBranchId equals branch.PkBranchId
+                               join location in __dbContext.TblLocationMas on cou.FKLocationID equals location.PkLocationID
                                where cou.TranAlias == TranAlias
-                               select (new SeriesModel
+                               select new
                                {
-                                   PkSeriesId = cou.PkSeriesId,
-                                   Series = cou.Series,
-                                   FkBranchId = cou.FkBranchId,
-                                   BillingRate = cou.BillingRate,
-                                   BranchStateName = branch.State,
-                               }
-                              )).FirstOrDefault();
+                                   cou, 
+                                   branch,
+                                   location
+                               }).FirstOrDefault();
                 if (_entity != null)
                 {
-                    model.SeriesName = _entity.Series == null ? "" : _entity.Series.ToString();
-                    model.FKLocationID = _entity.FkBranchId;
-                    model.FKSeriesId = _entity.PkSeriesId;
-                    model.BillingRate = _entity.BillingRate;
-                    model.BranchStateName = _entity.BranchStateName;
+                    model.SeriesName = _entity.cou.Series == null ? "" : _entity.cou.Series.ToString();
+                    model.FKLocationID = _entity.location.PkLocationID;
+                    model.FKSeriesId = _entity.cou.PkSeriesId;
+                    model.BillingRate = _entity.cou.BillingRate;
+                    model.BranchStateName = _entity.location.State;
                 }
             }
             return model;

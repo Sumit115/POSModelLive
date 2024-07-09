@@ -14,6 +14,7 @@ namespace SSRepository.Models
         public long FKSeriesId { get; set; }
         public long SrNo { get; set; }
         public long FkAccountId { get; set; }
+        public long FKLocationID { get; set; }
         public decimal VoucherAmt { get; set; }
         public string? VoucherNarration { get; set; }
         public long? FkTaxId { get; set; }

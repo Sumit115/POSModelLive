@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SSRepository.Data
 {
     [Table("tblLocation_mas", Schema = "dbo")]
-    public class TblLocationMas: IEntity //TblBase not mapped to database becasue of that givind error
+    public class TblLocationMas: TblBase, IEntity //TblBase not mapped to database becasue of that givind error
     {
         [Key]
         public long PkLocationID { get; set; } 
@@ -40,18 +40,10 @@ namespace SSRepository.Data
         public bool IsAllCostCenter { get; set; }
         public bool IsAllAccount { get; set; }
 
-        public long FKCreatedByID { get; set; } 
-        //confusion fields for thid agtable 
+        
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime DATE_MODIFIED { get; set; }
-
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime CreationDate { get; set; }
-        public long FKUserId { get; set; }
-
-
+         
+        public int  FkCityId { get; set; }
+        public string? State { get; set; }
     }
 }
