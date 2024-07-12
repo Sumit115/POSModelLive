@@ -818,7 +818,8 @@ function C_Get(s, src, c) {
 }
 
 function C_Set(s, _d, src, c) {
-    $(s + " input[type='text']," + s + " input[type = 'date']," + s + " input[type='password']," + s + " input[type='radio']," + s + " input[type='file']," + s + " select," + s + " textarea ").each(function () {
+    $(s + " input[type='text']," + s + " input[type = 'date']," + s + " input[type='password']," + s + " input[type='radio']," + s + " input[type='checkbox']," + s + " input[type='file']," + s + " select," + s + " textarea ").each(function () {
+        debugger;
         var key = $(this).attr("id");
         var type = $(this).attr("type");
         var multiple = $(this).attr('data-multiple');
@@ -841,6 +842,16 @@ function C_Set(s, _d, src, c) {
             else if (type == "radio") {
                 key = $(this).attr('name');
                 val = $("input[type='radio'][name='" + key + "'][value='" + _d[key] + "']").attr("checked", "checked")
+            }
+            else if (type == "checkbox") {
+                key = $(this).attr('name');
+                if (_d[key]) {
+                    $("input[type='checkbox'][name='" + key + "']").prop("checked", true);
+                } else {
+                    $("input[type='checkbox'][name='" + key + "']").prop('checked', false);
+              }
+               
+               // val = $("input[type='checkbox'][name='" + key + "'][value='" + _d[key] + "']").attr("checked", "checked")
             }
             else
                 $(this).val(_d[key]);

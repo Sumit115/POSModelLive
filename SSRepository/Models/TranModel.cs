@@ -83,6 +83,7 @@ namespace SSRepository.Models
         public Nullable<decimal> CreditAmt { get; set; }
         public Nullable<System.DateTime> CreditDate { get; set; }
         public Nullable<long> FKPostAccID { get; set; }
+        public string? Account{ get; set; }
         public bool Cheque { get; set; }
         public Nullable<decimal> ChequeAmt { get; set; }
         public string? ChequeNo { get; set; }

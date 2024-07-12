@@ -40,7 +40,22 @@ $(document).ready(function () {
         var fieldName = $(this).attr("id");
         tranModel[fieldName] = $(this).val();
     });
-
+    $(".paymentDtl").change(function () {
+        debugger;
+        var fieldName = $(this).attr("id"); 
+        var type = $(this).attr("type");
+        if (type == "checkbox") {
+            if ($(this).prop('checked') === true) {
+                tranModel[fieldName] = true;
+            } else {
+                tranModel[fieldName] = false;
+            }
+            
+        } else {
+            tranModel[fieldName] = $(this).val();
+        }
+      //  PaymentDetail();
+    });
     $("#txtSearchBarcode").change(function () {
         BarcodeScan($(this).val());
         $(this).val('');
@@ -474,7 +489,7 @@ function BarcodeScan(barcode) {
     })
 }
 function ColumnChange(args, rowIndex, fieldName) {
-    debugger;
+    
     tranModel.TranDetails = GetDataFromGrid();
 
     if (tranModel.TranDetails.length > 0) {
@@ -565,6 +580,7 @@ function PaymentDetail() {
         datatype: "json", success: function (res) {
 
             if (res.status == "success") {
+                debugger;
                 tranModel = res.data;
 
                 setPaymentDetail(tranModel);
@@ -580,6 +596,7 @@ function setFooterData(data) {
     return false;
 }
 function setPaymentDetail(data) {
+    
     Common.Set(".model-paymentdetail", data, "");
     return false;
 }

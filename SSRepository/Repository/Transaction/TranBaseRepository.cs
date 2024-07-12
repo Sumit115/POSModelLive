@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
@@ -15,6 +16,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -54,14 +56,16 @@ namespace SSRepository.Repository.Transaction
 
         public string ValidateData(TransactionModel objmodel)
         {
-            //
-            setDefaultBeforeSave(objmodel);
-            //CalculateExe(objmodel);
-            setGridTotal(objmodel);
-            setPaymentDetail(objmodel);
+
             string Error = "";
             try
             {
+                //
+                setDefaultBeforeSave(objmodel);
+
+                //CalculateExe(objmodel);
+                setGridTotal(objmodel);
+                setPaymentDetail(objmodel);
 
                 if (objmodel.TranDetails != null)
                 {
@@ -81,6 +85,20 @@ namespace SSRepository.Repository.Transaction
 
                 }
 
+
+
+                if (objmodel.FKPostAccID <= 0 && (objmodel.Cheque || objmodel.Credit))
+                {
+                    throw new Exception("Account Not Found");
+                }
+
+
+                setVoucherDetails(objmodel);
+                if (objmodel.VoucherDetails != null)
+                {
+                    if (objmodel.VoucherDetails.ToList().Sum(x => x.CreditAmt) != objmodel.VoucherDetails.ToList().Sum(x => x.DebitAmt))
+                        throw new Exception("Please Enter Valid Amount");
+                }
                 Error = ValidData(objmodel);
 
             }
@@ -108,6 +126,22 @@ namespace SSRepository.Repository.Transaction
             catch (Exception ex) { Error = ex.Message; }
             return Error;
         }
+
+
+        public enum AccountId
+        {
+            PURCHASE_TAXABLE_GOODS = 1,
+            SALES_TAXABLE_GOODS = 2,
+            SGST_INPUT = 3,
+            SGST_OUTPUT = 4,
+            CGST_INPUT = 5,
+            CGST_OUTPUT = 6,
+            IGST_INPUT = 7,
+            IGST_OUTPUT = 8,
+            CASH_IN_HAND = 9,
+            BANK_ACCOUNTS = 10,
+            ROUND_OFF_AC = 11,
+        }
         public void setDefaultBeforeSave(TransactionModel model)
         {
             if (model.TranDetails != null)
@@ -134,6 +168,215 @@ namespace SSRepository.Repository.Transaction
                 }
 
             }
+
+        }
+        public void setVoucherDetails(TransactionModel model)
+        {
+
+            //    model.VoucherDetails[rowIndex].DebitAmt = 0;
+            //    model.VoucherDetails[rowIndex].VoucherAmt = model.VoucherDetails[rowIndex].CreditAmt;
+            //}
+            //        if (fieldName == "Debit")
+            //        {
+            //            model.VoucherDetails[rowIndex].CreditAmt = 0;
+            //            model.VoucherDetails[rowIndex].VoucherAmt = -model.VoucherDetails[rowIndex].DebitAmt;
+            //Voucher Detail
+            model.VoucherDetails = new List<VoucherDetails>();
+            if (model.TranAlias == "PORD" || model.TranAlias == "PINV")
+            {
+                if (model.Credit || model.Cheque)
+                {
+                    model.VoucherDetails.Add(new VoucherDetails()
+                    {
+                        FKSeriesId = model.FKSeriesId,
+                        SrNo = 1,
+                        FkAccountId = (int)model.FKPostAccID,
+                        FKLocationID = model.FKLocationID,
+                        CreditAmt = ((decimal)model.CreditAmt + (decimal)model.ChequeAmt),
+                        VoucherAmt = ((decimal)model.CreditAmt + (decimal)model.ChequeAmt),
+                    });
+                }
+
+                if (model.Cash)
+                {
+                    model.VoucherDetails.Add(new VoucherDetails()
+                    {
+                        FKSeriesId = model.FKSeriesId,
+                        SrNo = 2,
+                        FkAccountId = (long)AccountId.CASH_IN_HAND,
+                        FKLocationID = model.FKLocationID,
+                        CreditAmt = (decimal)model.CashAmt,
+                        VoucherAmt = (decimal)model.CashAmt,
+                    });
+                }
+                if (model.CreditCard)
+                {
+                    model.VoucherDetails.Add(new VoucherDetails()
+                    {
+                        FKSeriesId = model.FKSeriesId,
+                        SrNo = 3,
+                        FkAccountId = (long)AccountId.BANK_ACCOUNTS,
+                        FKLocationID = model.FKLocationID,
+                        CreditAmt = (decimal)model.CreditCardAmt,
+                        VoucherAmt = (decimal)model.CreditCardAmt,
+                    });
+                }
+
+                model.VoucherDetails.Add(new VoucherDetails()
+                {
+                    FKSeriesId = model.FKSeriesId,
+                    SrNo = 4,
+                    FkAccountId = (long)AccountId.PURCHASE_TAXABLE_GOODS,
+                    FKLocationID = model.FKLocationID,
+                    DebitAmt = model.GrossAmt,
+                    VoucherAmt = -model.GrossAmt,
+                });
+                if (model.RoundOfDiff > 0)
+                {
+                    model.VoucherDetails.Add(new VoucherDetails()
+                    {
+                        FKSeriesId = model.FKSeriesId,
+                        SrNo = 5,
+                        FkAccountId = (long)AccountId.ROUND_OFF_AC,
+                        FKLocationID = model.FKLocationID,
+                        CreditAmt = model.RoundOfDiff,
+                        VoucherAmt =  model.RoundOfDiff,
+                    });
+                }
+                if (model.BranchStateName == model.PartyStateName)
+                {
+                    model.VoucherDetails.Add(new VoucherDetails()
+                    {
+                        FKSeriesId = model.FKSeriesId,
+                        SrNo = 6,
+                        FkAccountId = (long)AccountId.CGST_INPUT,
+                        FKLocationID = model.FKLocationID,
+                        DebitAmt = model.TaxAmt / 2,
+                        VoucherAmt = -model.TaxAmt / 2,
+                    });
+                    model.VoucherDetails.Add(new VoucherDetails()
+                    {
+                        FKSeriesId = model.FKSeriesId,
+                        SrNo = 7,
+                        FkAccountId = (long)AccountId.SGST_INPUT,
+                        FKLocationID = model.FKLocationID,
+                        DebitAmt = model.TaxAmt / 2,
+                        VoucherAmt = -model.TaxAmt / 2,
+                    });
+
+                }
+                else
+                {
+                    model.VoucherDetails.Add(new VoucherDetails()
+                    {
+                        FKSeriesId = model.FKSeriesId,
+                        SrNo = 6,
+                        FkAccountId = (long)AccountId.IGST_INPUT,
+                        FKLocationID = model.FKLocationID,
+                        DebitAmt = model.TaxAmt,
+                        VoucherAmt = -model.TaxAmt,
+                    });
+                }
+
+
+            }
+            else//For Sales
+            {
+                if (model.Credit || model.Cheque)
+                {
+                    model.VoucherDetails.Add(new VoucherDetails()
+                    {
+                        FKSeriesId = model.FKSeriesId,
+                        SrNo = 1,
+                        FkAccountId = (int)model.FKPostAccID,
+                        FKLocationID = model.FKLocationID,
+                        DebitAmt = ((decimal)model.CreditAmt + (decimal)model.ChequeAmt),
+                        VoucherAmt = -((decimal)model.CreditAmt + (decimal)model.ChequeAmt),
+                    });
+                }
+
+                if (model.Cash)
+                {
+                    model.VoucherDetails.Add(new VoucherDetails()
+                    {
+                        FKSeriesId = model.FKSeriesId,
+                        SrNo = 2,
+                        FkAccountId = (long)AccountId.CASH_IN_HAND,
+                        FKLocationID = model.FKLocationID,
+                        DebitAmt = (decimal)model.CashAmt,
+                        VoucherAmt = -(decimal)model.CashAmt,
+                    });
+                }
+                if (model.CreditCard)
+                {
+                    model.VoucherDetails.Add(new VoucherDetails()
+                    {
+                        FKSeriesId = model.FKSeriesId,
+                        SrNo = 3,
+                        FkAccountId = (long)AccountId.BANK_ACCOUNTS,
+                        FKLocationID = model.FKLocationID,
+                        DebitAmt = (decimal)model.CreditCardAmt,
+                        VoucherAmt = -(decimal)model.CreditCardAmt,
+                    });
+                }
+
+                model.VoucherDetails.Add(new VoucherDetails()
+                {
+                    FKSeriesId = model.FKSeriesId,
+                    SrNo = 4,
+                    FkAccountId = (long)AccountId.SALES_TAXABLE_GOODS,
+                    FKLocationID = model.FKLocationID,
+                    CreditAmt = model.GrossAmt,
+                    VoucherAmt = model.GrossAmt,
+                });
+                if (model.RoundOfDiff > 0)
+                {
+                    model.VoucherDetails.Add(new VoucherDetails()
+                    {
+                        FKSeriesId = model.FKSeriesId,
+                        SrNo = 5,
+                        FkAccountId = (long)AccountId.ROUND_OFF_AC,
+                        FKLocationID = model.FKLocationID,
+                        DebitAmt = model.RoundOfDiff,
+                        VoucherAmt = -model.RoundOfDiff,
+                    });
+                }
+                if (model.BranchStateName == model.PartyStateName)
+                {
+                    model.VoucherDetails.Add(new VoucherDetails()
+                    {
+                        FKSeriesId = model.FKSeriesId,
+                        SrNo = 6,
+                        FkAccountId = (long)AccountId.CGST_OUTPUT,
+                        FKLocationID = model.FKLocationID,
+                        CreditAmt = model.TaxAmt / 2,
+                        VoucherAmt = model.TaxAmt / 2,
+                    });
+                    model.VoucherDetails.Add(new VoucherDetails()
+                    {
+                        FKSeriesId = model.FKSeriesId,
+                        SrNo = 7,
+                        FkAccountId = (long)AccountId.SGST_OUTPUT,
+                        FKLocationID = model.FKLocationID,
+                        CreditAmt = model.TaxAmt / 2,
+                        VoucherAmt = model.TaxAmt / 2,
+                    });
+
+                }
+                else
+                {
+                    model.VoucherDetails.Add(new VoucherDetails()
+                    {
+                        FKSeriesId = model.FKSeriesId,
+                        SrNo = 6,
+                        FkAccountId = (long)AccountId.IGST_OUTPUT,
+                        FKLocationID = model.FKLocationID,
+                        CreditAmt = model.TaxAmt,
+                        VoucherAmt = model.TaxAmt,
+                    });
+                }
+
+            }
         }
 
         public void SaveData(TransactionModel JsonData, ref long Id, ref string ErrMsg, ref long SeriesNo)
@@ -146,7 +389,7 @@ namespace SSRepository.Repository.Transaction
                 //con.Open();
                 if (con.State == ConnectionState.Closed)
                 {
-                        con.Open();
+                    con.Open();
                 }
                 SqlCommand cmd = new SqlCommand(SPAddUpd, con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -711,7 +954,7 @@ namespace SSRepository.Repository.Transaction
                     }
                     _remAmt -= (decimal)model.CreditAmt;
                 }
-                else { model.Credit = false; model.CreditAmt = 0; model.CreditDate = null; model.FKPostAccID = null; }
+                else { model.Credit = false; model.CreditAmt = 0; model.CreditDate = null; }
 
 
                 if (model.Cash && model.CashAmt > 0 && _remAmt > 0)
@@ -811,7 +1054,8 @@ namespace SSRepository.Repository.Transaction
                 model.PartyStateName = vendor.StateName;
                 model.PartyCredit = 0;
                 model.FkPartyId = FkPartyId;
-
+                model.FKPostAccID = vendor.FkAccountID;
+                model.Account = vendor.Name;
             }
             return model;
         }
@@ -828,6 +1072,7 @@ namespace SSRepository.Repository.Transaction
                                     Address = cou.Address,
                                     Gstno = cou.Gstno,
                                     StateName = cou.StateName,
+                                    FkAccountID = cou.FkAccountID,
                                 }
                                )).FirstOrDefault();
             return data;
@@ -845,6 +1090,7 @@ namespace SSRepository.Repository.Transaction
                                     Address = cou.Address,
                                     Gstno = cou.Gstno,
                                     StateName = cou.StateName,
+                                    FkAccountID = cou.FkAccountID,
                                 }
                                )).FirstOrDefault();
             return data;
@@ -1170,7 +1416,7 @@ namespace SSRepository.Repository.Transaction
         public void VoucherCalculateExe(TransactionModel model)
         {
             model.NetAmt = model.VoucherDetails.Where(x => x.ModeForm != 2 && x.FkAccountId > 0).ToList().Sum(x => x.CreditAmt);
-           
+
 
             // model.TranDetails = model.TranDetails.Where(x => x.FkProductId > 0).ToList();
         }

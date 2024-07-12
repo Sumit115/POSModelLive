@@ -61,5 +61,6 @@ namespace SSRepository.Models
         public string? Pin { get; set; }
 
         public decimal Disc { get; set;}
+        public long? FkAccountID { get; set; }
     }
 }
