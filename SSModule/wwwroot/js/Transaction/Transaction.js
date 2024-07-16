@@ -41,7 +41,7 @@ $(document).ready(function () {
         tranModel[fieldName] = $(this).val();
     });
     $(".paymentDtl").change(function () {
-        
+        debugger;
         var fieldName = $(this).attr("id");
         var type = $(this).attr("type");
         if (type == "checkbox") {
@@ -67,9 +67,12 @@ $(document).ready(function () {
 });
 
 function Load() {
+    debugger;
     var PkId = $("#PkId").val();
     tranModel = JSON.parse($("#hdData").val());
     if (PkId > 0) {
+        console.clear();
+        console.log(tranModel.TranDetails);
         $(tranModel.TranDetails).each(function (i, v) {
             //  v["Product"] = parseInt(v.FkProductId);
             v["ModeForm"] = 1;
@@ -550,6 +553,8 @@ function ApplyRateDiscount(Type, Discount) {
 function FooterChange(fieldName) {
 
     $(".loader").show();
+    tranModel.TranDetails = GetDataFromGrid();
+
     $.ajax({
         type: "POST",
         url: Handler.currentPath() + 'FooterChange',
@@ -574,6 +579,7 @@ function FooterChange(fieldName) {
 function PaymentDetail() {
     
     console.log(tranModel);
+    tranModel.TranDetails = GetDataFromGrid();
 
     $.ajax({
         type: "POST",

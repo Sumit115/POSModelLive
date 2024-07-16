@@ -119,11 +119,14 @@
                         <input id="RateDiscountValue" class="form-control ratediscount" />
                     </div>
                 </div>
-                <div class="col-md-1">
-                    <div class="form-group">
-                        <a href="javascript:void(0)" class="btn btn-success mt-2" onclick="PaymentPopup()"><i class="fa-2x fa-money fa-money-bill-alt fas" aria-hidden="true"></i></a>
+                @if (Model.ExtProperties.TranAlias == "SINV" || Model.ExtProperties.TranAlias == "PINV" || Model.ExtProperties.TranAlias == "SCRN" || Model.ExtProperties.TranAlias == "SRTN")
+                {
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <a href="javascript:void(0)" class="btn btn-success mt-2" onclick="PaymentPopup()"><i class="fa-2x fa-money fa-money-bill-alt fas" aria-hidden="true"></i></a>
+                        </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
 
@@ -229,6 +232,7 @@
                                 <div class="form-group">
                                     <label>Bank</label>
                                     <select asp-for="FKBankChequeID" asp-items="@(new SelectList(ViewBag.BankList,"PkBankId","BankName"))" class="form-control paymentDtl" id="FKBankChequeID">
+                                        <option value="">Select</option>
                                     </select>
                                  </div>
                             </div>
@@ -256,6 +260,7 @@
                                 <div class="form-group">
                                     <label> CARD</label>
                                     <select asp-for="FKBankCreditCardID" asp-items="@(new SelectList(ViewBag.BankList,"PkBankId","BankName"))" class="form-control paymentDtl" id="FKBankCreditCardID">
+                               <option value="">Select</option>
                                     </select>
 
                                      </div>

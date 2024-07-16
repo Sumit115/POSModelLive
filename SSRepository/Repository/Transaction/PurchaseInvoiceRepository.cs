@@ -28,6 +28,8 @@ namespace SSRepository.Repository.Transaction
 
             TransactionModel model = (TransactionModel)objmodel;
             string error = "";
+
+
             // error = isAlreadyExist(model, "");
             return error;
 
