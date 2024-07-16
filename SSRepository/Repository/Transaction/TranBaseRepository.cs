@@ -85,12 +85,19 @@ namespace SSRepository.Repository.Transaction
 
                 }
 
-
-
                 if (objmodel.FKPostAccID <= 0 && (objmodel.Cheque || objmodel.Credit))
                 {
                     throw new Exception("Account Not Found");
                 }
+
+                if (objmodel.CreditCard && (objmodel.CreditCardAmt < 0 || objmodel.CreditCardNo == "" || objmodel.CreditCardDate == null || objmodel.FKBankCreditCardID == null))
+                    throw new Exception("Please Enter Valid Card Detail");
+
+                if (objmodel.Cheque && (objmodel.ChequeAmt < 0 || objmodel.ChequeNo == "" || objmodel.ChequeDate == null || objmodel.FKBankChequeID == null))
+                    throw new Exception("Please Enter Valid Cheque Detail");
+
+                if (objmodel.Credit && (objmodel.CreditAmt < 0 || objmodel.CreditDate == null || objmodel.FKPostAccID == null))
+                    throw new Exception("Please Enter Valid Credit Detail");
 
 
                 setVoucherDetails(objmodel);
@@ -99,6 +106,8 @@ namespace SSRepository.Repository.Transaction
                     if (objmodel.VoucherDetails.ToList().Sum(x => x.CreditAmt) != objmodel.VoucherDetails.ToList().Sum(x => x.DebitAmt))
                         throw new Exception("Please Enter Valid Amount");
                 }
+
+
                 Error = ValidData(objmodel);
 
             }
@@ -111,15 +120,6 @@ namespace SSRepository.Repository.Transaction
             string Error = "";
             try
             {
-                if (objmodel.CreditCard && (objmodel.CreditCardAmt < 0 || objmodel.CreditCardNo == "" || objmodel.CreditCardDate == null || objmodel.FKBankCreditCardID == null))
-                    Error = "Please Enter Valid Card Detail";
-
-                if (objmodel.Cheque && (objmodel.ChequeAmt < 0 || objmodel.ChequeNo == "" || objmodel.ChequeDate == null || objmodel.FKBankChequeID == null))
-                    Error = "Please Enter Valid Cheque Detail";
-
-                if (objmodel.Cheque && (objmodel.CreditAmt < 0 || objmodel.CreditDate == null || objmodel.FKPostAccID == null))
-                    Error = "Please Enter Valid Credit Detail";
-
 
 
             }
@@ -971,6 +971,7 @@ namespace SSRepository.Repository.Transaction
             }
             else { model.Cash = true; model.CashAmt = _remAmt; }
         }
+
 
         public object PaymentDetail(TransactionModel model)
         {

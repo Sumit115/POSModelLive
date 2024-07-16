@@ -41,8 +41,8 @@ $(document).ready(function () {
         tranModel[fieldName] = $(this).val();
     });
     $(".paymentDtl").change(function () {
-        debugger;
-        var fieldName = $(this).attr("id"); 
+        
+        var fieldName = $(this).attr("id");
         var type = $(this).attr("type");
         if (type == "checkbox") {
             if ($(this).prop('checked') === true) {
@@ -50,11 +50,11 @@ $(document).ready(function () {
             } else {
                 tranModel[fieldName] = false;
             }
-            
+
         } else {
             tranModel[fieldName] = $(this).val();
         }
-      //  PaymentDetail();
+        //  PaymentDetail();
     });
     $("#txtSearchBarcode").change(function () {
         BarcodeScan($(this).val());
@@ -76,6 +76,7 @@ function Load() {
             v["Delete"] = 'Delete';
         });
         BindGrid('DDT', tranModel.TranDetails);
+        setPaymentDetail(tranModel);
     }
 
     else {
@@ -489,7 +490,7 @@ function BarcodeScan(barcode) {
     })
 }
 function ColumnChange(args, rowIndex, fieldName) {
-    
+
     tranModel.TranDetails = GetDataFromGrid();
 
     if (tranModel.TranDetails.length > 0) {
@@ -571,32 +572,39 @@ function FooterChange(fieldName) {
     })
 }
 function PaymentDetail() {
+    
     console.log(tranModel);
 
     $.ajax({
         type: "POST",
         url: Handler.currentPath() + 'SetPaymentDetail',
         data: { model: tranModel },
-        datatype: "json", success: function (res) {
-
+        datatype: "json",
+        success: function (res) {
+            
             if (res.status == "success") {
-                debugger;
+                
                 tranModel = res.data;
 
                 setPaymentDetail(tranModel);
-                $('.model-paymentdetail').modal('toggle');;
+                $('.model-paymentdetail').modal('toggle');
             }
             else
                 alert(res.msg);
         }
     })
 }
+function PaymentPopup() {
+    setPaymentDetail(tranModel)
+    $('.model-paymentdetail').modal('toggle');
+}
+
 function setFooterData(data) {
     Common.Set(".trn-footer", data, "");
     return false;
 }
 function setPaymentDetail(data) {
-    
+
     Common.Set(".model-paymentdetail", data, "");
     return false;
 }

@@ -2,7 +2,7 @@
 
 @if (Context.Session.GetString("LoginId") == null || Context.Session.GetString("LoginId") == "")
 {
-    @* Context.Session.SetString("LoginId", Convert.ToString(1));
+   @*  Context.Session.SetString("LoginId", Convert.ToString(1));
      Context.Session.SetInt32("IsAdmin", Convert.ToInt32(1));
      Context.Session.SetString("Photo", "/Admin/dist/img/avatar04.png");*@
 

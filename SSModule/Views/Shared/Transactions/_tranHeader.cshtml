@@ -121,7 +121,7 @@
                 </div>
                 <div class="col-md-1">
                     <div class="form-group">
-                        <a href="javascript:void(0)" class="btn btn-success mt-2" onclick="PaymentDetail()"><i class="fa-2x fa-money fa-money-bill-alt fas" aria-hidden="true"></i></a>
+                        <a href="javascript:void(0)" class="btn btn-success mt-2" onclick="PaymentPopup()"><i class="fa-2x fa-money fa-money-bill-alt fas" aria-hidden="true"></i></a>
                     </div>
                 </div>
             </div>
@@ -136,9 +136,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Payment Detail</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             @*   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
-                </button>
+                </button>*@
             </div>
             <div class="modal-body">
 
@@ -280,7 +280,7 @@
                 </div>
             </div>
             <div class="modal-footer"> 
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                <button type="button" class="btn btn-primary" onclick="PaymentDetail()">Ok</button>
             </div>
         </div>
     </div>

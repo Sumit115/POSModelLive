@@ -65,6 +65,7 @@ namespace SSAdmin.Areas
             });
 
         }
+
         [HttpPost]
         public JsonResult SetPaymentDetail(TransactionModel model)
         {
