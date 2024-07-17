@@ -1,10 +1,13 @@
 ﻿
 var tranModel = null;
 var ControllerName = "";
+var GridName = "dtl";
+var MinRows = 50;
 $(document).ready(function () {
-
+    debugger;
     ControllerName = $("#hdControllerName").val();
 
+    if (ControllerName == "Voucher") { GridName = "viewdtl"; $("#hdGridName").val('viewdtl'); }
     Common.InputFormat();
     $('#btnServerSave').click(function (e) {
         if ($("#loginform1").valid()) {
@@ -32,6 +35,7 @@ $(document).ready(function () {
 });
 
 function Load() {
+    debugger;
     var PkId = $("#PkId").val();
     tranModel = JSON.parse($("#hdData").val());
     if (PkId > 0) {
@@ -40,7 +44,10 @@ function Load() {
         //    v["ModeForm"] = 1;
         //    v["Delete"] = 'Delete';
         //});
-        //BindGrid('DDT', tranModel.VoucherDetails);
+        if (ControllerName == "Voucher") {
+            MinRows = tranModel.VoucherDetails.length;
+        }
+         BindGrid('DDT', tranModel.VoucherDetails);
     }
 
     else {
@@ -52,7 +59,7 @@ function Load() {
 function BindGrid(GridId, data) {
 
     $("#" + GridId).empty();
-    Common.Grid(tranModel.ExtProperties.FKFormID, "dtl", function (s) {
+    Common.Grid(tranModel.ExtProperties.FKFormID, GridName, function (s) {
         var AccountList = JSON.parse($("#hdAccountList").val());
         cg = new coGrid("#" + GridId);
         UDI = cg;
@@ -61,10 +68,10 @@ function BindGrid(GridId, data) {
         cg.setColumnFields(s.ColumnFields);
         cg.setAlign(s.Align);
         cg.defaultHeight = "300px";
-        cg._MinRows = 50;
+        cg._MinRows = MinRows;
         cg.setIdProperty("SrNo");
         cg.setCtrlType(s.setCtrlType);
-
+        
         var f = s.ColumnFields.split('~');
         var s = s.setCtrlType.split('~');
         var arrmapData = []

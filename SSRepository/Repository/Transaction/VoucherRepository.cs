@@ -104,7 +104,11 @@ namespace SSRepository.Repository.Transaction
             }
             return model;
         }
-
+        public long GetIdbyEntryNo(long EntryNo, long FKSeriesId)
+        {
+            var obj = __dbContext.TblVoucherTrn.Where(x => x.EntryNo == EntryNo && x.FKSeriesId == FKSeriesId).FirstOrDefault();
+            return obj != null ? obj.PkVoucherId : 0;
+        }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>();
@@ -124,6 +128,18 @@ namespace SSRepository.Repository.Transaction
                     new ColumnStructure{ pk_Id=16,  Orderby =16, Heading ="Del",                Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" }
 
                 };
+            }
+            else if (GridName.ToString().ToLower() == "viewdtl")
+            {
+                list = new List<ColumnStructure>
+                {
+                    new ColumnStructure{ pk_Id=1,   Orderby =1,  Heading ="Account",            Fields="AccountName_Text",    Width=20,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""    },
+                    new ColumnStructure{ pk_Id=2,   Orderby =2,  Heading ="Current Balance",    Fields="CurrentBalance",      Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""     },
+                    new ColumnStructure{ pk_Id=3,   Orderby =3,  Heading ="Mode",               Fields="AccMode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""     },
+                    new ColumnStructure{ pk_Id=4,   Orderby =4,  Heading ="Debit",              Fields="DebitAmt",            Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=5,   Orderby =5,  Heading ="Credit",             Fields="CreditAmt",           Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=6,   Orderby =6,  Heading ="Narration",          Fields="VoucherNarration",    Width=25,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    };
             }
             else
             {

@@ -44,5 +44,8 @@ namespace SSRepository.IRepository
         public List<CategorySizeLnkModel> Get_CategorySizeList_ByProduct(long PKProductId);
         long SaveWalkingCustomer(WalkingCustomerModel model);
         WalkingCustomerModel GeWalkingCustomer_byMobile(string Mobile);
+
+        long GetIdbyEntryNo(long EntryNo, long FKSeriesId);
+
     }
 }

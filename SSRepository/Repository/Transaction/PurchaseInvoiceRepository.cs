@@ -71,7 +71,7 @@ namespace SSRepository.Repository.Transaction
                                where cou.TranAlias == TranAlias
                                select new
                                {
-                                   cou, 
+                                   cou,
                                    branch,
                                    location
                                }).FirstOrDefault();
@@ -87,6 +87,11 @@ namespace SSRepository.Repository.Transaction
             return model;
         }
 
+        public long GetIdbyEntryNo(long EntryNo, long FKSeriesId)
+        {
+            var obj = __dbContext.TblPurchaseInvoicetrn.Where(x => x.EntryNo == EntryNo && x.FKSeriesId == FKSeriesId).FirstOrDefault();
+            return obj != null ? obj.PkId : 0;
+        }
 
         public List<ColumnStructure> ColumnList(string GridName = "")
         {

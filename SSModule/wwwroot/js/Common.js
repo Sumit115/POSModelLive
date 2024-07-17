@@ -582,13 +582,14 @@ var Handler = {
             return loc.substring(0, loc.indexOf("))") + 2) + pathWeb;
     },
     currentPath: function () {
-
-        var loc = location.href;
+          var loc = location.href;
 
         if (location.href.indexOf("Create") != -1)
             return location.href.substring(0, location.href.indexOf("Create"));
         else if (loc.indexOf("Index") != -1)
             return loc.substring(0, loc.indexOf("Index"));
+        else if (location.href.indexOf("View") != -1)
+            return location.href.substring(0, location.href.indexOf("View"));
         else
             return location.href.substring(0, location.href.lastIndexOf("/") + 1);
     },

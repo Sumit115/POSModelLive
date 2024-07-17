@@ -33,6 +33,7 @@ namespace SSRepository.Models
         public string? AccountName_Text { get; set; }
 
         public decimal Balance { get; set; }
+        public string AccMode { get; set; }
 
 
     }

@@ -196,12 +196,13 @@ namespace SSAdmin.Areas
             {
                 string[] _r = RowParam.Split("~");
                 if (int.TryParse(_r[0], out value))
-                {   return _repository.ProductColorList(pageSize, pageNo, search, Convert.ToInt64(_r[0]), ExtraParam, _r.Length>1?_r[1]:"");
+                {
+                    return _repository.ProductColorList(pageSize, pageNo, search, Convert.ToInt64(_r[0]), ExtraParam, _r.Length > 1 ? _r[1] : "");
                 }
                 else
                     return null;
             }
-            else if (name == "MRP"  )
+            else if (name == "MRP")
             {
                 string[] _r = RowParam.Split("~");
                 if (int.TryParse(_r[0], out value))
@@ -221,6 +222,17 @@ namespace SSAdmin.Areas
         {
             var data = _repository.GeWalkingCustomer_byMobile(Mobile);
             return new JsonResult(data);
+        }
+
+        [HttpPost]
+        public JsonResult GetIdbyEntryNo(long EntryNo, long FKSeriesId)
+        {
+            return Json(new
+            {
+                status = "success",
+                data = _repository.GetIdbyEntryNo(EntryNo, FKSeriesId)
+            });
+
         }
 
     }

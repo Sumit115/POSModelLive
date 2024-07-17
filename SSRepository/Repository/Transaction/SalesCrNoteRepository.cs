@@ -85,6 +85,12 @@ namespace SSRepository.Repository.Transaction
             }
             return model;
         }
+        public long GetIdbyEntryNo(long EntryNo, long FKSeriesId)
+        {
+            var obj = __dbContext.TblSalesCrNotetrn.Where(x => x.EntryNo == EntryNo && x.FKSeriesId == FKSeriesId).FirstOrDefault();
+            return obj != null ? obj.PkId : 0;
+        }
+        
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>();

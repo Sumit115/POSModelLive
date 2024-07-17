@@ -61,6 +61,9 @@ $(document).ready(function () {
         $(this).val('');
         $(this).focus();
     });
+    $("#EntryNo").change(function () {
+        DatabyEntryNo();
+    });
     $("#PartyMobile").change(function () {
         GetWalkingCustomerDetail($(this).val());
     });
@@ -577,7 +580,7 @@ function FooterChange(fieldName) {
     })
 }
 function PaymentDetail() {
-    
+
     console.log(tranModel);
     tranModel.TranDetails = GetDataFromGrid();
 
@@ -587,9 +590,9 @@ function PaymentDetail() {
         data: { model: tranModel },
         datatype: "json",
         success: function (res) {
-            
+
             if (res.status == "success") {
-                
+
                 tranModel = res.data;
 
                 setPaymentDetail(tranModel);
@@ -610,8 +613,9 @@ function setFooterData(data) {
     return false;
 }
 function setPaymentDetail(data) {
-
+    debugger;
     Common.Set(".model-paymentdetail", data, "");
+    if (tranModel.FKPostAccID <= 0) { $("#Account").val(''); }
     return false;
 }
 
@@ -848,5 +852,47 @@ function GetWalkingCustomerDetail(Mobile) {
         //    }
 
         //});
+    }
+}
+
+function DatabyEntryNo() {
+    $(".loader").show();
+    var EntryNo = $("#EntryNo").val();
+    var FKSeriesId = $("#FKSeriesId").val();
+    $.ajax({
+        type: "POST",
+        url: Handler.currentPath() + 'GetIdbyEntryNo',
+        data: { EntryNo: EntryNo, FKSeriesId: FKSeriesId },
+        datatype: "json",
+        success: function (res) {
+            if (res.status == "success") {
+                if (res.data > 0) {
+                    var pk_Id = res.data;
+                    window.location.href = Handler.currentPath() +"Create/" + pk_Id + "/" + FKSeriesId;
+                }
+                else {
+                    alert('Not Found');
+                    $(".loader").hide();
+                    location.reload()
+                } 
+            }
+            else {
+                alert(res.msg);
+                $(".loader").hide();
+                location.reload()
+            }
+
+        }
+    })
+}
+
+function VoucherDetail() {
+
+    var pagetitle = $(".pagetitle").text().replace(/\s+/g, " ").trim();
+    if (tranModel.PkId > 0) {
+
+        var url = "/Transactions/Voucher/View/" + tranModel.PkId + "/" + tranModel.FKSeriesId + "/" + pagetitle;
+
+        window.open(url);
     }
 }
