@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Data;
 using SSAdmin.Areas;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 
 namespace SSAdmin.Areas.Transactions.Controllers
 {
@@ -15,7 +16,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
     public class SalesCrNoteController : SalesRtnController
     {
 
-        public SalesCrNoteController(ISalesCrNoteRepository repository, IGridLayoutRepository gridLayoutRepository) : base(repository, gridLayoutRepository)
+        public SalesCrNoteController(ISalesCrNoteRepository repository, IGridLayoutRepository gridLayoutRepository, ICompositeViewEngine viewEngine, IWebHostEnvironment webHostEnvironment) : base(repository, gridLayoutRepository, viewEngine, webHostEnvironment)
         {
             TranType = "R";
             TranAlias = "SCRN";

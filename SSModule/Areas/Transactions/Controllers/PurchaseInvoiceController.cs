@@ -6,15 +6,16 @@ using SSRepository.Models;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 
 namespace SSAdmin.Areas.Transactions.Controllers
 {
     [Area("Transactions")]
-    public class PurchaseInvoiceController : BaseTranController<IPurchaseInvoiceRepository, IGridLayoutRepository>
+    public class PurchaseInvoiceController : BaseTranController<IPurchaseInvoiceRepository, IGridLayoutRepository, ICompositeViewEngine, IWebHostEnvironment>
     {
         private readonly IPurchaseInvoiceRepository _repository;
 
-        public PurchaseInvoiceController(IPurchaseInvoiceRepository repository, IGridLayoutRepository gridLayoutRepository) : base(repository, gridLayoutRepository)
+        public PurchaseInvoiceController(IPurchaseInvoiceRepository repository, IGridLayoutRepository gridLayoutRepository, ICompositeViewEngine viewEngine, IWebHostEnvironment webHostEnvironment) : base(repository, gridLayoutRepository, viewEngine, webHostEnvironment)
         {
             _repository = repository;
             TranType = "P";

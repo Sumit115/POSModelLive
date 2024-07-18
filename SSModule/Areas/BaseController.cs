@@ -24,7 +24,7 @@ namespace SSAdmin.Areas
 
         [HttpPost]
         public async Task<JsonResult> GridStrucher(long FormId, string GridName="")
-            {
+        {
             if(FormId == 0) FormId = FKFormID;
             var data = _gridLayoutRepository.GetSingleRecord(1, FormId, GridName, ColumnList(GridName));
             return new JsonResult(data);

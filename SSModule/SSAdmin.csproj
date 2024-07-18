@@ -21,6 +21,10 @@
     <None Remove="wwwroot\lib\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Areas\Transactions\Controllers\ImportController.cs" />
+  </ItemGroup>
+
  
 
   <ItemGroup>

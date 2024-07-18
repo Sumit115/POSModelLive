@@ -7,15 +7,16 @@ using SSRepository.IRepository.Master;
 using Newtonsoft.Json;
 using System.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 
 namespace SSAdmin.Areas.Transactions.Controllers
 {
     [Area("Transactions")]
-    public class PaymentVoucherController : BaseTranController<IVoucherRepository, IGridLayoutRepository>
+    public class PaymentVoucherController : BaseTranController<IVoucherRepository, IGridLayoutRepository, ICompositeViewEngine, IWebHostEnvironment>
     {
         private readonly IVoucherRepository _repository;
 
-        public PaymentVoucherController(IVoucherRepository repository, IGridLayoutRepository gridLayoutRepository) : base(repository, gridLayoutRepository)
+        public PaymentVoucherController(IVoucherRepository repository, IGridLayoutRepository gridLayoutRepository, ICompositeViewEngine viewEngine, IWebHostEnvironment webHostEnvironment) : base(repository, gridLayoutRepository, viewEngine, webHostEnvironment)
         {
             _repository = repository;
             TranType = "";

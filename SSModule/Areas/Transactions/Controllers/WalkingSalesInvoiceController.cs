@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Data;
 using SSAdmin.Areas;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 
 namespace SSAdmin.Areas.Transactions.Controllers
 {
@@ -15,7 +16,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
     public class WalkingSalesInvoiceController : SalesInvController
     {
 
-        public WalkingSalesInvoiceController(ISalesInvoiceRepository repository, IGridLayoutRepository gridLayoutRepository) : base(repository, gridLayoutRepository)
+        public WalkingSalesInvoiceController(ISalesInvoiceRepository repository, IGridLayoutRepository gridLayoutRepository, ICompositeViewEngine viewEngine, IWebHostEnvironment webHostEnvironment) : base(repository, gridLayoutRepository, viewEngine, webHostEnvironment)
         {
             TranType = "S";
             TranAlias = "SINV";
@@ -46,6 +47,9 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 else
                 {
                     Trans = _repository.GetSingleRecord(id, FKSeriesID);
+                    Trans.FKPostAccID = 12;
+                    Trans.Account = "Walking Customer";
+                    Trans.FkPartyId = 1;
                 }
             }
             catch (Exception ex)

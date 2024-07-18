@@ -7,6 +7,7 @@ using SSRepository.IRepository.Master;
 using Newtonsoft.Json;
 using System.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 
 namespace SSAdmin.Areas.Transactions.Controllers
 {
@@ -14,7 +15,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
     public class SalesChallanController : SalesInvController
     {
 
-        public SalesChallanController(ISalesInvoiceRepository repository, IGridLayoutRepository gridLayoutRepository) : base(repository, gridLayoutRepository)
+        public SalesChallanController(ISalesInvoiceRepository repository, IGridLayoutRepository gridLayoutRepository, ICompositeViewEngine viewEngine, IWebHostEnvironment webHostEnvironment) : base(repository, gridLayoutRepository, viewEngine, webHostEnvironment)
         {
             TranType = "S";
             TranAlias = "SPSL";

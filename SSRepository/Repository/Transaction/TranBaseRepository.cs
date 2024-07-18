@@ -141,6 +141,8 @@ namespace SSRepository.Repository.Transaction
             CASH_IN_HAND = 9,
             BANK_ACCOUNTS = 10,
             ROUND_OFF_AC = 11,
+            Walking_Customer = 12,
+
         }
         public void setDefaultBeforeSave(TransactionModel model)
         {

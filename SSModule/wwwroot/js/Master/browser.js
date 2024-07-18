@@ -76,8 +76,8 @@ function bindGrid(GridId, data, IdProperty) {
             });
         });
 
-        $("#contextMenu").click(function (e) {
-
+        $("#contextMenu").off('click').on('click', function (e) {
+            debugger;
             if (!$(e.target).is("li")) {
                 return;
             }
@@ -125,6 +125,7 @@ function bindGrid(GridId, data, IdProperty) {
                         else
                             alert(res);
                         $(".loader").hide();
+                        return;
                     }
                 })
 
