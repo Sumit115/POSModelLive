@@ -6,7 +6,7 @@ namespace SSRepository.IRepository
     public interface ITranBaseRepository : IBaseRepository
     {
         string Create(TransactionModel model);
-        DataTable GetList(string FromDate, string ToDate, string SeriesFilter, string DocumentType);
+        DataTable GetList(string FromDate, string ToDate, string SeriesFilter, string DocumentType,string LocationFilter="");
         TransactionModel GetSingleRecord(long PkId, long FkSeriesId);
         object BarcodeScan(TransactionModel model, string barcode);
         object FooterChange(TransactionModel model, string fieldName);

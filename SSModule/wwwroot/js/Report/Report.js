@@ -10,9 +10,10 @@
     Controller: 'SalesStock'
 };
 var RPTFilter = {
-    Vendor: { Data: [], Filter: null },
-    Customer: { Data: [], Filter: null },
-    Product: { Data: [], Filter: null }
+    Vendor: { Data: [], Filter: null, IdProperty: "", Field: "" },
+    Customer: { Data: [], Filter: null, IdProperty: "", Field: "" },
+    Product: { Data: [], Filter: null, IdProperty: "PkProductId", Field: "NameToDisplay" },
+    Location: { Data: [], Filter: null, IdProperty: "PKLocationID", Field: "Location" }
 };
 
 
@@ -25,7 +26,7 @@ function ViewData(_d, Export) {
     if (Export == "excel") {
         var param = "";
         $.each(_d, function (i, val) {
-            param= i + "=" + val + "&";
+            param = i + "=" + val + "&";
         });
         var downloadUrl = '/Report/' + Controller + '/Export?' + param + '';
         var a = document.createElement("a");
@@ -98,13 +99,13 @@ function ShowFilter(type) {
             var cg = new coGrid("#WUCFilter");
             cg.setColumnHeading("Select~NameToDisplay");
             cg.setColumnWidthPer("10~60", 800);
-            cg.setColumnFields("tick~NameToDisplay");
+            cg.setColumnFields("tick~" + RPTFilter[type].Field);
             cg.setAlign("C~L");
             cg.defaultHeight = "400px";
             cg.setSearchType("0~1");
-            cg.setSearchableColumns("NameToDisplay");
-            cg.setSortableColumns("NameToDisplay");
-            cg.setIdProperty("PkProductId");
+            cg.setSearchableColumns(RPTFilter[type].Field);
+            cg.setSortableColumns(RPTFilter[type].Field);
+            cg.setIdProperty(RPTFilter[type].IdProperty);
             cg.setCtrlType("B~");
             cg.bind(RPTFilter[type].Data);
             cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
@@ -112,8 +113,11 @@ function ShowFilter(type) {
             $("#btnSaveFilter").off("click").on("click", function () {
                 var _List = [];
                 var Filterlist = filterGrid.getData().filter(function (el) { return el.tick })
-                $(Filterlist).each(function (i,v) {
-                    _List.push({ PKID: v.PkProductId });
+                $(Filterlist).each(function (i, v) {
+                    if (RPTFilter[type].IdProperty == "PkProductId")
+                        _List.push({ PKID: v.PkProductId });
+                    if (RPTFilter[type].IdProperty == "PKLocationID")
+                        _List.push({ PKID: v.PKLocationID });
                 });
                 RPTFilter[type].Filter = JSON.stringify(_List);
                 $(".popup_d").hide();

@@ -8,11 +8,13 @@ function ShowGridColumn() {
     });
 }
 function View() {
+    debugger;
     $('#' + GridId).empty();
     Common.Get("." + filterclass, "", function (flag, _d) {
         if (flag) {
             _d["pageNo"] = pageNo;
             _d["pageSize"] = pageSize;
+            _d["LocationFilter"] = RPTFilter.Location.Filter; 
             $.ajax({
                 type: "POST",
                 url: 'List',

@@ -17,6 +17,9 @@
             <div class="col-md-1">
                 <input type="button" value="Search" class="btn btn-success" onclick="View()">
             </div>
+            <div class="col-md-7 text-right">
+                <button class="btn btn-info" onclick="ShowFilter('Location')"><i class="fa fa-filter"></i></button>
+            </div>
         </div>
     </div>
 </div>
@@ -25,6 +28,8 @@
 <partial name="~/Views/Shared/partial/_Grid.cshtml" />
 
 @section Scripts {
+       <script src="~/js/report/report.js"></script>
+
     <script src="~/js/master/browser.js"></script>
     <script>
         $(document).ready(function () {

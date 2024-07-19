@@ -408,7 +408,7 @@ namespace SSRepository.Repository.Transaction
             }
         }
 
-        public DataTable GetList(string FromDate, string ToDate, string SeriesFilter, string DocumentType)
+        public DataTable GetList(string FromDate, string ToDate, string SeriesFilter, string DocumentType, string LocationFilter)
         {
             DataTable dt = new DataTable();
             using (SqlConnection con = new SqlConnection(conn))
@@ -420,6 +420,7 @@ namespace SSRepository.Repository.Transaction
                 cmd.Parameters.AddWithValue("@ToDate", ToDate);
                 cmd.Parameters.AddWithValue("@SeriesFilter", SeriesFilter);
                 cmd.Parameters.AddWithValue("@DocumentType", DocumentType);
+                cmd.Parameters.AddWithValue("@LocationFilter", GetFilterData(LocationFilter));
                 //Get Output Parametr
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(dt);
