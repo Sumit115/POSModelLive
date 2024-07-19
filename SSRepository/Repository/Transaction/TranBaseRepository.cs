@@ -242,7 +242,7 @@ namespace SSRepository.Repository.Transaction
                         FkAccountId = (long)AccountId.ROUND_OFF_AC,
                         FKLocationID = model.FKLocationID,
                         CreditAmt = model.RoundOfDiff,
-                        VoucherAmt =  model.RoundOfDiff,
+                        VoucherAmt = model.RoundOfDiff,
                     });
                 }
                 if (model.BranchStateName == model.PartyStateName)
@@ -464,12 +464,15 @@ namespace SSRepository.Repository.Transaction
                 if (dd != null)
                 {
                     List<TransactionModel> aa = JsonConvert.DeserializeObject<List<TransactionModel>>(dd);
-                    data = aa[0];
-                    if (data.BranchDetails != null)
+                    if (aa != null)
                     {
-                        if (data.BranchDetails.Count > 0)
+                        data = aa[0];
+                        if (data.BranchDetails != null)
                         {
-                            data.Branch = data.BranchDetails.FirstOrDefault();
+                            if (data.BranchDetails.Count > 0)
+                            {
+                                data.Branch = data.BranchDetails.FirstOrDefault();
+                            }
                         }
                     }
                 }
