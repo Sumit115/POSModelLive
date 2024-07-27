@@ -10,30 +10,38 @@
     Controller: 'SalesStock'
 };
 var RPTFilter = {
-    Vendor: { Data: [], Filter: null, IdProperty: "", Field: "" },
-    Customer: { Data: [], Filter: null, IdProperty: "", Field: "" },
+    Vendor: { Data: [], Filter: null, IdProperty: "PkId", Field: "Name" },
+    Customer: { Data: [], Filter: null, IdProperty: "PkId", Field: "Name" },
     Product: { Data: [], Filter: null, IdProperty: "PkProductId", Field: "NameToDisplay" },
-    Location: { Data: [], Filter: null, IdProperty: "PKLocationID", Field: "Location" }
+    Location: { Data: [], Filter: null, IdProperty: "PKLocationID", Field: "Location" },
+    Series: { Data: [], Filter: null, IdProperty: "PkSeriesId", Field: "Series" },
 };
 
 
 function ShowGridColumn() {
     Common.GridColSetup(RPTOption.FormId, $("#ReportType").val(), function () {
-        Load();
+        Render();
     });
 }
+
 function ViewData(_d, Export) {
+    $(".loader").show();
     if (Export == "excel") {
         var param = "";
         $.each(_d, function (i, val) {
-            param = i + "=" + val + "&";
+            debugger;
+            if (!Common.isNullOrEmpty(val)) {
+                param += i + "=" + val + "&";
+            }
         });
+        
         var downloadUrl = '/Report/' + Controller + '/Export?' + param + '';
         var a = document.createElement("a");
         a.href = downloadUrl;
         a.download = "ReportFile.xls";
         document.body.appendChild(a);
         a.click();
+        $(".loader").hide();
     }
     else {
         $('#' + RPTOption.GridId).empty();
@@ -44,7 +52,9 @@ function ViewData(_d, Export) {
             datatype: "json",
             success: function (res) {
                 var data = JSON.parse(res.data);
-                Common.Grid(parseInt(RPTOption.FormId), "", function (s) {
+                debugger;
+                Common.Grid(parseInt(RPTOption.FormId), $("#ReportType").val(), function (s) {
+                    debugger;
                     var cg = new coGrid("#" + RPTOption.GridId);
                     UDI = cg;
                     cg.setColumnHeading(s.ColumnHeading);
@@ -60,6 +70,7 @@ function ViewData(_d, Export) {
                     cg.bind(data);
                     cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
                 });
+                $(".loader").hide();
             }
         });
     }
@@ -118,6 +129,10 @@ function ShowFilter(type) {
                         _List.push({ PKID: v.PkProductId });
                     if (RPTFilter[type].IdProperty == "PKLocationID")
                         _List.push({ PKID: v.PKLocationID });
+                    if (RPTFilter[type].IdProperty == "PkSeriesId")
+                        _List.push({ PKID: v.PkSeriesId });
+                    if (RPTFilter[type].IdProperty == "PkId")
+                        _List.push({ PKID: v.PkId });
                 });
                 RPTFilter[type].Filter = JSON.stringify(_List);
                 $(".popup_d").hide();

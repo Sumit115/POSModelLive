@@ -15,7 +15,7 @@
                 <span class="field-validation-valid text-danger" data-valmsg-for="ToDate"></span>
             </div>
             <div class="col-md-1">
-                <select id="ReportType" class="form-control" onchange="Load();">
+                <select id="ReportType" class="form-control" onchange="Render();">
                     <option value="S">Summary</option>
                     <option value="M">Month Wise</option>
                     <option value="D">Day Wise</option>
@@ -25,22 +25,16 @@
                 </select>
             </div>
             <div class="col-md-1">
-                <select id="TranAlias" class="form-control" onchange="Load();">
+                <select id="TranAlias" class="form-control" onchange="Render();">
                     <option value="PINV">Purchase</option>
                     <option value="PORD">Purchase Order</option>
                 </select>
             </div>
-            <div class="col-md-1">
-                <input type="button" value="Search" class="btn btn-success" onclick="Load()">
-            </div>
-            <div class="col-md-2">
-                <input type="button" value="Export To Excel" class="btn btn-dark" id="btnExportToExcel" onclick="ExportToExcel()">
-            </div>
-            <div class="col-md-1">
-                <input type="button" value="Product Filter" onclick="Common.ShowFilterPopup('Product')" class="btn btn-info" id="btnFilterProduct">
-            </div>
-            <div class="col-md-1">
-                <input type="button" value="Vendor Filter" onclick="Common.ShowFilterPopup('Vendor')" class="btn btn-info" id="btnFilterVendor">
+            <div class="col-md-6 text-right">
+                <button class="btn btn-info" onclick="ShowFilter('Product')">Product <i class="fa fa-filter"></i></button>
+                <button class="btn btn-info" onclick="ShowFilter('Vendor')">Vendor <i class="fa fa-filter"></i></button>
+                <input type="button" value="View" class="btn btn-success" onclick="Render('')">
+                <button class="btn btn-dark" onclick="Render('excel')"><i class="fa fa-file-export"></i></button>
             </div>
         </div>
     </div>
@@ -50,25 +44,31 @@
 <div class="row">
     <div id="WUCHM" class="col-12">
     </div>
-</div>
-<input type="hidden" id="hdProductFilter" value="[]" />
-<input type="hidden" id="hdVendorFilter" value="[]" />
-
-<input type="hidden" id="hdProductList" value="[]" />
-<input type="hidden" id="hdVendorList" value="[]" />
+</div> 
 @section Scripts {
     <script src="~/js/report/report.js"></script>
     <script>
         $(document).ready(function () {
 
 
-            IdProperty = "sno";
-            GridHeight = "85vh";
-            Controller = 'PurchaseStock';
+           RPTOption.IdProperty =IdProperty = "sno";
+           RPTOption.GridHeight =GridHeight = "85vh";
+           RPTOption.Controller =Controller = 'PurchaseStock';
             var dt = new Date;
             document.getElementById("FromDate").valueAsDate = new Date();
             document.getElementById("ToDate").valueAsDate = new Date();
         });
+        function Render(Export) {
+            Common.Get(".filter", "", function (flag, _d) {
+                if (flag) {
+                    _d["pageNo"] = RPTOption.pageNo;
+                    _d["pageSize"] = RPTOption.pageSize;
+                    _d["ProductFilter"] = RPTFilter.Product.Filter;
+                    _d["VendorFilter"] = RPTFilter.Vendor.Filter;
+                    ViewData(_d, Export)
+                }
+            });
+        }
     </script>
     
 }

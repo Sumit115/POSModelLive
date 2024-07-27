@@ -33,35 +33,7 @@ namespace SSRepository.Repository.Report
             GetSP = "usp_SalesStock";
         }
 
-        public DataTable GetList(string FromDate, string ToDate, string ReportType, string TranAlias, DataTable ProductFilter = null, DataTable PartyFilter = null)
-        {
-            DataTable dt = new DataTable();
-            using (SqlConnection con = new SqlConnection(conn))
-            {
-                con.Open();
-                SqlCommand cmd = new SqlCommand(GetSP, con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@FromDate", FromDate);
-                cmd.Parameters.AddWithValue("@ToDate", ToDate);
-                cmd.Parameters.AddWithValue("@ReportType", ReportType);
-                cmd.Parameters.AddWithValue("@TranAlias", TranAlias);
-                //SqlParameter param = new SqlParameter("@userdefinedtabletypeparameter", SqlDbType.Structured)
-                //{
-                //    TypeName = "dbo.userdefinedtabletype",
-                //    Value = dt
-                //};
-                cmd.Parameters.AddWithValue("@ProductFilter", ProductFilter);
-                cmd.Parameters.AddWithValue("@PartyFilter", PartyFilter);
-                //Get Output Parametr
-                SqlDataAdapter adp = new SqlDataAdapter(cmd);
-                adp.Fill(dt);
-                //cmd.ExecuteNonQuery();
-                con.Close();
-
-            }
-            return dt;
-        }
-
+      
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
             //S=Summary | M=Month Wise | D=Day Wise | W=Monthly | Q=Quarterly | C=Cumulative 

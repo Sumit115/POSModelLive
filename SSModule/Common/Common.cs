@@ -98,16 +98,19 @@ namespace SSAdmin
             PaymentVoucher = 109,
             ContraVoucher = 110,
             WalkingSalesInvoice = 111,
-             Voucher = 112,
+            Voucher = 112,
 
+            //200-report
             SalesStock = 200,
             PurchaseStock = 201,
             RateStock = 203,
+            SalesTransaction = 204,
+            PurchaseTransaction = 205,
 
             //
 
 
-            //200-report
+
         }
         public enum AccountGroupMasterId
         {
@@ -132,7 +135,23 @@ namespace SSAdmin
             IGST_OUTPUT = 8,
             CASH_IN_HAND = 9,
             BANK_ACCOUNTS = 10,
-            ROUND_OFF_AC = 11            ,
+            ROUND_OFF_AC = 11,
+        }
+        public enum en_TranAlias
+        {
+            SINV,//Sales Invoice ,Walking Sales
+            SORD,//Sales Order
+            SPSL,//Sales Challan
+            SRTN,//Sales Return
+            SCRN,//Sales Cr Note
+           
+            PINV,//Purchase Invoice
+            PORD,//Purchase Order
+
+            V_CT,//Contra Voucher
+            V_JR,//Journal Voucher
+            V_PY,//Payment Voucher
+            V_RC,//Receipt Voucher 
         }
         public static bool IsMobileNumber(string number)
         {

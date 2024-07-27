@@ -14,7 +14,10 @@ function View() {
         if (flag) {
             _d["pageNo"] = pageNo;
             _d["pageSize"] = pageSize;
-            _d["LocationFilter"] = RPTFilter.Location.Filter; 
+            if (typeof RPTFilter !== 'undefined') {
+                _d["LocationFilter"] = RPTFilter.Location.Filter; 
+            }
+           
             $.ajax({
                 type: "POST",
                 url: 'List',

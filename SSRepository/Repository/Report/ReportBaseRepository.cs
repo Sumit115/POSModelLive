@@ -17,14 +17,14 @@ namespace SSRepository.Repository.Report
 {
     public class ReportBaseRepository : BaseRepository
     {
-         public string GetSP = "";
+        public string GetSP = "";
         public ReportBaseRepository(AppDbContext dbContext) : base(dbContext)
         {
 
         }
-      
-        
-        public DataTable GetList(string FromDate, string ToDate, string ReportType , string TranAlias, DataTable ProductFilter=null  , DataTable PartyFilter = null)
+
+
+        public DataTable GetList(string FromDate, string ToDate, string ReportType, string TranAlias, string ProductFilter, string PartyFilter, string LocationFilter, string SeriesFilter)
         {
             DataTable dt = new DataTable();
             using (SqlConnection con = new SqlConnection(conn))
@@ -41,9 +41,23 @@ namespace SSRepository.Repository.Report
                 //    TypeName = "dbo.userdefinedtabletype",
                 //    Value = dt
                 //};
-                cmd.Parameters.AddWithValue("@ProductFilter", ProductFilter);
-                cmd.Parameters.AddWithValue("@PartyFilter", PartyFilter); 
-                //Get Output Parametr
+                if (!string.IsNullOrEmpty(ProductFilter))
+                {
+                    cmd.Parameters.AddWithValue("@ProductFilter", GetFilterData(ProductFilter));
+                }
+                if (!string.IsNullOrEmpty(PartyFilter))
+                {
+                    cmd.Parameters.AddWithValue("@PartyFilter", GetFilterData(PartyFilter));
+                }
+                if (!string.IsNullOrEmpty(LocationFilter))
+                {
+                    cmd.Parameters.AddWithValue("@LocationFilter", GetFilterData(LocationFilter));
+                }
+                if (!string.IsNullOrEmpty(SeriesFilter))
+                {
+                    cmd.Parameters.AddWithValue("@SeriesFilter", GetFilterData(SeriesFilter));
+                }
+                 //Get Output Parametr
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(dt);
                 //cmd.ExecuteNonQuery();
@@ -52,7 +66,7 @@ namespace SSRepository.Repository.Report
             }
             return dt;
         }
-          
+
 
     }
 }
