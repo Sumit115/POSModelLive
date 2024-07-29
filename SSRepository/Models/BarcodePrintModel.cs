@@ -46,10 +46,11 @@ namespace SSRepository.Models
         public string Product { get; set; }
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)] 
         public Nullable<System.DateTime> StockDate { get; set; }
-        public string BranchName { get; set; }
-        public string Address { get; set; }
-        public string CityName { get; set; }
-        public string Pin { get; set; }
+        public string? BranchName { get; set; }
+        public string? Address { get; set; }
+        public string? CityName { get; set; }
+        public string? Pin { get; set; }
+        public string? BarcodeImage { get; set; }
 
     }
 }

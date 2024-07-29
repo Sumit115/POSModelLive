@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -50,8 +52,34 @@ namespace SSAdmin.Constant
             Veg = 1,
             NonVeg = 2,
             Egg = 3,
-            Other=4
+            Other = 4
         }
 
+
+        public static string StringToBarcode(string str, int MaxWidth = 500, int MaxHeight = 150)
+        {
+            IronBarCode.GeneratedBarcode barcode = IronBarCode.BarcodeWriter.CreateBarcode(str, IronBarCode.BarcodeWriterEncoding.Code128);
+            barcode.ResizeTo(MaxWidth, MaxHeight);
+            System.Drawing.Font barcodeValueFont = new System.Drawing.Font("Cambria", 28);
+            barcode.AddBarcodeValueTextBelowBarcode(barcodeValueFont, System.Drawing.Color.Black,5);
+            // Styling a Barcode and adding annotation text
+            barcode.ChangeBarCodeColor(System.Drawing.Color.Black);
+            barcode.SetMargins(5);
+            //System.Drawing.Bitmap QrBitmap = barcode.ToBitmap();
+            //byte[] BitmapArray = barcode.ToGifBinaryData();
+            //var aa = string.Format("data:image/png;base64,{0}", Convert.ToBase64String(BitmapArray));
+             
+            string path = "";
+            path = Path.Combine("wwwroot", "Barcode"); 
+
+            Random generator = new Random();
+            string rn = generator.Next(0, 9999).ToString("D6");
+            string FilePath = "";
+            string filename = str + rn + ".png";
+
+            FilePath = Path.Combine(path, filename);
+            barcode.SaveAsPng(FilePath);
+            return "/Barcode/"+filename;
+        }
     }
 }

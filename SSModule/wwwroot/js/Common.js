@@ -613,10 +613,9 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
                                 var _model = {};
                                 _model.BarcodeDetails = _List;
                                 _model.SysDefaults = _d;
-                                console.clear();
-                                console.log(_model);
+                                
                                 $.ajax({
-                                    async: false,
+                                    async: true,
                                     type: "Post",
                                     url: Handler.currentPath() + 'BarcodePrintPriview',
                                     data: { model: _model },

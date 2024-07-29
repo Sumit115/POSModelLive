@@ -115,10 +115,17 @@ namespace SSAdmin.Areas
                 if (model.SysDefaults.Count > 0)
                 {
                     _gridLayoutRepository.UpdateSysDefaults(model.SysDefaults);
-                    model.BarcodePrintPreviewModel = _gridLayoutRepository.BarcodePrintList(model.BarcodeDetails);
-                     var html = "";
+                    model.BarcodePrintPreviewModel = _gridLayoutRepository.BarcodePrintList(model.BarcodeDetails).ToList();
+                    
+                    //foreach (var item in model.BarcodePrintPreviewModel)
+                    //{
+                    //    item.BarcodeImage = SSAdmin.Constant.Helper.StringToBarcode(item.Barcode.ToString());
+                    //}
+                    
+                    var html = "";
                     html = Helper.RenderRazorViewToString(this, "_barcodePrintPriview", model);
                         // this.RenderViewToStringAsync("_barcodePrintPriview", model);
+
 
                     return Json(new
                     {

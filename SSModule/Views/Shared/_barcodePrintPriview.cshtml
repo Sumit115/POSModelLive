@@ -13,7 +13,7 @@
 <div>
     <a href="javascript:void(0)" class="btn btn-success m-2" id="btnPrintBarcode">Print</a>
 </div>
-<div id="printpage" style="width:@(width+"px");"">
+<div id="printpage" style="width:@(width+"px");">
     <style>
        
         #myHeader {
@@ -26,8 +26,11 @@
             <tbody>
                 <tr>
                     <td colspan="6" style="text-align: center;">
-                        <div style="height:@(BarcodeHeight+"px");">
-                            @item.Barcode
+                            @*<img src="@item.BarcodeImage" style="height:@(BarcodeHeight+"px");">*@
+
+                            @*        <img src="@SSAdmin.Constant.Helper.StringToBarcode(item.Barcode,Convert.ToInt32(width),Convert.ToInt32(BarcodeHeight))" style="height:@(BarcodeHeight+"px");">
+                  *@      <div style="height:@(BarcodeHeight+"px");">
+                                <h2> @item.Barcode</h2>
                         </div>
                     </td>
                 </tr>
