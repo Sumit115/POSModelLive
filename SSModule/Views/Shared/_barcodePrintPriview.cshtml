@@ -1,0 +1,70 @@
+﻿@model SSRepository.Models.BarcodePrintModel
+
+@{
+    Layout = null;
+    string Height = @Model.SysDefaults.Where(x => x.SysDefKey == "BarcodePrint_Height").FirstOrDefault().SysDefValue;
+    string width = @Model.SysDefaults.Where(x => x.SysDefKey == "BarcodePrint_width").FirstOrDefault().SysDefValue;
+    string MarginTop = @Model.SysDefaults.Where(x => x.SysDefKey == "BarcodePrint_MarginTop").FirstOrDefault().SysDefValue;
+    string MarginBottom = @Model.SysDefaults.Where(x => x.SysDefKey == "BarcodePrint_MarginBottom").FirstOrDefault().SysDefValue;
+    string MarginLeft = @Model.SysDefaults.Where(x => x.SysDefKey == "BarcodePrint_MarginLeft").FirstOrDefault().SysDefValue;
+    string MarginRight = @Model.SysDefaults.Where(x => x.SysDefKey == "BarcodePrint_MarginRight").FirstOrDefault().SysDefValue;
+    string BarcodeHeight = @Model.SysDefaults.Where(x => x.SysDefKey == "BarcodePrint_BarcodeHeight").FirstOrDefault().SysDefValue;
+} 
+<div>
+    <a href="javascript:void(0)" class="btn btn-success m-2" id="btnPrintBarcode">Print</a>
+</div>
+<div id="printpage" style="width:@(width+"px");"">
+    <style>
+       
+        #myHeader {
+            display: none;
+        }
+    </style>
+@foreach (var item in Model.BarcodePrintPreviewModel){
+    <div style="margin-bottom:10px;">
+        <table style="height:@(Height+"px");width:@(width+"px");margin-top:@(MarginTop+"px");margin-bottom:@(MarginBottom+"px");margin-left:@(MarginLeft+"px");margin-right:@(MarginRight+"px");">
+            <tbody>
+                <tr>
+                    <td colspan="6" style="text-align: center;">
+                        <div style="height:@(BarcodeHeight+"px");">
+                            @item.Barcode
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="3">
+                        <h3 style="font-size:18px;margin: 0;padding: 0;margin-top: 4px;"> MRP</h3>
+                    </td>
+                        <td colspan="3"> <h3 style="font-size:18px;margin: 0;padding: 0;margin-top: 4px;">: RS. @item.MRP/-</h3></td>
+                </tr>
+                <tr>
+                    <td colspan="6" style="text-align: right;margin: 0;padding: 0;margin-top: 2px;"><h4>(Inclusive of All Taxes)</h4>   </td>
+                </tr>
+                <tr>
+                    <td colspan="3"><h3 style="font-size:18px; margin: 0;padding: 0;margin-top: 4px;">Batch</h3>   </td>
+                        <td colspan="3"> <h3 style="font-size:18px;margin: 0;padding: 0;margin-top: 4px;">: @item.Batch</h3></td>
+                </tr>
+                <tr>
+                    <td colspan="3"><h3 style="font-size:18px; margin: 0;padding: 0;margin-top: 4px;">Artical No.</h3>   </td>
+                        <td colspan="3"> <h3 style="font-size:18px;margin: 0;padding: 0;margin-top: 4px;">: @item.Product</h3></td>
+                </tr>
+
+                <tr>
+                    <td colspan="3"><h3 style="font-size:18px; margin: 0;padding: 0;margin-top: 4px;">PKD ON</h3>   </td>
+                        <td colspan="3"> <h3 style="font-size:18px;margin: 0;padding: 0;margin-top: 4px;">: @(item.StockDate != null ? (item.StockDate.Value.ToString("dd/MM/yyyy")) : "")</h3></td>
+                </tr>
+
+                <tr>
+                    <td colspan="6" style="text-align: justify;">
+                            <h3 style="font-size:18px;margin: 0;padding: 0;margin-top: 4px;margin-bottom: 5px;">@item.BranchName</h3>
+                            <h4 style="font-size: 12px;margin: 0;padding: 0;margin-top: 4px;">@item.Address,@item.CityName-@item.Pin</h4>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+ }
+
+</div>
+

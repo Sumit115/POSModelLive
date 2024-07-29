@@ -1572,6 +1572,6 @@ namespace SSRepository.Repository.Transaction
             }
             return list.OrderBy(x => x.Orderby).ToList();
         }
-
+       
     }
 }

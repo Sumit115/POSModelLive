@@ -51,7 +51,7 @@ namespace SSRepository.Repository.Master
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<BranchModel> data = (from cou in __dbContext.TblBranchMas
                                       join _city in __dbContext.TblCityMas
-                                       on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
+                                       on new { User = cou.FkCityId } equals new { User = (long?)_city.PkCityId }
                                        into _citytmp from city in _citytmp.DefaultIfEmpty()
                                           // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                       orderby cou.PkBranchId

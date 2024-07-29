@@ -11,11 +11,15 @@
     </div>
 
 </div>
+
 @if (Model.ExtProperties.TranAlias == "SINV" || Model.ExtProperties.TranAlias == "PINV" || Model.ExtProperties.TranAlias == "SCRN" || Model.ExtProperties.TranAlias == "SRTN")
 {
     <div class="col-md-12 text-right">
 
         <div class="form-group">
+            @if (Model.ExtProperties.TranAlias == "SINV" || Model.ExtProperties.TranAlias == "PINV"){
+                <a href="javascript:void(0)" class="btn btn-success mt-2" onclick="showpopupPrintOption()">Tag Print</a>
+            }
             <a href="javascript:void(0)" class="btn btn-success mt-2" onclick="VoucherDetail()">Voucher</a>
 
             <a href="javascript:void(0)" class="btn btn-success mt-2" onclick="PaymentPopup()"><i class="fa-2x fa-money fa-money-bill-alt fas" aria-hidden="true"></i></a>

@@ -1,10 +1,14 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Azure;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SSRepository.Data;
 using SSRepository.IRepository;
 using SSRepository.Models;
+using SSRepository.Repository.Master;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -554,7 +558,7 @@ namespace SSRepository.Repository
             get
             {
 
-                return __dbContext.Database.GetConnectionString()??"";
+                return __dbContext.Database.GetConnectionString() ?? "";
             }
         }
         public DataTable ExecDataTable(string cmdText)
@@ -634,7 +638,7 @@ namespace SSRepository.Repository
         #endregion
 
 
-       
+
 
         public string GetSysDefaultsByKey(string SysDefKey)
         {
@@ -642,6 +646,113 @@ namespace SSRepository.Repository
             return (from x in __dbContext.TblSysDefaults
                     where x.SysDefKey == SysDefKey
                     select x).FirstOrDefault().SysDefValue;
+        }
+
+        public  List<SysDefaultsModel> GetSysDefaultsList(string search = "")
+        {
+            if (search != null) search = search.ToLower();
+            List<SysDefaultsModel> data = (from cou in __dbContext.TblSysDefaults
+                                           where (EF.Functions.Like(cou.SysDefKey.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                           select (new SysDefaultsModel
+                                           {
+                                               PKSysDefID = cou.PKSysDefID,
+                                               SysDefKey = cou.SysDefKey,
+                                               SysDefValue = cou.SysDefValue,
+                                               FKTableName = cou.FKTableName,
+                                               FKColumnName = cou.FKColumnName,
+                                               FKUserID = cou.FKUserID,
+                                               DATE_MODIFIED = cou.DATE_MODIFIED,
+                                           }
+                                        )).ToList();
+            return data;
+        }
+
+        public void UpdateSysDefaults(object objmodel)
+        {
+            List<SysDefaultsModel> model = (List<SysDefaultsModel>)objmodel;
+            try
+            {
+                foreach (var item in model)
+                {
+                    var _entity = __dbContext.TblSysDefaults.Where(x => x.SysDefKey == item.SysDefKey).FirstOrDefault();
+                    if (_entity != null)
+                    {
+                        TblSysDefaults Tbl = new TblSysDefaults();
+                        Tbl = _entity;
+                        Tbl.SysDefValue = item.SysDefValue;
+                        UpdateData(Tbl, false);
+
+                    }
+                }
+                __dbContext.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+
+        public  List<BarcodePrintPreviewModel>  BarcodePrintList(List<BarcodeDetails> model)
+        {
+            var _lst = new List<BarcodePrintPreviewModel>();
+
+            foreach (var item in model)
+            {
+                if (item.TranInId > 0)
+                {
+                    var _d = (from cou in __dbContext.TblProductQTYBarcode
+                              join prdLot in __dbContext.TblProdLotDtl on cou.FkLotID equals prdLot.PkLotId
+                              join prd in __dbContext.TblProductMas on prdLot.FKProductId equals prd.PkProductId
+                              join loc in __dbContext.TblLocationMas on item.FkLocationId equals loc.PkLocationID
+                              join branch in __dbContext.TblBranchMas on loc.FkBranchID equals branch.PkBranchId
+                              join city in __dbContext.TblCityMas on branch.FkCityId equals city.PkCityId
+                              where cou.TranInId == item.TranInId && cou.TranInSeriesId == item.TranInSeriesId
+                              && cou.TranInSrNo == item.TranInSrNo && prdLot.FKProductId == item.FKProductId
+                              select new BarcodePrintPreviewModel()
+                              {
+                                  Barcode = cou.Barcode,
+                                  MRP = prdLot.MRP,
+                                  SaleRate = prdLot.SaleRate,
+                                  Batch = prdLot.Batch,
+                                  Product = prd.Product,
+                                  StockDate = prdLot.StockDate,
+                                  BranchName = branch.BranchName,
+                                  Address = branch.Address,
+                                  CityName = city.CityName,
+                                  Pin = branch.Pin,
+                              }).ToList();
+                    _lst.AddRange(_d);
+                }
+                else if (item.TranOutId > 0) {
+                    var _d = (from cou in __dbContext.TblProductQTYBarcode
+                              join prdLot in __dbContext.TblProdLotDtl on cou.FkLotID equals prdLot.PkLotId
+                              join prd in __dbContext.TblProductMas on prdLot.FKProductId equals prd.PkProductId
+                              join loc in __dbContext.TblLocationMas on item.FkLocationId equals loc.PkLocationID
+                              join branch in __dbContext.TblBranchMas on loc.FkBranchID equals branch.PkBranchId
+                              join city in __dbContext.TblCityMas on branch.FkCityId equals city.PkCityId
+                              where cou.TranOutId == item.TranOutId && cou.TranOutSeriesId == item.TranOutSeriesId
+                               && cou.TranOutSrNo == item.TranOutSrNo && prdLot.FKProductId == item.FKProductId
+                              select new BarcodePrintPreviewModel()
+                              {
+                                  Barcode = cou.Barcode,
+                                  MRP = prdLot.MRP,
+                                  SaleRate = prdLot.SaleRate,
+                                  Batch = prdLot.Batch,
+                                  Product = prd.Product,
+                                  StockDate = prdLot.StockDate,
+                                  BranchName = branch.BranchName,
+                                  Address = branch.Address,
+                                  CityName = city.CityName,
+                                  Pin = branch.Pin,
+                              }).ToList();
+                    _lst.AddRange(_d);
+                }
+
+            }
+
+            return _lst;
         }
 
     }

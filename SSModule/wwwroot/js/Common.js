@@ -444,6 +444,7 @@ var Handler_Formatter = {
 var Handler_B64_DriverTool = null;
 var Handler_B64_Driverconfig = null;
 var Handler_cacheId = null;
+var Handler_BarcodePrintGridData = null;
 function Handler_Driver(Option) {
     Handler.loader();
     var _defaultOption = {
@@ -561,6 +562,122 @@ function Handler_Driver(Option) {
             Handler.hide(5000);
     }
 }
+
+function Handler_BarcodePrint(callBackFun, closeFun) {
+
+    $.ajax({
+        type: "Get",
+        url: Handler.currentPath() + '_barcodePrintOption',
+        // data: { model: tranModel },
+        contentType: "application/json; charset=utf-8",
+        success: function (res) {
+
+            Handler.popUp(res, { width: "1000px", height: "500px" }, function () {
+                var cg = new coGrid("#WUCFilter");
+                cg.setColumnHeading("Select~Product~Batch~Color");
+                cg.setColumnWidthPer("10~20~15~15", 800);
+                cg.setColumnFields("tick~Product~Batch~Color");
+                cg.setAlign("C~L~L~L");
+                cg.defaultHeight = "400px";
+                cg.setSearchType("0~1~1~1");
+                cg.setSearchableColumns("Product~Batch~Color");
+                cg.setSortableColumns("Product~Batch~Color");
+                cg.setIdProperty("SrNo");
+                cg.setCtrlType("B~~~");
+                cg.bind(Handler_BarcodePrintGridData);
+                cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
+                filterGridTagPrint = cg;
+
+                $("#btnPrintPreview").off("click").on("click", function () {
+                    var _List = [];
+                    var Filterlist = filterGridTagPrint.getData().filter(function (el) { return el.tick })
+                    $(Filterlist).each(function (i, v) {
+
+                        _List.push({
+                            FKProductId: v.FkProductId,
+                            TranInId: v.TranInId,
+                            TranInSeriesId: v.TranInSeriesId,
+                            TranInSrNo: v.TranInSrNo,
+                            TranOutId: v.TranOutId,
+                            TranOutSeriesId: v.TranOutSeriesId,
+                            TranOutSrNo: v.TranOutSrNo,
+                            FkLocationId: v.FKLocationID,
+                        });
+                    });
+
+                    if (_List.length > 0) {
+                        Common.GetBarcodeSettingData(".barcodesetting", "", function (flag, _d) {
+                            debugger;
+                            if (flag) {
+
+                                var _model = {};
+                                _model.BarcodeDetails = _List;
+                                _model.SysDefaults = _d;
+                                console.clear();
+                                console.log(_model);
+                                $.ajax({
+                                    async: false,
+                                    type: "Post",
+                                    url: Handler.currentPath() + 'BarcodePrintPriview',
+                                    data: { model: _model },
+                                    datatype: "json",
+                                    success: function (res) {
+                                        debugger;
+                                        console.log(res);
+                                        if (res.status == "success") {
+                                            var _w = parseInt($("#BarcodePrint_width").val()) + 100;
+                                            Handler.popUp(res.html, { width: _w + "px", height: "500px", padding: "20px", overflow: "auto" }, function () {
+                                                $("#btnPrintBarcode").off("click").on("click", function () {
+                                                    var divToPrint = document.getElementById('printpage');
+
+                                                    var newWin = window.open('Share Certificate #001', '', 'Print-Window');
+
+                                                    newWin.document.open();
+
+                                                    newWin.document.write('<html><head><style> .watermarked {  color:  #c1bdbd !important; }</style></hea><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
+
+                                                    newWin.document.close();
+
+                                                    setTimeout(function () { newWin.close(); }, 10);
+
+                                                });
+                                            });
+                                            // $(".popup_d").hide();
+                                        } else {
+                                            alert(res.msg);
+                                        }
+                                    }
+                                })
+
+                                //
+
+                            }
+                            else
+                                alert("Some Error found.Please Check");
+                        });
+
+
+                    }
+                    else { alert('Select Item'); }
+                    /* RPTFilter[type].Filter = JSON.stringify(_List);*/
+
+                });
+
+
+                if (typeof (callBackFun) == "function")
+                    callBackFun();
+                else
+                    return true;
+
+            });
+        }
+    })
+    if (typeof (callBackFun) == "function")
+        callBackFun();
+    else
+        return true;
+
+}
 /////////////// /////////////// Common use functions/Variables /////////////// ///////////////
 var Handler = {
     CU: "",
@@ -573,6 +690,7 @@ var Handler = {
     convert: Handler_Convert,
     formatter: Handler_Formatter,
     driver: Handler_Driver,
+    barcodePrint: Handler_BarcodePrint,
     rootPath: function () {
         var loc = location.href;
         var pathWeb = loc.indexOf('/Web/') != -1 ? '/Web/' : '/';
@@ -582,7 +700,7 @@ var Handler = {
             return loc.substring(0, loc.indexOf("))") + 2) + pathWeb;
     },
     currentPath: function () {
-          var loc = location.href;
+        var loc = location.href;
 
         if (location.href.indexOf("Create") != -1)
             return location.href.substring(0, location.href.indexOf("Create"));
@@ -817,10 +935,98 @@ function C_Get(s, src, c) {
     if (c != null)
         c(flag, _d);
 }
+function C_GetBarcodeSettingData(s, src, c) {
+    $("[data-valmsg-for]").attr('style', 'color: red !important');
+
+    var lst = [];
+    var flag = true;
+    $(s + " input[type='text']," + s + " input[type = 'date']," + s + " input[type='password']," + s + " input[type='radio']," + s + " input[type='file']," + s + " select," + s + " textarea ").each(function () {
+        var _d = {};
+        var key = $(this).attr("id");
+        var val = $(this).val();
+        var req = $(this).attr('required');
+        var type = $(this).attr("type");
+        var pattern = $(this).attr('pattern');
+        var multiple = $(this).attr('data-multiple');
+        var minlength = $(this).attr('minlength');
+        var maxlength = $(this).attr('maxlength');
+
+        if (type == "file") {
+            val = $(s + " #hd" + key + "").val();
+        }
+        else if (type == "radio") {
+            key = $(this).attr('name');
+            val = $("input[type='radio'][name='" + key + "']:checked").val()
+        }
+        else if (multiple != undefined) {
+            val = "";
+            $(s + ' #' + multiple + '  li').each(function () {
+                var x = $(this).text();
+                val += x.substr(0, x.length - 1) + "~";
+            });
+            if (val.length > 0)
+                val = val.substr(0, val.length - 1)
+        }
+
+        if (req != undefined && val.trim() == "") {
+            $(s + " [data-valmsg-for='" + key + "']").html("please Fill Value");
+            flag = false;
+        }
+        else if (pattern != undefined && val.trim() != "") {
+            if (pattern == "Email")
+                pattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+            else if (pattern == "Gstn")
+                pattern = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+            else if (pattern == "Pan")
+                pattern = /[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+            else if (pattern == "Tan")
+                pattern = /[A-Z]{4}[0-9]{5}[A-Z]{1}$/;
+            else if (pattern == "PinCode")
+                pattern = /^\d{6}$/;
+            else if (pattern == "Mobile")
+                pattern = /^[1-9]{1}[0-9]{9}$/;
+
+            var patt = new RegExp(pattern);
+            if (!patt.test(val)) {
+                $(s + " [data-valmsg-for='" + key + "']").html("Invalid Value");
+                flag = false;
+            }
+            else
+                $(s + " [data-valmsg-for='" + key + "']").html("")
+        }
+        else if (minlength != undefined && val.trim() != "") {
+            //console.log(minlength);
+            var length = val.length;
+            if (length < minlength) {
+                //console.log("min" + minlength);
+                $(s + " [data-valmsg-for='" + key + "']").html("Invalid Value");
+                flag = false;
+            }
+
+        }
+        else if (maxlength != undefined && val.trim() != "") {
+            var length = val.length;
+            if (length > maxlength) {
+                //console.log("max" + length);
+                $(s + " [data-valmsg-for='" + key + "']").html("Value Invalid");
+                flag = false;
+            }
+
+        }
+        else {
+            $(s + " [data-valmsg-for='" + key + "']").html("")
+        }
+        _d.SysDefKey = key;
+        _d.SysDefValue = val;
+        lst.push(_d);
+    });
+    if (c != null)
+        c(flag, lst);
+}
 
 function C_Set(s, _d, src, c) {
     $(s + " input[type='text']," + s + " input[type = 'date']," + s + " input[type='password']," + s + " input[type='radio']," + s + " input[type='checkbox']," + s + " input[type='file']," + s + " select," + s + " textarea ").each(function () {
-        
+
         var key = $(this).attr("id");
         var type = $(this).attr("type");
         var multiple = $(this).attr('data-multiple');
@@ -850,9 +1056,9 @@ function C_Set(s, _d, src, c) {
                     $("input[type='checkbox'][name='" + key + "']").prop("checked", true);
                 } else {
                     $("input[type='checkbox'][name='" + key + "']").prop('checked', false);
-              }
-               
-               // val = $("input[type='checkbox'][name='" + key + "'][value='" + _d[key] + "']").attr("checked", "checked")
+                }
+
+                // val = $("input[type='checkbox'][name='" + key + "'][value='" + _d[key] + "']").attr("checked", "checked")
             }
             else
                 $(this).val(_d[key]);
@@ -1178,6 +1384,7 @@ var Common = {
     ajax: C_Ajax,
     InputFormat: C_setInputFormat,
     Get: C_Get,
+    GetBarcodeSettingData: C_GetBarcodeSettingData,
     Set: C_Set,
     Reset: C_Reset,
     Upload: C_Upload,

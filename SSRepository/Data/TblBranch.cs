@@ -14,7 +14,7 @@ namespace SSRepository.Data
         public string? Email { get; set; }
         public string? Mobile { get; set; }
         public string? Address { get; set; }
-        public int? FkCityId { get; set; }
+        public long? FkCityId { get; set; }
         public string? State { get; set; }
         public string? Pin { get; set; }
         public string? Country { get; set; }

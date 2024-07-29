@@ -868,13 +868,13 @@ function DatabyEntryNo() {
             if (res.status == "success") {
                 if (res.data > 0) {
                     var pk_Id = res.data;
-                    window.location.href = Handler.currentPath() +"Create/" + pk_Id + "/" + FKSeriesId;
+                    window.location.href = Handler.currentPath() + "Create/" + pk_Id + "/" + FKSeriesId;
                 }
                 else {
                     alert('Not Found');
                     $(".loader").hide();
                     location.reload()
-                } 
+                }
             }
             else {
                 alert(res.msg);
@@ -896,3 +896,43 @@ function VoucherDetail() {
         window.open(url);
     }
 }
+
+
+function showpopupPrintOption() {//BarcodePrint
+
+    Handler_BarcodePrintGridData = cg.getData().filter(function (element) {
+        if (!Handler.isNullOrEmpty(element.Product) && !Handler.isNullOrEmpty(element.Qty)) {
+
+            if (element.FkProductId > 0 && element.FkId > 0) {
+                if (ControllerName == "PurchaseInvoice") {
+                    element.TranInId = element.FkId;
+                    element.TranInSeriesId = tranModel.FKSeriesId;
+                    element.TranInSrNo = element.SrNo;
+                    element.TranOutId =0;
+                    element.TranOutSeriesId = 0;
+                    element.TranOutSrNo =0;
+                   }
+                else {
+                    element.TranInId = 0;
+                    element.TranInSeriesId = 0;
+                    element.TranInSrNo = 0;
+                    element.TranOutId = element.FkId;
+                    element.TranOutSeriesId = tranModel.FKSeriesId;
+                    element.TranOutSrNo = element.SrNo;
+                }
+                element.FkLocationId = tranModel.FkLocationId;
+
+                return element
+            }
+        }
+    });
+
+    Handler.barcodePrint(function () {
+
+    });
+
+    ////////////////
+
+
+}
+

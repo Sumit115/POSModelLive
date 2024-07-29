@@ -1,0 +1,55 @@
+﻿@model List<SSRepository.Models.SysDefaultsModel>
+
+@{
+    Layout = null;
+}
+
+
+ <div class="mb-4 card">
+    <div class="card-body">
+        
+        <div class="row mb-3">
+            
+            <div class="col-md-6">
+                
+                <div class="card-title">Barcode Print</div>
+                
+            </div>
+            <div class="col-md-6 text-center"> 
+                <input type="button" id="btnPrintPreview" value="Preview" class="btn btn-success" />
+            </div>
+            
+        </div> 
+        <div class="row">
+            <div class="col-md-6" id="WUCFilter">
+
+                
+
+            </div>
+            <div class="col-md-6 barcodesetting">
+                <div class="row">
+
+                    @if (Model != null)
+                    {
+                        for (int i = 0; i < Model.Count; i++)
+                        {
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>@Model[@i].SysDefKey.Replace("BarcodePrint_","").Replace("Margin","Margin ").Replace("Barcode","Barcode ")</label>
+                                    <input name="@Model[@i].SysDefKey" id="@Model[@i].SysDefKey" type="text" value="@Model[i].SysDefValue" class="form-control" required>
+                                    <span data-valmsg-for="@Model[@i].SysDefKey"></span>
+                                </div>
+                            </div>
+
+                            
+                        }
+
+                    }
+                   
+                </div>
+            </div>
+            
+        </div> 
+        
+    </div>
+</div>

@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using NuGet.Protocol.Core.Types;
+using SSAdmin.Constant;
 using SSRepository.Data;
 using SSRepository.IRepository;
 using SSRepository.IRepository.Master;
@@ -24,9 +28,9 @@ namespace SSAdmin.Areas
         }
 
         [HttpPost]
-        public async Task<JsonResult> GridStrucher(long FormId, string GridName="")
+        public async Task<JsonResult> GridStrucher(long FormId, string GridName = "")
         {
-            if(FormId == 0) FormId = FKFormID;
+            if (FormId == 0) FormId = FKFormID;
             var data = _gridLayoutRepository.GetSingleRecord(1, FormId, GridName, ColumnList(GridName));
             return new JsonResult(data);
         }
@@ -92,6 +96,56 @@ namespace SSAdmin.Areas
 
         }
 
+        [HttpPost]
+        public object GetSysDefaultsList(string search = "")
+        {
+            return _gridLayoutRepository.GetSysDefaultsList(search);
+        }
+
+        public ActionResult _barcodePrintOption()
+        {
+            return PartialView(_gridLayoutRepository.GetSysDefaultsList("BarcodePrint_"));
+        }
+
+        [HttpPost]
+        public JsonResult BarcodePrintPriview(BarcodePrintModel model)
+        {
+            try
+            {
+                if (model.SysDefaults.Count > 0)
+                {
+                    _gridLayoutRepository.UpdateSysDefaults(model.SysDefaults);
+                    model.BarcodePrintPreviewModel = _gridLayoutRepository.BarcodePrintList(model.BarcodeDetails);
+                     var html = "";
+                    html = Helper.RenderRazorViewToString(this, "_barcodePrintPriview", model);
+                        // this.RenderViewToStringAsync("_barcodePrintPriview", model);
+
+                    return Json(new
+                    {
+                        status = "success",
+                        model,
+                          html
+                    });
+                }
+                else
+                    throw new Exception("Invalid Data");
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = "error",
+                    msg = ex.Message,
+                });
+            }
+        }
+        public ActionResult _barcodePrintPriview()
+        {
+            var model = new BarcodePrintModel();
+            //model.SysDefaults = _gridLayoutRepository.GetSysDefaultsList("BarcodePrint_");
+            // model.BarcodePrintPreviewModel = _gridLayoutRepository.BarcodePrintList("BarcodePrint_");
+            return PartialView(model);
+        }
         public int LoginId
         {
             get
@@ -125,4 +179,5 @@ namespace SSAdmin.Areas
         }
 
     }
+ 
 }
