@@ -1,0 +1,32 @@
+﻿@model SSRepository.Models.TransactionModel
+@{
+    Layout = null;
+}
+
+<a href="javascript:void(0)" onclick="$('.model-Remark').modal('toggle');" class="nav-link" style="padding: 7px 0px 0px 7px;">
+    <i class="fab fa-readme fa-fw" aria-hidden="true" style="font-size:30px;"></i>
+</a>
+<div class="modal fade model-Remark" style="z-index: 99999;">
+    <div class="modal-dialog" role="document" style="width: 57% !important;max-width: 100%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Remark Detail</h5>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Remark </label>
+                            <textarea asp-for="Remark" class="form-control"></textarea>
+                            <span asp-validation-for="Remark" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="$('.model-Remark').modal('toggle');">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>

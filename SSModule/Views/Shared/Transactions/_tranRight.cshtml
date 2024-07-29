@@ -1,0 +1,42 @@
+﻿@model SSRepository.Models.TransactionModel
+
+@{
+    Layout = null;
+}
+
+
+<div class="sidebar-dark-primary" style="min-height: calc(100vh - 67px);flex: 0 0 4%;max-width: 4%;">
+
+    <ul class="nav nav-pills nav-sidebar flex-column">
+        <li class="nav-item">
+            <partial name="~/Views/Shared/Transactions/_image.cshtml" />
+        </li>
+        <li class="nav-item">
+
+            <partial name="~/Views/Shared/Transactions/_Remark.cshtml" />
+        </li>
+        <li class="nav-item">
+            <a href="javascript:void(0)" class="nav-link" style="padding: 7px 0px 0px 7px;">
+                <i class="fas fa-question fa-fw" aria-hidden="true" style="font-size:30px;"></i>
+            </a>
+        </li>
+        @if (Model.ExtProperties.PostInAc)
+        {
+            <li class="nav-item">
+                <a href="javascript:void(0)" class="nav-link" onclick="VoucherDetail()" style="padding: 7px 0px 0px 7px;">
+                    <i class="fas fa-receipt fa-fw" aria-hidden="true" style="font-size:30px;"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <partial name="~/Views/Shared/Transactions/_PaymentInfo.cshtml" />
+            </li>
+
+            <li class="nav-item">
+                <a href="javascript:void(0)" class="nav-link" style="padding: 7px 0px 0px 7px;">
+                    <i class="fas fa-barcode fa-fw" aria-hidden="true" style="font-size:30px;"></i>
+                </a>
+            </li>
+        }
+    </ul>
+    }
+</div>
