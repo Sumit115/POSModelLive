@@ -3,40 +3,47 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="row">
-    <div class="col-12">
-        <div class="row p-2 filter">
-            <div class="col-md-2">
-                <input name="FromDate" type="date" id="FromDate" class="form-control" maxlength="10" placeholder="From Date*" required="" title="From Date*">
-                <span class="field-validation-valid text-danger" data-valmsg-for="FromDate"></span>
-            </div>
-            <div class="col-md-2">
-                <input name="ToDate" type="date" id="ToDate" class="form-control" maxlength="10" placeholder="To Date*" required="" title="To Date*">
-                <span class="field-validation-valid text-danger" data-valmsg-for="ToDate"></span>
-            </div>
-            <div class="col-md-1">
-                <select id="ReportType" class="form-control" onchange="Render();">
-                    <option value="S">Summary</option>
-                    <option value="M">Month Wise</option>
-                    <option value="D">Day Wise</option>
-                    @*    <option value="W">Monthly</option>
-                    <option value="Q">Quarterly</option>
-                    <option value="C">Cumulative</option>*@
-                </select>
-            </div>
-            <div class="col-md-1">
-                <select id="TranAlias" class="form-control" onchange="Render();">
-                    <option value="PINV">Purchase</option>
-                    <option value="PORD">Purchase Order</option>
-                </select>
-            </div>
-            <div class="col-md-6 text-right">
-                <button class="btn btn-info" onclick="ShowFilter('Product')">Product <i class="fa fa-filter"></i></button>
-                <button class="btn btn-info" onclick="ShowFilter('Vendor')">Vendor <i class="fa fa-filter"></i></button>
-                <input type="button" value="View" class="btn btn-success" onclick="Render('')">
-                <button class="btn btn-dark" onclick="Render('excel')"><i class="fa fa-file-export"></i></button>
+<div class="row p-2 filter">
+
+    <div class="col-md-2">
+        <input name="FromDate" type="date" id="FromDate" class="form-control" maxlength="10" placeholder="From Date*" required="" title="From Date*">
+        <span class="field-validation-valid text-danger" data-valmsg-for="FromDate"></span>
+    </div>
+    <div class="col-md-2">
+        <input name="ToDate" type="date" id="ToDate" class="form-control" maxlength="10" placeholder="To Date*" required="" title="To Date*">
+        <span class="field-validation-valid text-danger" data-valmsg-for="ToDate"></span>
+    </div>
+    <div class="col-md-1">
+        <select id="ReportType" class="form-control" onchange="Render();">
+            <option value="S">Summary</option>
+            <option value="M">Month Wise</option>
+            <option value="D">Day Wise</option>
+            @*    <option value="W">Monthly</option>
+            <option value="Q">Quarterly</option>
+            <option value="C">Cumulative</option>*@
+        </select>
+    </div>
+    <div class="col-md-1">
+        <select id="TranAlias" class="form-control" onchange="Render();">
+            <option value="PINV">Purchase</option>
+            <option value="PORD">Purchase Order</option>
+        </select>
+    </div>
+
+    <div class="col-md-6 text-right">
+        <div class="btn-group">
+            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown"   aria-expanded="false">
+                <i class="fa fa-filter"></i>
+            </button>
+            <div class="dropdown-menu" role="menu" >
+                
+                <a href="#" class="dropdown-item" onclick="ShowFilter('Product')" title="Product"><i class="fa fa-filter"></i> Product</a>
+                <a href="#" class="dropdown-item" onclick="ShowFilter('Vendor')" title="Vendor"><i class="fa fa-filter"></i> Vendor</a>
             </div>
         </div>
+        
+        <input type="button" value="View" class="btn btn-success" onclick="Render('')" title="View">
+        <button class="btn btn-dark" onclick="Render('excel')" title="View"><i class="fa fa-file-export"></i></button>
     </div>
 </div>
 <hr style="margin: 1px 0px;" />
@@ -44,16 +51,16 @@
 <div class="row">
     <div id="WUCHM" class="col-12">
     </div>
-</div> 
+</div>
 @section Scripts {
     <script src="~/js/report/report.js"></script>
     <script>
         $(document).ready(function () {
 
 
-           RPTOption.IdProperty =IdProperty = "sno";
-           RPTOption.GridHeight =GridHeight = "85vh";
-           RPTOption.Controller =Controller = 'PurchaseStock';
+            RPTOption.IdProperty = IdProperty = "sno";
+            RPTOption.GridHeight = GridHeight = "85vh";
+            RPTOption.Controller = Controller = 'PurchaseStock';
             var dt = new Date;
             document.getElementById("FromDate").valueAsDate = new Date();
             document.getElementById("ToDate").valueAsDate = new Date();
@@ -70,5 +77,5 @@
             });
         }
     </script>
-    
+
 }
