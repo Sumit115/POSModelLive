@@ -116,23 +116,27 @@ namespace SSAdmin.Areas
                 {
                     _gridLayoutRepository.UpdateSysDefaults(model.SysDefaults);
                     model.BarcodePrintPreviewModel = _gridLayoutRepository.BarcodePrintList(model.BarcodeDetails).ToList();
-                    
-                    //foreach (var item in model.BarcodePrintPreviewModel)
-                    //{
-                    //    item.BarcodeImage = SSAdmin.Constant.Helper.StringToBarcode(item.Barcode.ToString());
-                    //}
-                    
-                    var html = "";
-                    html = Helper.RenderRazorViewToString(this, "_barcodePrintPriview", model);
+                    if (model.BarcodePrintPreviewModel.Count > 0)
+                    {
+                        //foreach (var item in model.BarcodePrintPreviewModel)
+                        //{
+                        //    item.BarcodeImage = SSAdmin.Constant.Helper.StringToBarcode(item.Barcode.ToString());
+                        //}
+
+                        var html = "";
+                        html = Helper.RenderRazorViewToString(this, "_barcodePrintPriview", model);
                         // this.RenderViewToStringAsync("_barcodePrintPriview", model);
 
 
-                    return Json(new
-                    {
-                        status = "success",
-                        model,
-                          html
-                    });
+                        return Json(new
+                        {
+                            status = "success",
+                            model,
+                            html
+                        });
+                    }
+                    else
+                        throw new Exception("Invalid Data");
                 }
                 else
                     throw new Exception("Invalid Data");

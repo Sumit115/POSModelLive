@@ -25,13 +25,13 @@
         <table style="height:@(Height+"px");width:@(width+"px");margin-top:@(MarginTop+"px");margin-bottom:@(MarginBottom+"px");margin-left:@(MarginLeft+"px");margin-right:@(MarginRight+"px");">
             <tbody>
                 <tr>
-                    <td colspan="6" style="text-align: center;">
-                            @*<img src="@item.BarcodeImage" style="height:@(BarcodeHeight+"px");">*@
+                        <td colspan="6" style="text-align: center;">
+                            <img src="~/barcode/barcode.jpg" style="height:@(BarcodeHeight+"px");" />
 
                             @*        <img src="@SSAdmin.Constant.Helper.StringToBarcode(item.Barcode,Convert.ToInt32(width),Convert.ToInt32(BarcodeHeight))" style="height:@(BarcodeHeight+"px");">
-                  *@      <div style="height:@(BarcodeHeight+"px");">
-                                <h2> @item.Barcode</h2>
-                        </div>
+                  *@       
+                                <h5> @item.Barcode</h5>
+                        
                     </td>
                 </tr>
 
