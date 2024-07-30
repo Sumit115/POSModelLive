@@ -21,6 +21,10 @@
     <div id="WUCHM" class="col-12">
     </div>
 </div>
+<ul id="contextMenu" style="display:none;position:absolute">
+    <li id="contextEditColumn" data="EditColumn">Edit Column</li>
+</ul>
+
 @section Scripts {
     <script src="~/js/report/report.js"></script>
     <script>
@@ -28,8 +32,10 @@
         $(document).ready(function () {
            RPTOption.IdProperty = IdProperty = "sno";
            RPTOption.GridHeight = GridHeight = "85vh";
-           RPTOption.Controller = Controller = 'RateEndStock';
-      
+            RPTOption.Controller = Controller = 'RateEndStock';
+            RPTOption.GroupByColumn = 'CategoryName,NameToDisplay,Location,Batch,MRP,StockDays,Barcode';
+
+           
 
         });
 
@@ -37,7 +43,7 @@
             Common.Get(".filter", "", function (flag, _d) {
                 if (flag) {
                     _d["ProductFilter"] = RPTFilter.Product.Filter;
-                    ViewData(_d, Export)
+                    ViewData(_d, Export); 
                 }
             });
         }

@@ -12,6 +12,7 @@ namespace SSRepository.IRepository.Report
     public interface IRateEndStockRepository : IReportBaseRepository
     {
         List<ColumnStructure> ColumnList(string GridName = "");
-        DataTable ViewData(string ProductFilter);
+        string GroupByColumn(long FormId, string GridName = "");
+        DataTable ViewData(string ReportType, string ProductFilter, string GroupByColumn);
     }
 }

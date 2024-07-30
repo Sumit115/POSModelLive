@@ -1,5 +1,9 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 using SSRepository.Data;
+using SSRepository.IRepository;
 using SSRepository.IRepository.Report;
 using SSRepository.IRepository.Transaction;
 using SSRepository.Models;
@@ -21,7 +25,14 @@ namespace SSRepository.Repository.Report
         {
             GetSP = "usp_RateStock";
         }
-
+        public string GroupByColumn(long FormId, string GridName = "")
+        {
+            var data = new GridLayoutRepository(__dbContext).GetSingleRecord(1, FormId, GridName, ColumnList(GridName));
+            List<ColumnStructure> _cs = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData);
+            string clm = "CategoryName,NameToDisplay,Location,Batch,MRP,StockDays,Barcode";
+            List<string> columnlist = clm.Split(',').ToList().Where(x => _cs.Where(y => y.Fields == x && y.IsActive == 1).ToList().Count > 0).ToList();
+            return columnlist.Count > 0 ? string.Join(",", columnlist) : "";
+        }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
 
@@ -39,15 +50,17 @@ namespace SSRepository.Repository.Report
             return list;
         }
 
-        public DataTable ViewData(string ProductFilter)
+        public DataTable ViewData(string ReportType, string ProductFilter, string GroupByColumn)
         {
             DataTable dt = new DataTable();
             using (SqlConnection con = new SqlConnection(conn))
             {
                 con.Open();
                 SqlCommand cmd = new SqlCommand(GetSP, con);
-                cmd.CommandType = CommandType.StoredProcedure;              
-                cmd.Parameters.AddWithValue("@ProductFilter", GetFilterData(ProductFilter)); 
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ReportType", ReportType);
+                cmd.Parameters.AddWithValue("@ProductFilter", GetFilterData(ProductFilter));
+                cmd.Parameters.AddWithValue("@GroupByColumn", GroupByColumn);
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(dt);
                 con.Close();

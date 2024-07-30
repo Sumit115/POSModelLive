@@ -16,12 +16,13 @@ namespace SSAdmin.Areas.Report.Controllers
         public RateEndStockController(IRateEndStockRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
             _repository = repository;
-            FKFormID = (long)Handler.Form.SalesStock;
+            FKFormID = (long)Handler.Form.RateStock;
 
             //_repository.SetRootPath(_hostingEnvironment.WebRootPath);
         }
         public IActionResult List()
         {
+           
             ViewBag.FormId = FKFormID;
             return View();
         }
@@ -33,7 +34,8 @@ namespace SSAdmin.Areas.Report.Controllers
             DataTable dt = new DataTable();
             try
             {
-                dt = _repository.ViewData( ProductFilter);
+                var GroupByColumn = _repository.GroupByColumn(FKFormID, "");
+                dt = _repository.ViewData("L", ProductFilter, GroupByColumn);
             }
             catch (Exception ex) { }
             var jsonResult = Json(new
@@ -51,7 +53,7 @@ namespace SSAdmin.Areas.Report.Controllers
         {
             
 
-            DataTable ds = _repository.ViewData(ProductFilter);
+            DataTable ds = _repository.ViewData("L", ProductFilter, "");
 
             var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "hjhjkh", ColumnList());
             var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData);

@@ -27,7 +27,7 @@ namespace SSAdmin.Areas.Report.Controllers
         public StockDetailReportController(IStockDetailReportRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
             _repository = repository;
-            FKFormID = (long)Handler.Form.SalesStock;
+            FKFormID = (long)Handler.Form.StockDetail;
 
             //_repository.SetRootPath(_hostingEnvironment.WebRootPath);
         }

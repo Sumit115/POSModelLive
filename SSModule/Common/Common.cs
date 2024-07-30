@@ -103,9 +103,10 @@ namespace SSAdmin
             //200-report
             SalesStock = 200,
             PurchaseStock = 201,
-            RateStock = 203,
-            SalesTransaction = 204,
-            PurchaseTransaction = 205,
+            StockDetail = 203,
+            RateStock = 204,
+            SalesTransaction = 205,
+            PurchaseTransaction = 206,
 
             //
 

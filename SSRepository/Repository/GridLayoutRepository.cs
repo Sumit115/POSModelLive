@@ -79,7 +79,7 @@ formbase:
             {
                 var _entity = __dbContext.TblGridStructer
                .Where(cou => cou.FkUserId == model.FkUserId && cou.FkFormId == model.FkFormId
-               && cou.GridName== model.GridName
+               && (string.IsNullOrEmpty(cou.GridName) ? "" : cou.GridName)== (string.IsNullOrEmpty(model.GridName)?"":model.GridName)
                ).FirstOrDefault();
                 if (_entity != null)
                 {
