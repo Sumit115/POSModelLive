@@ -574,36 +574,24 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
 
             Handler.popUp(res, { width: "1000px", height: "500px" }, function () {
                 var cg = new coGrid("#WUCFilter");
-                cg.setColumnHeading("Select~Product~Batch~Color");
+                cg.setColumnHeading("Select~Product~Batch~Barcode");
                 cg.setColumnWidthPer("10~20~15~15", 800);
-                cg.setColumnFields("tick~Product~Batch~Color");
+                cg.setColumnFields("tick~Product~Batch~Barcode");
                 cg.setAlign("C~L~L~L");
                 cg.defaultHeight = "400px";
                 cg.setSearchType("0~1~1~1");
-                cg.setSearchableColumns("Product~Batch~Color");
-                cg.setSortableColumns("Product~Batch~Color");
-                cg.setIdProperty("SrNo");
+                cg.setSearchableColumns("Product~Batch~Barcode");
+                cg.setSortableColumns("Product~Batch~Barcode");
+                cg.setIdProperty("Barcode");
                 cg.setCtrlType("B~~~");
                 cg.bind(Handler_BarcodePrintGridData);
                 cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
                 filterGridTagPrint = cg;
 
                 $("#btnPrintPreview").off("click").on("click", function () {
-                    var _List = [];
-                    var Filterlist = filterGridTagPrint.getData().filter(function (el) { return el.tick })
-                    $(Filterlist).each(function (i, v) {
-
-                        _List.push({
-                            FKProductId: v.FkProductId,
-                            TranInId: v.TranInId,
-                            TranInSeriesId: v.TranInSeriesId,
-                            TranInSrNo: v.TranInSrNo,
-                            TranOutId: v.TranOutId,
-                            TranOutSeriesId: v.TranOutSeriesId,
-                            TranOutSrNo: v.TranOutSrNo,
-                            FkLocationId: v.FKLocationID,
-                        });
-                    });
+                     
+                    var _List = filterGridTagPrint.getData().filter(function (el) { return el.tick })
+                  
 
                     if (_List.length > 0) {
                         Common.GetBarcodeSettingData(".barcodesetting", "", function (flag, _d) {
@@ -611,7 +599,7 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
                             if (flag) {
 
                                 var _model = {};
-                                _model.BarcodeDetails = _List;
+                                _model.BarcodePrintPreviewModel = _List;
                                 _model.SysDefaults = _d;
                                 
                                 $.ajax({

@@ -108,6 +108,30 @@ namespace SSAdmin.Areas
         }
 
         [HttpPost]
+        public JsonResult GetBarcodeList(List<BarcodeDetails> model)
+        {
+            try
+            { 
+                   var data = _gridLayoutRepository.BarcodePrintList(model).ToList();
+                return Json(new
+                {
+                    status = "success",
+                    data, 
+                });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = "error",
+                    msg = ex.Message,
+                });
+            }
+        }
+
+
+        [HttpPost]
         public JsonResult BarcodePrintPriview(BarcodePrintModel model)
         {
             try
@@ -115,7 +139,7 @@ namespace SSAdmin.Areas
                 if (model.SysDefaults.Count > 0)
                 {
                     _gridLayoutRepository.UpdateSysDefaults(model.SysDefaults);
-                    model.BarcodePrintPreviewModel = _gridLayoutRepository.BarcodePrintList(model.BarcodeDetails).ToList();
+                   // model.BarcodePrintPreviewModel = _gridLayoutRepository.BarcodePrintList(model.BarcodeDetails).ToList();
                     if (model.BarcodePrintPreviewModel.Count > 0)
                     {
                         //foreach (var item in model.BarcodePrintPreviewModel)

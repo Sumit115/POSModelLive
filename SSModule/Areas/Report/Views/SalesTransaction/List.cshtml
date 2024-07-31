@@ -29,14 +29,23 @@
             <option value="SPSL">Sales Challan</option>
         </select>
     </div>
-
     <div class="col-md-6 text-right">
-        <button class="btn btn-info" title="Series" onclick="ShowFilter('Series')"><i class="fa fa-filter"></i></button>
-        <button class="btn btn-info" title="Customer" onclick="ShowFilter('Customer')"><i class="fa fa-filter"></i></button>
-        <button class="btn btn-info" title="Location" onclick="ShowFilter('Location')"><i class="fa fa-filter"></i></button>
+        <div class="btn-group">
+            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-filter"></i>
+            </button>
+            <div class="dropdown-menu" role="menu">
+
+                <a href="#" class="dropdown-item" onclick="ShowFilter('Series')" title="Series"><i class="fa fa-filter"></i> Series</a>
+                <a href="#" class="dropdown-item" onclick="ShowFilter('Customer')" title="Customer"><i class="fa fa-filter"></i> Customer</a>
+                <a href="#" class="dropdown-item" onclick="ShowFilter('Location')" title="Location"><i class="fa fa-filter"></i> Location</a>
+            </div>
+        </div>
+
         <input type="button" value="View" class="btn btn-success" onclick="Render('')" title="View">
         <button class="btn btn-dark" onclick="Render('excel')" title="View"><i class="fa fa-file-export"></i></button>
     </div>
+    
 </div>
 <hr style="margin: 1px 0px;" />
 
@@ -44,7 +53,9 @@
     <div id="WUCHM" class="col-12">
     </div>
 </div>
-
+<ul id="contextMenu" style="display:none;position:absolute">
+    <li id="contextEditColumn" data="EditColumn">Edit Column</li>
+</ul>
 @section Scripts {
     <script src="~/js/report/report.js"></script>
     <script>

@@ -899,38 +899,61 @@ function VoucherDetail() {
 
 
 function showpopupPrintOption() {//BarcodePrint
-
-    Handler_BarcodePrintGridData = cg.getData().filter(function (element) {
+    var _List = [];
+    cg.getData().filter(function (element) {
         if (!Handler.isNullOrEmpty(element.Product) && !Handler.isNullOrEmpty(element.Qty)) {
 
-            if (element.FkProductId > 0 && element.FkId > 0) {
+            if (element.FkProductId > 0 && element.FkId > 0 && element.ModeForm == 1) {
                 if (ControllerName == "PurchaseInvoice") {
-                    element.TranInId = element.FkId;
-                    element.TranInSeriesId = tranModel.FKSeriesId;
-                    element.TranInSrNo = element.SrNo;
-                    element.TranOutId =0;
-                    element.TranOutSeriesId = 0;
-                    element.TranOutSrNo =0;
-                   }
-                else {
-                    element.TranInId = 0;
-                    element.TranInSeriesId = 0;
-                    element.TranInSrNo = 0;
-                    element.TranOutId = element.FkId;
-                    element.TranOutSeriesId = tranModel.FKSeriesId;
-                    element.TranOutSrNo = element.SrNo;
+                    _List.push({
+                        FKProductId: element.FkProductId,
+                        TranInId: element.FkId,
+                        TranInSeriesId: tranModel.FKSeriesId,
+                        TranInSrNo: element.SrNo,
+                        TranOutId: 0,
+                        TranOutSeriesId: 0,
+                        TranOutSrNo: 0,
+                        FkLocationId: tranModel.FKLocationID,
+                    });
                 }
-                element.FkLocationId = tranModel.FkLocationId;
+                else {
+                    _List.push({
+                        FKProductId: element.FkProductId,
+                        TranInId: 0,
+                        TranInSeriesId: 0,
+                        TranInSrNo: 0,
+                        TranOutId: element.FkId,
+                        TranOutSeriesId: tranModel.FKSeriesId,
+                        TranOutSrNo: element.SrNo,
+                        FkLocationId: tranModel.FKLocationID,
+                    });
+                }
 
-                return element
             }
         }
     });
 
-    Handler.barcodePrint(function () {
+    if (_List.length > 0) {
+        console.log(_List);
+        $.ajax({
+            type: "POST",
+            url: Handler.currentPath() + 'GetBarcodeList',
+            data: { model: _List },
+            datatype: "json",
+            success: function (res) {
+                if (res.status == "success") {
 
-    });
+                    Handler_BarcodePrintGridData = res.data;
+                    Handler.barcodePrint(function () {
 
+                    });
+                } else {
+                    alert(res.msg);
+                }
+            }
+        })
+
+    }
     ////////////////
 
 

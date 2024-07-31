@@ -14,12 +14,12 @@ namespace SSRepository.Models
     {
         public BarcodePrintModel()
         {
-            BarcodeDetails = new List<BarcodeDetails>();
+          //  BarcodeDetails = new List<BarcodeDetails>();
             SysDefaults = new List<SysDefaultsModel>();
             BarcodePrintPreviewModel = new List<BarcodePrintPreviewModel>();
         }
 
-        public List<BarcodeDetails> BarcodeDetails { get; set; }
+        //public List<BarcodeDetails> BarcodeDetails { get; set; }
         public List<SysDefaultsModel> SysDefaults { get; set; }
         public List<BarcodePrintPreviewModel> BarcodePrintPreviewModel { get; set; }
 

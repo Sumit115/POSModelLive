@@ -18,5 +18,6 @@ namespace SSRepository.Data
         public Nullable<long> TranOutId { get; set; }
         public Nullable<long> TranOutSeriesId { get; set; }
         public Nullable<long> TranOutSrNo { get; set; }
+        public Nullable<long> FkProductId { get; set; }
     }
 }
