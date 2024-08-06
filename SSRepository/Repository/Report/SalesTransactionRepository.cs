@@ -39,7 +39,7 @@ namespace SSRepository.Repository.Report
             {
 
             }
-            list.Add(new ColumnStructure { pk_Id = 2, Orderby = 2, Heading = "TradeDisc", Fields = "TradeDisc", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
+            list.Add(new ColumnStructure { pk_Id = 2, Orderby = 2, Heading = "TradeDisc", Fields = "TradeDiscAmt", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
             list.Add(new ColumnStructure { pk_Id = 3, Orderby = 3, Heading = "Tax Amt", Fields = "TaxAmt", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
             list.Add(new ColumnStructure { pk_Id = 4, Orderby = 4, Heading = "Cash Disc Amt", Fields = "CashDiscountAmt", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
             list.Add(new ColumnStructure { pk_Id = 5, Orderby = 5, Heading = "Adj Amt", Fields = "RoundOfDiff", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });

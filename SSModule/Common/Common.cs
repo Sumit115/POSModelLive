@@ -85,6 +85,7 @@ namespace SSAdmin
             Locality = 23,
             Location = 24,
             OpeningStock = 25,
+            Promotion=26,
 
             SalesOrder = 100,
             SalesInvoice = 101,

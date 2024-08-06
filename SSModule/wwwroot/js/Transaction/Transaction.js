@@ -654,6 +654,7 @@ function setGridRowData(args, data, rowIndex, fieldName) {
         args.item["FKInvoiceSrID"] = data[rowIndex].FKInvoiceSrID;
         args.item["FKLocationID"] = data[rowIndex].FKLocationID;
         args.item["ReturnTypeID"] = data[rowIndex].ReturnTypeID;
+        args.item["Barcode"] = data[rowIndex].Barcode;
         args.item["Delete"] = 'Delete';
 
     }

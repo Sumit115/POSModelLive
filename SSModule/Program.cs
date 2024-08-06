@@ -68,7 +68,8 @@ builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
 builder.Services.AddScoped<IStockDetailReportRepository, StockDetailReportRepository>();
 builder.Services.AddScoped<IRateEndStockRepository, RateEndStockRepository>();
 builder.Services.AddScoped<ISalesTransactionRepository, SalesTransactionRepository>();
-
+builder.Services.AddScoped<IPurchaseTransactionRepository, PurchaseTransactionRepository>(); 
+builder.Services.AddScoped<IPromotionRepository, PromotionRepository>();
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();
 
@@ -94,7 +95,7 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(
       name: "areas",
-      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}/{id2?}"
     );
     endpoints.MapControllerRoute(
         name: "default",

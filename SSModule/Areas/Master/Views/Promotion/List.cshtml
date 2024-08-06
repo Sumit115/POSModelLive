@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = ViewBag.PromotionDuring + " Promotion List";
+    ViewData["bdClass"] = "browser";
+}
+
+<partial name="~/Views/Shared/partial/_Grid.cshtml" />;
+
+@section Scripts {
+    <script src="~/js/master/browser.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#create_new").attr("href", "/Master/Promotion/Create/@ViewBag.PromotionDuring" );
+
+            IdProperty = "PkPromotionId";
+            GridName = ViewBag.PromotionDuring;
+            View();
+        });
+    </script>
+}

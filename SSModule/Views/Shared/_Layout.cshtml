@@ -2,11 +2,11 @@
 
 @if (Context.Session.GetString("LoginId") == null || Context.Session.GetString("LoginId") == "")
 {
-     @*Context.Session.SetString("LoginId", Convert.ToString(1));
+    @* Context.Session.SetString("LoginId", Convert.ToString(1));
      Context.Session.SetInt32("IsAdmin", Convert.ToInt32(1));
      Context.Session.SetString("Photo", "/Admin/dist/img/avatar04.png");*@
 
-     Context.Response.Redirect("/Auth");
+      Context.Response.Redirect("/Auth");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -338,6 +338,31 @@
                                         </li>
                                     </ul>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Others
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview" style="display: none;">
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Promotion" asp-action="List" asp-route-id="Sales" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Sales Promotion</p>
+                                                <i class="right fas fa-external-link-alt tablink"></i>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-area="Master" asp-controller="Promotion" asp-action="List" asp-route-id="Purchase" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Purchase Promotion<i class="right fas fa-external-link-alt tablink"></i></p>
+                                            </a>
+                                        </li>
+                                        
+                                    </ul>
+                                </li>
                             </ul>
                         </li>
                         <li class="nav-item">
@@ -479,12 +504,18 @@
                                         <p>Rate & Stock<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
-                               @* <li class="nav-item">
+                                <li class="nav-item">
                                     <a asp-area="Report" asp-controller="SalesTransaction" asp-action="List" class="nav-link">
                                         <i class="fas fa-clipboard-list nav-icon"></i>
                                         <p>Sales Transaction<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
-                                </li>*@
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-area="Report" asp-controller="PurchaseTransaction" asp-action="List" class="nav-link">
+                                        <i class="fas fa-clipboard-list nav-icon"></i>
+                                        <p>Purchase Transaction<i class="right fas fa-external-link-alt tablink"></i></p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                         @* <li class="nav-item">

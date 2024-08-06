@@ -68,6 +68,7 @@ namespace SSRepository.Data
         public virtual DbSet<TblVoucherDtl> TblVoucherDtl { get; set; } = null!;
         public virtual DbSet<TblWalletMas> TblWalletMas { get; set; } = null!;
         public virtual DbSet<TblProductQTYBarcode> TblProductQTYBarcode { get; set; } = null!;
+        public virtual DbSet<TblPromotionMas> TblPromotionMas { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

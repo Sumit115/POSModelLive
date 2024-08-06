@@ -493,3 +493,7 @@ input.editor-date1 {
       background: #fff;
         }
 .width98{ width:98%; }
+.ui-state-default.slick-headerrow-column.l0.r0 {
+    text-align: center;
+    padding-top: 5px;
+}

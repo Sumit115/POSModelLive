@@ -77,7 +77,8 @@ namespace SSRepository.Models
 
 
         public string? BrandName { get; set; }
-        public string? HSNCode { get; set; } 
+        public string? HSNCode { get; set; }
+        public string? Barcode { get; set; }
 
     }
 }

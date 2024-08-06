@@ -1,9 +1,9 @@
 ﻿
 var FormId = $("#hdFormId").val();
-var GridId = "WUCHM", GridHeight = "90vh", pageNo = 1, pageSize = 10000, filterclass = "filter", IdProperty = "";
+var GridId = "WUCHM", GridName = "", GridHeight = "90vh", pageNo = 1, pageSize = 10000, filterclass = "filter", IdProperty = "";
 
 function ShowGridColumn() {
-    Common.GridColSetup(parseInt(FormId), '', function () {
+    Common.GridColSetup(parseInt(FormId), GridName, function () {
         View();
     });
 }
@@ -39,7 +39,7 @@ function View() {
     });
 };
 function bindGrid(GridId, data, IdProperty) {
-    Common.Grid(parseInt(FormId), '', function (s) {
+    Common.Grid(parseInt(FormId), GridName, function (s) {
         var cg = new coGrid("#" + GridId);
         UDI = cg;
         cg.setColumnHeading(s.ColumnHeading);

@@ -153,7 +153,10 @@ namespace SSRepository.Repository
                 {
                     MaxID = __dbContext.TblCategoryMas.ToList().Count > 0 ? __dbContext.TblCategoryMas.ToList().Max(x => x.PkCategoryId) : 0;
                 }
-
+                else if (TableName == "TblPromotionMas")
+                {
+                    MaxID = __dbContext.TblPromotionMas.ToList().Count > 0 ? __dbContext.TblPromotionMas.ToList().Max(x => x.PkPromotionId) : 0;
+                }
                 return Convert.ToInt64(MaxID) + 1;
             }
             catch (Exception ex)

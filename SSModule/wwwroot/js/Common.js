@@ -582,6 +582,7 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
                 cg.setSearchType("0~1~1~1");
                 cg.setSearchableColumns("Product~Batch~Barcode");
                 cg.setSortableColumns("Product~Batch~Barcode");
+                cg.setCheckAllCheckboxColumns("tick~~");
                 cg.setIdProperty("Barcode");
                 cg.setCtrlType("B~~~");
                 cg.bind(Handler_BarcodePrintGridData);
@@ -623,9 +624,13 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
 
                                                     newWin.document.write('<html><head><style> .watermarked {  color:  #c1bdbd !important; }</style></hea><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
 
-                                                    newWin.document.close();
-
-                                                    setTimeout(function () { newWin.close(); }, 10);
+                                                    newWin.document.close(); 
+                                                    // setTimeout(function () { newWin.close(); }, 50);
+                                                    newWin.onload = function () {
+                                                        newWin.focus();
+                                                        newWin.print();
+                                                        newWin.close();
+                                                    }
 
                                                 });
                                             });

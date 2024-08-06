@@ -21,27 +21,27 @@ using DocumentFormat.OpenXml.Spreadsheet;
 namespace SSAdmin.Areas.Report.Controllers
 {
     [Area("Report")]
-    public class SalesTransactionController : BaseController
+    public class PurchaseTransactionController : BaseController
     {
-        private readonly ISalesTransactionRepository _repository;
+        private readonly IPurchaseTransactionRepository _repository;
          
-        public SalesTransactionController(ISalesTransactionRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
+        public PurchaseTransactionController(IPurchaseTransactionRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
             _repository = repository;
-            FKFormID = (long)Handler.Form.SalesTransaction; 
+            FKFormID = (long)Handler.Form.PurchaseTransaction; 
         }
         public async Task<IActionResult> List()
         { 
             return View();
         }
         [HttpPost]
-        public async Task<JsonResult> List(string FromDate, string ToDate, string ReportType, string TranAlias, string CustomerFilter = "", string LocationFilter = "", string SeriesFilter = "")
+        public async Task<JsonResult> List(string FromDate, string ToDate, string ReportType, string TranAlias, string VendorFilter = "", string LocationFilter = "", string SeriesFilter = "")
         {
 
             DataTable dt = new DataTable();
             try
             {
-                dt = _repository.GetList(FromDate, ToDate, ReportType, TranAlias, "", CustomerFilter, LocationFilter, SeriesFilter);
+                dt = _repository.GetList(FromDate, ToDate, ReportType, TranAlias, "", VendorFilter, LocationFilter, SeriesFilter);
             }
             catch (Exception ex) { }
             var jsonResult = Json(new

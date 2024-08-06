@@ -70,6 +70,7 @@ namespace SSRepository.Models
         public string CashDiscType { get; set; } = "R";//ddl  //ruppe=>R,Perstange=>P
 
         public decimal CashDiscountAmt { get; set; }//Automatic Calculaction
+        public decimal TradeDiscAmt { get; set; }
         public decimal TotalDiscount { get; set; }//=CashDiscountAmt
 
         public decimal RoundOfDiff { get; set; }//txt

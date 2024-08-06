@@ -679,7 +679,7 @@ namespace SSRepository.Repository.Transaction
                         }
                         else { detail.SrNo = 1; }
 
-
+                        detail.Barcode=barcode;
                         detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
                         detail.Product = dtProduct.Rows[0]["Product"].ToString();
                         detail.Qty = 1;
@@ -920,7 +920,8 @@ namespace SSRepository.Repository.Transaction
             if (model.CashDiscType == "R" && model.CashDiscount > 0 && model.CashDiscount <= model.GrossAmt) { model.CashDiscountAmt = Math.Round(model.CashDiscount, 2); }
             else if (model.CashDiscType == "P" && model.CashDiscount > 0 && model.CashDiscount <= 100) { model.CashDiscountAmt = Math.Round((model.GrossAmt * model.CashDiscount / 100), 2); }
             else { model.CashDiscount = 0; }
-            model.TotalDiscount = model.CashDiscountAmt;
+            model.TradeDiscAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2);
+            model.TotalDiscount = model.CashDiscountAmt + model.TradeDiscAmt;
             model.NetAmt = Math.Round(model.GrossAmt + model.TaxAmt + model.Shipping + model.OtherCharge - model.RoundOfDiff - model.TotalDiscount, 2);
 
         }
@@ -1572,6 +1573,6 @@ namespace SSRepository.Repository.Transaction
             }
             return list.OrderBy(x => x.Orderby).ToList();
         }
-       
+
     }
 }
