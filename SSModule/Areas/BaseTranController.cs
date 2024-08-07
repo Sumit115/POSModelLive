@@ -15,7 +15,7 @@ using SSRepository.Repository.Master;
 
 namespace SSAdmin.Areas
 {
-   
+
     public abstract class BaseTranController<TRepository, TGridLayoutRepository, TICompositeViewEngine, TIWebHostEnvironment> : BaseController
         where TRepository : ITranBaseRepository
         where TGridLayoutRepository : IGridLayoutRepository
@@ -111,6 +111,21 @@ namespace SSAdmin.Areas
                 });
             }
 
+
+        }
+        [HttpPost]
+        public IActionResult BarcodeFiles(TransactionModel model, List<string> barcodelist)
+        {
+            foreach (string barcode in barcodelist)
+            {
+                _repository.BarcodeScan(model, barcode);
+            }
+
+            return Json(new
+            {
+                status = "success",
+                data = model
+            });
 
         }
 
@@ -330,7 +345,6 @@ namespace SSAdmin.Areas
             return Json(res);
         }
 
-  
-
+       
     }
 }

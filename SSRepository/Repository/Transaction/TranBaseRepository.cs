@@ -668,7 +668,7 @@ namespace SSRepository.Repository.Transaction
                     detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
                     detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
 
-                    var _old = model.TranDetails.ToList().Where(x => x.FkProductId == detail.FkProductId && x.FkLotId == detail.FkLotId && x.ModeForm != 2).FirstOrDefault();
+                    var _old = model.TranDetails.ToList().Where(x => x.FkProductId == detail.FkProductId && x.Barcode == barcode && x.FkLotId == detail.FkLotId && x.ModeForm != 2).FirstOrDefault();
                     if (_old == null)
                     {
                         var _checkSrNo = model.TranDetails.ToList().Where(x => x.FkProductId > 0 && x.Qty > 0).ToList();
@@ -724,7 +724,7 @@ namespace SSRepository.Repository.Transaction
                     }
                     else
                     {
-                        int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == detail.FkProductId);
+                        int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == detail.FkProductId && a.Barcode == barcode);
                         model.TranDetails[rowIndex].Qty += 1;
 
                         CalculateExe(model.TranDetails[rowIndex]);

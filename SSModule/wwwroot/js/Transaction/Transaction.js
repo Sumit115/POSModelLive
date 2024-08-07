@@ -41,7 +41,7 @@ $(document).ready(function () {
         tranModel[fieldName] = $(this).val();
     });
     $(".paymentDtl").change(function () {
-        debugger;
+        
         var fieldName = $(this).attr("id");
         var type = $(this).attr("type");
         if (type == "checkbox") {
@@ -70,7 +70,7 @@ $(document).ready(function () {
 });
 
 function Load() {
-    debugger;
+    
     var PkId = $("#PkId").val();
     tranModel = JSON.parse($("#hdData").val());
     if (PkId > 0) {
@@ -495,6 +495,76 @@ function BarcodeScan(barcode) {
         }
     })
 }
+
+ 
+function ImportBarcode() {
+    if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+        alert('The File APIs are not fully supported in this browser.');
+        return;
+    }
+
+    var input = document.getElementById('Barcodefile');
+    if (!input) {
+        alert("Um, couldn't find the fileinput element.");
+    }
+    else if (!input.files) {
+        alert("This browser doesn't seem to support the `files` property of file inputs.");
+    }
+    else if (!input.files[0]) {
+        alert("Please select a file");
+    }
+    else {
+
+        const reader = new FileReader()
+        reader.onload = function (event) {
+            debugger;
+            if (!Handler.isNullOrEmpty(event.target.result)) {
+                var lst = event.target.result.split('\r\n');
+                sumitImportBarcode(lst);
+            } else { alert('Invalid File Data'); }
+        };
+        reader.readAsText($('#Barcodefile')[0].files[0])
+    }
+
+    
+}
+function sumitImportBarcode(barcodelist) {
+    debugger;
+    $(".loader").show();
+    tranModel.TranDetails = GetDataFromGrid();
+
+    $.ajax({
+        type: "POST",
+        url: Handler.currentPath() + 'BarcodeFiles',
+        data: { model: tranModel, barcodelist: barcodelist },
+        datatype: "json",
+        success: function (res) {
+            if (res.status == "success") {
+                tranModel = res.data;
+                //$(tranModel.TranDetails).each(function (i, v) {
+                //    v["ProductName"] = parseInt(v.FkProductId);
+                //});
+                BindGrid('DDT', tranModel.TranDetails);
+
+                setFooterData(tranModel);
+                setPaymentDetail(tranModel);
+                $("#Barcodefile").val("");
+            }
+            else
+                alert(res.msg);
+            $(".loader").hide();
+        }
+    })
+}
+function handleFileLoad(event) {
+    debugger;
+    var items = event.target.result.split(',');
+    var items1 = JSON.stringify(event.target.result).split('\r\n');
+    console.log(JSON.stringify(event.target.result));
+    console.log(JSON.parse(JSON.stringify(event.target.result)));
+   // document.getElementById('fileContent').textContent = event.target.result;
+}
+
 function ColumnChange(args, rowIndex, fieldName) {
 
     tranModel.TranDetails = GetDataFromGrid();
@@ -613,7 +683,7 @@ function setFooterData(data) {
     return false;
 }
 function setPaymentDetail(data) {
-    debugger;
+    
     Common.Set(".model-paymentdetail", data, "");
     if (tranModel.FKPostAccID <= 0) { $("#Account").val(''); }
     return false;
