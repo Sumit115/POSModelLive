@@ -120,11 +120,12 @@ namespace SSAdmin.Areas
             {
                 _repository.BarcodeScan(model, barcode);
             }
-
+            var ListNotFound = string.Join(",", barcodelist.Where(item => !model.TranDetails.ToList().Any(item2 => item2.Barcode == item.ToString())).ToList());
             return Json(new
             {
                 status = "success",
-                data = model
+                data = model,
+                ListNotFound
             });
 
         }
@@ -345,6 +346,6 @@ namespace SSAdmin.Areas
             return Json(res);
         }
 
-       
+
     }
 }

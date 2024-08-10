@@ -11,8 +11,8 @@ $(document).ready(function () {
     $("#hdGridName").val('dtl');
     ControllerName = $("#hdControllerName").val();
     if ((TranAlias == "SRTN" || TranAlias == "SCRN" || TranAlias == "SORD" || TranAlias == "PORD" || TranAlias == "PINV")) {
-        $("#txtSearchBarcode").hide();
-    } else { $("#txtSearchBarcode").show(); $("#txtSearchBarcode").focus(); }
+        $(".trn-barcode").hide();
+    } else { $(".trn-barcode").show(); $("#txtSearchBarcode").focus(); }
 
     $('#btnServerSave').click(function (e) {
 
@@ -549,6 +549,7 @@ function sumitImportBarcode(barcodelist) {
                 setFooterData(tranModel);
                 setPaymentDetail(tranModel);
                 $("#Barcodefile").val("");
+                if (!Handler.isNullOrEmpty(res.ListNotFound)) { alert('Not Found Barcode is :' + res.ListNotFound)}
             }
             else
                 alert(res.msg);

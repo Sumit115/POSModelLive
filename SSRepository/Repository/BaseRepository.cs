@@ -651,7 +651,7 @@ namespace SSRepository.Repository
                     select x).FirstOrDefault().SysDefValue;
         }
 
-        public  List<SysDefaultsModel> GetSysDefaultsList(string search = "")
+        public List<SysDefaultsModel> GetSysDefaultsList(string search = "")
         {
             if (search != null) search = search.ToLower();
             List<SysDefaultsModel> data = (from cou in __dbContext.TblSysDefaults
@@ -697,7 +697,7 @@ namespace SSRepository.Repository
 
         }
 
-        public  List<BarcodePrintPreviewModel>  BarcodePrintList(List<BarcodeDetails> model)
+        public List<BarcodePrintPreviewModel> BarcodePrintList(List<BarcodeDetails> model)
         {
             var _lst = new List<BarcodePrintPreviewModel>();
 
@@ -725,10 +725,13 @@ namespace SSRepository.Repository
                                   Address = branch.Address,
                                   CityName = city.CityName,
                                   Pin = branch.Pin,
+                                  IsPrint = cou.IsPrint > 0 ? false : true,
+                                  PrintMode=1,
                               }).ToList();
                     _lst.AddRange(_d);
                 }
-                else if (item.TranOutId > 0) {
+                else if (item.TranOutId > 0)
+                {
                     var _d = (from cou in __dbContext.TblProductQTYBarcode
                               join prdLot in __dbContext.TblProdLotDtl on cou.FkLotID equals prdLot.PkLotId
                               join prd in __dbContext.TblProductMas on prdLot.FKProductId equals prd.PkProductId
@@ -749,6 +752,8 @@ namespace SSRepository.Repository
                                   Address = branch.Address,
                                   CityName = city.CityName,
                                   Pin = branch.Pin,
+                                  IsPrint = cou.IsPrint > 1 ? false : true,
+                                  PrintMode = 2,
                               }).ToList();
                     _lst.AddRange(_d);
                 }
@@ -756,6 +761,41 @@ namespace SSRepository.Repository
             }
 
             return _lst;
+        }
+        public void UpdatePrintBarcode(object objmodel)
+        {
+            List<BarcodePrintPreviewModel> model = (List<BarcodePrintPreviewModel>)objmodel;
+            try
+            {
+                foreach (var item in model)
+                {
+                    var _entity = __dbContext.TblProductQTYBarcode.Where(x => x.Barcode == item.Barcode).FirstOrDefault();
+                    if (_entity != null)
+                    {
+                        TblProductQTYBarcode Tbl = new TblProductQTYBarcode();
+                        Tbl = _entity;
+                        Tbl.IsPrint = item.PrintMode;
+                        UpdateData(Tbl, false);
+
+                    }
+                }
+                __dbContext.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+
+        public List<ddl> UnitList()
+        {
+            return new List<ddl> {
+                 new ddl { Value = "1", Text = "Unit 1" },
+                new ddl { Value = "2", Text = "Unit 2" },
+                new ddl { Value = "3", Text = "Unit 3" }
+            };
         }
 
     }

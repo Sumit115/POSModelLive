@@ -4,6 +4,11 @@
     ViewData["Title"] = "Create";
     ViewData["bdClass"] = "page";
 }
+<style>
+    .radios__input {
+        height: 20px;
+        width: 25px;
+    }</style>
 
 <div class="p-3">
     <form asp-action="Create" class=" g-3" enctype="multipart/form-data">
@@ -26,21 +31,16 @@
                     <span asp-validation-for="SeriesNo" class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-md-6">
+
+            <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Tran Alias</label>
-                    <select asp-for="TranAlias"   class="form-control"  >
-                        <option value="">Select</option>
-                        <option value="SORD">SORD</option>
-                        <option value="SINV">SINV</option>
-                        <option value="SCHN">SCHN</option>
-                        <option value="PORD">PORD</option>
-                        <option value="PINV">PINV</option> 
+                    <select asp-for="TranAlias" asp-items="@(new SelectList(ViewBag.TranAliasList,"Value","Text"))" class="form-control">
                     </select>
                     <span asp-validation-for="TranAlias" class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Billing Rate</label>
                     <select asp-for="BillingRate" class="form-control">
@@ -56,107 +56,79 @@
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label class="control-label">Allow Walk In</label>
-                    <div class="d-flex">
-                        <div class="radio-class mr-3">
-                            <input asp-for="AllowWalkIn" class="radios__input" name="AllowWalkIn" id="AllowWalkInActive" type="radio" value="True" checked>
-                            <label class="label" for="AllowWalkInActive">Yes</label>
-                        </div>
-                        <div class="radios__item mr-3">
-                            <input asp-for="AllowWalkIn" class="radios__input" name="AllowWalkIn" id="AllowWalkInDeActive" type="radio" value="False">
-                            <label class="label" for="AllowWalkInDeActive">No</label>
-                        </div>
-                    </div>
+                    <label class="control-label">Location</label>
+                    <select asp-for="FKLocationID" asp-items="@(new SelectList(ViewBag.LocationList,"PkLocationID","Location"))" class="form-control">
+                    </select>
+                    <span asp-validation-for="FKLocationID" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="control-label">
+                        Allow Walk In   <input asp-for="AllowWalkIn" class="radios__input" type="checkbox">
+                    </label>
+
                     <span asp-validation-for="AllowWalkIn" class="text-danger"></span>
 
                 </div>
             </div>
-      
-              <div class="col-md-4">
+
+            <div class="col-md-2">
                 <div class="form-group">
-                    <label class="control-label">Auto Apply Promo</label>
-                    <div class="d-flex">
-                        <div class="radio-class mr-3">
-                            <input asp-for="AutoApplyPromo" class="radios__input" name="AutoApplyPromo" id="AutoApplyPromoActive" type="radio" value="True" checked>
-                            <label class="label" for="AutoApplyPromoActive">Yes</label>
-                        </div>
-                        <div class="radios__item mr-3">
-                            <input asp-for="AutoApplyPromo" class="radios__input" name="AutoApplyPromo" id="AutoApplyPromoDeActive" type="radio" value="False">
-                            <label class="label" for="AutoApplyPromoDeActive">No</label>
-                        </div>
-                    </div>
+                    <label class="control-label">
+                        Auto Apply Promo
+                        <input asp-for="AutoApplyPromo" class="radios__input" type="checkbox">
+
+                    </label>
+
                     <span asp-validation-for="AutoApplyPromo" class="text-danger"></span>
 
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-2">
                 <div class="form-group">
-                    <label class="control-label">Round Off</label>
-                    <div class="d-flex">
-                        <div class="radio-class mr-3">
-                            <input asp-for="RoundOff" class="radios__input" name="RoundOff" id="RoundOffActive" type="radio" value="True" checked>
-                            <label class="label" for="RoundOffActive">Yes</label>
-                        </div>
-                        <div class="radios__item mr-3">
-                            <input asp-for="RoundOff" class="radios__input" name="RoundOff" id="RoundOffDeActive" type="radio" value="False">
-                            <label class="label" for="RoundOffDeActive">No</label>
-                        </div>
-                    </div>
+                    <label class="control-label">
+                        Round Off
+                        <input asp-for="RoundOff" class="radios__input" type="checkbox">
+
+                    </label>
+
                     <span asp-validation-for="RoundOff" class="text-danger"></span>
 
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-2">
                 <div class="form-group">
-                    <label class="control-label">Default Qty</label>
-                    <div class="d-flex">
-                        <div class="radio-class mr-3">
-                            <input asp-for="DefaultQty" class="radios__input" name="DefaultQty" id="DefaultQtyActive" type="radio" value="True" checked>
-                            <label class="label" for="DefaultQtyActive">Yes</label>
-                        </div>
-                        <div class="radios__item mr-3">
-                            <input asp-for="DefaultQty" class="radios__input" name="DefaultQty" id="DefaultQtyDeActive" type="radio" value="False">
-                            <label class="label" for="DefaultQtyDeActive">No</label>
-                        </div>
-                    </div>
+                    <label class="control-label">
+                        Default Qty    <input asp-for="DefaultQty" class="radios__input" type="checkbox">
+                    </label>
                     <span asp-validation-for="DefaultQty" class="text-danger"></span>
 
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-2">
                 <div class="form-group">
-                    <label class="control-label">Allow Zero Rate</label>
-                    <div class="d-flex">
-                        <div class="radio-class mr-3">
-                            <input asp-for="AllowZeroRate" class="radios__input" name="AllowZeroRate" id="AllowZeroRateActive" type="radio" value="True" checked>
-                            <label class="label" for="AllowZeroRateActive">Yes</label>
-                        </div>
-                        <div class="radios__item mr-3">
-                            <input asp-for="AllowZeroRate" class="radios__input" name="AllowZeroRate" id="AllowZeroRateDeActive" type="radio" value="False">
-                            <label class="label" for="AllowZeroRateDeActive">No</label>
-                        </div>
-                    </div>
+                    <label class="control-label">
+                        Allow Zero Rate
+                        <input asp-for="AllowZeroRate" class="radios__input" type="checkbox">
+
+                    </label>
+
                     <span asp-validation-for="AllowZeroRate" class="text-danger"></span>
 
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-2">
                 <div class="form-group">
-                    <label class="control-label">Allow Free Qty</label>
-                    <div class="d-flex">
-                        <div class="radio-class mr-3">
-                            <input asp-for="AllowFreeQty" class="radios__input" name="AllowFreeQty" id="AllowFreeQtyActive" type="radio" value="True" checked>
-                            <label class="label" for="AllowFreeQtyActive">Yes</label>
-                        </div>
-                        <div class="radios__item mr-3">
-                            <input asp-for="AllowFreeQty" class="radios__input" name="AllowFreeQty" id="AllowFreeQtyDeActive" type="radio" value="False">
-                            <label class="label" for="AllowFreeQtyDeActive">No</label>
-                        </div>
-                    </div>
+                    <label class="control-label">Allow Free Qty
+                        <input asp-for="AllowFreeQty" class="radios__input"  type="checkbox" >
+
+                    </label>
+                     
                     <span asp-validation-for="AllowFreeQty" class="text-danger"></span>
 
                 </div>

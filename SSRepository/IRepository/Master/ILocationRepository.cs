@@ -10,6 +10,7 @@ namespace SSRepository.IRepository.Master
 
         string isAlreadyExist(LocationModel obj, string Mode);
         List<LocationModel> GetList(int pageSize, int pageNo = 1, string search = "");
+        object GetDrpLocation(int pageSize, int pageNo = 1, string search = "");
         LocationModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);

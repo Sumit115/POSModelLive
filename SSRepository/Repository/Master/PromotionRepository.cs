@@ -30,13 +30,12 @@ namespace SSRepository.Repository.Master
             return error;
         }
 
-        public List<PromotionModel> GetList(int pageSize, int pageNo = 1, string search = "")
-        {
-            if (search != null) search = search.ToLower();
+        public List<PromotionModel> GetList(int pageSize, int pageNo = 1, string PromotionDuring = "")
+        { 
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<PromotionModel> data = (from cou in __dbContext.TblPromotionMas
                                              //join catGrp in __dbContext.TblPromotionGroupMas on cou.FkPromotionGroupId equals catGrp.PkPromotionGroupId
-                                         where (EF.Functions.Like(cou.PromotionName.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                         where  cou.PromotionDuring== PromotionDuring
                                          //&& (PromotionGroupId == 0 || cou.FkPromotionGroupId == PromotionGroupId)
                                          orderby cou.PkPromotionId
                                          select (new PromotionModel

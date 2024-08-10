@@ -17,6 +17,7 @@ using SSRepository.Repository.Master;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Drawing.Printing;
 using DocumentFormat.OpenXml.Wordprocessing;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace SSAdmin.Areas.Master.Controllers
 {
@@ -30,7 +31,7 @@ namespace SSAdmin.Areas.Master.Controllers
         private readonly IProductRepository _repositoryProduct;
         private readonly ICategoryRepository _repositoryCategory;
         private readonly IBrandRepository _repositoryBrand;
-        public PromotionController(IPromotionRepository repository, ICustomerRepository repositoryCustomer, 
+        public PromotionController(IPromotionRepository repository, ICustomerRepository repositoryCustomer,
             IVendorRepository repositoryVendor, ILocationRepository repositoryLocation
             , IProductRepository repositoryProduct, ICategoryRepository repositoryCategory, IBrandRepository repositoryBrand
             , IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
@@ -39,15 +40,16 @@ namespace SSAdmin.Areas.Master.Controllers
             _repositoryCustomer = repositoryCustomer;
             _repositoryVendor = repositoryVendor;
             _repositoryLocation = repositoryLocation;
-            _repositoryProduct= repositoryProduct;
+            _repositoryProduct = repositoryProduct;
             _repositoryCategory = repositoryCategory;
-            _repositoryBrand= repositoryBrand;
+            _repositoryBrand = repositoryBrand;
             FKFormID = (long)Handler.Form.Promotion;
         }
 
         public async Task<IActionResult> List(string id)
         {
-            ViewBag.PromotionDuring = !string.IsNullOrEmpty(id)? id:"Sales";
+            ViewBag.PromotionDuring = ViewBag.hdGridName =  !string.IsNullOrEmpty(id) ? id : "Sales";
+            ViewBag.FormId = FKFormID;
             return View();
         }
 
@@ -57,7 +59,7 @@ namespace SSAdmin.Areas.Master.Controllers
             return Json(new
             {
                 status = "success",
-                data = _repository.GetList(pageSize, pageNo)
+                data = _repository.GetList(pageSize, pageNo, PromotionDuring)
             });
         }
 
@@ -84,15 +86,15 @@ namespace SSAdmin.Areas.Master.Controllers
             return FileName;
         }
 
-        public async Task<IActionResult> Create(string id,long id2, string pageview = "")
+        public async Task<IActionResult> Create(string id, long id2, string pageview = "")
         {
             ViewBag.PromotionDuring = !string.IsNullOrEmpty(id) ? id : "Sales";
 
             PromotionModel Model = new PromotionModel();
-            Model.PromotionDuring= !string.IsNullOrEmpty(id) ? id : "Sales";
+            Model.PromotionDuring = !string.IsNullOrEmpty(id) ? id : "Sales";
             try
             {
-                
+
                 ViewBag.PageType = "";
                 if (id2 != 0 && pageview.ToLower() == "log")
                 {
@@ -115,6 +117,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 ModelState.AddModelError("", ex.Message);
             }
             //BindViewBags(0, tblBankMas);
+            ViewBag.UnitList = _repository.UnitList();
             return View(Model);
         }
 
@@ -126,7 +129,7 @@ namespace SSAdmin.Areas.Master.Controllers
             {
                 model.FKUserId = 1;
                 model.FKCreatedByID = 1;
-              
+
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
@@ -142,7 +145,7 @@ namespace SSAdmin.Areas.Master.Controllers
                     }
                     else
                     {
-                        return RedirectToAction(nameof(List));
+                        return RedirectToAction(nameof(List), new {id=model.PromotionDuring });
                     }
                 }
                 else
@@ -160,8 +163,10 @@ namespace SSAdmin.Areas.Master.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(tblBankMas.PKID, tblBankMas);
-             return View(model);
+            ViewBag.UnitList = _repository.UnitList();
+            ViewBag.PromotionDuring = model.PromotionDuring;
+
+            return View(model);
         }
 
         [HttpPost]
@@ -194,7 +199,7 @@ namespace SSAdmin.Areas.Master.Controllers
         [HttpPost]
         public object FkVendorId(int pageSize, int pageNo = 1, string search = "")
         {
-            return _repositoryVendor.GetList(pageSize, pageNo, search);
+            return _repositoryVendor.GetDrpVendor(pageSize, pageNo, search);
         }
         [HttpPost]
         public object FkLocationId(int pageSize, int pageNo = 1, string search = "")
@@ -202,12 +207,12 @@ namespace SSAdmin.Areas.Master.Controllers
             return _repositoryLocation.GetList(pageSize, pageNo, search);
         }
         [HttpPost]
-        public object FkProductId(int pageSize, int pageNo = 1, string search = "")
+        public object FKProdID(int pageSize, int pageNo = 1, string search = "")
         {
             return _repositoryProduct.GetList(pageSize, pageNo, search);
         }
         [HttpPost]
-        public object FkCategoryId(int pageSize, int pageNo = 1, string search = "")
+        public object FkProdCatgId(int pageSize, int pageNo = 1, string search = "")
         {
             return _repositoryCategory.GetList(pageSize, pageNo, search);
         }

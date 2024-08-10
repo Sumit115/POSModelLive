@@ -2,11 +2,11 @@
 
 @if (Context.Session.GetString("LoginId") == null || Context.Session.GetString("LoginId") == "")
 {
-    @* Context.Session.SetString("LoginId", Convert.ToString(1));
+     @*Context.Session.SetString("LoginId", Convert.ToString(1));
      Context.Session.SetInt32("IsAdmin", Convert.ToInt32(1));
      Context.Session.SetString("Photo", "/Admin/dist/img/avatar04.png");*@
 
-      Context.Response.Redirect("/Auth");
+        Context.Response.Redirect("/Auth");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -47,7 +47,7 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item f-ctrl" style="display:none">
                     <input id="btnServerSave" tabindex="-1" type="submit" value="Save" class="btn btn-sm btn-key-83" style="background: #288e8b !important;width: 87px;color: #fff;" />
-                    <a asp-action="List" class="btn btn-sm btn-key-65" style="background: #f3bfce !important;width: 87px;color: #fff;">Cancel</a>
+                    <a id="btnServerBack" asp-action="List" class="btn btn-sm btn-key-65" style="background: #f3bfce !important;width: 87px;color: #fff;">Cancel</a>
                 </li>
                 <li class="nav-item f-list" style="display:none">
                     <a class="btn btn-create" tabindex="3" id="create_new" href='@Url.Action("Create")'>Create New <i class="fas fa-plus font-aws-icon"></i></a>

@@ -46,7 +46,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label">Unit <span asp-validation-for="FkUnitId" class="text-danger"></span></label>
-                            <select asp-for="FkUnitId" asp-items="@ViewBag.UnitList" class="form-control" id="BrandId">
+                            <select asp-for="FkUnitId" class="form-control" asp-items="@(new SelectList(ViewBag.UnitList,"Value","Text"))">
                             </select>
 
                         </div>

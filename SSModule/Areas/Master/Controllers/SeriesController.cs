@@ -20,10 +20,12 @@ namespace SSAdmin.Areas.Master.Controllers
     public class SeriesController : BaseController
     {
         private readonly ISeriesRepository _repository;
-        
-        public SeriesController(ISeriesRepository repository, IGridLayoutRepository gridLayoutRepository):base(gridLayoutRepository)
+        private readonly ILocationRepository _repositoryLocation;
+
+        public SeriesController(ISeriesRepository repository, ILocationRepository repositoryLocation, IGridLayoutRepository gridLayoutRepository):base(gridLayoutRepository)
         {
-            _repository = repository; 
+            _repository = repository;
+            _repositoryLocation = repositoryLocation;
             FKFormID = (long)Handler.Form.Series;
         }
        
@@ -35,11 +37,14 @@ namespace SSAdmin.Areas.Master.Controllers
         [HttpPost]
         public async Task<JsonResult> List(int pageNo, int pageSize)
         {
+            var list = _repository.GetList(pageSize, pageNo).ToList();
+            
+            list.ForEach(x => x.TranAliasName = Handler.GetTranAliasName(x.TranAlias));
             return Json(new
             {
                 status = "success",
-                data = _repository.GetList(pageSize, pageNo)
-            });
+                data = list,
+            }); ;
         }
 
         public string Export(string ColumnList, string HeaderList, string Name, string Type)
@@ -92,6 +97,9 @@ namespace SSAdmin.Areas.Master.Controllers
                 ModelState.AddModelError("", ex.Message);
             }
             //BindViewBags(0, tblSeriesMas);
+            ViewBag.TranAliasList = Handler.GetDrpTranAlias();
+            ViewBag.LocationList = _repositoryLocation.GetDrpLocation(100,1);
+
             return View(Model);
         }
 
@@ -137,7 +145,8 @@ namespace SSAdmin.Areas.Master.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(tblSeriesMas.PKID, tblSeriesMas);
+            ViewBag.TranAliasList = Handler.GetDrpTranAlias();
+            ViewBag.LocationList = _repositoryLocation.GetDrpLocation(100, 1);
             return View(model);
         }
 

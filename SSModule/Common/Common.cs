@@ -155,6 +155,28 @@ namespace SSAdmin
             V_PY,//Payment Voucher
             V_RC,//Receipt Voucher 
         }
+        public static List<ddl> GetDrpTranAlias()
+        {
+            return new List<ddl>(){
+                   new ddl { Text = "Select", Value = "",Value2="" },
+                   new ddl { Text = "Sales Order", Value = "SORD",Value2="" },
+                   new ddl { Text = "Sales Invoice", Value = "SINV",Value2="" },
+                   new ddl { Text = "Sales Challan", Value = "SPSL",Value2="SPSL" },
+                   new ddl { Text = "Sales Return", Value = "SRTN",Value2="" },
+                   new ddl { Text = "Sales Cr Note", Value = "SCRN",Value2="" },
+                   new ddl { Text = "Purchase Order", Value = "PORD",Value2="" },
+                   new ddl { Text = "Purchase Invoice", Value = "PINV",Value2="" },
+                   new ddl { Text = "Contra Voucher", Value = "V_CT",Value2="" },
+                   new ddl { Text = "Journal Voucher", Value = "V_JR",Value2="" },
+                   new ddl { Text = "Payment Voucher", Value = "V_PY",Value2="" },
+                   new ddl { Text = "Receipt Voucher", Value = "V_RC",Value2="" },
+            };
+        }
+        public static string GetTranAliasName(string  TranAlias)
+        {
+            var _state = GetDrpTranAlias().ToList().Where(x => x.Value == TranAlias).FirstOrDefault();
+            return _state != null ? _state.Text : "";
+        }
         public static bool IsMobileNumber(string number)
         {
             return Regex.Match(number, @"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$").Success;

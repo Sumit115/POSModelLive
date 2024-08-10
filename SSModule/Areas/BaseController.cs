@@ -139,7 +139,8 @@ namespace SSAdmin.Areas
                 if (model.SysDefaults.Count > 0)
                 {
                     _gridLayoutRepository.UpdateSysDefaults(model.SysDefaults);
-                   // model.BarcodePrintPreviewModel = _gridLayoutRepository.BarcodePrintList(model.BarcodeDetails).ToList();
+                    _gridLayoutRepository.UpdatePrintBarcode(model.BarcodePrintPreviewModel);
+                    // model.BarcodePrintPreviewModel = _gridLayoutRepository.BarcodePrintList(model.BarcodeDetails).ToList();
                     if (model.BarcodePrintPreviewModel.Count > 0)
                     {
                         //foreach (var item in model.BarcodePrintPreviewModel)

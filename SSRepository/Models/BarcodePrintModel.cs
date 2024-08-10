@@ -28,15 +28,14 @@ namespace SSRepository.Models
     public class BarcodeDetails
     {
         public long FKProductId { get; set; }
-        public Nullable<long> FKLocationId { get; set; }
+        public Nullable<long> FkLocationId { get; set; }
         public Nullable<long> TranInId { get; set; }
         public Nullable<long> TranInSeriesId { get; set; }
         public Nullable<long> TranInSrNo { get; set; }
         public Nullable<long> TranOutId { get; set; }
         public Nullable<long> TranOutSeriesId { get; set; }
         public Nullable<long> TranOutSrNo { get; set; }
-        public long FkLocationId { get; set; }
-    }
+      }
     public class BarcodePrintPreviewModel
     {
         public string Barcode { get; set; }
@@ -51,6 +50,8 @@ namespace SSRepository.Models
         public string? CityName { get; set; }
         public string? Pin { get; set; }
         public string? BarcodeImage { get; set; }
+        public bool IsPrint { get; set; }
+        public int PrintMode { get; set; }
 
     }
 }

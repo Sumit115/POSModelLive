@@ -3,15 +3,16 @@ var FormId = $("#hdFormId").val();
 var GridId = "WUCHM", GridName = "", GridHeight = "90vh", pageNo = 1, pageSize = 10000, filterclass = "filter", IdProperty = "";
 
 function ShowGridColumn() {
+    
     Common.GridColSetup(parseInt(FormId), GridName, function () {
         View();
     });
 }
 function View() {
-    debugger;
     $('#' + GridId).empty();
     Common.Get("." + filterclass, "", function (flag, _d) {
         if (flag) {
+           
             _d["pageNo"] = pageNo;
             _d["pageSize"] = pageSize;
             if (typeof RPTFilter !== 'undefined') {
@@ -20,7 +21,7 @@ function View() {
            
             $.ajax({
                 type: "POST",
-                url: 'List',
+                url: Handler.currentPath() + 'List',
                 data: _d,
                 datatype: "json",
                 success: function (res) {
@@ -39,6 +40,7 @@ function View() {
     });
 };
 function bindGrid(GridId, data, IdProperty) {
+    debugger;
     Common.Grid(parseInt(FormId), GridName, function (s) {
         var cg = new coGrid("#" + GridId);
         UDI = cg;
@@ -62,6 +64,11 @@ function bindGrid(GridId, data, IdProperty) {
                     window.location.href = "Create/" + pk_Id + "/" + FKSeriesId;
                 }
                 else if (window.location.href.indexOf("Voucher") > 0) { }
+                else if (window.location.href.indexOf("List/") > 0) {
+                    var type = location.href.substring(location.href.indexOf("List/") + 5);
+                    window.location.href = Handler.currentPath() + "Create/" + type + "/" + pk_Id;
+
+                }
                 else
                     window.location.href = "Create/" + pk_Id;
             }
@@ -95,7 +102,13 @@ function bindGrid(GridId, data, IdProperty) {
             var pk_Id = UDI.outGrid.getDataItem(row)[IdProperty];
             var FkSeriesId = UDI.outGrid.getDataItem(row).FKSeriesId;
             if (command == "Edit") {
-                window.location.href = "Create/" + pk_Id;
+                debugger;
+                if (location.href.indexOf("List/") != -1) {
+                    var type = location.href.substring(location.href.indexOf("List/") + 5);
+                    window.location.href = Handler.currentPath() + "Create/" + type + "/" + pk_Id;
+                }
+                else { window.location.href = Handler.currentPath() + "Create/" + pk_Id; }
+                
             }
             else if (command == "Delete") {
                 $.ajax({
@@ -156,3 +169,4 @@ function ExportToExcel() {
     });
 
 };
+

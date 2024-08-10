@@ -17,5 +17,8 @@ namespace SSRepository.IRepository
         List<SysDefaultsModel> GetSysDefaultsList(string search = "");
         void UpdateSysDefaults(object objmodel);
          List<BarcodePrintPreviewModel>    BarcodePrintList(List<BarcodeDetails> model);
+        void UpdatePrintBarcode(object objmodel);
+        List<ddl> UnitList();
+      
     }
 }

@@ -107,11 +107,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
                 }
                 ViewBag.BrandList = _brandRepository.GetDrpBrand(1, 1000);
-                ViewBag.UnitList = new List<SelectListItem> {
-                new SelectListItem { Value = "1", Text = "Unit 1" },
-                new SelectListItem { Value = "2", Text = "Unit 2" },
-                new SelectListItem { Value = "3", Text = "Unit 3" }
-            };
+                ViewBag.UnitList = _repository.UnitList();
 
 
             }
@@ -171,11 +167,7 @@ namespace SSAdmin.Areas.Master.Controllers
             }
 
             ViewBag.BrandList = _brandRepository.GetDrpBrand(1, 1000);
-            ViewBag.UnitList = new List<SelectListItem> {
-                new SelectListItem { Value = "1", Text = "Unit 1" },
-                new SelectListItem { Value = "2", Text = "Unit 2" },
-                new SelectListItem { Value = "3", Text = "Unit 3" }
-            };
+            ViewBag.UnitList = _repository.UnitList();
             return View(model);
         }
 

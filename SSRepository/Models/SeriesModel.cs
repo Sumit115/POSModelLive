@@ -25,9 +25,14 @@ namespace SSRepository.Models
         public bool AllowZeroRate { get; set; }//=true
         public bool AllowFreeQty { get; set; }//=true
 
-        public string BranchName { get; set; }//=true
-        public string BranchStateName { get; set; }//=true
+        public string? BranchName { get; set; }//=true
+        public string? BranchStateName { get; set; }//=true
         public string? DocumentType { get; set; }
+
+        public string? TranAliasName { get; set; }//=SORD  ddl
+        public  long? FKLocationID { get; set; }
+
+
 
     }
 }

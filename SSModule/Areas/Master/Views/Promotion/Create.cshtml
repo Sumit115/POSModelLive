@@ -71,38 +71,142 @@
                     {
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="control-label">Vendor </label> 
+                                <label class="control-label">Vendor </label>
                                 @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkVendorId" }, { "Class", "val-cus-drp" }, { "event", "" },
                             { "value", Model.FkVendorId }, { "text", Model.VendorName }, { "uri", "" }})
+
 
                             </div>
                         </div>
                     }
-                    else{
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Customer </label>
+                    else
+                    {
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Customer </label>
 
-                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkCustomerId" }, { "Class", "val-cus-drp" }, { "event", "" },
+                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkCustomerId" }, { "Class", "val-cus-drp" }, { "event", "" },
                             { "value", Model.FkCustomerId }, { "text", Model.CustomerName }, { "uri", "" }})
 
+                            </div>
                         </div>
-                    </div>
                     }
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label">Apply On</label>
-                            <select asp-for="PromotionApplyOn" id="PromotionApplyOn" class="form-control">
+                            <select asp-for="PromotionApplyOn" id="PromotionApplyOn" class="form-control" onchange="hideShow(true)">
                                 <option value="Product">Product</option>
-                                <option value="LIP">Line Item %</option>
-                                <option value="F">Fix Rate</option>
+                                <option value="Category">Category</option>
+                                <option value="Brand">Brand</option>
+                                <option value="Invoice Value">Invoice Value</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Promotion</label>
+                            <select asp-for="Promotion" class="form-control" onchange="hideShow(true)">
+                                <option value="Free Product">Free Product</option>
+                                <option value="Free Qty">Free Qty</option>
+                                <option value="Trade Discount">Trade Discount (%)</option>
+                                <option value="Scheme Discount">Scheme Discount (%)</option>
+                                <option value="Free Point">Free Point</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <h4>Qualifying</h4>
+                    </div>
+
+                    <div class=" col-md-4">
+                        <label>Amount</label>
+                        <input type="text" asp-for="PromotionApplyAmt" class="form-control" />
+                        <span asp-validation-for="PromotionApplyAmt" class="text-danger"></span>
+                    </div>
+                    <div class=" col-md-4">
+                        <label>Qty</label>
+                        <input type="text" asp-for="PromotionApplyQty" class="form-control" />
+                        <span asp-validation-for="PromotionApplyQty" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Unit </label>
+                            <select asp-for="FkPromotionApplyUnitId" asp-items="@(new SelectList(ViewBag.UnitList,"Value","Text"))" class="form-control">
+                            </select>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Apply On</h4>
+                    </div>
+                    <div class="col-md-12" id="divProduct">
+                        <div class="form-group">
+                            <label class="control-label">Product </label>
+
+                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKProdID" }, { "Class", "val-cus-drp" }, { "event", "" },
+                            { "value", Model.FKProdID }, { "text", Model.ProductName }, { "uri", "" }})
+
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="divCategory">
+                        <div class="form-group">
+                            <label class="control-label">Category </label>
+
+                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkProdCatgId" }, { "Class", "val-cus-drp" }, { "event", "" },
+                            { "value", Model.FkProdCatgId }, { "text", Model.CategoryName }, { "uri", "" }})
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-12" id="divBrand">
+                        <div class="form-group">
+                            <label class="control-label">Brand</label>
+
+                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkBrandId" }, { "Class", "val-cus-drp" }, { "event", "" },
+                            { "value", Model.FkBrandId }, { "text", Model.BrandName }, { "uri", "" }})
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <h4 id="divheading">Free Product</h4>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Free Product </label>
+
+                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkPromotionProdId" }, { "Class", "val-cus-drp" }, { "event", "" },
+                            { "value", Model.FkPromotionProdId }, { "text", Model.PromotionProductName }, { "uri", "" }})
+
+                        </div>
+                    </div>
+                    <div class=" col-md-4">
+                        <label>Value</label>
+                        <input type="text" asp-for="PromotionAmt" class="form-control" />
+                        <span asp-validation-for="PromotionAmt" class="text-danger"></span>
+                    </div>
+                    <div class=" col-md-4">
+                        <label>Qty</label>
+                        <input type="text" asp-for="PromotionQty" class="form-control" />
+                        <span asp-validation-for="PromotionQty" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Unit </label>
+                            <select asp-for="FkPromotionUnitId" asp-items="@(new SelectList(ViewBag.UnitList,"Value","Text"))" class="form-control">
                             </select>
 
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6">
             </div>
         </div>
     </form>
@@ -116,87 +220,65 @@
 
     <script>
         $(document).ready(function () {
+            $("#btnServerBack").attr("href", "/Master/Promotion/List/@ViewBag.PromotionDuring");
+
+            hideShow();
             $('#btnServerSave').click(function (e) {
                 e.preventDefault();
                 $("form").submit();
             });
         })
-        UploadImage = (id) => {
-            var file = document.querySelector('input[id="file_' + id + '"]').files[0];
-            // $("#FileName").val(file.name);
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
-                //console.log(reader.result);
-                $("#" + id).val(reader.result);
-                $("#dummyimage_" + id).attr("src", reader.result);
-                $("#dummyimage_" + id).show();
-                //   $("#myImage").hide();
 
-            };
-        }
+
     </script>
 
     <script>
-        function addSizes() {
-
-            var rowCount = $('#tblSize tbody tr').length;
-
-
-            var index = $("#hidSizeIndex").val();
-            var Exists = false;
-
-            var Size = $("#txtSize").val();
-            if (Size != '') {
-                $('#tblSize tr').each(function (ind) {
-                    if ($("#CategorySize_lst_" + ind + "__Size").val() === Size && index !== ind.toString() && $("#CategorySize_lst_" + ind + "__Mode").val() != '2') {
-                        alert("Already Exists");
-                        Exists = true;
-                    }
-                });
-                if (!Exists) {
-
-
-                    if (index === "") {
-                        var html = '<tr index="' + rowCount + '">';
-                        html += '<td class="tabel-td-xs">  <input  id="CategorySize_lst_' + rowCount + '__Size" name="CategorySize_lst[' + rowCount + '].Size" type="text" value="' + $("#txtSize").val() + '" tabindex="-1"> </td>';
-                        html += '<td class="tabel-td-xs">';
-                        html += '<input id="CategorySize_lst_' + rowCount + '__Mode" name="CategorySize_lst[' + rowCount + '].Mode" type="hidden" value="0">';
-                        html += '<input id="CategorySize_lst_' + rowCount + '__PkId" name="CategorySize_lst[' + rowCount + '].PkId" type="hidden" value="0">';
-                        html += '<span class="action-icon" onclick="UpdateSize(this,' + rowCount + ',\'del\')"><i class="fa fa-trash" /></span> </td>';
-
-                        html += '</tr>';
-
-                        $("#tblSize tbody").append(html);
-                    } else {
-                        // $("#CategorySize_lst_" + index + "__Size").val($("#txtSize").val());
-                        //  $("#CategorySize_lst_" + index + "__Mode").val('1');
-
-                    }
-                    $("#txtSize").val('');
-                    //$("#FklocalityGridId").prop('selectedIndex', 0);
-                    //DropDownReset('FklocalityGridId');
-                }
+        function hideShow(Ischange) {
+            var _applyOn = $("#PromotionApplyOn").val();
+            var _promotion = $("#Promotion").val();
+            if (Ischange) {
+                $("#FKProdID,#FkProdCatgId,#FkBrandId,#FkPromotionProdId,#drpFkPromotionProdId,#PromotionApplyAmt,#PromotionApplyQty,#PromotionAmt,#PromotionQty").val('0');
+                $("#drpFKProdID,#drpFkProdCatgId,#drpFkBrandId,#drpFkPromotionProdId").val('');
+                $("#FkPromotionApplyUnitId,FkPromotionUnitId").val('1')
             }
-            else { alert("Insert Size"); }
-            // }
-            return false;
-        }
+            $("#divheading").text(_promotion);
 
-        function UpdateSize(obj, index, action) {
-            //if (action === 'edit') {
-            //    $("#hidSizeIndex").val(index);
-            //    $("#FklocalityGridId").val($("#CategorySize_lst_" + index + "__FKSizeID").val());
-            //    // $("#drpFklocalityGridId").val($("#CategorySize_lst_" + index + "__Size").val());
-            //    $("#OpeningBalance").val($("#CategorySize_lst_" + index + "__Size").val());
-            //    $('#thDrCr').find("input[value='" + $("#CategorySize_lst_" + index + "__type").val() + "']").prop('checked', true);
-            //    $(obj).closest('tr').removeClass('tbl-delete');
-            //} else
+            $("#PromotionApplyAmt,#PromotionApplyQty,#PromotionAmt,#FkPromotionApplyUnitId,#drpFkPromotionProdId,#PromotionQty,#FkPromotionUnitId").attr("readonly", "readonly");
 
-            if (action === 'del') {
-                $(obj).closest('tr').addClass('tbl-delete');
-                $("#CategorySize_lst_" + index + "__Mode").val('2');
+
+
+            if (_promotion == "Free Product") {
+                $("#PromotionApplyQty,#FkPromotionApplyUnitId,#drpFkPromotionProdId,#PromotionAmt,#PromotionQty,#FkPromotionUnitId").removeAttr("readonly");
+            }
+            else if (_promotion == "Free Qty") {
+                $("#PromotionApplyQty,#FkPromotionApplyUnitId,#PromotionQty").removeAttr("readonly");
+            }
+            else if (_promotion == "Trade Discount" || _promotion == "Scheme Discount") {
+                $("#PromotionApplyQty,#FkPromotionApplyUnitId,#PromotionAmt").removeAttr("readonly");
+            }
+            else if (_promotion == "Free Point") {
+                $("#PromotionApplyAmt,#PromotionAmt").removeAttr("readonly");
+
+            }
+
+            if (_applyOn == "Product") {
+                $("#divCategory,#divBrand").hide();
+                $("#divProduct").show();
+            }
+            else if (_applyOn == "Category") {
+                $("#divProduct,#divBrand").hide();
+                $("#divCategory").show();
+            }
+            else if (_applyOn == "Brand") {
+                $("#divCategory,#divProduct").hide();
+                $("#divBrand").show();
+            }
+            else if (_applyOn == "Invoice Value") {
+                $("#divCategory,#divProduct,#divBrand").hide();
+                // $("").show();
+                $("#PromotionApplyAmt,#PromotionApplyAmt").removeAttr("readonly");
             }
         }
+
     </script>
 }

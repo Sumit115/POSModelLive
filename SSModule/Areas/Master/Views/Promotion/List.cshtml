@@ -2,7 +2,9 @@
     ViewData["Title"] = ViewBag.PromotionDuring + " Promotion List";
     ViewData["bdClass"] = "browser";
 }
-
+<div class="filter">
+    <input id="PromotionDuring" name="PromotionDuring" type="text" value="@ViewBag.PromotionDuring" />
+</div>
 <partial name="~/Views/Shared/partial/_Grid.cshtml" />;
 
 @section Scripts {
@@ -12,7 +14,7 @@
             $("#create_new").attr("href", "/Master/Promotion/Create/@ViewBag.PromotionDuring" );
 
             IdProperty = "PkPromotionId";
-            GridName = ViewBag.PromotionDuring;
+            GridName = "@ViewBag.PromotionDuring";
             View();
         });
     </script>

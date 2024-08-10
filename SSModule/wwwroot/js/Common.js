@@ -576,13 +576,13 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
                 var cg = new coGrid("#WUCFilter");
                 cg.setColumnHeading("Select~Product~Batch~Barcode");
                 cg.setColumnWidthPer("10~20~15~15", 800);
-                cg.setColumnFields("tick~Product~Batch~Barcode");
+                cg.setColumnFields("IsPrint~Product~Batch~Barcode");
                 cg.setAlign("C~L~L~L");
                 cg.defaultHeight = "400px";
                 cg.setSearchType("0~1~1~1");
                 cg.setSearchableColumns("Product~Batch~Barcode");
                 cg.setSortableColumns("Product~Batch~Barcode");
-                cg.setCheckAllCheckboxColumns("tick~~");
+                cg.setCheckAllCheckboxColumns("IsPrint~~");
                 cg.setIdProperty("Barcode");
                 cg.setCtrlType("B~~~");
                 cg.bind(Handler_BarcodePrintGridData);
@@ -591,7 +591,7 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
 
                 $("#btnPrintPreview").off("click").on("click", function () {
                      
-                    var _List = filterGridTagPrint.getData().filter(function (el) { return el.tick })
+                    var _List = filterGridTagPrint.getData().filter(function (el) { return el.IsPrint })
                   
 
                     if (_List.length > 0) {
@@ -700,6 +700,8 @@ var Handler = {
             return loc.substring(0, loc.indexOf("Index"));
         else if (location.href.indexOf("View") != -1)
             return location.href.substring(0, location.href.indexOf("View"));
+        else if (location.href.indexOf("List") != -1)
+            return location.href.substring(0, location.href.indexOf("List")); 
         else
             return location.href.substring(0, location.href.lastIndexOf("/") + 1);
     },

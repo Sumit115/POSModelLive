@@ -32,31 +32,58 @@ namespace SSRepository.Repository.Master
         {
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
-            List<LocationModel> data= new List<LocationModel>();    
-         
-               
-                 data = (from Loc in __dbContext.TblLocationMas
-                                            where (EF.Functions.Like(Loc.Location.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                            orderby Loc.PkLocationID
-                                            select (new LocationModel
-                                            {
-                                                PKLocationID = Loc.PkLocationID,
-                                                Location = Loc.Location,
-                                                Alias = Loc.Alias,
-                                                Address = Loc.Address,
-                                                FKStationID=Loc.FkStationID,
-                                                Pincode = Loc.Pincode,
-                                                Phone1 = Loc.Phone1,
-                                                Phone2 = Loc.Phone2,
-                                                Fax = Loc.Fax,
-                                                Email = Loc.Email,
-                                                Website = Loc.Website,
-                                                ModifiDate= Loc.ModifiedDate.ToString("dd-MMM-yyyy"),
-                                                CreateDate=Loc.CreationDate.ToString("dd-MMM-yyyy")
-                                            }
-                                           )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
-          
+            List<LocationModel> data = new List<LocationModel>();
+
+
+            data = (from Loc in __dbContext.TblLocationMas
+                    where (EF.Functions.Like(Loc.Location.Trim().ToLower(), Convert.ToString(search) + "%"))
+                    orderby Loc.PkLocationID
+                    select (new LocationModel
+                    {
+                        PKLocationID = Loc.PkLocationID,
+                        Location = Loc.Location,
+                        Alias = Loc.Alias,
+                        Address = Loc.Address,
+                        FKStationID = Loc.FkStationID,
+                        Pincode = Loc.Pincode,
+                        Phone1 = Loc.Phone1,
+                        Phone2 = Loc.Phone2,
+                        Fax = Loc.Fax,
+                        Email = Loc.Email,
+                        Website = Loc.Website,
+                        ModifiDate = Loc.ModifiedDate.ToString("dd-MMM-yyyy"),
+                        CreateDate = Loc.CreationDate.ToString("dd-MMM-yyyy")
+                    }
+                   )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+
             return data;
+        }
+        public object GetDrpLocation(int pageSize, int pageNo = 1, string search = "")
+        {
+            if (search != null) search = search.ToLower();
+            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+
+
+            return (from Loc in __dbContext.TblLocationMas
+                    where (EF.Functions.Like(Loc.Location.Trim().ToLower(), Convert.ToString(search) + "%"))
+                    orderby Loc.PkLocationID
+                    select (new
+                    {
+                        Loc.PkLocationID,
+                        Loc.Location,
+                        Loc.Alias,
+                        Loc.Address,
+                        Loc.FkStationID,
+                        Loc.Pincode,
+                        Loc.Phone1,
+                        Loc.Phone2,
+                        Loc.Fax,
+                        Loc.Email,
+                        Loc.Website,
+                    }
+                   )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+
+
         }
 
         public LocationModel GetSingleRecord(long PkLocationId)
@@ -82,7 +109,7 @@ namespace SSRepository.Repository.Master
                         Pincode = cou.Pincode,
                         Phone1 = cou.Phone1,
                         Phone2 = cou.Phone2,
-                        IsAllCostCenter=cou.IsAllCostCenter,
+                        IsAllCostCenter = cou.IsAllCostCenter,
                         Fax = cou.Fax,
                         Email = cou.Email,
                         Website = cou.Website,
@@ -92,7 +119,7 @@ namespace SSRepository.Repository.Master
                         IsAllAccount = cou.IsAllAccount,
                         ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                         CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
-                        
+
                     })).FirstOrDefault();
             return data;
         }
@@ -102,7 +129,7 @@ namespace SSRepository.Repository.Master
             string Error = "";
             LocationModel obj = GetSingleRecord(PkLocationId);
 
-            
+
 
             if (Error == "")
             {
@@ -152,26 +179,26 @@ namespace SSRepository.Repository.Master
             Tbl.PkLocationID = model.PKLocationID;
             Tbl.Location = model.Location;
             Tbl.Address = model.Address;
-            Tbl.Alias= model.Alias;
-            Tbl.CreationDate=DateTime.Now;
-            Tbl.IsBillingLocation= model.IsBillingLocation;
-            Tbl.IsAllProduct= model.IsAllProduct;
-            Tbl.IsAllCustomer= model.IsAllCustomer;
-            Tbl.IsAllVendor= model.IsAllVendor;
+            Tbl.Alias = model.Alias;
+            Tbl.CreationDate = DateTime.Now;
+            Tbl.IsBillingLocation = model.IsBillingLocation;
+            Tbl.IsAllProduct = model.IsAllProduct;
+            Tbl.IsAllCustomer = model.IsAllCustomer;
+            Tbl.IsAllVendor = model.IsAllVendor;
             Tbl.FkStationID = model.FKStationID;
-            Tbl.FkLocalityID = model.FKLocalityID; 
-            Tbl.Pincode= model.Pincode;
-            Tbl.Phone1= model.Phone1;
-            Tbl.Phone2= model.Phone2;
-            Tbl.Fax= model.Fax;
-            Tbl.Email= model.Email;
-            Tbl.Website= model.Website;
+            Tbl.FkLocalityID = model.FKLocalityID;
+            Tbl.Pincode = model.Pincode;
+            Tbl.Phone1 = model.Phone1;
+            Tbl.Phone2 = model.Phone2;
+            Tbl.Fax = model.Fax;
+            Tbl.Email = model.Email;
+            Tbl.Website = model.Website;
             Tbl.IsDifferentTax = model.IsDifferentTax;
             Tbl.FkAccountID = model.FKAccountID;
             Tbl.FkBranchID = model.FKBranchID;
             Tbl.IsAllAccount = model.IsAllAccount;
             Tbl.FKCreatedByID = model.FKUserId;
-            Tbl.IsAllCostCenter=model.IsAllCostCenter;
+            Tbl.IsAllCostCenter = model.IsAllCostCenter;
             Tbl.ModifiedDate = DateTime.Now;
             if (Mode == "Create")
             {

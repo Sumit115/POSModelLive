@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using SSRepository.Models;
 using Microsoft.VisualBasic;
 using System.Runtime.ConstrainedExecution;
+using System.Reflection.Metadata;
 
 namespace SSRepository.Repository.Master
 {
@@ -34,7 +35,7 @@ namespace SSRepository.Repository.Master
         {
             dynamic cnt;
             string error = "";
-            if ( model.PkSeriesId > 0)
+            if (model.PkSeriesId > 0)
             {
                 if (model.TranAlias == "SORD") { error = __dbContext.TblSalesOrdertrn.Where(x => x.FKSeriesId == model.PkSeriesId).ToList().Count > 0 ? "Update Not Available" : ""; }
                 if (model.TranAlias == "SINV") { error = __dbContext.TblSalesInvoicetrn.Where(x => x.FKSeriesId == model.PkSeriesId).ToList().Count > 0 ? "Update Not Available" : ""; }
@@ -48,41 +49,51 @@ namespace SSRepository.Repository.Master
 
         public List<SeriesModel> GetList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
         {
-            if (search != null) search = search.ToLower();
-            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
-            List<SeriesModel> data = (from cou in __dbContext.TblSeriesMas
-                                      where EF.Functions.Like(cou.Series.Trim().ToLower(), search + "%")
-                                      && (TranAlias == "" || cou.TranAlias == TranAlias)
-                                      && (DocumentType == "" || cou.DocumentType == DocumentType)
-                                      // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                      orderby cou.PkSeriesId
-                                      select (new SeriesModel
-                                      {
-                                          PkSeriesId = cou.PkSeriesId,
-                                          FKUserId = cou.FKUserID,
-                                          FKCreatedByID = cou.FKCreatedByID,
-                                          ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                                          CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
-                                          Series = cou.Series,
-                                          SeriesNo = cou.SeriesNo,
-                                          FkBranchId = cou.FkBranchId,
-                                          BillingRate = cou.BillingRate,
-                                          TranAlias = cou.TranAlias,
-                                          FormatName = cou.FormatName,
-                                          ResetNoFor = cou.ResetNoFor,
-                                          AllowWalkIn = cou.AllowWalkIn,
-                                          AutoApplyPromo = cou.AutoApplyPromo,
-                                          RoundOff = cou.RoundOff,
-                                          DefaultQty = cou.DefaultQty,
-                                          AllowZeroRate = cou.AllowZeroRate,
-                                          AllowFreeQty = cou.AllowFreeQty,
-                                          DocumentType = cou.DocumentType,
+            List<SeriesModel> data = new List<SeriesModel>();
+            try
+            {
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                data = (from cou in __dbContext.TblSeriesMas
+                            //join _tranAlias in GetDrpTranAlias().ToList() on cou.TranAlias equals _tranAlias.Value
+                        where EF.Functions.Like(cou.Series.Trim().ToLower(), search + "%")
+                        && (TranAlias == "" || cou.TranAlias == TranAlias)
+                        && (DocumentType == "" || cou.DocumentType == DocumentType)
+                        // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                        orderby cou.PkSeriesId
+                        select (new SeriesModel
+                        {
+                            PkSeriesId = cou.PkSeriesId,
+                            FKUserId = cou.FKUserID,
+                            FKCreatedByID = cou.FKCreatedByID,
+                            ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                            CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
+                            Series = cou.Series,
+                            SeriesNo = cou.SeriesNo,
+                            FkBranchId = cou.FkBranchId,
+                            BillingRate = cou.BillingRate,
+                            TranAlias = cou.TranAlias,
+                            FormatName = cou.FormatName,
+                            ResetNoFor = cou.ResetNoFor,
+                            AllowWalkIn = cou.AllowWalkIn,
+                            AutoApplyPromo = cou.AutoApplyPromo,
+                            RoundOff = cou.RoundOff,
+                            DefaultQty = cou.DefaultQty,
+                            AllowZeroRate = cou.AllowZeroRate,
+                            AllowFreeQty = cou.AllowFreeQty,
+                            DocumentType = cou.DocumentType,
+                            FKLocationID = cou.FKLocationID,
+                            //TranAliasName= GetTranAliasName(cou.TranAlias),
+                        }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+            }
+            catch (Exception ex)
+            {
 
-                                      }
-                                     )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
-            return data;
+            }
+            return data.ToList();
         }
-        
+
 
 
         public SeriesModel GetSingleRecord(long PkSeriesId)
@@ -90,7 +101,7 @@ namespace SSRepository.Repository.Master
 
             SeriesModel data = new SeriesModel();
             data = (from cou in __dbContext.TblSeriesMas
-                    join branch in __dbContext.TblBranchMas on cou.FkBranchId equals branch.PkBranchId 
+                    join branch in __dbContext.TblBranchMas on cou.FkBranchId equals branch.PkBranchId
                     where cou.PkSeriesId == PkSeriesId
                     select (new SeriesModel
                     {
@@ -112,11 +123,12 @@ namespace SSRepository.Repository.Master
                         DefaultQty = cou.DefaultQty,
                         AllowZeroRate = cou.AllowZeroRate,
                         AllowFreeQty = cou.AllowFreeQty,
-                        BranchName= branch.BranchName
+                        BranchName = branch.BranchName,
+                        FKLocationID = cou.FKLocationID,
                     })).FirstOrDefault();
             return data;
         }
-        
+
         public string DeleteRecord(long PkSeriesId)
         {
             string Error = "";
@@ -155,13 +167,13 @@ namespace SSRepository.Repository.Master
             return Error;
         }
         public override string ValidateData(object objmodel, string Mode)
-        { 
+        {
             SeriesModel model = (SeriesModel)objmodel;
             string error = "";
             error = isAlreadyExist(model, Mode);
             if (string.IsNullOrEmpty(error) && model.PkSeriesId > 0)
             {
-                error = isAvailableForEdit(model, Mode); 
+                error = isAvailableForEdit(model, Mode);
             }
             return error;
 
@@ -179,7 +191,7 @@ namespace SSRepository.Repository.Master
 
             Tbl.Series = model.Series;
             Tbl.SeriesNo = model.SeriesNo;
-            Tbl.FkBranchId = model.FkBranchId;
+            //Tbl.FkBranchId = model.FkBranchId;
             Tbl.BillingRate = model.BillingRate;
             Tbl.TranAlias = model.TranAlias;
             Tbl.FormatName = model.FormatName;
@@ -190,7 +202,8 @@ namespace SSRepository.Repository.Master
             Tbl.DefaultQty = model.DefaultQty;
             Tbl.AllowZeroRate = model.AllowZeroRate;
             Tbl.AllowFreeQty = model.AllowFreeQty;
-            Tbl.ModifiedDate= DateTime.Now;
+            Tbl.FKLocationID = model.FKLocationID == 0 ? 11 : model.FKLocationID;
+            Tbl.ModifiedDate = DateTime.Now;
             if (Mode == "Create")
             {
                 Tbl.FKCreatedByID = model.FKCreatedByID;
@@ -216,7 +229,7 @@ namespace SSRepository.Repository.Master
                     new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Series", Fields="Series",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                     new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Series No ", Fields="SeriesNo",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                     new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Billing Rate", Fields="BillingRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Tran Alias", Fields="TranAlias",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                    new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Transaction", Fields="TranAliasName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                     //new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Format Name", Fields="FormatName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                     //new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Reset No For", Fields="ResetNoFor",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                     //new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Allow WalkIn", Fields="AllowWalkIn",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },

@@ -17,11 +17,7 @@ namespace SSRepository.Models
         [Required(ErrorMessage = "Name Required")]
         public string PromotionName { get; set; }
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? PromotionFromDt { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? PromotionToDt { get; set; }
         public string? PromotionFromTime { get; set; }
         public string? PromotionToTime { get; set; }
@@ -29,11 +25,11 @@ namespace SSRepository.Models
         public long? FkVendorId { get; set; }
         public long? FkCustomerId { get; set; }
         public long? FkReferById { get; set; }
-       
+
         [Required(ErrorMessage = "Apply On Required")]
         public string PromotionApplyOn { get; set; }
         [Required(ErrorMessage = "Promotion Required")]
-        public string  Promotion { get; set; }
+        public string Promotion { get; set; }
         public decimal? PromotionApplyAmt { get; set; }
         public decimal? PromotionApplyQty { get; set; }
         public long? FkPromotionApplyUnitId { get; set; }
@@ -52,6 +48,10 @@ namespace SSRepository.Models
         public string? CustomerName { get; set; }
         public string? VendorName { get; set; }
         public string? LocationName { get; set; }
+        public string? ProductName { get; set; }
+        public string? CategoryName { get; set; }
+        public string? BrandName { get; set; }
+        public string? PromotionProductName { get; set; }
 
     }
 
