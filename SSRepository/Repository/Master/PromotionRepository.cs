@@ -31,11 +31,11 @@ namespace SSRepository.Repository.Master
         }
 
         public List<PromotionModel> GetList(int pageSize, int pageNo = 1, string PromotionDuring = "")
-        { 
+        {
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<PromotionModel> data = (from cou in __dbContext.TblPromotionMas
                                              //join catGrp in __dbContext.TblPromotionGroupMas on cou.FkPromotionGroupId equals catGrp.PkPromotionGroupId
-                                         where  cou.PromotionDuring== PromotionDuring
+                                         where cou.PromotionDuring == PromotionDuring
                                          //&& (PromotionGroupId == 0 || cou.FkPromotionGroupId == PromotionGroupId)
                                          orderby cou.PkPromotionId
                                          select (new PromotionModel
@@ -77,9 +77,27 @@ namespace SSRepository.Repository.Master
 
         public PromotionModel GetSingleRecord(long PkPromotionId)
         {
-
+            
             PromotionModel data = new PromotionModel();
             data = (from cou in __dbContext.TblPromotionMas
+                    join _prd in __dbContext.TblProductMas on cou.FKProdID equals (int?)_prd.PkProductId into _prdmp
+                    from prd in _prdmp.DefaultIfEmpty()
+                    join _cat in __dbContext.TblCategoryMas on cou.FkProdCatgId equals (int?)_cat.PkCategoryId into _catmp
+                    from cat in _catmp.DefaultIfEmpty()
+                    join _brand in __dbContext.TblBrandMas on cou.FkBrandId equals (int?)_brand.PkBrandId into _brandmp
+                    from brand in _brandmp.DefaultIfEmpty()
+
+                    join _location in __dbContext.TblLocationMas on cou.FKLocationId equals (int?)_location.PkLocationID into _locationmp
+                    from location in _locationmp.DefaultIfEmpty()
+                    join _cust in __dbContext.TblCustomerMas on cou.FkCustomerId equals (int?)_cust.PkCustomerId into _custmp
+                    from cust in _custmp.DefaultIfEmpty()
+                    join _vendor in __dbContext.TblVendorMas on cou.FkVendorId equals (int?)_vendor.PkVendorId into _vendormp
+                    from vendor in _vendormp.DefaultIfEmpty()
+
+                    join _freePrd in __dbContext.TblProductMas on cou.FkPromotionProdId equals (int?)_freePrd.PkProductId into _freePrdmp
+                    from freePrd in _freePrdmp.DefaultIfEmpty()
+
+
                     where cou.PkPromotionId == PkPromotionId
                     select (new PromotionModel
                     {
@@ -121,6 +139,13 @@ namespace SSRepository.Repository.Master
                         //                        Size = ad.Size,
                         //                        FkPromotionId = ad.FkPromotionId,
                         //                    })).ToList(),
+                        ProductName = prd.Product,
+                        CategoryName = cat.CategoryName,
+                        BrandName=brand.BrandName,
+                       CustomerName = cust.Name ,
+                       VendorName = vendor.Name,
+                       LocationName=location.Location,
+                       PromotionProductName=freePrd.Product,
                     })).FirstOrDefault();
             return data;
         }
@@ -189,23 +214,23 @@ namespace SSRepository.Repository.Master
             Tbl.PromotionToDt = model.PromotionToDt;
             Tbl.PromotionFromTime = model.PromotionFromTime;
             Tbl.PromotionToTime = model.PromotionToTime;
-            Tbl.FKLocationId = model.FKLocationId;
-            Tbl.FkVendorId = model.FkVendorId;
-            Tbl.FkCustomerId = model.FkCustomerId;
-            Tbl.FkReferById = model.FkReferById;
+            Tbl.FKLocationId = model.FKLocationId > 0 ? model.FKLocationId : null;
+            Tbl.FkVendorId = model.FkVendorId > 0 ? model.FkVendorId : null;
+            Tbl.FkCustomerId = model.FkCustomerId > 0 ? model.FkCustomerId : null;
+            Tbl.FkReferById = model.FkReferById > 0 ? model.FkReferById : null;
             Tbl.PromotionApplyOn = model.PromotionApplyOn;
             Tbl.Promotion = model.Promotion;
             Tbl.PromotionApplyAmt = model.PromotionApplyAmt;
             Tbl.PromotionApplyQty = model.PromotionApplyQty;
-            Tbl.FkPromotionApplyUnitId = model.FkPromotionApplyUnitId;
-            Tbl.FKLotID = model.FKLotID;
-            Tbl.FkPromotionProdId = model.FkPromotionProdId;
+            Tbl.FkPromotionApplyUnitId = model.FkPromotionApplyUnitId > 0 ? model.FkPromotionApplyUnitId : null;
+            Tbl.FKLotID = model.FKLotID > 0 ? model.FKLotID : null;
+            Tbl.FkPromotionProdId = model.FkPromotionProdId > 0 ? model.FkPromotionProdId : null;
             Tbl.PromotionAmt = model.PromotionAmt;
             Tbl.PromotionQty = model.PromotionQty;
-            Tbl.FkPromotionUnitId = model.FkPromotionUnitId;
-            Tbl.FKProdID = model.FKProdID;
-            Tbl.FkProdCatgId = model.FkProdCatgId;
-            Tbl.FkBrandId = model.FkBrandId;
+            Tbl.FkPromotionUnitId = model.FkPromotionUnitId > 0 ? model.FkPromotionUnitId : null;
+            Tbl.FKProdID = model.FKProdID > 0 ? model.FKProdID : null;
+            Tbl.FkProdCatgId = model.FkProdCatgId > 0 ? model.FkProdCatgId : null;
+            Tbl.FkBrandId = model.FkBrandId > 0 ? model.FkBrandId : null;
             Tbl.ModifiedDate = DateTime.Now;
             if (Mode == "Create")
             {
@@ -232,13 +257,13 @@ namespace SSRepository.Repository.Master
             var list = new List<ColumnStructure>
             {
                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Name", Fields="PromotionName",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="From Date", Fields="PromotionFromDt",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="To Date", Fields="PromotionToDt",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="From Time", Fields="PromotionFromTime",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="To Time", Fields="PromotionToTime",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="From Date", Fields="PromotionFromDt_str",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="To Date", Fields="PromotionToDt_str",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="From Time", Fields="PromotionFromTime_str",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="To Time", Fields="PromotionToTime_str",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                   new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Apply On", Fields="PromotionApplyOn",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Promotion", Fields="Promotion",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },         
-            
+                  new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Promotion", Fields="Promotion",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+
 
             };
             if (GridName.ToString() == "S")

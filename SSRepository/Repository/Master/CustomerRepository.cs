@@ -159,20 +159,41 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpCustomer(int pageno, int pagesize, string search = "")
+          public object GetDrpCustomer(int pageSize, int pageNo = 1, string search = "")
         {
             if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetList(pagesize, pageno, search);
-
-
-            return (from r in result
-                    select new
-                    {
-                        r.PkId,
-                        r.Name
-                    }).ToList(); ;
+            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+           return (from cou in __dbContext.TblCustomerMas
+                                     join _city in __dbContext.TblCityMas
+                                    on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
+                                    into _citytmp
+                                     from city in _citytmp.DefaultIfEmpty()
+                                     where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                     orderby cou.PkCustomerId
+                                     select  new
+                                     {
+                                         PkId = cou.PkCustomerId,
+                                         Name = cou.Name,
+                                         Code = cou.Code,
+                                         Marital = cou.Marital,
+                                         Gender = cou.Gender,
+                                         Dob = cou.Dob,
+                                         Email = cou.Email,
+                                         Mobile = cou.Mobile,
+                                         Aadhar = cou.Aadhar,
+                                         Panno = cou.Panno,
+                                         Gstno = cou.Gstno,
+                                         IsAadharVerify = cou.IsAadharVerify,
+                                         IsPanVerify = cou.IsPanVerify,
+                                         Status = cou.Status,
+                                         Address = cou.Address,
+                                         StateName = cou.StateName,
+                                         FkCityId = cou.FkCityId,
+                                         City = city.CityName,
+                                         Pin = cou.Pin,
+                                     }
+                                    ).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+             
         }
 
         public string DeleteRecord(long PkId)

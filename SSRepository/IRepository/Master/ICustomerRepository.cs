@@ -12,6 +12,8 @@ namespace SSRepository.IRepository.Master
 
         string isAlreadyExist(PartyModel tblBankMas, string Mode);
         List<PartyModel> GetList(int pageSize, int pageNo = 1, string search = "");
+        object GetDrpCustomer(int pageSize, int pageNo = 1, string search = "");
+
         PartyModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);

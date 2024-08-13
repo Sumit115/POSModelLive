@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,10 +36,10 @@ namespace SSRepository.Models
         public long? FkPromotionApplyUnitId { get; set; }
         public long? FKLotID { get; set; }//Hide FOr Nor
 
-        public long? FkPromotionProdId { get; set; }
+        public long? FkPromotionProdId { get; set; } //Free Product
         public decimal? PromotionAmt { get; set; }
         public decimal? PromotionQty { get; set; }
-        public string? FkPromotionUnitId { get; set; }
+        public long? FkPromotionUnitId { get; set; }
 
 
         public long? FKProdID { get; set; }
@@ -52,6 +53,14 @@ namespace SSRepository.Models
         public string? CategoryName { get; set; }
         public string? BrandName { get; set; }
         public string? PromotionProductName { get; set; }
+
+
+        //For extra
+        public string? PromotionFromDt_str { get { return PromotionFromDt != null ? PromotionFromDt.Value.ToString("dd/MM/yyyy") : ""; } }
+        public string? PromotionToDt_str { get { return PromotionToDt != null ? PromotionToDt.Value.ToString("dd/MM/yyyy") : ""; } }
+        public string? PromotionFromTime_str { get { return !string.IsNullOrEmpty(PromotionFromTime) ? DateTime.ParseExact(PromotionFromTime, "H:mm", null, System.Globalization.DateTimeStyles.None).ToString("hh:mm tt") : ""; } }
+        public string? PromotionToTime_str { get { return !string.IsNullOrEmpty(PromotionToTime) ? DateTime.ParseExact(PromotionToTime, "H:mm", null, System.Globalization.DateTimeStyles.None).ToString("hh:mm tt") : ""; } }
+
 
     }
 

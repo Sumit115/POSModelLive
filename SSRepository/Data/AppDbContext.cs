@@ -79,6 +79,17 @@ namespace SSRepository.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //foreach (var mutableEntityType in modelBuilder.Model.GetEntityTypes())
+            //{
+            //    // check if current entity type is child of BaseModel
+            //    if (mutableEntityType.ClrType.IsAssignableTo(typeof(DbContext)))
+            //    {
+            //        mutableEntityType.SetTableName($"tbl_{mutableEntityType.ClrType.Name}");
+            //    }
+            //}
+          
+            base.OnModelCreating(modelBuilder);
+
             //base.OnModelCreating(modelBuilder);
             //modelBuilder.Ignore<TblBranchMas>();
             //modelBuilder.Ignore<TblCompany>();

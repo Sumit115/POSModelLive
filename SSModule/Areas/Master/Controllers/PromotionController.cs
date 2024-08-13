@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Drawing.Printing;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using System.Globalization;
 
 namespace SSAdmin.Areas.Master.Controllers
 {
@@ -48,7 +49,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         public async Task<IActionResult> List(string id)
         {
-            ViewBag.PromotionDuring = ViewBag.hdGridName =  !string.IsNullOrEmpty(id) ? id : "Sales";
+            ViewBag.PromotionDuring = ViewBag.GridName = !string.IsNullOrEmpty(id) ? id : "Sales";
             ViewBag.FormId = FKFormID;
             return View();
         }
@@ -104,6 +105,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 {
                     ViewBag.PageType = "Edit";
                     Model = _repository.GetSingleRecord(id2);
+                     
                 }
                 else
                 {
@@ -145,7 +147,7 @@ namespace SSAdmin.Areas.Master.Controllers
                     }
                     else
                     {
-                        return RedirectToAction(nameof(List), new {id=model.PromotionDuring });
+                        return RedirectToAction(nameof(List), new { id = model.PromotionDuring });
                     }
                 }
                 else
@@ -194,7 +196,7 @@ namespace SSAdmin.Areas.Master.Controllers
         [HttpPost]
         public object FkCustomerId(int pageSize, int pageNo = 1, string search = "")
         {
-            return _repositoryCustomer.GetList(pageSize, pageNo, search);
+            return _repositoryCustomer.GetDrpCustomer(pageSize, pageNo, search);
         }
         [HttpPost]
         public object FkVendorId(int pageSize, int pageNo = 1, string search = "")
@@ -204,10 +206,16 @@ namespace SSAdmin.Areas.Master.Controllers
         [HttpPost]
         public object FkLocationId(int pageSize, int pageNo = 1, string search = "")
         {
-            return _repositoryLocation.GetList(pageSize, pageNo, search);
+            return _repositoryLocation.GetDrpLocation(pageSize, pageNo, search);
         }
         [HttpPost]
         public object FKProdID(int pageSize, int pageNo = 1, string search = "")
+        {
+            return _repositoryProduct.GetList(pageSize, pageNo, search);
+        }
+
+        [HttpPost]
+        public object FkPromotionProdId(int pageSize, int pageNo = 1, string search = "")
         {
             return _repositoryProduct.GetList(pageSize, pageNo, search);
         }
