@@ -14,6 +14,7 @@ namespace SSRepository.IRepository.Master
         List<ProdLotDtlModel> GetListByProduct(long FkProductId, int pageSize, int pageNo = 1, string search = "");
         object GetDrpProdLotDtl(int pageSize, int pageNo = 1, string search = "");
         ProdLotDtlModel GetSingleRecord(long PkID);
+        string UpdateProdLotDtl(long PkLotId, long FKProductId, string ColumnName, decimal Value);
 
         string DeleteRecord(long PKID);
     }

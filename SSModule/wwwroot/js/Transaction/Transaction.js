@@ -15,7 +15,7 @@ $(document).ready(function () {
     } else { $(".trn-barcode").show(); $("#txtSearchBarcode").focus(); }
 
     $('#btnServerSave').click(function (e) {
-
+        debugger;
         if ($("#loginform1").valid()) {
             SaveRecord();
         }

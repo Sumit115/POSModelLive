@@ -28,6 +28,7 @@
                     <div class="form-group">
                         <label>Mobile</label>
                         <input asp-for="PartyMobile" class="form-control input-number" maxlength="10" />
+                        <span asp-validation-for="PartyMobile" class="text-danger"></span>
                     </div>
                 </div>
 
@@ -35,18 +36,21 @@
                     <div class="form-group">
                         <label>Address</label>
                         <textarea asp-for="PartyAddress" class="form-control" rows="2" disabled></textarea>
+                        <span asp-validation-for="PartyAddress" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>GSTIN</label>
                         <input asp-for="PartyGSTN" class="form-control" disabled />
+                        <span asp-validation-for="PartyGSTN" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Credit</label>
                         <input asp-for="PartyCredit" class="form-control" value="0" disabled />
+                        <span asp-validation-for="PartyCredit" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-4">

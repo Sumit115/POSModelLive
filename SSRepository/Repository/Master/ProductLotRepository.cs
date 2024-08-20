@@ -17,7 +17,7 @@ namespace SSRepository.Repository.Master
         public string isAlreadyExist(ProdLotDtlModel model, string Mode)
         {
             dynamic cnt;
-            string error = "";           
+            string error = "";
 
             return error;
         }
@@ -76,7 +76,7 @@ namespace SSRepository.Repository.Master
             var data = (from cou in __dbContext.TblProdLotDtl
                         join prd in __dbContext.TblProductMas on cou.FKProductId equals prd.PkProductId
                         join cat in __dbContext.TblCategoryMas on prd.FKProdCatgId equals cat.PkCategoryId
-                      //  join catgrop in __dbContext.TblCategoryGroupMas on prd.FkCatGroupId equals catgrop.PkCategoryGroupId
+                        //  join catgrop in __dbContext.TblCategoryGroupMas on prd.FkCatGroupId equals catgrop.PkCategoryGroupId
                         join Pbrand in __dbContext.TblBrandMas on prd.FkBrandId equals Pbrand.PkBrandId
                                               into tembrand
                         from brand in tembrand.DefaultIfEmpty()
@@ -266,25 +266,36 @@ namespace SSRepository.Repository.Master
         {
             var list = new List<ColumnStructure>
             {
-                 new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Article Name", Fields="LotName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Article No", Fields="LotNo",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Barcode", Fields="Barcode",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Alias", Fields="LotAlias",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Size", Fields="Batch",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Color ", Fields="Color",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="MRP ", Fields="MRP",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="SaleRate", Fields="SaleRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="PurchaseRate ", Fields="PurchaseRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="TradeRate", Fields="TradeRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Distribution Rate", Fields="DistributionRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                 new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Article Name", Fields="LotName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Article No", Fields="LotNo",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                 new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Barcode", Fields="Barcode",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Alias", Fields="LotAlias",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Size", Fields="Batch",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                 new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Color ", Fields="Color",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                 new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="MRP ", Fields="MRP",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="F.2" },
+                 new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="SaleRate", Fields="SaleRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="F.2" },
+                 new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="PurchaseRate ", Fields="PurchaseRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="F.2" },
+                 new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="TradeRate", Fields="TradeRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="F.2" },
+                 new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Distribution Rate", Fields="DistributionRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="F.2" },
                  //new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Purchase Rate Unit", Fields="PurchaseRateUnit",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  //new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="MRPSale Rate Unit ", Fields="MRPSaleRateUnit",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=14, Orderby =14, Heading ="Remark", Fields="Remarks",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                 new ColumnStructure{ pk_Id=14, Orderby =14, Heading ="Remark", Fields="Remarks",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                  new ColumnStructure{ pk_Id=12, Orderby =15, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=13, Orderby =16, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
 
             };
             return list;
+        }
+        public string UpdateProdLotDtl(long PkLotId,long FKProductId, string ColumnName,decimal Value)
+        {
+            string error = "";
+            try
+            {
+                string Qry = "Update tblProdLot_dtl set "+ ColumnName + "='"+ Value + "' where PkLotId="+ PkLotId + " and FKProductId="+ FKProductId + "";
+                ExecuteQuery(Qry, ref error);
+            }
+            catch (Exception ex) { error = ex.Message; }
+            return error;
         }
 
 

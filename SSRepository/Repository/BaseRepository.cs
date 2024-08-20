@@ -726,7 +726,7 @@ namespace SSRepository.Repository
                                   CityName = city.CityName,
                                   Pin = branch.Pin,
                                   IsPrint = cou.IsPrint > 0 ? false : true,
-                                  PrintMode=1,
+                                  PrintMode = 1,
                               }).ToList();
                     _lst.AddRange(_d);
                 }
@@ -796,6 +796,27 @@ namespace SSRepository.Repository
                 new ddl { Value = "2", Text = "Unit 2" },
                 new ddl { Value = "3", Text = "Unit 3" }
             };
+        }
+
+        public void ExecuteQuery(string Qry, ref string ErrMsg)
+        {
+
+
+            using (SqlConnection con = new SqlConnection(conn))
+            {
+                //con.Open();
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd = new SqlCommand("usp_ExecuteQuery", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Qry", Qry);
+                cmd.Parameters.Add(new SqlParameter("@ErrMsg", SqlDbType.NVarChar, int.MaxValue, ParameterDirection.Output, false, 0, 10, "ErrMsg", DataRowVersion.Default, null));
+                cmd.ExecuteNonQuery();
+                ErrMsg = Convert.ToString(cmd.Parameters["@ErrMsg"].Value);
+                con.Close();
+            }
         }
 
     }

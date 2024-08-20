@@ -251,29 +251,29 @@
             <tr>
                 <th >S.N.</th>
                 <th  colspan="2">Description of Goods</th>
-                <th >Brand</th>
+   @*             <th >Brand</th>
                 <th >Hsn Code</th>
-                <th >Qty</th>
+   *@             <th >Qty</th>
                 <th >Size</th>
-                <th >Color</th>
- 
+              @*  <th >Color</th>
+ *@
             </tr>
            
 
             @if (Model.TranDetails != null)
             {
                 <tbody>
-                    @foreach (var item in Model.TranDetails)
+                    @foreach (var item in Model.TranDetails.OrderBy(x=>x.SrNo))
                     {
                         <tr>
                             <td>@item.SrNo</td>
                             <td colspan="2">@item.Product</td>
-                            <td>@item.BrandName</td>
-                            <td>@item.HSNCode</td>
+                          @*  <td>@item.BrandName</td>
+                            <td>@item.HSNCode</td>*@
                             <td class="text-center">@item.Qty</td>
                             <td class="text-center">@item.Batch</td>
-                            <td class="text-center">@item.Color</td>
-                            
+                          @*  <td class="text-center">@item.Color</td>
+                          *@  
                         </tr>
                     }
 
@@ -281,12 +281,12 @@
 
                 <tr>
                     <td></td>
-                    <td colspan="2" ></td>
+                   @* <td colspan="2" ></td>*@
                     <td colspan="2" class="text-right font-weight-bold">Total : </td>
                     <td  class="text-center font-weight-bold"> @Model.TranDetails.Sum(x=>x.Qty)</td>
                     <td> </td>
-                    <td></td>
-                     
+                  @*  <td></td>
+                  *@   
                     
                 </tr>
 
@@ -311,7 +311,7 @@
                 <td colspan="2" style="padding:10px"></td>
             </tr>
             <tr>
-                <td class="font-weight-bold text-left">Remarks</td>
+                <td class="font-weight-bold text-left">Remarks : @Model.Remark</td>
                 <td class="font-weight-bold text-right">Authorised Signatory</td>
             </tr>
         </table>

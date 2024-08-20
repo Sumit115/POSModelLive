@@ -38,7 +38,7 @@ namespace SSAdmin.Areas.Master.Controllers
             return View(Model);
         }
         [HttpPost]
-        public async Task<JsonResult> Create( ProdLotDtlModel model)
+        public async Task<JsonResult> Create(ProdLotDtlModel model)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace SSAdmin.Areas.Master.Controllers
                     else
                     {
                         var _md = model;
-                        model = new ProdLotDtlModel();                        
+                        model = new ProdLotDtlModel();
                         model.FKProductId = _md.FKProductId;
                         //   return RedirectToAction(nameof(Create));
                     }
@@ -115,6 +115,28 @@ namespace SSAdmin.Areas.Master.Controllers
         public string GetSingleRecord(long fkProdId)
         {
             return JsonConvert.SerializeObject(_productRepository.GetSingleRecord(fkProdId));
+        }
+
+        public JsonResult UpdateProdLotDtl(long PkLotId, long FKProductId, string ColumnName, decimal Value)
+        {
+            string error = _repository.UpdateProdLotDtl(PkLotId, FKProductId, ColumnName, Value);
+            if (string.IsNullOrEmpty(error))
+            {
+                return Json(new
+                {
+                    status = "success",
+
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    status = "error",
+                    msg = error
+                });
+            }
+
         }
 
         public override List<ColumnStructure> ColumnList(string GridName = "")
