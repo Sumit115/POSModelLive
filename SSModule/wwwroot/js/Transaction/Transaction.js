@@ -246,8 +246,8 @@ function BindGrid(GridId, data) {
                 }
                 else {
                     if (field == "Batch" || field == "Color" || field == "MRP") {
-
-                        if (tranModel.ExtProperties.StockFlag == "I") {
+                        
+                        if (tranModel.ExtProperties.StockFlag == "I" || TranAlias=="SORD") {
                             args.item["FkLotId"] = 0;
                             var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
                             //var Batch = args.item["Batch"];
@@ -352,17 +352,20 @@ function BindGrid(GridId, data) {
                 else if (field == "TradeDisc") {
                     ColumnChange(args, args.row, "TradeDisc");
                 }
-                else if (field == "Batch") {
-
+                else if (field == "Batch") { 
                     var FkLotId = args.item["FkLotId"];
                     if (FkLotId > 0) {
                         ColumnChange(args, args.row, "Batch");
 
                     } else {
-                        if (tranModel.ExtProperties.TranType != "P") {
+                        if (tranModel.ExtProperties.TranType == "P" || TranAlias == "SORD") {
+
+                        }
+                        else{
                             args.item["Batch"] = "";
                             cg.updateRefreshDataRow(args.row);
                         }
+                         
                     }
                 }
                 else if (field == "Color") {
@@ -517,7 +520,7 @@ function ImportBarcode() {
 
         const reader = new FileReader()
         reader.onload = function (event) {
-            debugger;
+            
             if (!Handler.isNullOrEmpty(event.target.result)) {
                 var lst = event.target.result.split('\r\n');
                 sumitImportBarcode(lst);
@@ -529,7 +532,7 @@ function ImportBarcode() {
     
 }
 function sumitImportBarcode(barcodelist) {
-    debugger;
+    
     $(".loader").show();
     tranModel.TranDetails = GetDataFromGrid();
 
@@ -558,7 +561,7 @@ function sumitImportBarcode(barcodelist) {
     })
 }
 function handleFileLoad(event) {
-    debugger;
+    
     var items = event.target.result.split(',');
     var items1 = JSON.stringify(event.target.result).split('\r\n');
     console.log(JSON.stringify(event.target.result));
@@ -1030,4 +1033,36 @@ function showpopupPrintOption() {//BarcodePrint
 
 
 }
+ 
 
+function UploadFile() {
+    //var TranDetails = GetDataFromGrid(); 
+    var formData = new FormData();
+    for (var key in tranModel) {
+        formData.append(key, tranModel[key]);
+    }
+    //formData.append("TranDetails", JSON.stringify(TranDetails));
+    formData.append("file", $("#ExcelFile")[0].files[0]); 
+    debugger;
+    console.log(formData);
+    $.ajax({
+        type: 'POST',
+        url: Handler.currentPath() + 'UploadFile',
+        data: formData,
+        processData: false,
+        contentType: false
+    }).done(function (res) {
+        if (res.status == "success") {
+            tranModel = res.data;
+            BindGrid('DDT', tranModel.TranDetails);
+
+            setFooterData(tranModel);
+            setPaymentDetail(tranModel); 
+            $("#ExcelFile").val("");
+        }
+        else
+            alert(res.msg);
+
+        $(".loader").hide();
+    });
+}

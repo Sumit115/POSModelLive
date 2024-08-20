@@ -26,11 +26,12 @@ function ShowGridColumn() {
 }
 
 function ViewData(_d, Export) {
+    
     $(".loader").show();
     if (Export == "excel") {
         var param = "";
         $.each(_d, function (i, val) {
-            debugger;
+            
             if (!Common.isNullOrEmpty(val)) {
                 param += i + "=" + val + "&";
             }
@@ -53,9 +54,9 @@ function ViewData(_d, Export) {
             datatype: "json",
             success: function (res) {
                 var data = JSON.parse(res.data);
-                debugger;
+                
                 Common.Grid(parseInt(RPTOption.FormId), $("#ReportType").val(), function (s) {
-                    debugger;
+                    
                     var cg = new coGrid("#" + RPTOption.GridId);
                     UDI = cg;
                     cg.setColumnHeading(s.ColumnHeading);
@@ -86,7 +87,7 @@ function ViewData(_d, Export) {
                     });
 
                     $("#contextMenu").off('click').on('click', function (e) {
-                        debugger;
+                        
                         if (!$(e.target).is("li")) {
                             return;
                         }

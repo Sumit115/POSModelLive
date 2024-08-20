@@ -43,7 +43,5 @@ namespace SSRepository.Data
         public long? FkProdCatgId { get; set; }
         public long? FkBrandId { get; set; }
 
-         public virtual ICollection<TblProductMas> tblProduct_mas { get; set; }
-        public virtual ICollection<TblProductMas> tblProduct_mas1 { get; set; }
-    }
+       }
 }

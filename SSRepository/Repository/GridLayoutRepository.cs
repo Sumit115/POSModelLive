@@ -22,7 +22,7 @@ namespace SSRepository.Repository
             bool flag = true;
             TblGridStructer data = new TblGridStructer();
             var _entity = __dbContext.TblGridStructer
-                .Where(cou => cou.FkUserId == FkUserId && cou.FkFormId == FkFormId && cou.GridName == GridName).FirstOrDefault();
+                .Where(cou => cou.FkUserId == FkUserId && cou.FkFormId == FkFormId && (!string.IsNullOrEmpty(cou.GridName) ? cou.GridName : "") == (!string.IsNullOrEmpty(GridName) ? GridName : "")).FirstOrDefault();
             if (_entity == null)
             {
 formbase:

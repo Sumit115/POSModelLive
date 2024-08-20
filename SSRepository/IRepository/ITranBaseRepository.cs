@@ -9,6 +9,8 @@ namespace SSRepository.IRepository
         DataTable GetList(string FromDate, string ToDate, string SeriesFilter, string DocumentType,string LocationFilter="");
         TransactionModel GetSingleRecord(long PkId, long FkSeriesId);
         object BarcodeScan(TransactionModel model, string barcode);
+        object FileUpload(TransactionModel model, DataTable dt);
+
         object FooterChange(TransactionModel model, string fieldName);
         object PaymentDetail(TransactionModel model);
 

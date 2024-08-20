@@ -4,7 +4,7 @@ var ControllerName = "";
 var GridName = "dtl";
 var MinRows = 50;
 $(document).ready(function () {
-    debugger;
+    
     ControllerName = $("#hdControllerName").val();
 
     if (ControllerName == "Voucher") { GridName = "viewdtl"; $("#hdGridName").val('viewdtl'); }
@@ -35,7 +35,7 @@ $(document).ready(function () {
 });
 
 function Load() {
-    debugger;
+    
     var PkId = $("#PkId").val();
     tranModel = JSON.parse($("#hdData").val());
     if (PkId > 0) {

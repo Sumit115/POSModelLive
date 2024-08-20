@@ -431,7 +431,7 @@ namespace SSRepository.Repository.Master
         }
 
         //GetProductDetail ->@barcode='' ,@productID,=0,@lotId=0
-        public DataTable GetProductDetail(string Barcode = "", long ProductId = 0, long LotId = 0)
+        public DataTable GetProductDetail(string Barcode = "", long ProductId = 0, long LotId = 0, string ProductName = "")
         { 
             DataTable dt = new DataTable();
             using (SqlConnection con = new SqlConnection(conn))
@@ -441,7 +441,8 @@ namespace SSRepository.Repository.Master
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Barcode", Barcode);
                 cmd.Parameters.AddWithValue("@ProductId", ProductId);
-                cmd.Parameters.AddWithValue("@LotId", LotId);
+                cmd.Parameters.AddWithValue("@LotId", LotId); 
+                cmd.Parameters.AddWithValue("@ProductName", ProductName);
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(dt);
                 con.Close();

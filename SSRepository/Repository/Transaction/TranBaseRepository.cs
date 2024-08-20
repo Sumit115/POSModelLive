@@ -739,6 +739,98 @@ namespace SSRepository.Repository.Transaction
             catch (Exception ex) { }
             return model;
         }
+        public object FileUpload(TransactionModel model, DataTable dt)
+        {
+            try
+            {
+                string BillingRate = !string.IsNullOrEmpty(model.BillingRate) ? model.BillingRate : (model.TranAlias == "PORD" || model.TranAlias == "PINV") ? "PurchaseRate" : "SaleRate";
+                foreach (DataRow dr in dt.Rows)
+                {
+                    string ProductName = dr[0].ToString();
+                    string Size = dr[1].ToString();
+                    int Qty = Convert.ToInt32(dr[2].ToString());
+
+                    DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail("", 0, 0,ProductName);
+                    if (dtProduct.Rows.Count > 0)
+                    {
+
+                        //check
+                        var detail = new TranDetails();
+                        detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+                        detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
+
+                        var _old = model.TranDetails.ToList().Where(x => x.FkProductId == detail.FkProductId   && x.FkLotId == detail.FkLotId && x.ModeForm != 2 && x.Batch==Size).FirstOrDefault();
+                        if (_old == null)
+                        {
+                            var _checkSrNo = model.TranDetails.ToList().Where(x => x.FkProductId > 0 && x.Qty > 0).ToList();
+                            if (_checkSrNo.Count > 0)
+                            {
+                                detail.SrNo = _checkSrNo.Max(x => x.SrNo) + 1;
+
+                            }
+                            else { detail.SrNo = 1; }
+
+                            detail.Barcode = "";
+                            detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+                            detail.Product = dtProduct.Rows[0]["Product"].ToString();
+                            detail.Qty = Qty;
+                            detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
+                            detail.FKLocationID = model.FKLocationID;
+                            detail.ReturnTypeID = 2;
+
+                            detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
+                            detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
+
+                            if (BillingRate == "MRP") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString()); }
+                            if (BillingRate == "SaleRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString()); }
+                            if (BillingRate == "TradeRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString()); }
+                            if (BillingRate == "DistributionRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString()); }
+                            if (BillingRate == "PurchaseRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["PurchaseRate"].ToString()); }
+
+                            detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
+                            detail.Color = dtProduct.Rows[0]["Color"].ToString();
+                            detail.Batch = Size;//dtProduct.Rows[0]["Batch"].ToString();
+                            if (model.TranAlias == "PORD" || model.TranAlias == "PINV")
+                            {
+                                detail.FkLotId = 0;
+                            }
+
+                            detail.GstRate = (detail.SaleRate < 1000 ? 5 : 18);
+                            detail.Rate = Math.Round(Convert.ToDecimal(detail.SaleRate) * (100 / (100 + detail.GstRate)), 2);
+
+                            detail.TradeDisc = 0;
+                            detail.TradeDiscAmt = 0;
+                            detail.TradeDiscType = "";
+
+                            if (model.FkPartyId > 0 && (model.TranAlias == "SORD" || model.TranAlias == "SINV"))
+                            {
+                                var _cust = new CustomerRepository(__dbContext).GetSingleRecord(model.FkPartyId);
+                                detail.TradeDisc = _cust.Disc;
+
+                            }
+                            detail.TradeRate = detail.DistributionRate = detail.SaleRate;
+
+                            CalculateExe(detail);
+                            model.TranDetails.Add(detail);
+                        }
+                        else
+                        {
+                            int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == detail.FkProductId && a.Batch == Size);
+                            model.TranDetails[rowIndex].Qty += 1;
+
+                            CalculateExe(model.TranDetails[rowIndex]);
+                        }
+
+
+
+                        setGridTotal(model);
+                        setPaymentDetail(model);
+                    }
+                }
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+            return model;
+        }
 
         public void setReturnProductinfo(TransactionModel model, TranDetails? detail)
         {
@@ -1433,18 +1525,21 @@ namespace SSRepository.Repository.Transaction
         public List<CategorySizeLnkModel> Get_CategorySizeList_ByProduct(long PKProductId)
         {
             ProductRepository rep = new ProductRepository(__dbContext);
+            List<CategorySizeLnkModel> data = new List<CategorySizeLnkModel>();
+            if (PKProductId > 0)
+            {
+                long CategoryId = rep.GetSingleRecord(PKProductId).FKProdCatgId;
 
-            long CategoryId = rep.GetSingleRecord(PKProductId).FKProdCatgId;
-
-            List<CategorySizeLnkModel> data = (from cou in __dbContext.TblCategorySizeLnk
-                                               where cou.FkCategoryId == CategoryId
-                                               orderby cou.PkId
-                                               select (new CategorySizeLnkModel
-                                               {
-                                                   PkId = cou.PkId,
-                                                   Size = cou.Size
-                                               }
-                                              )).ToList();
+                data = (from cou in __dbContext.TblCategorySizeLnk
+                                                   where cou.FkCategoryId == CategoryId
+                                                   orderby cou.PkId
+                                                   select (new CategorySizeLnkModel
+                                                   {
+                                                       PkId = cou.PkId,
+                                                       Size = cou.Size
+                                                   }
+                                                  )).ToList();
+            }
             return data;
         }
 
@@ -1545,6 +1640,30 @@ namespace SSRepository.Repository.Transaction
                     new ColumnStructure{ pk_Id=17,  Orderby =17, Heading ="Net Amount",   Fields="NetAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
                     new ColumnStructure{ pk_Id=18,  Orderby =18, Heading ="Barcode",      Fields="Barcode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="T"  },
                     new ColumnStructure{ pk_Id=19,  Orderby =19, Heading ="Del",          Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" }
+
+                };
+            }
+            else if (TranType == "SORD")
+            {
+
+                list = new List<ColumnStructure>
+                {
+                    new ColumnStructure{ pk_Id=1,   Orderby =1,  Heading ="ArticalNo",    Fields="Product",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
+                    new ColumnStructure{ pk_Id=2,   Orderby =2,  Heading ="Size",         Fields="Batch",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="C"  },
+                    new ColumnStructure{ pk_Id=3,   Orderby =3,  Heading ="Color",        Fields="Color",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=4,   Orderby =4,  Heading ="MRP",          Fields="MRP",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=5,   Orderby =5,  Heading ="Rate",         Fields="Rate",                Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""},
+                    new ColumnStructure{ pk_Id=6,   Orderby =6,  Heading ="QTY",          Fields="Qty",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
+                    new ColumnStructure{ pk_Id=7,   Orderby =7,  Heading ="Free Qty",     Fields="FreeQty",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
+                    new ColumnStructure{ pk_Id=8,   Orderby =8,  Heading ="Disc %",       Fields="TradeDisc",           Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
+                    new ColumnStructure{ pk_Id=9,   Orderby =9,  Heading ="Disc Amt",     Fields="TradeDiscAmt",        Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=10,  Orderby =10, Heading ="Disc Type",    Fields="TradeDiscType",       Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=11,  Orderby =11, Heading ="Gross Amt",    Fields="GrossAmt",            Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=12,  Orderby =12, Heading ="GST Rate",     Fields="GstRate",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=13,  Orderby =13, Heading ="GST Amount",   Fields="GstAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=14,  Orderby =14, Heading ="Net Amount",   Fields="NetAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=15,  Orderby =15, Heading ="Barcode",      Fields="Barcode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="T"  },
+                    new ColumnStructure{ pk_Id=16,  Orderby =16, Heading ="Del",          Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" }
 
                 };
             }

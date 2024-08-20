@@ -108,6 +108,7 @@ namespace SSAdmin
             RateStock = 204,
             SalesTransaction = 205,
             PurchaseTransaction = 206,
+            SalesOrderStock = 207,
 
             //
 

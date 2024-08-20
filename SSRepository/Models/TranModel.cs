@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Query.Internal;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using SSRepository.Data;
 using System;
@@ -111,6 +112,7 @@ namespace SSRepository.Models
         public List<BranchModel> BranchDetails { get; set; }
         public BranchModel Branch { get; set; }
 
+        public IFormFile ExcelFile { get; set; }
     }
 
     public class ExtPropertie

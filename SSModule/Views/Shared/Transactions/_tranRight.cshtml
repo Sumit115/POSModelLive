@@ -36,6 +36,30 @@
                     <i class="fas fa-barcode fa-fw" aria-hidden="true" style="font-size:30px;"></i>
                 </a>
             </li>
+          
+        }
+        @if (Model.ExtProperties.TranAlias == "SORD")
+        {
+            <li class="nav-item">
+                <a href="/excelfile/demo_csv_artical.csv" target="_blank"  title="CSV Format Download" class="nav-link" style="padding: 7px 0px 0px 7px;">
+                    <i class="fas fa-download fa-fw" aria-hidden="true" style="font-size:30px;"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <style>
+                .hide {
+                    display: none;
+                }
+            </style>
+
+            <div class="clip-upload">
+                    <label for="ExcelFile" class="nav-link" style="padding: 7px 0px 0px 7px;" title="Upload CSV File">
+                    <i class="fa-paperclip fas fa-fw" aria-hidden="true" style="font-size:30px;"></i>
+                </label>
+                 
+                <input type="file" name="ExcelFile" id="ExcelFile" onchange="UploadFile()" accept=".csv" class="file-input hide">
+            </div>
+        </li>
         }
     </ul>
     }

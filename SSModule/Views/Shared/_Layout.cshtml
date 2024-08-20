@@ -2,7 +2,7 @@
 
 @if (Context.Session.GetString("LoginId") == null || Context.Session.GetString("LoginId") == "")
 {
-    @* Context.Session.SetString("LoginId", Convert.ToString(1));
+  @*   Context.Session.SetString("LoginId", Convert.ToString(1));
      Context.Session.SetInt32("IsAdmin", Convert.ToInt32(1));
      Context.Session.SetString("Photo", "/Admin/dist/img/avatar04.png");*@
 
@@ -514,6 +514,13 @@
                                     <a asp-area="Report" asp-controller="PurchaseTransaction" asp-action="List" class="nav-link">
                                         <i class="fas fa-clipboard-list nav-icon"></i>
                                         <p>Purchase Transaction<i class="right fas fa-external-link-alt tablink"></i></p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a asp-area="Report" asp-controller="SalesOrderStock" asp-action="List" class="nav-link">
+                                        <i class="fas fa-clipboard-list nav-icon"></i>
+                                        <p>Sales Order Stock<i class="right fas fa-external-link-alt tablink"></i></p>
                                     </a>
                                 </li>
                             </ul>

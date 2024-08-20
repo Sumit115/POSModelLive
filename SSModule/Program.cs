@@ -16,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddMvc();
+ 
 builder.Services.AddMvc().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.Formatting = Formatting.Indented;
@@ -37,6 +38,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 builder.Services.AddSession();
 
+ 
 builder.Services.AddScoped<IGridLayoutRepository, GridLayoutRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IVendorRepository, VendorRepository>();
@@ -68,8 +70,9 @@ builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
 builder.Services.AddScoped<IStockDetailReportRepository, StockDetailReportRepository>();
 builder.Services.AddScoped<IRateEndStockRepository, RateEndStockRepository>();
 builder.Services.AddScoped<ISalesTransactionRepository, SalesTransactionRepository>();
-builder.Services.AddScoped<IPurchaseTransactionRepository, PurchaseTransactionRepository>(); 
+builder.Services.AddScoped<IPurchaseTransactionRepository, PurchaseTransactionRepository>();
 builder.Services.AddScoped<IPromotionRepository, PromotionRepository>();
+builder.Services.AddScoped<ISalesOrderStockRepository, SalesOrderStockRepository>();
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();
 

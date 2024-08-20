@@ -85,7 +85,7 @@ namespace SSRepository.Repository.Transaction
             var list = new List<ColumnStructure>();
             if (GridName.ToString().ToLower() == "dtl")
             {
-                list = TrandtlColumnList("S");
+                list = TrandtlColumnList("SORD");
             }
             else
             {

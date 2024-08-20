@@ -40,7 +40,7 @@ function View() {
     });
 };
 function bindGrid(GridId, data, IdProperty) {
-    debugger;
+    
     Common.Grid(parseInt(FormId), GridName, function (s) {
         var cg = new coGrid("#" + GridId);
         UDI = cg;
@@ -89,7 +89,7 @@ function bindGrid(GridId, data, IdProperty) {
         });
 
         $("#contextMenu").off('click').on('click', function (e) {
-            debugger;
+            
             if (!$(e.target).is("li")) {
                 return;
             }
@@ -102,7 +102,7 @@ function bindGrid(GridId, data, IdProperty) {
             var pk_Id = UDI.outGrid.getDataItem(row)[IdProperty];
             var FkSeriesId = UDI.outGrid.getDataItem(row).FKSeriesId;
             if (command == "Edit") {
-                debugger;
+                
                 if (location.href.indexOf("List/") != -1) {
                     var type = location.href.substring(location.href.indexOf("List/") + 5);
                     window.location.href = Handler.currentPath() + "Create/" + type + "/" + pk_Id;

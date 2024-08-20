@@ -1,10 +1,15 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿
+using DocumentFormat.OpenXml.Presentation;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SelectPdf;
@@ -12,10 +17,20 @@ using SSRepository.IRepository;
 using SSRepository.IRepository.Master;
 using SSRepository.Models;
 using SSRepository.Repository.Master;
+using System.Data;
+using System.Data.OleDb;
+using System.Formats.Asn1;
+using System.IO;
+using System.IO.Pipes;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SSAdmin.Areas
 {
 
+    [RequestFormLimits(ValueCountLimit = int.MaxValue)]
     public abstract class BaseTranController<TRepository, TGridLayoutRepository, TICompositeViewEngine, TIWebHostEnvironment> : BaseController
         where TRepository : ITranBaseRepository
         where TGridLayoutRepository : IGridLayoutRepository
@@ -50,6 +65,7 @@ namespace SSAdmin.Areas
             ViewBag.BankList = _repository.BankList();
         }
 
+        [RequestFormLimits(ValueCountLimit = int.MaxValue)]
         public JsonResult ColumnChange(TransactionModel model, int rowIndex, string fieldName)
         {
             return Json(new
@@ -346,6 +362,79 @@ namespace SSAdmin.Areas
             return Json(res);
         }
 
+        [HttpPost]
+        public IActionResult UploadFile(TransactionModel model, IFormFile file)
+        {
+            DataTable dt = new DataTable();
+            string path = "";
+            path = Path.Combine("wwwroot", "ExcelFile");
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
 
+            string rn = new Random().Next(0, 9999).ToString("D6");
+            string filename = rn + file.FileName;
+
+            string filePath = Path.Combine(path, filename);
+            try
+            {
+                using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyToAsync(fileStream); fileStream.Close();
+                }
+                using (StreamReader sr = new StreamReader(filePath))
+                    {
+                        string[] headers = sr.ReadLine().Split(',');
+                        foreach (string header in headers)
+                        {
+                            dt.Columns.Add(header.Trim());
+                        }
+                        while (!sr.EndOfStream)
+                        {
+                            string[] rows = sr.ReadLine().Split(',');
+                            DataRow dr = dt.NewRow();
+                            for (int i = 0; i < headers.Length; i++)
+                            {
+                                dr[i] = rows[i].Trim();
+                            }
+                            dt.Rows.Add(dr);
+                        }
+                        sr.Close();
+                   
+                }
+                if (dt.Rows.Count > 0)
+                {
+                    return Json(new
+                    {
+                        status = "success",
+                        data = _repository.FileUpload(model, dt)
+                    });
+                }
+                else
+                    throw new Exception("Invalid Data");
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = "error",
+                    msg = ex.Message,
+                });
+            }
+             
+
+            
+        }
+
+        public static byte[] StrToByteArray(string str)
+        {
+            UTF8Encoding encoding = new UTF8Encoding();
+            return encoding.GetBytes(str);
+        }
+
+        public static string ByteArrayToStr(byte[] barr)
+        {
+            UTF8Encoding encoding = new UTF8Encoding();
+            return encoding.GetString(barr, 0, barr.Length);
+        }
     }
 }

@@ -596,7 +596,7 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
 
                     if (_List.length > 0) {
                         Common.GetBarcodeSettingData(".barcodesetting", "", function (flag, _d) {
-                            debugger;
+                            
                             if (flag) {
 
                                 var _model = {};
@@ -610,7 +610,7 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
                                     data: { model: _model },
                                     datatype: "json",
                                     success: function (res) {
-                                        debugger;
+                                        
                                         console.log(res);
                                         if (res.status == "success") {
                                             var _w = parseInt($("#BarcodePrint_width").val()) + 100;
