@@ -69,18 +69,27 @@ namespace SSRepository.Repository.Transaction
 
                 if (objmodel.TranDetails != null)
                 {
-                    foreach (var item in objmodel.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
+                    foreach (var item in objmodel.TranDetails.Where(x =>   x.FkProductId > 0))
                     {
                         //if (string.IsNullOrEmpty(item.Color))
                         //{
                         //    throw new Exception("Color Required on Product " + item.Product);
                         //}
-                        if (string.IsNullOrEmpty(item.Batch))
+                        
+                        if (objmodel.TranAlias == "PINV" && item.ModeForm != 0)
                         {
-                            throw new Exception("Size Required on Product " + item.Product);
-                        }
+                            var _check = __dbContext.TblSalesInvoicedtl.Where(x => x.FkLotId == item.FkLotId && x.FkProductId == item.FkProductId).FirstOrDefault();
+                            if (_check != null) { throw new Exception("Product Not Update After Sale :" + item.Product); }
 
-                        CalculateExe(item);
+                        }
+                        if (item.ModeForm != 2)
+                        {
+                            if (string.IsNullOrEmpty(item.Batch))
+                            {
+                                throw new Exception("Size Required on Product " + item.Product);
+                            }
+                            CalculateExe(item);
+                        }
                     }
 
                 }
@@ -503,8 +512,11 @@ namespace SSRepository.Repository.Transaction
             {
                 if (fieldName == "Product")
                 {
-                    setProductinfo(model, model.TranDetails[rowIndex]);
-                    CalculateExe(model.TranDetails[rowIndex]);
+                    if (model.TranDetails[rowIndex].FkId == 0)
+                    {
+                        setProductinfo(model, model.TranDetails[rowIndex]);
+                        CalculateExe(model.TranDetails[rowIndex]);
+                    }
                 }
                 else if (fieldName == "ProductReturn")
                 {
@@ -679,7 +691,7 @@ namespace SSRepository.Repository.Transaction
                         }
                         else { detail.SrNo = 1; }
 
-                        detail.Barcode=barcode;
+                        detail.Barcode = barcode;
                         detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
                         detail.Product = dtProduct.Rows[0]["Product"].ToString();
                         detail.Qty = 1;
@@ -750,7 +762,7 @@ namespace SSRepository.Repository.Transaction
                     string Size = dr[1].ToString();
                     int Qty = Convert.ToInt32(dr[2].ToString());
 
-                    DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail("", 0, 0,ProductName);
+                    DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail("", 0, 0, ProductName);
                     if (dtProduct.Rows.Count > 0)
                     {
 
@@ -759,7 +771,7 @@ namespace SSRepository.Repository.Transaction
                         detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
                         detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
 
-                        var _old = model.TranDetails.ToList().Where(x => x.FkProductId == detail.FkProductId   && x.FkLotId == detail.FkLotId && x.ModeForm != 2 && x.Batch==Size).FirstOrDefault();
+                        var _old = model.TranDetails.ToList().Where(x => x.FkProductId == detail.FkProductId && x.FkLotId == detail.FkLotId && x.ModeForm != 2 && x.Batch == Size).FirstOrDefault();
                         if (_old == null)
                         {
                             var _checkSrNo = model.TranDetails.ToList().Where(x => x.FkProductId > 0 && x.Qty > 0).ToList();
@@ -1531,14 +1543,14 @@ namespace SSRepository.Repository.Transaction
                 long CategoryId = rep.GetSingleRecord(PKProductId).FKProdCatgId;
 
                 data = (from cou in __dbContext.TblCategorySizeLnk
-                                                   where cou.FkCategoryId == CategoryId
-                                                   orderby cou.PkId
-                                                   select (new CategorySizeLnkModel
-                                                   {
-                                                       PkId = cou.PkId,
-                                                       Size = cou.Size
-                                                   }
-                                                  )).ToList();
+                        where cou.FkCategoryId == CategoryId
+                        orderby cou.PkId
+                        select (new CategorySizeLnkModel
+                        {
+                            PkId = cou.PkId,
+                            Size = cou.Size
+                        }
+                       )).ToList();
             }
             return data;
         }

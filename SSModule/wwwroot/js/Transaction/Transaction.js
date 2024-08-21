@@ -248,7 +248,7 @@ function BindGrid(GridId, data) {
                     if (field == "Batch" || field == "Color" || field == "MRP") {
                         
                         if (tranModel.ExtProperties.StockFlag == "I" || TranAlias=="SORD") {
-                            args.item["FkLotId"] = 0;
+                            if (args.item["ModeForm"] !="1") { args.item["FkLotId"] = 0; }
                             var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
                             //var Batch = args.item["Batch"];
                             //var Color = args.item["Color"];
@@ -700,7 +700,7 @@ function setGridRowData(args, data, rowIndex, fieldName) {
         args.grid.getDataItem(args.row).ModeForm = 2
     }
     else {
-
+        
         args.item["SrNo"] = data[rowIndex].SrNo;
         args.item["PkProductId"] = data[rowIndex].PkProductId;
         args.item["FkLotId"] = data[rowIndex].FkLotId;
@@ -740,16 +740,16 @@ function setGridRowData(args, data, rowIndex, fieldName) {
 }
 
 function GetDataFromGrid(ifForsave) {
-
+    debugger;
     var array = cg.getData().filter(x => x.FkProductId > 0);
     let number = Math.max.apply(Math, array.map(function (o) { return o.SrNo; }));
     let SrNo = number > 0 ? number : 0;
     var _d = [];
     cg.getData().filter(function (element) {
-
+        
         if (ifForsave) {
             if (!Handler.isNullOrEmpty(element.Product) && !Handler.isNullOrEmpty(element.Qty)) {
-
+                debugger;
                 if (element.FkProductId > 0) { element.SrNo = element.SrNo; }
                 else { SrNo++; element.SrNo = SrNo; }
                 // element.FkProductId = parseInt(element.Product);
@@ -761,6 +761,7 @@ function GetDataFromGrid(ifForsave) {
 
 
             if (!Handler.isNullOrEmpty(element.Product) || !Handler.isNullOrEmpty(element.FKInvoiceID)) {
+                debugger;
                 if (element.FkProductId > 0) { element.SrNo = element.SrNo; }
                 else { SrNo++; element.SrNo = SrNo; }
                 //element.FkProductId = parseInt(element.Product);
