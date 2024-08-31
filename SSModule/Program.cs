@@ -73,6 +73,8 @@ builder.Services.AddScoped<ISalesTransactionRepository, SalesTransactionReposito
 builder.Services.AddScoped<IPurchaseTransactionRepository, PurchaseTransactionRepository>();
 builder.Services.AddScoped<IPromotionRepository, PromotionRepository>();
 builder.Services.AddScoped<ISalesOrderStockRepository, SalesOrderStockRepository>();
+builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
+
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();
 

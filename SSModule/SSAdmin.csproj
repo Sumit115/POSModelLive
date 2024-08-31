@@ -25,6 +25,10 @@
     <Compile Remove="Areas\Transactions\Controllers\ImportController.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Remove="wwwroot\js\Master\Recipe.js" />
+  </ItemGroup>
+
  
 
   <ItemGroup>
@@ -124,6 +128,7 @@
     <None Include="wwwroot\js\Master\browser.js" />
     <None Include="wwwroot\js\Master\OpeningStock.js" />
     <None Include="wwwroot\js\Master\ProdLotDtl.js" />
+    <None Include="wwwroot\js\Master\Recipe.js" />
     <None Include="wwwroot\js\Master\ProductMas.js" />
     <None Include="wwwroot\js\Report\Report.js" />
     <None Include="wwwroot\js\site.js" />
@@ -200,6 +205,7 @@
 
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.102.2" />
+    <PackageReference Include="iTextSharp" Version="5.5.13.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">

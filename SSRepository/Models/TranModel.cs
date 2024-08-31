@@ -113,6 +113,8 @@ namespace SSRepository.Models
         public BranchModel Branch { get; set; }
 
         public IFormFile ExcelFile { get; set; }
+        public string? NotFound { get; set; }
+        public int IsUploadExcelFile { get; set; } = 0;
     }
 
     public class ExtPropertie
@@ -123,7 +125,7 @@ namespace SSRepository.Models
         public bool PostInAc { get; set; }
         public long FKFormID { get; set; }
         public string LastEntryNo { get; set; }
-        public string DocumentType { get; set; }
+        public string DocumentType { get; set; } 
     }
 
 }

@@ -1,0 +1,129 @@
+﻿@model SSRepository.Models.RecipeModel
+@{
+    ViewData["Title"] = "Recipe Master";
+    ViewData["bdClass"] = "page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+
+</style>
+
+<div class="p-3">
+    <form class="row g-3 form" id="loginform1">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PkRecipeId" />
+        <input type="hidden" id="hdData" value="@ViewBag.Data" />
+        <input type="hidden" id="hdGridIn" value="@ViewBag.GridIn" />
+        <input type="hidden" id="hdGridOut" value="@ViewBag.GridOut" />
+        <div class="col-md-12">
+            <div class="row">
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="border p-2">
+                        <h5>In</h5>
+                        <div class="row">
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Product</label>
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkProductId_In" }, { "Class", "val-cus-drp" }, { "event", "" },
+                                    { "value", 0 }, { "ExtraParam", "" }, { "text", "" }, { "uri", "" } })
+
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Batch</label> 
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "Batch_In" }, { "Class", "val-cus-drp" }, { "event", "" },
+                                    { "value", 0 }, { "ExtraParam", "FkProductId_In" }, { "text", "" }, { "uri", "" } })
+
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Color</label>
+                                    <input type="text" id="Color_In" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input type="hidden" id="hidProductIndex" autocomplete="off" value="">
+                                    <input type="button" class="btn btn-warning" value="Add" onclick="addProducts()" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <table id="tblProduct" class="shelf-tblCatProduct table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="md-height">
+                                        @{
+                                            int AcNo = -1;
+                                        }
+                                        @if (Model.Recipe_dtl != null)
+                                        {
+                                            for (int i = 0; i < Model.Recipe_dtl.Count; i++)
+                                            {
+                                                AcNo++;
+                                                <tr index="0">
+
+                                                    <td class="tabel-td-xs">
+                                                        <input readonly="readonly" id="Recipe_dtl_@(i)__Product" name="Recipe_dtl[@i].Product" type="text" value="@Model.Recipe_dtl[i].Product" tabindex="-1">
+                                                    </td>
+
+                                                    <td class="tabel-td-xs">
+                                                        <input id="Recipe_dtl_@(i)__Mode" name="Recipe_dtl[@i].Mode" type="hidden" value="1">
+                                                        <input id="Recipe_dtl_@(i)__PkId" name="Recipe_dtl[@i].PkId" type="hidden" value="@Model.Recipe_dtl[i].FkRecipeId">
+                                                        <span class="action-icon" onclick="UpdateProduct(this,@i,'del')">
+                                                            <i class="fa fa-trash"></i>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+
+                                            }
+
+                                        }
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label>In</label>
+
+                    <div id="DDTIn" class="DDT">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label>Out</label>
+                    <div id="DDTOut" class="DDT">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    
+    <script src="~/js/master/recipe.js"></script> 
+
+}

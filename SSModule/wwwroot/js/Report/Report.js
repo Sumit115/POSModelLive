@@ -37,7 +37,7 @@ function ViewData(_d, Export) {
             }
         });
         
-        var downloadUrl = '/Report/' + Controller + '/Export?' + param + '';
+        var downloadUrl = '/Report/' + Controller + '/Export?Type=' + Export +'&' + param + '';
         var a = document.createElement("a");
         a.href = downloadUrl;
         a.download = "ReportFile.xls";
@@ -69,6 +69,12 @@ function ViewData(_d, Export) {
                     cg.setSortableColumns(s.SortableColumns);
                     cg.setIdProperty(RPTOption.IdProperty);
                     cg.setCtrlType(s.setCtrlType);
+                    
+                    if (s.TotalOn != '' && s.TotalOn != undefined) {
+                        if (s.TotalOn.replace('~') != '') {
+                            cg.setTotalOn(s.TotalOn)
+                        }
+                    } 
                     cg.bind(data);
                     cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
 

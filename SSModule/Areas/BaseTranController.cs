@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Presentation;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
+using iTextSharp.text;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -163,9 +164,9 @@ namespace SSAdmin.Areas
         }
 
         [HttpPost]
-        public async Task<JsonResult> CategorySizeListByProduct(long FkProductId)
+        public async Task<JsonResult> CategorySizeListByProduct(long FkProductId, string search = "")
         {
-            var data = _repository.Get_CategorySizeList_ByProduct(FkProductId);
+            var data = _repository.Get_CategorySizeList_ByProduct(FkProductId, search);
             return new JsonResult(data);
         }
 
@@ -365,28 +366,51 @@ namespace SSAdmin.Areas
         [HttpPost]
         public IActionResult UploadFile(TransactionModel model, IFormFile file)
         {
-            DataTable dt = new DataTable();
-            string path = "";
-            path = Path.Combine("wwwroot", "ExcelFile");
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
 
-            string rn = new Random().Next(0, 9999).ToString("D6");
-            string filename = rn + file.FileName;
-
-            string filePath = Path.Combine(path, filename);
             try
             {
-                using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+                //Handler.Log("UploadFile", "In Try");
+                if (file != null)
                 {
-                    file.CopyToAsync(fileStream); fileStream.Close();
-                }
-                using (StreamReader sr = new StreamReader(filePath))
+                    //Handler.Log("UploadFile", "File Not Null");
+
+                    DataTable dt = new DataTable();
+                    string path = "";
+                    path = Path.Combine("wwwroot", "ExcelFile");
+                    if (!Directory.Exists(path))
+                        Directory.CreateDirectory(path);
+
+                    string rn = new Random().Next(0, 9999).ToString("D6");
+                    string filename = rn + DateTime.Now.Ticks + file.FileName;
+                    //Handler.Log("UploadFile", "File Name :"+ filename);
+
+                    string filePath = Path.Combine(path, filename);
+                    //Handler.Log("UploadFile", "File Path :" + filePath);
+
+                    using (Stream fileStream = new FileStream(filePath, FileMode.Create))
                     {
+                        //Handler.Log("UploadFile", "fileStream");
+
+                        file.CopyToAsync(fileStream);
+                        //Handler.Log("UploadFile", "fileStream copy");
+
+                        fileStream.Close();
+
+                        //Handler.Log("UploadFile", "fileStream close");
+
+                    }
+                    using (StreamReader sr = new StreamReader(filePath))
+                    {
+                        //Handler.Log("UploadFile", "StreamReader");
+
                         string[] headers = sr.ReadLine().Split(',');
+                        //Handler.Log("UploadFile", "StreamReader headers:"+ headers);
+
                         foreach (string header in headers)
                         {
                             dt.Columns.Add(header.Trim());
+                            //Handler.Log("UploadFile", "dt Column Added:" + header.Trim());
+
                         }
                         while (!sr.EndOfStream)
                         {
@@ -395,34 +419,45 @@ namespace SSAdmin.Areas
                             for (int i = 0; i < headers.Length; i++)
                             {
                                 dr[i] = rows[i].Trim();
+                                //Handler.Log("UploadFile", "dt Row Added:" + rows[i].Trim());
                             }
                             dt.Rows.Add(dr);
+                            //Handler.Log("UploadFile", "dt Row Added Done");
+
                         }
                         sr.Close();
-                   
-                }
-                if (dt.Rows.Count > 0)
-                {
-                    return Json(new
+                        //Handler.Log("UploadFile", "StreamReader Close");
+
+
+                    }
+                    if (dt.Rows.Count > 0)
                     {
-                        status = "success",
-                        data = _repository.FileUpload(model, dt)
-                    });
+                        //Handler.Log("UploadFile", "dt Row Count");
+
+                        model.IsUploadExcelFile = 1;
+                        return Json(new
+                        {
+                            status = "success",
+                            data = _repository.FileUpload(model, dt)
+                        });
+                    }
+                    else
+                        throw new Exception("Invalid Data");
                 }
                 else
-                    throw new Exception("Invalid Data");
+                    throw new Exception("File Not Uploaded Please Retry after Some Time");
             }
             catch (Exception ex)
             {
                 return Json(new
                 {
                     status = "error",
-                    msg = ex.Message,
+                    msg = ex.Message + " controller",
                 });
             }
-             
 
-            
+
+
         }
 
         public static byte[] StrToByteArray(string str)

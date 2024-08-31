@@ -590,19 +590,19 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
                 filterGridTagPrint = cg;
 
                 $("#btnPrintPreview").off("click").on("click", function () {
-                     
+
                     var _List = filterGridTagPrint.getData().filter(function (el) { return el.IsPrint })
-                  
+
 
                     if (_List.length > 0) {
                         Common.GetBarcodeSettingData(".barcodesetting", "", function (flag, _d) {
-                            
+
                             if (flag) {
 
                                 var _model = {};
                                 _model.BarcodePrintPreviewModel = _List;
                                 _model.SysDefaults = _d;
-                                
+
                                 $.ajax({
                                     async: true,
                                     type: "Post",
@@ -610,7 +610,7 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
                                     data: { model: _model },
                                     datatype: "json",
                                     success: function (res) {
-                                        
+
                                         console.log(res);
                                         if (res.status == "success") {
                                             var _w = parseInt($("#BarcodePrint_width").val()) + 100;
@@ -624,7 +624,7 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
 
                                                     newWin.document.write('<html><head><style> .watermarked {  color:  #c1bdbd !important; }</style></hea><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
 
-                                                    newWin.document.close(); 
+                                                    newWin.document.close();
                                                     // setTimeout(function () { newWin.close(); }, 50);
                                                     newWin.onload = function () {
                                                         newWin.focus();
@@ -701,7 +701,7 @@ var Handler = {
         else if (location.href.indexOf("View") != -1)
             return location.href.substring(0, location.href.indexOf("View"));
         else if (location.href.indexOf("List") != -1)
-            return location.href.substring(0, location.href.indexOf("List")); 
+            return location.href.substring(0, location.href.indexOf("List"));
         else
             return location.href.substring(0, location.href.lastIndexOf("/") + 1);
     },
@@ -1209,6 +1209,7 @@ function C_Grid(n, n2, f) {
 
         if (res.PkGridId > 0) {
             // 
+
             var d = JSON.parse(res.JsonData);
             // console.log(d);
             var j = {
@@ -1219,7 +1220,8 @@ function C_Grid(n, n2, f) {
                 SearchType: '',
                 SearchableColumns: '',
                 SortableColumns: '',
-                setCtrlType: ''
+                setCtrlType: '',
+                TotalOn: ''
             }
 
             var filtered = d.filter(function (person) { return person.IsActive === 1 });
@@ -1246,18 +1248,66 @@ function C_Grid(n, n2, f) {
                 if (v.Sortable == 1) {
                     if (j.SortableColumns != '') { j.SortableColumns += "~" + v.Fields; } else { j.SortableColumns += v.Fields; }
                 }
+                j.TotalOn += "~" + v.TotalOn;
 
             });
             j.ColumnHeading = j.ColumnHeading.substr(1);
             j.ColumnWidthPer = j.ColumnWidthPer.substr(1);
             j.ColumnFields = j.ColumnFields.substr(1);
             j.setCtrlType = j.setCtrlType.substr(1);
-            j.Align = j.Align.substr(1);
+            j.TotalOn = j.TotalOn.substr(1);
             f(j);
         }
         else
             alert(res.msg);
     });
+}
+
+function C_GridFrom_Json(d, f) {
+    var j = {
+        ColumnHeading: '',
+        ColumnWidthPer: '',
+        ColumnFields: '',
+        Align: '',
+        SearchType: '',
+        SearchableColumns: '',
+        SortableColumns: '',
+        setCtrlType: '',
+        TotalOn: ''
+    }
+    var filtered = d.filter(function (person) { return person.IsActive === 1 });
+    filtered.sort((a, b) => (a.Orderby - b.Orderby));
+
+    $(filtered).each(function (i, v) {
+        j.ColumnHeading += "~" + v.Heading;
+        j.ColumnWidthPer += "~" + v.Width;
+        j.ColumnFields += "~" + v.Fields;
+        j.Align += "~C";
+        j.setCtrlType += "~" + v.CtrlType;
+        if (j.SearchType != '') {
+            j.SearchType += "~" + v.SearchType;
+            if (v.SearchType == 1) {
+                if (j.SearchableColumns != '') { j.SearchableColumns += "~" + v.Fields; } else { j.SearchableColumns += v.Fields; }
+            }
+        } else {
+            j.SearchType += v.SearchType;
+            if (v.SearchType == 1) {
+                if (j.SearchableColumns != '') { j.SearchableColumns += "~" + v.Fields; } else { j.SearchableColumns += v.Fields; }
+            }
+        }
+
+        if (v.Sortable == 1) {
+            if (j.SortableColumns != '') { j.SortableColumns += "~" + v.Fields; } else { j.SortableColumns += v.Fields; }
+        }
+        j.TotalOn += "~" + v.TotalOn;
+
+    });
+    j.ColumnHeading = j.ColumnHeading.substr(1);
+    j.ColumnWidthPer = j.ColumnWidthPer.substr(1);
+    j.ColumnFields = j.ColumnFields.substr(1);
+    j.setCtrlType = j.setCtrlType.substr(1);
+    j.TotalOn = j.TotalOn.substr(1);
+    f(j);
 }
 
 function C_GridColSetup(n, n2, f) {
@@ -1287,6 +1337,7 @@ function C_GridColSetup(n, n2, f) {
                 htm += '<input type="hidden" name="txtGridColumnSearchType"  value="' + v.SearchType + '"  /> ';
                 htm += '<input type="hidden" name="txtGridColumnSortable"  value="' + v.Sortable + '"  /> ';
                 htm += '<input type="hidden" name="txtGridColumnCtrlType"  value="' + v.CtrlType + '"  /> ';
+                htm += '<input type="hidden" name="txtGridColumnTotalOn"  value="' + v.TotalOn + '"  /> ';
                 htm += '<input type="hidden" name="txtGridColumnOrderby"  value="' + v.Orderby + '"  /> ';
                 htm += '<input type="text" name="txtGridColumnWidth"  value="' + v.Width + '"  /> ';
                 htm += '</td><td>';
@@ -1312,7 +1363,8 @@ function C_GridColSetup(n, n2, f) {
                         var sotyp = $(this).find("[name='txtGridColumnSortable']");
                         var ctyp = $(this).find("[name='txtGridColumnCtrlType']");
                         var odrby = $(this).find("[name='txtGridColumnOrderby']");
-                        ColList.push({ pk_Id: chk.val(), Width: wid.val(), Heading: hding.val(), Fields: flds.val(), SearchType: styp.val(), Sortable: sotyp.val(), CtrlType: ctyp.val(), Orderby: odrby.val(), IsActive: (chk.prop("checked") ? 1 : 0) });
+                        var totalon = $(this).find("[name='txtGridColumnTotalOn']");
+                        ColList.push({ pk_Id: chk.val(), Width: wid.val(), Heading: hding.val(), Fields: flds.val(), SearchType: styp.val(), Sortable: sotyp.val(), CtrlType: ctyp.val(), Orderby: odrby.val(), IsActive: (chk.prop("checked") ? 1 : 0), TotalOn: totalon.val() });
                     });
                     console.log(ColList);
 
@@ -1388,7 +1440,9 @@ var Common = {
     AlertEnum: C_AlertEnum,
     showAlert: C_showAlert,
     Grid: C_Grid,
-    GridColSetup: C_GridColSetup
+    GridColSetup: C_GridColSetup,
+    GridFromJson: C_GridFrom_Json,
+
 };
 
 

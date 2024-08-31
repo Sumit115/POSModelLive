@@ -43,7 +43,7 @@ namespace SSRepository.IRepository
         object VoucherColumnChange(TransactionModel model, int rowIndex, string fieldName);
         List<AccountMasModel> AccountList();
 
-        public List<CategorySizeLnkModel> Get_CategorySizeList_ByProduct(long PKProductId);
+        object Get_CategorySizeList_ByProduct(long PKProductId, string search = "");
         long SaveWalkingCustomer(WalkingCustomerModel model);
         WalkingCustomerModel GeWalkingCustomer_byMobile(string Mobile);
 

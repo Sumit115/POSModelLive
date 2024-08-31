@@ -85,7 +85,8 @@ namespace SSAdmin
             Locality = 23,
             Location = 24,
             OpeningStock = 25,
-            Promotion=26,
+            Promotion = 26,
+            Recipe = 27,
 
             SalesOrder = 100,
             SalesInvoice = 101,
@@ -508,6 +509,18 @@ namespace SSAdmin
         {
             var _state = GetDrpState().ToList().Where(x => x.Value == StateName).FirstOrDefault();
             return _state != null ? _state.Value2 : "";
+        }
+
+        public static void Log(string title, string Des)
+        {
+            string path = "";
+            path = Path.Combine("wwwroot", "logs");
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path); 
+
+            string sPath = Path.Combine(path, "log_" + DateTime.Now.ToString("ddMMyy") + ".txt");
+
+            System.IO.File.AppendAllText(sPath, "\r\n\r\n" + DateTime.Now.ToString("HH:mm:ss fff") + " [" + title + "] : " + Des);
         }
     }
 }

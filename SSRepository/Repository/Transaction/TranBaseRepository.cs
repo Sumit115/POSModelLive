@@ -69,13 +69,13 @@ namespace SSRepository.Repository.Transaction
 
                 if (objmodel.TranDetails != null)
                 {
-                    foreach (var item in objmodel.TranDetails.Where(x =>   x.FkProductId > 0))
+                    foreach (var item in objmodel.TranDetails.Where(x => x.FkProductId > 0))
                     {
                         //if (string.IsNullOrEmpty(item.Color))
                         //{
                         //    throw new Exception("Color Required on Product " + item.Product);
                         //}
-                        
+
                         if (objmodel.TranAlias == "PINV" && item.ModeForm != 0)
                         {
                             var _check = __dbContext.TblSalesInvoicedtl.Where(x => x.FkLotId == item.FkLotId && x.FkProductId == item.FkProductId).FirstOrDefault();
@@ -755,6 +755,8 @@ namespace SSRepository.Repository.Transaction
         {
             try
             {
+                model.NotFound = "";
+                List<string> notFound_List = new List<string>();
                 string BillingRate = !string.IsNullOrEmpty(model.BillingRate) ? model.BillingRate : (model.TranAlias == "PORD" || model.TranAlias == "PINV") ? "PurchaseRate" : "SaleRate";
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -838,9 +840,15 @@ namespace SSRepository.Repository.Transaction
                         setGridTotal(model);
                         setPaymentDetail(model);
                     }
+                    else { notFound_List.Add(ProductName); }
                 }
+                model.NotFound = string.Join(",", notFound_List.ToList());
+
             }
-            catch (Exception ex) { throw new Exception(ex.Message); }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + " Rep");
+            }
             return model;
         }
 
@@ -1534,21 +1542,23 @@ namespace SSRepository.Repository.Transaction
         }
 
 
-        public List<CategorySizeLnkModel> Get_CategorySizeList_ByProduct(long PKProductId)
+        public object Get_CategorySizeList_ByProduct(long PKProductId, string search = "")
         {
             ProductRepository rep = new ProductRepository(__dbContext);
-            List<CategorySizeLnkModel> data = new List<CategorySizeLnkModel>();
+            var data = new object();
             if (PKProductId > 0)
             {
                 long CategoryId = rep.GetSingleRecord(PKProductId).FKProdCatgId;
 
                 data = (from cou in __dbContext.TblCategorySizeLnk
                         where cou.FkCategoryId == CategoryId
+                         && (EF.Functions.Like(cou.Size.Trim().ToLower(), Convert.ToString(search) + "%"))
+
                         orderby cou.PkId
-                        select (new CategorySizeLnkModel
+                        select (new
                         {
-                            PkId = cou.PkId,
-                            Size = cou.Size
+                            cou.PkId,
+                            cou.Size,
                         }
                        )).ToList();
             }

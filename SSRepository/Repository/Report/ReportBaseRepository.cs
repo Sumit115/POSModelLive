@@ -32,21 +32,21 @@ namespace SSRepository.Repository.Report
                 con.Open();
                 SqlCommand cmd = new SqlCommand(GetSP, con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                if (!string.IsNullOrEmpty(ProductFilter))
+                if (!string.IsNullOrEmpty(FromDate))
                 {
                     cmd.Parameters.AddWithValue("@FromDate", FromDate);
                 }
-                if (!string.IsNullOrEmpty(ProductFilter))
+                if (!string.IsNullOrEmpty(ToDate))
                 {
                     cmd.Parameters.AddWithValue("@ToDate", ToDate);
                 }
-                if (!string.IsNullOrEmpty(ProductFilter))
+                if (!string.IsNullOrEmpty(ReportType))
                 {
                     cmd.Parameters.AddWithValue("@ReportType", ReportType);
                 }
                 if (!string.IsNullOrEmpty(TranAlias))
                 {
-                    cmd.Parameters.AddWithValue("@ProductFilter", TranAlias);
+                    cmd.Parameters.AddWithValue("@TranAlias", TranAlias);
                 } 
                 //SqlParameter param = new SqlParameter("@userdefinedtabletypeparameter", SqlDbType.Structured)
                 //{

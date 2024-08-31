@@ -55,7 +55,7 @@ namespace SSAdmin.Areas.Report.Controllers
 
             DataTable ds = _repository.ViewData("L", ProductFilter, "");
 
-            var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "hjhjkh", ColumnList());
+            var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "", ColumnList());
             var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData);
             DataTable _gridColumn = Handler.ToDataTable(model);
 

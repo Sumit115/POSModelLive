@@ -157,6 +157,10 @@ namespace SSRepository.Repository
                 {
                     MaxID = __dbContext.TblPromotionMas.ToList().Count > 0 ? __dbContext.TblPromotionMas.ToList().Max(x => x.PkPromotionId) : 0;
                 }
+                else if (TableName == "TblRecipeMas")
+                {
+                    MaxID = __dbContext.TblRecipeMas.ToList().Count > 0 ? __dbContext.TblRecipeMas.ToList().Max(x => x.PkRecipeId) : 0;
+                }
                 return Convert.ToInt64(MaxID) + 1;
             }
             catch (Exception ex)

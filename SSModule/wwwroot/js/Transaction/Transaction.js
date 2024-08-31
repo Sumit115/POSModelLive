@@ -15,7 +15,7 @@ $(document).ready(function () {
     } else { $(".trn-barcode").show(); $("#txtSearchBarcode").focus(); }
 
     $('#btnServerSave').click(function (e) {
-        debugger;
+        
         if ($("#loginform1").valid()) {
             SaveRecord();
         }
@@ -284,7 +284,7 @@ function BindGrid(GridId, data) {
             if (args.cell != undefined) {
 
                 var field = cg.columns[args.cell].field;
-
+                debugger;
                 if (field == "Product") {
                     if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
                         var InvoiceSrNo = Common.isNullOrEmpty(args.item["ProductName"]) ? 0 : parseFloat(args.item["ProductName"]);
@@ -394,7 +394,7 @@ function BindGrid(GridId, data) {
             if (args.cell != undefined) {
                 var field = cg.columns[args.cell].field;
 
-                var PkProductId = args.grid.getDataItem(args.row)["PkProductId"];
+                var FkProductId = args.grid.getDataItem(args.row)["FkProductId"];
                 var SrNo = args.grid.getDataItem(args.row)["SrNo"];
                 if (field == "Delete") {
                     ColumnChange(args, args.row, "Delete");
@@ -570,7 +570,7 @@ function handleFileLoad(event) {
 }
 
 function ColumnChange(args, rowIndex, fieldName) {
-
+    debugger;
     tranModel.TranDetails = GetDataFromGrid();
 
     if (tranModel.TranDetails.length > 0) {
@@ -700,9 +700,10 @@ function setGridRowData(args, data, rowIndex, fieldName) {
         args.grid.getDataItem(args.row).ModeForm = 2
     }
     else {
-        
+        debugger;
         args.item["SrNo"] = data[rowIndex].SrNo;
         args.item["PkProductId"] = data[rowIndex].PkProductId;
+        args.item["FkProductId"] = data[rowIndex].FkProductId;
         args.item["FkLotId"] = data[rowIndex].FkLotId;
         args.item["Rate"] = data[rowIndex].Rate;
         args.item["MRP"] = data[rowIndex].MRP;
@@ -740,7 +741,7 @@ function setGridRowData(args, data, rowIndex, fieldName) {
 }
 
 function GetDataFromGrid(ifForsave) {
-    debugger;
+    
     var array = cg.getData().filter(x => x.FkProductId > 0);
     let number = Math.max.apply(Math, array.map(function (o) { return o.SrNo; }));
     let SrNo = number > 0 ? number : 0;
@@ -749,7 +750,7 @@ function GetDataFromGrid(ifForsave) {
         
         if (ifForsave) {
             if (!Handler.isNullOrEmpty(element.Product) && !Handler.isNullOrEmpty(element.Qty)) {
-                debugger;
+                
                 if (element.FkProductId > 0) { element.SrNo = element.SrNo; }
                 else { SrNo++; element.SrNo = SrNo; }
                 // element.FkProductId = parseInt(element.Product);
@@ -761,7 +762,7 @@ function GetDataFromGrid(ifForsave) {
 
 
             if (!Handler.isNullOrEmpty(element.Product) || !Handler.isNullOrEmpty(element.FKInvoiceID)) {
-                debugger;
+                
                 if (element.FkProductId > 0) { element.SrNo = element.SrNo; }
                 else { SrNo++; element.SrNo = SrNo; }
                 //element.FkProductId = parseInt(element.Product);
@@ -1038,13 +1039,14 @@ function showpopupPrintOption() {//BarcodePrint
 
 function UploadFile() {
     //var TranDetails = GetDataFromGrid(); 
+    $(".loader").show();
     var formData = new FormData();
     for (var key in tranModel) {
         formData.append(key, tranModel[key]);
     }
     //formData.append("TranDetails", JSON.stringify(TranDetails));
     formData.append("file", $("#ExcelFile")[0].files[0]); 
-    debugger;
+    
     console.log(formData);
     $.ajax({
         type: 'POST',
@@ -1060,6 +1062,9 @@ function UploadFile() {
             setFooterData(tranModel);
             setPaymentDetail(tranModel); 
             $("#ExcelFile").val("");
+            if (!Handler.isNullOrEmpty(tranModel.NotFound)) {
+                alert('Not Found Product is :' + tranModel.NotFound)
+            }
         }
         else
             alert(res.msg);

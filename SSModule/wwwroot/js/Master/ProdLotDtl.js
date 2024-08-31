@@ -69,7 +69,7 @@ function ViewProductLot() {
 
 
 function bindGrid1(GridId, data, IdProperty) {
-    debugger;
+    
     Common.Grid(parseInt(FormId), '', function (s) {
 
         var cg = new coGrid("#" + GridId);
@@ -99,7 +99,7 @@ function bindGrid1(GridId, data, IdProperty) {
                 var DistributionRate = parseFloat(args.item["DistributionRate"]) > 0 ? parseFloat(args.item["DistributionRate"]) : 0;
 
                 if (field == "MRP") {
-                    debugger;
+                    
                     if (MRP > SaleRate && MRP > PurchaseRate && MRP > TradeRate && MRP > DistributionRate)
                         UpdateProdLotDtl(PkLotId, FKProductId, field, MRP);
                     else {

@@ -15,8 +15,9 @@ namespace SSRepository.Models
         public string CtrlType { get; set; }
         public int Orderby { get; set; }
         public int Width { get; set; }
-        public int IsActive { get; set; } 
+        public int IsActive { get; set; }
+        public string TotalOn { get; set; } = "";
     }
 
-     
-    }
+
+}
