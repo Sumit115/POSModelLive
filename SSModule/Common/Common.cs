@@ -471,39 +471,44 @@ namespace SSAdmin
             return result;
         }
 
-        public static List<ddl> GetDrpState()
+        public static List<ddl> GetDrpState(bool Isddl=true)
         {
-            return new List<ddl>(){
-             new ddl { Text = "Select", Value = "",Value2="" },
-             new ddl { Text = "Andhra Pradesh", Value = "Andhra Pradesh" ,Value2="28"},
-             new ddl { Text = "Arunachal Pradesh", Value = "Arunachal Pradesh" , Value2 = "12"},
-             new ddl { Text = "Assam", Value = "Assam" , Value2 = "18"},
-             new ddl { Text = "Bihar", Value = "Bihar" , Value2 = "10"},
-             new ddl { Text = "Chhattisgarh", Value = "Chhattisgarh" , Value2 = "22"},
-             new ddl { Text = "Goa", Value = "Goa" , Value2 = "30"},
-             new ddl { Text = "Gujarat", Value = "Gujarat" , Value2 = "24"},
-             new ddl { Text = "Haryana", Value = "Haryana" , Value2 = "06"},
-             new ddl { Text = "Himachal Pradesh", Value = "Himachal Pradesh" , Value2 = "02"},
-             new ddl { Text = "Jharkhand", Value = "Jharkhand" , Value2 = "20"},
-             new ddl { Text = "Karnataka", Value = "Karnataka" , Value2 = "29"},
-             new ddl { Text = "Kerala", Value = "Kerala" , Value2 = "32"},
-             new ddl { Text = "Madhya Pradesh", Value = "Madhya Pradesh" , Value2 = "23"},
-             new ddl { Text = "Maharashtra", Value = "Maharashtra" , Value2 = "27"},
-             new ddl { Text = "Manipur", Value = "Manipur" , Value2 = "14"},
-             new ddl { Text = "Meghalaya", Value = "Meghalaya" , Value2 = "17"},
-             new ddl { Text = "Mizoram", Value = "Mizoram" , Value2 = "15"},
-             new ddl { Text = "Nagaland", Value = "Nagaland" , Value2 = "13"},
-             new ddl { Text = "Odisha", Value = "Odisha" , Value2 = "21"},
-             new ddl { Text = "Punjab", Value = "Punjab" , Value2 = "03"},
-             new ddl { Text = "Rajasthan", Value = "Rajasthan" , Value2 = "08"},
-             new ddl { Text = "Sikkim", Value = "Sikkim" , Value2 = "11"},
-             new ddl { Text = "Tamil Nadu", Value = "Tamil Nadu" , Value2 = "33"},
-             new ddl { Text = "Telangana", Value = "Telangana" , Value2 = "36"},
-             new ddl { Text = "Tripura", Value = "Tripura" , Value2 = "16"},
-             new ddl { Text = "Uttar Pradesh", Value = "Uttar Pradesh" , Value2 = "09"},
-             new ddl { Text = "Uttarakhand", Value = "Uttarakhand" , Value2 = "05"},
-             new ddl { Text = "West Bengal", Value = "West Bengal" , Value2 = "19"}
-            };
+            var list = new List<ddl>();
+            if (Isddl)
+            {
+                list.Add(new ddl { Text = "Select", Value = "", Value2 = "" });
+            }
+              list.Add(new ddl { Text = "Andhra Pradesh", Value = "Andhra Pradesh" ,Value2="28"});
+            list.Add(new ddl { Text = "Arunachal Pradesh", Value = "Arunachal Pradesh" , Value2 = "12"});
+            list.Add(new ddl { Text = "Assam", Value = "Assam" , Value2 = "18"});
+            list.Add(new ddl { Text = "Bihar", Value = "Bihar" , Value2 = "10"});
+            list.Add(new ddl { Text = "Chhattisgarh", Value = "Chhattisgarh" , Value2 = "22"});
+            list.Add(new ddl { Text = "Goa", Value = "Goa" , Value2 = "30"});
+            list.Add(new ddl { Text = "Gujarat", Value = "Gujarat" , Value2 = "24"});
+            list.Add(new ddl { Text = "Haryana", Value = "Haryana" , Value2 = "06"});
+            list.Add(new ddl { Text = "Himachal Pradesh", Value = "Himachal Pradesh" , Value2 = "02"});
+            list.Add(new ddl { Text = "Jharkhand", Value = "Jharkhand" , Value2 = "20"});
+            list.Add(new ddl { Text = "Karnataka", Value = "Karnataka" , Value2 = "29"});
+            list.Add(new ddl { Text = "Kerala", Value = "Kerala" , Value2 = "32"});
+            list.Add(new ddl { Text = "Madhya Pradesh", Value = "Madhya Pradesh" , Value2 = "23"});
+            list.Add(new ddl { Text = "Maharashtra", Value = "Maharashtra" , Value2 = "27"});
+            list.Add(new ddl { Text = "Manipur", Value = "Manipur" , Value2 = "14"});
+            list.Add(new ddl { Text = "Meghalaya", Value = "Meghalaya" , Value2 = "17"});
+            list.Add(new ddl { Text = "Mizoram", Value = "Mizoram" , Value2 = "15"});
+            list.Add(new ddl { Text = "Nagaland", Value = "Nagaland" , Value2 = "13"});
+            list.Add(new ddl { Text = "Odisha", Value = "Odisha" , Value2 = "21"});
+            list.Add(new ddl { Text = "Punjab", Value = "Punjab" , Value2 = "03"});
+            list.Add(new ddl { Text = "Rajasthan", Value = "Rajasthan" , Value2 = "08"});
+            list.Add(new ddl { Text = "Sikkim", Value = "Sikkim" , Value2 = "11"});
+            list.Add(new ddl { Text = "Tamil Nadu", Value = "Tamil Nadu" , Value2 = "33"});
+            list.Add(new ddl { Text = "Telangana", Value = "Telangana" , Value2 = "36"});
+            list.Add(new ddl { Text = "Tripura", Value = "Tripura" , Value2 = "16"});
+            list.Add(new ddl { Text = "Uttar Pradesh", Value = "Uttar Pradesh" , Value2 = "09"});
+            list.Add(new ddl { Text = "Uttarakhand", Value = "Uttarakhand" , Value2 = "05"});
+            list.Add(new ddl { Text = "West Bengal", Value = "West Bengal" , Value2 = "19"});
+
+
+            return list;
         }
         public static string GetStateCode(string StateName)
         {

@@ -49,6 +49,8 @@ namespace SSRepository.Repository.Transaction
 
                 long Id = 0;
                 long SeriesNo = 0;
+                var aa = JsonConvert.SerializeObject(model);
+
                 SaveData(model, ref Id, ref Error, ref SeriesNo);
             }
             return Error;
@@ -395,6 +397,7 @@ namespace SSRepository.Repository.Transaction
 
             var aa = JsonConvert.SerializeObject(JsonData);
 
+
             using (SqlConnection con = new SqlConnection(conn))
             {
                 //con.Open();
@@ -482,7 +485,7 @@ namespace SSRepository.Repository.Transaction
                             {
                                 data.Branch = data.BranchDetails.FirstOrDefault();
                             }
-                        }
+                        } 
                     }
                 }
             }
@@ -539,6 +542,7 @@ namespace SSRepository.Repository.Transaction
                 else if (fieldName == "Delete")
                 {
                     model.TranDetails[rowIndex].ModeForm = 2;
+                    model.UniqIdDetails = model.UniqIdDetails.Where(x => x.SrNo != model.TranDetails[rowIndex].SrNo).ToList();
                 }
                 else if (fieldName == "TradeDisc")
                 {
@@ -606,7 +610,7 @@ namespace SSRepository.Repository.Transaction
 
             if (detail != null)
             {
-                DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail("", detail.FkProductId, 0);
+                DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail("", detail.FkProductId, 0, "", model.FKOrderID, model.FKOrderSrID);
                 if (dtProduct.Rows.Count > 0)
                 {
 
@@ -638,6 +642,9 @@ namespace SSRepository.Repository.Transaction
                     detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
                     detail.Color = dtProduct.Rows[0]["Color"].ToString();
                     detail.Batch = dtProduct.Rows[0]["Batch"].ToString();
+                    detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
+                    detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
+                    detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
                     if (model.TranAlias == "PORD" || model.TranAlias == "PINV")
                     {
                         detail.FkLotId = 0;
@@ -670,85 +677,92 @@ namespace SSRepository.Repository.Transaction
             try
             {
                 string BillingRate = !string.IsNullOrEmpty(model.BillingRate) ? model.BillingRate : (model.TranAlias == "PORD" || model.TranAlias == "PINV") ? "PurchaseRate" : "SaleRate";
-
-                DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail(barcode, 0, 0);
-                if (dtProduct.Rows.Count > 0)
+                if (model.UniqIdDetails.Where(x => x.Barcode == barcode).ToList().Count == 0)
                 {
-
-                    //check
-                    var detail = new TranDetails();
-                    detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                    detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
-
-                    var _old = model.TranDetails.ToList().Where(x => x.FkProductId == detail.FkProductId && x.Barcode == barcode && x.FkLotId == detail.FkLotId && x.ModeForm != 2).FirstOrDefault();
-                    if (_old == null)
+                    DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail(barcode, 0, 0, "", model.FKOrderID, model.FKOrderSrID);
+                    if (dtProduct.Rows.Count > 0)
                     {
-                        var _checkSrNo = model.TranDetails.ToList().Where(x => x.FkProductId > 0 && x.Qty > 0).ToList();
-                        if (_checkSrNo.Count > 0)
-                        {
-                            detail.SrNo = _checkSrNo.Max(x => x.SrNo) + 1;
 
-                        }
-                        else { detail.SrNo = 1; }
-
-                        detail.Barcode = barcode;
+                        //check
+                        var detail = new TranDetails();
                         detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                        detail.Product = dtProduct.Rows[0]["Product"].ToString();
-                        detail.Qty = 1;
-                        detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
-                        detail.FKLocationID = model.FKLocationID;
-                        detail.ReturnTypeID = 2;
-
-                        detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
-                        detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
-
-                        if (BillingRate == "MRP") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString()); }
-                        if (BillingRate == "SaleRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString()); }
-                        if (BillingRate == "TradeRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString()); }
-                        if (BillingRate == "DistributionRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString()); }
-                        if (BillingRate == "PurchaseRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["PurchaseRate"].ToString()); }
-
                         detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
-                        detail.Color = dtProduct.Rows[0]["Color"].ToString();
-                        detail.Batch = dtProduct.Rows[0]["Batch"].ToString();
-                        if (model.TranAlias == "PORD" || model.TranAlias == "PINV")
+
+                        var _old = model.TranDetails.ToList().Where(x => x.FkProductId == detail.FkProductId && x.FkLotId == detail.FkLotId && x.ModeForm != 2).FirstOrDefault();
+                        if (_old == null)
                         {
-                            detail.FkLotId = 0;
+                            var _checkSrNo = model.TranDetails.ToList().Where(x => x.FkProductId > 0 && x.Qty > 0).ToList();
+                            if (_checkSrNo.Count > 0)
+                            {
+                                detail.SrNo = _checkSrNo.Max(x => x.SrNo) + 1;
+
+                            }
+                            else { detail.SrNo = 1; }
+
+                            detail.Barcode = barcode;
+                            detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+                            detail.Product = dtProduct.Rows[0]["Product"].ToString();
+                            detail.Qty = 1;
+                            detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
+                            detail.FKLocationID = model.FKLocationID;
+                            detail.ReturnTypeID = 2;
+
+                            detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
+                            detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
+
+                            if (BillingRate == "MRP") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString()); }
+                            if (BillingRate == "SaleRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString()); }
+                            if (BillingRate == "TradeRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString()); }
+                            if (BillingRate == "DistributionRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString()); }
+                            if (BillingRate == "PurchaseRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["PurchaseRate"].ToString()); }
+
+                            detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
+                            detail.Color = dtProduct.Rows[0]["Color"].ToString();
+                            detail.Batch = dtProduct.Rows[0]["Batch"].ToString();
+                            detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
+                            detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
+                            detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
+
+                            if (model.TranAlias == "PORD" || model.TranAlias == "PINV")
+                            {
+                                detail.FkLotId = 0;
+                            }
+
+                            detail.GstRate = (detail.SaleRate < 1000 ? 5 : 18);
+                            detail.Rate = Math.Round(Convert.ToDecimal(detail.SaleRate) * (100 / (100 + detail.GstRate)), 2);
+
+                            detail.TradeDisc = 0;
+                            detail.TradeDiscAmt = 0;
+                            detail.TradeDiscType = "";
+
+                            if (model.FkPartyId > 0 && (model.TranAlias == "SORD" || model.TranAlias == "SINV"))
+                            {
+                                var _cust = new CustomerRepository(__dbContext).GetSingleRecord(model.FkPartyId);
+                                detail.TradeDisc = _cust.Disc;
+
+                            }
+                            detail.TradeRate = detail.DistributionRate = detail.SaleRate;
+
+                            CalculateExe(detail);
+                            detail.Barcode = "Barcode";
+                            model.TranDetails.Add(detail);
+                            model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = detail.SrNo, Barcode = barcode });
+
+                        }
+                        else
+                        {
+                            int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == detail.FkProductId && a.FkLotId == detail.FkLotId && a.ModeForm != 2);
+                            model.TranDetails[rowIndex].Qty += 1;
+
+                            CalculateExe(model.TranDetails[rowIndex]);
                         }
 
-                        detail.GstRate = (detail.SaleRate < 1000 ? 5 : 18);
-                        detail.Rate = Math.Round(Convert.ToDecimal(detail.SaleRate) * (100 / (100 + detail.GstRate)), 2);
-
-                        detail.TradeDisc = 0;
-                        detail.TradeDiscAmt = 0;
-                        detail.TradeDiscType = "";
-
-                        if (model.FkPartyId > 0 && (model.TranAlias == "SORD" || model.TranAlias == "SINV"))
-                        {
-                            var _cust = new CustomerRepository(__dbContext).GetSingleRecord(model.FkPartyId);
-                            detail.TradeDisc = _cust.Disc;
-
-                        }
-                        detail.TradeRate = detail.DistributionRate = detail.SaleRate;
-
-                        CalculateExe(detail);
-                        model.TranDetails.Add(detail);
+                        setGridTotal(model);
+                        setPaymentDetail(model);
                     }
-                    else
-                    {
-                        int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == detail.FkProductId && a.Barcode == barcode);
-                        model.TranDetails[rowIndex].Qty += 1;
-
-                        CalculateExe(model.TranDetails[rowIndex]);
-                    }
-
-
-
-                    setGridTotal(model);
-                    setPaymentDetail(model);
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw ex; }
             return model;
         }
         public object FileUpload(TransactionModel model, DataTable dt)
@@ -764,7 +778,7 @@ namespace SSRepository.Repository.Transaction
                     string Size = dr[1].ToString();
                     int Qty = Convert.ToInt32(dr[2].ToString());
 
-                    DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail("", 0, 0, ProductName);
+                    DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail("", 0, 0, ProductName, model.FKOrderID, model.FKOrderSrID);
                     if (dtProduct.Rows.Count > 0)
                     {
 
@@ -804,6 +818,10 @@ namespace SSRepository.Repository.Transaction
                             detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
                             detail.Color = dtProduct.Rows[0]["Color"].ToString();
                             detail.Batch = Size;//dtProduct.Rows[0]["Batch"].ToString();
+                            detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
+                            detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
+                            detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
+
                             if (model.TranAlias == "PORD" || model.TranAlias == "PINV")
                             {
                                 detail.FkLotId = 0;
@@ -1611,6 +1629,37 @@ namespace SSRepository.Repository.Transaction
             return data;
         }
 
+        public object BarcodeList(TransactionModel model, int rowIndex)
+        {
+            model.UniqIdDetails = model.UniqIdDetails == null ? new List<BarcodeUniqVM>() : model.UniqIdDetails;// JsonConvert.DeserializeObject<List<BarcodeVM>>(dd);
+
+            ProductRepository rep = new ProductRepository(__dbContext);
+
+             
+            var lst = (from cou in __dbContext.TblProductQTYBarcode
+                       where cou.FkLotID == model.TranDetails[rowIndex].FkLotId && cou.FkProductId == model.TranDetails[rowIndex].FkProductId
+                       select new
+                       {
+                           Barcode = cou.Barcode,
+                           // IsPrint = model.UniqIdDetails.Find(u => u.Barcode == cou.Barcode)?.Name = "CBA";,
+                           IsPrint = false,// (model.UniqIdDetails.ToList().Where(x => x.Barcode == cou.Barcode && x.SrNo == 1).ToList().Count>0) ? true : false,
+                       }).ToList();
+            var data = new List<object>();
+            foreach (var d in lst)
+            {
+
+                bool IsPrint = (model.UniqIdDetails.ToList().Where(x => x.Barcode == d.Barcode && x.SrNo == model.TranDetails[rowIndex].SrNo).ToList().Count > 0) ? true : false;
+                data.Add(new
+                {
+                    Barcode = d.Barcode,
+                    IsPrint = IsPrint,
+                    SrNo = model.TranDetails[rowIndex].SrNo,
+                });
+            }
+
+            return data;
+        }
+
         public List<ColumnStructure> TrandtlColumnList(string TranType)
         {
             var list = new List<ColumnStructure>();
@@ -1707,7 +1756,7 @@ namespace SSRepository.Repository.Transaction
                     new ColumnStructure{ pk_Id=12,  Orderby =12, Heading ="GST Rate",     Fields="GstRate",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
                     new ColumnStructure{ pk_Id=13,  Orderby =13, Heading ="GST Amount",   Fields="GstAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
                     new ColumnStructure{ pk_Id=14,  Orderby =14, Heading ="Net Amount",   Fields="NetAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
-                    new ColumnStructure{ pk_Id=15,  Orderby =15, Heading ="Barcode",      Fields="Barcode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="T"  },
+                    new ColumnStructure{ pk_Id=15,  Orderby =15, Heading ="Barcode",      Fields="Barcode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
                     new ColumnStructure{ pk_Id=16,  Orderby =16, Heading ="Del",          Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" }
 
                 };

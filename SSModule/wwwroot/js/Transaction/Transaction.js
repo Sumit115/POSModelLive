@@ -15,7 +15,7 @@ $(document).ready(function () {
     } else { $(".trn-barcode").show(); $("#txtSearchBarcode").focus(); }
 
     $('#btnServerSave').click(function (e) {
-        
+
         if ($("#loginform1").valid()) {
             SaveRecord();
         }
@@ -41,7 +41,7 @@ $(document).ready(function () {
         tranModel[fieldName] = $(this).val();
     });
     $(".paymentDtl").change(function () {
-        
+
         var fieldName = $(this).attr("id");
         var type = $(this).attr("type");
         if (type == "checkbox") {
@@ -70,7 +70,7 @@ $(document).ready(function () {
 });
 
 function Load() {
-    
+    debugger;
     var PkId = $("#PkId").val();
     tranModel = JSON.parse($("#hdData").val());
     if (PkId > 0) {
@@ -246,9 +246,9 @@ function BindGrid(GridId, data) {
                 }
                 else {
                     if (field == "Batch" || field == "Color" || field == "MRP") {
-                        
-                        if (tranModel.ExtProperties.StockFlag == "I" || TranAlias=="SORD") {
-                            if (args.item["ModeForm"] !="1") { args.item["FkLotId"] = 0; }
+
+                        if (tranModel.ExtProperties.StockFlag == "I" || TranAlias == "SORD") {
+                            if (args.item["ModeForm"] != "1") { args.item["FkLotId"] = 0; }
                             var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
                             //var Batch = args.item["Batch"];
                             //var Color = args.item["Color"];
@@ -352,7 +352,7 @@ function BindGrid(GridId, data) {
                 else if (field == "TradeDisc") {
                     ColumnChange(args, args.row, "TradeDisc");
                 }
-                else if (field == "Batch") { 
+                else if (field == "Batch") {
                     var FkLotId = args.item["FkLotId"];
                     if (FkLotId > 0) {
                         ColumnChange(args, args.row, "Batch");
@@ -361,11 +361,11 @@ function BindGrid(GridId, data) {
                         if (tranModel.ExtProperties.TranType == "P" || TranAlias == "SORD") {
 
                         }
-                        else{
+                        else {
                             args.item["Batch"] = "";
                             cg.updateRefreshDataRow(args.row);
                         }
-                         
+
                     }
                 }
                 else if (field == "Color") {
@@ -393,13 +393,24 @@ function BindGrid(GridId, data) {
 
             if (args.cell != undefined) {
                 var field = cg.columns[args.cell].field;
-
+                debugger;
                 var FkProductId = args.grid.getDataItem(args.row)["FkProductId"];
+                var FkLotId = args.grid.getDataItem(args.row)["FkLotId"];
                 var SrNo = args.grid.getDataItem(args.row)["SrNo"];
+                var ModeForm = args.grid.getDataItem(args.row)["ModeForm"];
                 if (field == "Delete") {
                     ColumnChange(args, args.row, "Delete");
                 }
-
+                else if (field == "Barcode" && ModeForm != 2) {
+                    if (tranModel.ExtProperties.StockFlag == "I") { }
+                    else {
+                        if (FkProductId > 0 && FkLotId > 0) {
+                            BarcodePopupUniqIdDetail(args, args.row);
+                        }
+                        else
+                            alert('select Size');
+                    }
+                }
             }
         });
 
@@ -439,6 +450,117 @@ function BindGrid(GridId, data) {
         //---------------    ---------------   ---------------   ---------------/
     });
 }
+function BarcodePopupUniqIdDetail(args, rowIndex) {
+    debugger;
+    tranModel.TranDetails = GetDataFromGrid();
+
+    if (tranModel.TranDetails.length > 0) {
+        $(".loader").show();
+        $.ajax({
+            type: "POST",
+            url: Handler.currentPath() + 'BarcodeList',
+            data: { model: tranModel, rowIndex: rowIndex },
+            datatype: "json",
+            success: function (res) {
+                var htm = '';
+                htm += '<div class="mb-4 card">';
+                htm += '   <div class="card-body"> ';
+                htm += '       <div class="row mb-3"> ';
+                htm += '           <div class="col-md-6"> ';
+                htm += '               <div class="card-title">Select Barcode</div> ';
+                htm += '           </div>';
+                htm += '           <div class="col-md-6 text-center"> ';
+                htm += '               <input type="button" id="btnSelectBarcode" value="Done" class="btn btn-success" />';
+                htm += '           </div> ';
+                htm += '       </div> ';
+                htm += '       <div class="row">';
+                htm += '           <div class="col-md-12" id="WUCFilter"> ';
+                htm += '           </div>';
+                htm += '          </div>  ';
+                htm += '   </div>';
+                htm += '   </div>';
+
+                console.log(res.data);
+                Handler.popUp(htm, { width: "400px", height: "500px" }, function () {
+                    var cg = new coGrid("#WUCFilter");
+                    cg.setColumnHeading("Select~Barcode");
+                    cg.setColumnWidthPer("10~30", 800);
+                    cg.setColumnFields("IsPrint~Barcode");
+                    cg.setAlign("C~L");
+                    cg.defaultHeight = "400px";
+                    cg.setSearchType("0~1");
+                    cg.setSearchableColumns("Barcode");
+                    cg.setSortableColumns("Barcode");
+                    cg.setCheckAllCheckboxColumns("IsPrint~");
+                    cg.setIdProperty("Barcode");
+                    cg.setCtrlType("B~");
+                    cg.bind(res.data);
+                    cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
+                    //filterGridTagPrint = cg;
+
+
+                    $("#btnSelectBarcode").off("click").on("click", function () {
+                        var _List = cg.getData().filter(function (el) { return el.IsPrint })
+                        console.clear();
+                        let SrNo = tranModel.TranDetails[rowIndex].SrNo;
+                        tranModel.UniqIdDetails = tranModel.UniqIdDetails.filter((u) => {
+                            return u.SrNo != SrNo
+                        })
+                        var _existBarcode = [];
+                        $(_List).each(function (i, v) {
+                            console.log(v);
+                            var _exist  = $.grep(tranModel.UniqIdDetails, function (item) {
+                                return item.Barcode == v.Barcode;
+                            });
+
+                            if (_exist.length == 0) {
+                                tranModel.UniqIdDetails.push({ SrNo: v.SrNo, Barcode: v.Barcode })
+                            } else {
+                                _existBarcode.push(v.Barcode);
+                            }
+                        })
+                        /* RPTFilter[type].Filter = JSON.stringify(_List);*/
+                        if (_existBarcode.length > 0) {
+                            alert("Barcode Already Exists : " + _existBarcode.join(","));
+                        }
+                        $(".popup_d").hide();
+                    });
+
+
+
+
+                });
+                $(".loader").hide();
+            }
+        });
+    }
+}
+function BarcodeScan(barcode) {
+    $(".loader").show();
+    tranModel.TranDetails = GetDataFromGrid();
+
+    $.ajax({
+        type: "POST",
+        url: Handler.currentPath() + 'BarcodeScan',
+        data: { model: tranModel, barcode: barcode },
+        datatype: "json", success: function (res) {
+            if (res.status == "success") {
+                tranModel = res.data;
+                //$(tranModel.TranDetails).each(function (i, v) {
+                //    v["ProductName"] = parseInt(v.FkProductId);
+                //});
+                BindGrid('DDT', tranModel.TranDetails);
+
+                setFooterData(tranModel);
+                setPaymentDetail(tranModel);
+
+            }
+            else
+                alert(res.msg);
+            $(".loader").hide();
+        }
+    })
+}
 
 function cg_ClearRow(args) {
     args.item["PkId"] = 0;
@@ -470,6 +592,7 @@ function cg_ClearRow(args) {
     args.item["InvoiceSrNo"] = 0;
     args.item["FKInvoiceSrID"] = 0;
     args.item["InvoiceDate"] = "";
+    args.item["Barcode"] = "";
     cg.updateRefreshDataRow(args.row);
 }
 function BarcodeScan(barcode) {
@@ -499,7 +622,7 @@ function BarcodeScan(barcode) {
     })
 }
 
- 
+
 function ImportBarcode() {
     if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
         alert('The File APIs are not fully supported in this browser.');
@@ -520,7 +643,7 @@ function ImportBarcode() {
 
         const reader = new FileReader()
         reader.onload = function (event) {
-            
+
             if (!Handler.isNullOrEmpty(event.target.result)) {
                 var lst = event.target.result.split('\r\n');
                 sumitImportBarcode(lst);
@@ -529,10 +652,10 @@ function ImportBarcode() {
         reader.readAsText($('#Barcodefile')[0].files[0])
     }
 
-    
+
 }
 function sumitImportBarcode(barcodelist) {
-    
+
     $(".loader").show();
     tranModel.TranDetails = GetDataFromGrid();
 
@@ -552,7 +675,7 @@ function sumitImportBarcode(barcodelist) {
                 setFooterData(tranModel);
                 setPaymentDetail(tranModel);
                 $("#Barcodefile").val("");
-                if (!Handler.isNullOrEmpty(res.ListNotFound)) { alert('Not Found Barcode is :' + res.ListNotFound)}
+                if (!Handler.isNullOrEmpty(res.ListNotFound)) { alert('Not Found Barcode is :' + res.ListNotFound) }
             }
             else
                 alert(res.msg);
@@ -561,12 +684,12 @@ function sumitImportBarcode(barcodelist) {
     })
 }
 function handleFileLoad(event) {
-    
+
     var items = event.target.result.split(',');
     var items1 = JSON.stringify(event.target.result).split('\r\n');
     console.log(JSON.stringify(event.target.result));
     console.log(JSON.parse(JSON.stringify(event.target.result)));
-   // document.getElementById('fileContent').textContent = event.target.result;
+    // document.getElementById('fileContent').textContent = event.target.result;
 }
 
 function ColumnChange(args, rowIndex, fieldName) {
@@ -687,7 +810,7 @@ function setFooterData(data) {
     return false;
 }
 function setPaymentDetail(data) {
-    
+
     Common.Set(".model-paymentdetail", data, "");
     if (tranModel.FKPostAccID <= 0) { $("#Account").val(''); }
     return false;
@@ -705,6 +828,9 @@ function setGridRowData(args, data, rowIndex, fieldName) {
         args.item["PkProductId"] = data[rowIndex].PkProductId;
         args.item["FkProductId"] = data[rowIndex].FkProductId;
         args.item["FkLotId"] = data[rowIndex].FkLotId;
+        args.item["FKOrderID"] = data[rowIndex].FKOrderID;
+        args.item["FKOrderSrID"] = data[rowIndex].FKOrderSrID;
+        args.item["OrderSrNo"] = data[rowIndex].OrderSrNo;
         args.item["Rate"] = data[rowIndex].Rate;
         args.item["MRP"] = data[rowIndex].MRP;
         args.item["Qty"] = data[rowIndex].Qty;
@@ -729,7 +855,7 @@ function setGridRowData(args, data, rowIndex, fieldName) {
         args.item["FKInvoiceSrID"] = data[rowIndex].FKInvoiceSrID;
         args.item["FKLocationID"] = data[rowIndex].FKLocationID;
         args.item["ReturnTypeID"] = data[rowIndex].ReturnTypeID;
-        args.item["Barcode"] = data[rowIndex].Barcode;
+        args.item["Barcode"] = "Barcode";//data[rowIndex].Barcode;
         args.item["Delete"] = 'Delete';
 
     }
@@ -741,20 +867,21 @@ function setGridRowData(args, data, rowIndex, fieldName) {
 }
 
 function GetDataFromGrid(ifForsave) {
-    
+
     var array = cg.getData().filter(x => x.FkProductId > 0);
     let number = Math.max.apply(Math, array.map(function (o) { return o.SrNo; }));
     let SrNo = number > 0 ? number : 0;
     var _d = [];
     cg.getData().filter(function (element) {
-        
+
         if (ifForsave) {
             if (!Handler.isNullOrEmpty(element.Product) && !Handler.isNullOrEmpty(element.Qty)) {
-                
+
                 if (element.FkProductId > 0) { element.SrNo = element.SrNo; }
                 else { SrNo++; element.SrNo = SrNo; }
                 // element.FkProductId = parseInt(element.Product);
                 _d.push(element);
+
                 return element
             }
         }
@@ -762,7 +889,7 @@ function GetDataFromGrid(ifForsave) {
 
 
             if (!Handler.isNullOrEmpty(element.Product) || !Handler.isNullOrEmpty(element.FKInvoiceID)) {
-                
+
                 if (element.FkProductId > 0) { element.SrNo = element.SrNo; }
                 else { SrNo++; element.SrNo = SrNo; }
                 //element.FkProductId = parseInt(element.Product);
@@ -772,6 +899,15 @@ function GetDataFromGrid(ifForsave) {
         }
     });
     return _d
+}
+function GetAndCheckBarcodeQty(_d) {
+    var _NotFound = []
+    _d.filter(function (element) {
+        var _srnoList = tranModel.UniqIdDetails.filter((u) => { return u.SrNo == element.SrNo });
+        if (_srnoList.length != element.Qty)
+            _NotFound.push(element.Product);
+    });
+    return _NotFound
 }
 
 function SaveRecord() {
@@ -787,25 +923,33 @@ function SaveRecord() {
             tranModel.TranDetails = [];
             if ((tranModel.FkPartyId > 0) || (tranModel.ExtProperties.DocumentType == "C")) {
                 if (tranModel.FKSeriesId > 0) {
+                    debugger;
                     tranModel.TranDetails = GetDataFromGrid(true);
 
                     var filteredDetails = tranModel.TranDetails.filter(x => x.ModeForm != 2);
                     if (tranModel.TranDetails.length > 0 && filteredDetails.length > 0) {
-                        $.ajax({
-                            type: "POST",
-                            url: Handler.currentPath() + 'Create',
-                            data: { model: tranModel },
-                            datatype: "json",
-                            success: function (res) {
+                        debugger;
+                        var _NotMatch = GetAndCheckBarcodeQty(tranModel.TranDetails);
+                        if (_NotMatch.length == 0 || tranModel.TranAlias != "SINV") {
+                            /* alert('Ok');*/
+                            $.ajax({
+                                type: "POST",
+                                url: Handler.currentPath() + 'Create',
+                                data: { model: tranModel },
+                                datatype: "json",
+                                success: function (res) {
 
-                                if (res.status == "success") {
-                                    alert('Save Successfully..');
-                                    window.location = Handler.currentPath() + 'List';
+                                    if (res.status == "success") {
+                                        alert('Save Successfully..');
+                                        window.location = Handler.currentPath() + 'List';
+                                    }
+                                    else
+                                        alert(res.msg);
                                 }
-                                else
-                                    alert(res.msg);
-                            }
-                        });
+                            });
+                        }
+                        else
+                            alert("Barcode And Qty Not Match Product : " + _NotMatch.join(","));
                     }
                     else
                         alert("Insert Valid Product Data..");
@@ -1035,7 +1179,7 @@ function showpopupPrintOption() {//BarcodePrint
 
 
 }
- 
+
 
 function UploadFile() {
     //var TranDetails = GetDataFromGrid(); 
@@ -1045,8 +1189,8 @@ function UploadFile() {
         formData.append(key, tranModel[key]);
     }
     //formData.append("TranDetails", JSON.stringify(TranDetails));
-    formData.append("file", $("#ExcelFile")[0].files[0]); 
-    
+    formData.append("file", $("#ExcelFile")[0].files[0]);
+
     console.log(formData);
     $.ajax({
         type: 'POST',
@@ -1060,7 +1204,7 @@ function UploadFile() {
             BindGrid('DDT', tranModel.TranDetails);
 
             setFooterData(tranModel);
-            setPaymentDetail(tranModel); 
+            setPaymentDetail(tranModel);
             $("#ExcelFile").val("");
             if (!Handler.isNullOrEmpty(tranModel.NotFound)) {
                 alert('Not Found Product is :' + tranModel.NotFound)

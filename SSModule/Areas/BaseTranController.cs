@@ -137,7 +137,7 @@ namespace SSAdmin.Areas
             {
                 _repository.BarcodeScan(model, barcode);
             }
-            var ListNotFound = string.Join(",", barcodelist.Where(item => !model.TranDetails.ToList().Any(item2 => item2.Barcode == item.ToString())).ToList());
+            var ListNotFound = string.Join(",", barcodelist.Where(item => !model.UniqIdDetails.ToList().Any(item2 => item2.Barcode == item.ToString())).ToList());
             return Json(new
             {
                 status = "success",
@@ -471,5 +471,17 @@ namespace SSAdmin.Areas
             UTF8Encoding encoding = new UTF8Encoding();
             return encoding.GetString(barr, 0, barr.Length);
         }
+
+       
+        public JsonResult BarcodeList(TransactionModel model, int rowIndex)
+        {
+            return Json(new
+            {
+                status = "success",
+                data = _repository.BarcodeList(model, rowIndex)
+            });
+
+        }
+
     }
 }

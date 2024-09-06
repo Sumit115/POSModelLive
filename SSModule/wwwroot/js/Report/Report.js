@@ -16,6 +16,8 @@ var RPTFilter = {
     Product: { Data: [], Filter: null, IdProperty: "PkProductId", Field: "NameToDisplay" },
     Location: { Data: [], Filter: null, IdProperty: "PKLocationID", Field: "Location" },
     Series: { Data: [], Filter: null, IdProperty: "PkSeriesId", Field: "Series" },
+    State: { Data: [], Filter: null, IdProperty: "Text", Field: "Text" },
+
 };
 
 
@@ -173,6 +175,8 @@ function ShowFilter(type) {
                         _List.push({ PKID: v.PkSeriesId });
                     if (RPTFilter[type].IdProperty == "PkId")
                         _List.push({ PKID: v.PkId });
+                    if (RPTFilter[type].IdProperty == "Text")
+                        _List.push({ Text: v.Text });
                 });
                 RPTFilter[type].Filter = JSON.stringify(_List);
                 $(".popup_d").hide();

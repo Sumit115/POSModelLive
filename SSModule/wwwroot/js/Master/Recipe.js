@@ -5,12 +5,12 @@ var cgOut = null;
 $(document).ready(function () {
 
     Common.InputFormat();
-    $('#btnServerSave').click(function (e) {
-        if ($("#loginform1").valid()) {
-            SaveRecord();
-        }
-        return false;
-    });
+    //$('#btnServerSave').click(function (e) {
+    //    if ($("#loginform1").valid()) {
+    //        SaveRecord();
+    //    }
+    //    return false;
+    //});
     bindProductIn();
     bindBatchIn();
     bindColorIn();
@@ -34,10 +34,10 @@ function Load() {
 }
 
 function bindProductIn() {
-    _Custdropdown["FkProductId_In"] = new CustomDDL("FkProductId_In");
+    _Custdropdown["FkProductId_In"] = new CustomDDL("FkProductId_In", "#drpListFkProductId_In span");
 
     _Custdropdown.FkProductId_In.onLoad.call(function (arg) {
-        
+
         arg["name"] = 'Product';
         //arg["InvSrNo"] = TranModel.TransDetail[TranModel.CurrentIndex].SrNo;
         var result = "";
@@ -57,10 +57,11 @@ function bindProductIn() {
     })
 }
 function bindBatchIn() {
-    _Custdropdown["Batch_In"] = new CustomDDL("Batch_In");
+    _Custdropdown["Batch_In"] = new CustomDDL("Batch_In", "#drpListBatch_In span");
 
     _Custdropdown.Batch_In.onLoad.call(function (arg) {
         if ($("#FkProductId_In").val() > 0) {
+
             arg["FkProductId"] = $("#FkProductId_In").val();
             //Common.ajax(Handler.rootPath() + 'Transactions/PurchaseInvoice/CategorySizeListByProduct?FkProductId=' + FkProductId, {}, "Please Wait...", function (res) {
             //    Handler.hide();
@@ -76,7 +77,7 @@ function bindBatchIn() {
                 data: arg,
                 dataType: 'JSON',
                 success: function (res) {
-                    
+
                     result = res;
 
 
@@ -86,23 +87,21 @@ function bindBatchIn() {
         } else { alert('Please Select Product'); }
     })
 }
-
 function bindColorIn() {
     $('#Color_In').autocomplete({
         // minLength: 3,
         source: function (request, response) {
             var FkProductId = $("#FkProductId_In").val();
 
-            var data = { name: "Color", pageNo: 1, pageSize: 1000, search: '', RowParam: FkProductId, ExtraParam: "" };
+            var data = { name: "Color", pageNo: 1, pageSize: 1000, search: request.term, RowParam: FkProductId, ExtraParam: "" };
 
             $.ajax({
                 url: Handler.rootPath() + 'Transactions/PurchaseInvoice/trandtldropList', data: data, async: false, dataType: 'JSON', success: function (res) {
                     Handler.hide();
-                    debugger;
-                    if (res.length > 0) 
+                    if (res.length > 0)
                         response($.map(res, function (item) {
-                            
-                            return { label: item.Color, value: item.Color  }; //updated code
+
+                            return { label: item.Color, value: item.Color }; //updated code
                         }));
 
                 }, error: function (request, status, error) {
@@ -130,6 +129,61 @@ function bindColorIn() {
         }
     });
 }
+
+function AddProduct_In() {
+    debugger;
+    var rowCount = $('#tblProduct_In tbody tr').length;
+    var allValues = $('#tblProduct_In tbody tr input[class="SrNo"]').map(function () { return +this.value; }).toArray();
+    var SrNo = Math.max.apply(Math, allValues);
+    SrNo = SrNo > 0 ? SrNo + 1 : 1;
+    var FkProductId = $("#FkProductId_In").val();
+    if (FkProductId > 0) {
+
+        var html = '<tr index="' + rowCount + '">';
+        html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Product" name="Recipe_dtl[' + rowCount + '].Product" type="text" value="' + $("#drpFkProductId_In").val() + '" tabindex="-1"> </td>';
+        html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Batch" name="Recipe_dtl[' + rowCount + '].Batch" type="text" value="' + $("#drpBatch_In").val() + '" tabindex="-1"> </td>';
+        html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Color" name="Recipe_dtl[' + rowCount + '].Color" type="text" value="' + $("#Color_In").val() + '" tabindex="-1"> </td>';
+        html += '<td class="tabel-td-xs">';
+        html += '<input id="Recipe_dtl_' + rowCount + '__TranType" name="Recipe_dtl[' + rowCount + '].TranType" type="hidden"   value="I">';
+        html += '<input id="Recipe_dtl_' + rowCount + '__SrNo" name="Recipe_dtl[' + rowCount + '].SrNo" type="hidden" class="SrNo" value="' + SrNo + '">';
+        html += '<input id="Recipe_dtl_' + rowCount + '__FkProductId" name="Recipe_dtl[' + rowCount + '].FkProductId" type="hidden" value="' + $("#FkProductId_In").val() + '">';
+        html += '<span class="action-icon" onclick="UpdateSize(this,' + rowCount + ',\'del\')"><i class="fa fa-trash" /></span> </td>';
+
+        html += '</tr>';
+
+        $("#tblProduct_In tbody").append(html);
+
+        //  $("#txtSize").val('');
+        //$("#FklocalityGridId").prop('selectedIndex', 0);
+        //DropDownReset('FklocalityGridId');
+
+    }
+    else { alert("Insert Product"); }
+    // }
+    return false;
+}
+
+function UpdateSize(obj, index, action) {
+    //if (action === 'edit') {
+    //    $("#hidSizeIndex").val(index);
+    //    $("#FklocalityGridId").val($("#Recipe_dtl_lst_" + index + "__FKSizeID").val());
+    //    // $("#drpFklocalityGridId").val($("#Recipe_dtl_lst_" + index + "__Size").val());
+    //    $("#OpeningBalance").val($("#Recipe_dtl_lst_" + index + "__Size").val());
+    //    $('#thDrCr').find("input[value='" + $("#Recipe_dtl_lst_" + index + "__type").val() + "']").prop('checked', true);
+    //    $(obj).closest('tr').removeClass('tbl-delete');
+    //} else
+
+    if (action === 'del') {
+        $(obj).closest('tr').remove();
+        //$(obj).closest('tr').addClass('tbl-delete');
+        //$("#Recipe_dtl_lst_" + index + "__Mode").val('2');
+    }
+}
+
+
+
+
+
 function BindGridIn(GridId, GridStructerJson, data) {
 
     $("#" + GridId).empty();
@@ -233,7 +287,7 @@ function BindGridIn(GridId, GridStructerJson, data) {
                 var FkRecipeId = args.item["FkRecipeId"]
 
                 if (field == "Product") {
-                    
+
                     args.item["FkRecipeId"] = "0";
                     var array = cgIn.getData().filter(x => x.FkProductId > 0);
                     let number = Math.max.apply(Math, array.map(function (o) { return o.SrNo; }));
@@ -259,7 +313,7 @@ function BindGridIn(GridId, GridStructerJson, data) {
 
         //---------------    ---------------   ---------------   ---------------/
         cgIn.outGrid.onClick.subscribe(function (e, args) {
-            
+
             if (args.cell != undefined) {
                 var field = cgIn.columns[args.cell].field;
 
@@ -440,7 +494,7 @@ function BindGridOut(GridId, GridStructerJson, data) {
 
         //---------------    ---------------   ---------------   ---------------/
         cgOut.outGrid.onClick.subscribe(function (e, args) {
-            
+
             if (args.cell != undefined) {
                 var field = cgOut.columns[args.cell].field;
 
@@ -495,7 +549,7 @@ function BindGridOut(GridId, GridStructerJson, data) {
     });
 }
 function cg_ClearRow(grid, args) {
-    
+
     //args.item["FkRecipeId"] = "0";
     args.item["SrNo"] = 0;
     args.item["FkProductId"] = 0;

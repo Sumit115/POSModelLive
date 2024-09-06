@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace SSRepository.Models
 {
-    public class TranDetails 
+    public class TranDetails
     {
-       // public long PkId { get; set; }
+        // public long PkId { get; set; }
         public long FkId { get; set; }
         public long FKSeriesId { get; set; }//=0
         public int SrNo { get; set; }
@@ -62,7 +62,7 @@ namespace SSRepository.Models
         public decimal GstRate { get; set; }//9
         public decimal GstAmt { get; set; }//9
         public string? Product { get; set; }
-  
+
         public Nullable<long> FKInvoiceID { get; set; }
         public Nullable<long> InvoiceSrNo { get; set; }
         public Nullable<long> FKInvoiceSrID { get; set; }
@@ -70,7 +70,7 @@ namespace SSRepository.Models
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? InvoiceDate { get; set; }//Opt | Only Sale Return
-         
+
         public long FKLocationID { get; set; }
         public long ReturnTypeID { get; set; }
         public decimal TaxableAmt { get; set; }//=Prodct Price according Series Selection
@@ -80,5 +80,9 @@ namespace SSRepository.Models
         public string? HSNCode { get; set; }
         public string? Barcode { get; set; }
 
+        public long DueQty { get; set; }
+        public Nullable<long> FKOrderID { get; set; }
+        public Nullable<long> OrderSrNo { get; set; }
+        public Nullable<long> FKOrderSrID { get; set; }
     }
 }

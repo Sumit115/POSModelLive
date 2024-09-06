@@ -696,6 +696,8 @@ var Handler = {
 
         if (location.href.indexOf("Create") != -1)
             return location.href.substring(0, location.href.indexOf("Create"));
+        if (location.href.indexOf("ConvertInvoice") != -1)
+            return location.href.substring(0, location.href.indexOf("ConvertInvoice"));
         else if (loc.indexOf("Index") != -1)
             return loc.substring(0, loc.indexOf("Index"));
         else if (location.href.indexOf("View") != -1)

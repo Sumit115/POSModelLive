@@ -6,7 +6,7 @@ namespace SSRepository.IRepository
     public interface ITranBaseRepository : IBaseRepository
     {
         string Create(TransactionModel model);
-        DataTable GetList(string FromDate, string ToDate, string SeriesFilter, string DocumentType,string LocationFilter="");
+        DataTable GetList(string FromDate, string ToDate, string SeriesFilter, string DocumentType, string LocationFilter = "");
         TransactionModel GetSingleRecord(long PkId, long FkSeriesId);
         object BarcodeScan(TransactionModel model, string barcode);
         object FileUpload(TransactionModel model, DataTable dt);
@@ -48,6 +48,7 @@ namespace SSRepository.IRepository
         WalkingCustomerModel GeWalkingCustomer_byMobile(string Mobile);
 
         long GetIdbyEntryNo(long EntryNo, long FKSeriesId);
+        object BarcodeList(TransactionModel model, int rowIndex);
 
     }
 }

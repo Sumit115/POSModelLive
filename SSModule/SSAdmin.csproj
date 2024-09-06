@@ -257,4 +257,9 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\InvoicePDF\" />
+    <Folder Include="wwwroot\logs\" />
+  </ItemGroup>
+
 </Project>

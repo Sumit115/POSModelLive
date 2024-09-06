@@ -13,6 +13,6 @@ namespace SSRepository.IRepository.Report
     {
         List<ColumnStructure> ColumnList(string GridName = "");
         string GroupByColumn(long FormId, string GridName = "");
-        DataTable ViewData(string ReportType, string ProductFilter, string GroupByColumn);
+        DataTable ViewData(string ReportType, string StateFilter, string GroupByColumn);
     }
 }

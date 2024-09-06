@@ -42,7 +42,7 @@ namespace SSAdmin.Areas.Master.Controllers
             return Json(new
             {
                 status = "success",
-                data = _repository.GetList(pageSize, pageNo)
+                data = Handler.GetDrpState(false),//_repository.GetList(pageSize, pageNo)
             });
         }
 

@@ -19,6 +19,7 @@ namespace SSRepository.Models
             VoucherDetails = new List<VoucherDetails>();
             ExtProperties = new ExtPropertie();
             BranchDetails = new List<BranchModel>();
+            UniqIdDetails = new List<BarcodeUniqVM>();
             Branch = new BranchModel();
             EntryDate = DateTime.Now;
             GRDate = DateTime.Now;
@@ -115,6 +116,11 @@ namespace SSRepository.Models
         public IFormFile ExcelFile { get; set; }
         public string? NotFound { get; set; }
         public int IsUploadExcelFile { get; set; } = 0;
+
+        public Nullable<long> FKOrderID { get; set; }
+         public Nullable<long> FKOrderSrID { get; set; }
+        public List<BarcodeUniqVM> UniqIdDetails { get; set; }
+
     }
 
     public class ExtPropertie
@@ -126,6 +132,11 @@ namespace SSRepository.Models
         public long FKFormID { get; set; }
         public string LastEntryNo { get; set; }
         public string DocumentType { get; set; } 
+    }
+    public class BarcodeUniqVM
+    {
+        public int SrNo { get; set; }
+        public string  Barcode { get; set; } 
     }
 
 }

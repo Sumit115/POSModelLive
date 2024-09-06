@@ -123,7 +123,7 @@ namespace SSAdmin.Areas.Master.Controllers
                         Mode = "Edit";
                     }
                     Int64 ID = model.PkRecipeId;
-                    string error = await _repository.CreateAsync(model, Mode, ID);
+                    string error =   await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {
                         ModelState.AddModelError("", error);

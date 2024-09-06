@@ -486,6 +486,20 @@ namespace SSRepository.Repository
             return dtFilter;
         }
 
+        public DataTable GetFilterDataString(string strFilter)
+        {
+
+            DataTable dtFilter = new DataTable();
+            dtFilter.Columns.Add("Text");
+            dtFilter.AcceptChanges();
+            if (strFilter != null && strFilter != "[]")
+            {
+
+                dtFilter = JsonConvert.DeserializeObject<DataTable>(strFilter);
+
+            }
+            return dtFilter;
+        }
 
 
 

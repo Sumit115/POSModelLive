@@ -8,8 +8,8 @@
     <div class="col-md-9">
     </div>
     <div class="col-md-3 text-right">
-       @* <button class="btn btn-info" onclick="ShowFilter('Product')"><i class="fa fa-filter"></i></button>
-       *@ <input type="button" value="View" class="btn btn-success" onclick="Render('')">
+        <button class="btn btn-info" onclick="ShowFilter('State')"><i class="fa fa-filter"></i></button>
+        <input type="button" value="View" class="btn btn-success" onclick="Render('')">
         <button class="btn btn-dark" onclick="Render('excel')"><i class="fa fa-file-export"></i></button>
     </div>
 </div>
@@ -39,7 +39,7 @@
                 if (flag) {
                     _d["pageNo"] = RPTOption.pageNo;
                     _d["pageSize"] = RPTOption.pageSize;
-                    //_d["ProductFilter"] = RPTFilter.Product.Filter;
+                     _d["StateFilter"] = RPTFilter.State.Filter;
                     //_d["CustomerFilter"] = RPTFilter.Customer.Filter;
                     ViewData(_d, Export)
                 }

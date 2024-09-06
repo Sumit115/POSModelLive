@@ -40,14 +40,14 @@ namespace SSAdmin.Areas.Report.Controllers
         }
 
         [HttpPost]
-        public JsonResult List(string ProductFilter)
+        public JsonResult List(string StateFilter)
         {
 
             DataTable dt = new DataTable();
             try
             {
                 var GroupByColumn = _repository.GroupByColumn(FKFormID, "");
-                dt = _repository.ViewData("L", ProductFilter, GroupByColumn);
+                dt = _repository.ViewData("L", StateFilter, GroupByColumn);
             }
             catch (Exception ex) { }
             var jsonResult = Json(new

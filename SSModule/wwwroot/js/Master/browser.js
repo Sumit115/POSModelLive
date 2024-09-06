@@ -148,6 +148,14 @@ function bindGrid(GridId, data, IdProperty) {
                 })
 
             }
+            else if (command == "ConvertInvoice") {
+               
+                
+                console.log(Handler.rootPath());
+                //window.location.href = Handler.currentPath() + "ConvertInvoice/" + type + "/" + pk_Id;
+                window.location.href = Handler.rootPath() + "Transactions/SalesInvoice/ConvertInvoice/" + pk_Id + "/" + FkSeriesId;
+
+            }
         });
     });
 };
