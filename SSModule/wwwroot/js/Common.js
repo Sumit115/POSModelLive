@@ -613,7 +613,11 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
 
                                         console.log(res);
                                         if (res.status == "success") {
-                                            var _w = parseInt($("#BarcodePrint_width").val()) + 100;
+                                            var _w1 = parseInt($("#BarcodePrint_width").val());
+                                            var _c = parseInt($("#BarcodePrint_ColumnInPerRow").val()) ;
+                                            var _rcm = parseInt($("#BarcodePrint_MarginBetWeenRowColumn").val());
+
+                                            var _w = (_c > 1 ? ((_w1 * _c) + _rcm):_w1) + 100;
                                             Handler.popUp(res.html, { width: _w + "px", height: "500px", padding: "20px", overflow: "auto" }, function () {
                                                 $("#btnPrintBarcode").off("click").on("click", function () {
                                                     var divToPrint = document.getElementById('printpage');

@@ -35,7 +35,7 @@
                         {
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>@Model[@i].SysDefKey.Replace("BarcodePrint_","").Replace("Margin","Margin ").Replace("Barcode","Barcode ")</label>
+                                    <label>@Model[@i].SysDefKey.Replace("BarcodePrint_","").Replace("Margin","Margin ").Replace("Barcode","Barcode ").Replace("RowColumn"," Row Column ").Replace("ColumnInPerRow","Column In Per Row")</label>
                                     <input name="@Model[@i].SysDefKey" id="@Model[@i].SysDefKey" type="text" value="@Model[i].SysDefValue" class="form-control" required>
                                     <span data-valmsg-for="@Model[@i].SysDefKey"></span>
                                 </div>

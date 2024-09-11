@@ -70,7 +70,7 @@ $(document).ready(function () {
 });
 
 function Load() {
-    debugger;
+    
     var PkId = $("#PkId").val();
     tranModel = JSON.parse($("#hdData").val());
     if (PkId > 0) {
@@ -284,7 +284,7 @@ function BindGrid(GridId, data) {
             if (args.cell != undefined) {
 
                 var field = cg.columns[args.cell].field;
-                debugger;
+                
                 if (field == "Product") {
                     if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
                         var InvoiceSrNo = Common.isNullOrEmpty(args.item["ProductName"]) ? 0 : parseFloat(args.item["ProductName"]);
@@ -393,7 +393,7 @@ function BindGrid(GridId, data) {
 
             if (args.cell != undefined) {
                 var field = cg.columns[args.cell].field;
-                debugger;
+                
                 var FkProductId = args.grid.getDataItem(args.row)["FkProductId"];
                 var FkLotId = args.grid.getDataItem(args.row)["FkLotId"];
                 var SrNo = args.grid.getDataItem(args.row)["SrNo"];
@@ -451,7 +451,7 @@ function BindGrid(GridId, data) {
     });
 }
 function BarcodePopupUniqIdDetail(args, rowIndex) {
-    debugger;
+    
     tranModel.TranDetails = GetDataFromGrid();
 
     if (tranModel.TranDetails.length > 0) {
@@ -693,7 +693,7 @@ function handleFileLoad(event) {
 }
 
 function ColumnChange(args, rowIndex, fieldName) {
-    debugger;
+    
     tranModel.TranDetails = GetDataFromGrid();
 
     if (tranModel.TranDetails.length > 0) {
@@ -823,7 +823,7 @@ function setGridRowData(args, data, rowIndex, fieldName) {
         args.grid.getDataItem(args.row).ModeForm = 2
     }
     else {
-        debugger;
+        
         args.item["SrNo"] = data[rowIndex].SrNo;
         args.item["PkProductId"] = data[rowIndex].PkProductId;
         args.item["FkProductId"] = data[rowIndex].FkProductId;
@@ -923,12 +923,12 @@ function SaveRecord() {
             tranModel.TranDetails = [];
             if ((tranModel.FkPartyId > 0) || (tranModel.ExtProperties.DocumentType == "C")) {
                 if (tranModel.FKSeriesId > 0) {
-                    debugger;
+                    
                     tranModel.TranDetails = GetDataFromGrid(true);
 
                     var filteredDetails = tranModel.TranDetails.filter(x => x.ModeForm != 2);
                     if (tranModel.TranDetails.length > 0 && filteredDetails.length > 0) {
-                        debugger;
+                        
                         var _NotMatch = GetAndCheckBarcodeQty(tranModel.TranDetails);
                         if (_NotMatch.length == 0 || tranModel.TranAlias != "SINV") {
                             /* alert('Ok');*/

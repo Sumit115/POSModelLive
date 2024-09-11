@@ -60,7 +60,7 @@ namespace SSAdmin.Areas.Report.Controllers
             return jsonResult;
             //return new JsonResult(data);
         }
-        public ActionResult Export(string ProductFilter)
+        public ActionResult Export(string StateFilter)
         {
 
 
@@ -70,7 +70,7 @@ namespace SSAdmin.Areas.Report.Controllers
             var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList(); ;
 
             var GroupByColumn = _repository.GroupByColumn(FKFormID, "");
-            DataTable ds = _repository.ViewData("L", ProductFilter, GroupByColumn);
+            DataTable ds = _repository.ViewData("L", StateFilter, GroupByColumn);
             DataRow dr = ds.NewRow();
             dr["OrderQty"] = ds.AsEnumerable().Sum(row => row.Field<decimal>("OrderQty")); ;
             dr["StockQty"] = ds.AsEnumerable().Sum(row => row.Field<decimal>("StockQty")); ;
