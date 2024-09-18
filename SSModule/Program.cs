@@ -4,10 +4,12 @@ using Newtonsoft.Json.Serialization;
 using SSRepository.Data;
 using SSRepository.IRepository;
 using SSRepository.IRepository.Master;
+using SSRepository.IRepository.Option;
 using SSRepository.IRepository.Report;
 using SSRepository.IRepository.Transaction;
 using SSRepository.Repository;
 using SSRepository.Repository.Master;
+using SSRepository.Repository.Option;
 using SSRepository.Repository.Report;
 using SSRepository.Repository.Transaction;
 
@@ -76,6 +78,7 @@ builder.Services.AddScoped<IPurchaseTransactionRepository, PurchaseTransactionRe
 builder.Services.AddScoped<IPromotionRepository, PromotionRepository>();
 builder.Services.AddScoped<ISalesOrderStockRepository, SalesOrderStockRepository>();
 builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
+builder.Services.AddScoped<IImportRepository, ImportRepository>();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();

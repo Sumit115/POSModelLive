@@ -1,0 +1,51 @@
+﻿@model SSRepository.Models.ImportFileModel
+
+@{
+    ViewData["Title"] = "Create";
+    ViewData["bdClass"] = "page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="p-3">
+    <form asp-action="Stock" class="g-3" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+       
+        <div class="row">
+        
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Select File</label>
+                    <input asp-for="File" class="form-control" type="file" />
+                    <span asp-validation-for="File" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6 text-right pr-5">
+                <a href="/excelfile/format/demo_importStock.csv" target="_blank" title="Format Download" class="nav-link" style="padding: 7px 0px 0px 7px;">
+                   Downolad Format <i class="fas fa-download fa-fw" aria-hidden="true" style="font-size:30px;"></i>
+                </a>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            $('#btnServerSave').val('Upload');
+            $('#btnServerBack').hide();
+            if ('@ViewBag.Msg'!=''){
+                alert('@ViewBag.Msg');
+            }
+            $('#btnServerSave').click(function (e) {
+                e.preventDefault();
+                $("form").submit();
+            });
+        })
+ 
+            
+    </script>
+}

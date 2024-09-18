@@ -70,7 +70,7 @@ $(document).ready(function () {
 });
 
 function Load() {
-    
+
     var PkId = $("#PkId").val();
     tranModel = JSON.parse($("#hdData").val());
     if (PkId > 0) {
@@ -284,7 +284,7 @@ function BindGrid(GridId, data) {
             if (args.cell != undefined) {
 
                 var field = cg.columns[args.cell].field;
-                
+
                 if (field == "Product") {
                     if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
                         var InvoiceSrNo = Common.isNullOrEmpty(args.item["ProductName"]) ? 0 : parseFloat(args.item["ProductName"]);
@@ -393,7 +393,7 @@ function BindGrid(GridId, data) {
 
             if (args.cell != undefined) {
                 var field = cg.columns[args.cell].field;
-                
+
                 var FkProductId = args.grid.getDataItem(args.row)["FkProductId"];
                 var FkLotId = args.grid.getDataItem(args.row)["FkLotId"];
                 var SrNo = args.grid.getDataItem(args.row)["SrNo"];
@@ -402,10 +402,17 @@ function BindGrid(GridId, data) {
                     ColumnChange(args, args.row, "Delete");
                 }
                 else if (field == "Barcode" && ModeForm != 2) {
-                    if (tranModel.ExtProperties.StockFlag == "I") { }
+                    if (tranModel.ExtProperties.StockFlag == "I") {
+
+                        //if (FkProductId > 0) {
+                        //    BarcodePopupUniqId_ListWith_Textbox(args, args.row);
+                        //}
+                        //else
+                        //    alert('select Product');
+                    }
                     else {
                         if (FkProductId > 0 && FkLotId > 0) {
-                            BarcodePopupUniqIdDetail(args, args.row);
+                            BarcodePopupUniqId_CheckboxList(args, args.row);
                         }
                         else
                             alert('select Size');
@@ -450,8 +457,8 @@ function BindGrid(GridId, data) {
         //---------------    ---------------   ---------------   ---------------/
     });
 }
-function BarcodePopupUniqIdDetail(args, rowIndex) {
-    
+function BarcodePopupUniqId_CheckboxList(args, rowIndex) {
+
     tranModel.TranDetails = GetDataFromGrid();
 
     if (tranModel.TranDetails.length > 0) {
@@ -509,7 +516,7 @@ function BarcodePopupUniqIdDetail(args, rowIndex) {
                         var _existBarcode = [];
                         $(_List).each(function (i, v) {
                             console.log(v);
-                            var _exist  = $.grep(tranModel.UniqIdDetails, function (item) {
+                            var _exist = $.grep(tranModel.UniqIdDetails, function (item) {
                                 return item.Barcode == v.Barcode;
                             });
 
@@ -534,6 +541,122 @@ function BarcodePopupUniqIdDetail(args, rowIndex) {
             }
         });
     }
+}
+
+var cgGridUniqIdTextbox = null;
+
+function BarcodePopupUniqId_ListWith_Textbox(args, rowIndex) {
+
+    tranModel.TranDetails = GetDataFromGrid();
+    var SrNo = args.grid.getDataItem(args.row)["SrNo"];
+
+    if (tranModel.TranDetails.length > 0) {
+        $(".loader").show();
+        var filteredDetails = tranModel.UniqIdDetails.filter(x => x.SrNo == SrNo);
+
+        var htm = '';
+        htm += '<div class="mb-4 card">';
+        htm += '   <div class="card-body"> ';
+        htm += '       <div class="row mb-3"> ';
+        htm += '           <div class="col-md-6"> ';
+        htm += '               <div class="card-title">Add Barcode</div> ';
+        htm += '           </div>';
+        htm += '           <div class="col-md-6 text-center"> ';
+        // htm += '               <input type="button" id="btnSelectBarcode" value="Done" class="btn btn-success" />';
+        htm += '           </div> ';
+        htm += '       </div> ';
+        htm += '       <div class="row mb-3"> ';
+        htm += '           <div class="col-md-8"> ';
+        htm += '               <input type="text" id="txtBarcode" value="" class="form-control" />';
+        htm += '           </div>';
+        htm += '           <div class="col-md-4"> ';
+        htm += '               <input type="button" id="btnAddNewBarcode" value="Add" class="btn btn-success w-100" />';
+        htm += '           </div> ';
+        htm += '       </div> ';
+        htm += '       <div class="row">';
+        htm += '           <div class="col-md-12" id="WUCFilterUniqIdTextbox"> ';
+        htm += '           </div>';
+        htm += '           <div class="col-md-12 text-center"> ';
+        htm += '               <input type="button" id="btnSelectBarcode" value="Done" class="btn btn-success" />';
+        htm += '           </div> ';
+
+        htm += '          </div>  ';
+        htm += '   </div>';
+        htm += '   </div>';
+
+        Handler.popUp(htm, { width: "400px", height: "500px" }, function () { });
+        Bind_cgGridUniqIdTextbox(args, rowIndex, filteredDetails)
+        $(".loader").hide();
+
+    }
+}
+function Bind_cgGridUniqIdTextbox(args, rowIndex, _d) {
+
+    cgGridUniqIdTextbox = new coGrid("#WUCFilterUniqIdTextbox");
+    cgGridUniqIdTextbox.setColumnHeading("Barcode~Del");
+    cgGridUniqIdTextbox.setColumnWidthPer("30~10", 800);
+    cgGridUniqIdTextbox.setColumnFields("Barcode~Delete");
+    cgGridUniqIdTextbox.setAlign("C~L");
+    cgGridUniqIdTextbox.defaultHeight = "400px";
+    cgGridUniqIdTextbox.setSearchType("0~1");
+    cgGridUniqIdTextbox.setSearchableColumns("Barcode");
+    cgGridUniqIdTextbox.setSortableColumns("Barcode");
+    //  cg.setCheckAllCheckboxColumns("~~");
+    cgGridUniqIdTextbox.setIdProperty("Barcode");
+    cgGridUniqIdTextbox.setCtrlType("~BD");
+    cgGridUniqIdTextbox.bind(_d);
+    cgGridUniqIdTextbox.outGrid.setSelectionModel(new Slick.RowSelectionModel());
+    //filterGridTagPrint = cg;
+
+    $("#btnAddNewBarcode").off("click").on("click", function () {
+        var barcode = $("#txtBarcode").val();
+        debugger;
+        var _List = cgGridUniqIdTextbox.getData().filter(function (el) { return !Handler.isNullOrEmpty(el.Barcode) })
+
+        if (!Handler.isNullOrEmpty(barcode)) {
+            if (_List.filter(function (el) { return el.Barcode == barcode }).length == 0) {
+                _List.push({ "Barcode": barcode });
+                Bind_cgGridUniqIdTextbox(args, rowIndex, _List);
+            }
+            else
+                alert('Barcode Already exists');
+        }
+        else
+            alert('Please Enter Barcode');
+
+    });
+
+    //$("#btnSelectBarcode").off("click").on("click", function () {
+    //    var _List = cg.getData().filter(function (el) { return el.IsPrint })
+    //    console.clear();
+    //    let SrNo = tranModel.TranDetails[rowIndex].SrNo;
+    //    tranModel.UniqIdDetails = tranModel.UniqIdDetails.filter((u) => {
+    //        return u.SrNo != SrNo
+    //    })
+    //    var _existBarcode = [];
+    //    $(_List).each(function (i, v) {
+    //        console.log(v);
+    //        var _exist = $.grep(tranModel.UniqIdDetails, function (item) {
+    //            return item.Barcode == v.Barcode;
+    //        });
+
+    //        if (_exist.length == 0) {
+    //            tranModel.UniqIdDetails.push({ SrNo: v.SrNo, Barcode: v.Barcode })
+    //        } else {
+    //            _existBarcode.push(v.Barcode);
+    //        }
+    //    })
+    //    /* RPTFilter[type].Filter = JSON.stringify(_List);*/
+    //    if (_existBarcode.length > 0) {
+    //        alert("Barcode Already Exists : " + _existBarcode.join(","));
+    //    }
+    //    $(".popup_d").hide();
+    //});
+
+
+
+
+
 }
 function BarcodeScan(barcode) {
     $(".loader").show();
@@ -693,7 +816,7 @@ function handleFileLoad(event) {
 }
 
 function ColumnChange(args, rowIndex, fieldName) {
-    
+
     tranModel.TranDetails = GetDataFromGrid();
 
     if (tranModel.TranDetails.length > 0) {
@@ -823,7 +946,7 @@ function setGridRowData(args, data, rowIndex, fieldName) {
         args.grid.getDataItem(args.row).ModeForm = 2
     }
     else {
-        
+
         args.item["SrNo"] = data[rowIndex].SrNo;
         args.item["PkProductId"] = data[rowIndex].PkProductId;
         args.item["FkProductId"] = data[rowIndex].FkProductId;
@@ -923,12 +1046,12 @@ function SaveRecord() {
             tranModel.TranDetails = [];
             if ((tranModel.FkPartyId > 0) || (tranModel.ExtProperties.DocumentType == "C")) {
                 if (tranModel.FKSeriesId > 0) {
-                    
+
                     tranModel.TranDetails = GetDataFromGrid(true);
 
                     var filteredDetails = tranModel.TranDetails.filter(x => x.ModeForm != 2);
                     if (tranModel.TranDetails.length > 0 && filteredDetails.length > 0) {
-                        
+
                         var _NotMatch = GetAndCheckBarcodeQty(tranModel.TranDetails);
                         if (_NotMatch.length == 0 || tranModel.TranAlias != "SINV") {
                             /* alert('Ok');*/

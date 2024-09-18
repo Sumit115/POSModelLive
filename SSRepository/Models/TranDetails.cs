@@ -79,10 +79,13 @@ namespace SSRepository.Models
         public string? BrandName { get; set; }
         public string? HSNCode { get; set; }
         public string? Barcode { get; set; }
+        public string? BarcodeTest { get; set; }
 
         public long DueQty { get; set; }
         public Nullable<long> FKOrderID { get; set; }
         public Nullable<long> OrderSrNo { get; set; }
         public Nullable<long> FKOrderSrID { get; set; }
+        public string? SubCategoryName { get; set; }
+
     }
 }

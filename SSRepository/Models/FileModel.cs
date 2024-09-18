@@ -17,4 +17,10 @@ namespace SSRepository.Models
         [Required(ErrorMessage = "Please select file")]
         public IFormFile File { get; set; }
     }
+    public class ImportFileModel
+    {
+        
+        [Required(ErrorMessage = "Please select file")]
+        public IFormFile File { get; set; }
+    }
 }
