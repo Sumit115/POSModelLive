@@ -79,6 +79,7 @@ function Load() {
         $(tranModel.TranDetails).each(function (i, v) {
             //  v["Product"] = parseInt(v.FkProductId);
             v["ModeForm"] = 1;
+            v["Barcode"] = 'Barcode';
             v["Delete"] = 'Delete';
         });
         BindGrid('DDT', tranModel.TranDetails);
@@ -404,11 +405,11 @@ function BindGrid(GridId, data) {
                 else if (field == "Barcode" && ModeForm != 2) {
                     if (tranModel.ExtProperties.StockFlag == "I") {
 
-                        //if (FkProductId > 0) {
-                        //    BarcodePopupUniqId_ListWith_Textbox(args, args.row);
-                        //}
-                        //else
-                        //    alert('select Product');
+                        if (FkProductId > 0) {
+                            BarcodePopupUniqId_ListWith_Textbox(args, args.row);
+                        }
+                        else
+                            alert('select Product');
                     }
                     else {
                         if (FkProductId > 0 && FkLotId > 0) {
@@ -607,16 +608,32 @@ function Bind_cgGridUniqIdTextbox(args, rowIndex, _d) {
     cgGridUniqIdTextbox.bind(_d);
     cgGridUniqIdTextbox.outGrid.setSelectionModel(new Slick.RowSelectionModel());
     //filterGridTagPrint = cg;
+    cgGridUniqIdTextbox.outGrid.onClick.subscribe(function (e, args) {
+
+        if (args.cell != undefined) {
+            var field = cgGridUniqIdTextbox.columns[args.cell].field;
+            debugger;
+             var SrNo = args.grid.getDataItem(args.row)["SrNo"];
+            var Barcode = args.grid.getDataItem(args.row)["Barcode"];
+            if (field == "Delete") {
+                var _List = cgGridUniqIdTextbox.getData().filter(function (el) { return el.Barcode != Barcode });
+
+                Bind_cgGridUniqIdTextbox(args, rowIndex, _List);
+            }
+         }
+    });
 
     $("#btnAddNewBarcode").off("click").on("click", function () {
         var barcode = $("#txtBarcode").val();
-        debugger;
+        
         var _List = cgGridUniqIdTextbox.getData().filter(function (el) { return !Handler.isNullOrEmpty(el.Barcode) })
 
         if (!Handler.isNullOrEmpty(barcode)) {
             if (_List.filter(function (el) { return el.Barcode == barcode }).length == 0) {
-                _List.push({ "Barcode": barcode });
+                let SrNo = tranModel.TranDetails[rowIndex].SrNo;
+                _List.push({ "Barcode": barcode, SrNo: SrNo });
                 Bind_cgGridUniqIdTextbox(args, rowIndex, _List);
+                $("#txtBarcode").val('');
             }
             else
                 alert('Barcode Already exists');
@@ -626,32 +643,31 @@ function Bind_cgGridUniqIdTextbox(args, rowIndex, _d) {
 
     });
 
-    //$("#btnSelectBarcode").off("click").on("click", function () {
-    //    var _List = cg.getData().filter(function (el) { return el.IsPrint })
-    //    console.clear();
-    //    let SrNo = tranModel.TranDetails[rowIndex].SrNo;
-    //    tranModel.UniqIdDetails = tranModel.UniqIdDetails.filter((u) => {
-    //        return u.SrNo != SrNo
-    //    })
-    //    var _existBarcode = [];
-    //    $(_List).each(function (i, v) {
-    //        console.log(v);
-    //        var _exist = $.grep(tranModel.UniqIdDetails, function (item) {
-    //            return item.Barcode == v.Barcode;
-    //        });
+    $("#btnSelectBarcode").off("click").on("click", function () {
+        var _List = cgGridUniqIdTextbox.getData().filter(function (el) { return !Handler.isNullOrEmpty(el.Barcode) });
+         let SrNo = tranModel.TranDetails[rowIndex].SrNo;
+        
+        tranModel.UniqIdDetails = tranModel.UniqIdDetails.filter((u) => {
+            return u.SrNo != SrNo
+        })
+        var _existBarcode = [];
+        $(_List).each(function (i, v) {
+             var _exist = $.grep(tranModel.UniqIdDetails, function (item) {
+                return item.Barcode == v.Barcode;
+            });
 
-    //        if (_exist.length == 0) {
-    //            tranModel.UniqIdDetails.push({ SrNo: v.SrNo, Barcode: v.Barcode })
-    //        } else {
-    //            _existBarcode.push(v.Barcode);
-    //        }
-    //    })
-    //    /* RPTFilter[type].Filter = JSON.stringify(_List);*/
-    //    if (_existBarcode.length > 0) {
-    //        alert("Barcode Already Exists : " + _existBarcode.join(","));
-    //    }
-    //    $(".popup_d").hide();
-    //});
+            if (_exist.length == 0) {
+                tranModel.UniqIdDetails.push({ SrNo: v.SrNo, Barcode: v.Barcode })
+            } else {
+                _existBarcode.push(v.Barcode);
+            }
+        })
+        /* RPTFilter[type].Filter = JSON.stringify(_List);*/
+        if (_existBarcode.length > 0) {
+            alert("Barcode Already Exists : " + _existBarcode.join(","));
+        } else { $(".popup_d").hide(); }
+       
+    });
 
 
 

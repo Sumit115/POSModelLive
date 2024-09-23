@@ -78,11 +78,18 @@ namespace SSRepository.Repository.Transaction
                         //    throw new Exception("Color Required on Product " + item.Product);
                         //}
 
-                        if (objmodel.TranAlias == "PINV" && item.ModeForm != 0)
+                        if (objmodel.TranAlias == "PINV"  )
                         {
-                            var _check = __dbContext.TblSalesInvoicedtl.Where(x => x.FkLotId == item.FkLotId && x.FkProductId == item.FkProductId).FirstOrDefault();
-                            if (_check != null) { throw new Exception("Product Not Update After Sale :" + item.Product); }
-
+                            if (item.ModeForm != 0)
+                            {
+                                var _check = __dbContext.TblSalesInvoicedtl.Where(x => x.FkLotId == item.FkLotId && x.FkProductId == item.FkProductId).FirstOrDefault();
+                                if (_check != null) { throw new Exception("Product Not Update After Sale :" + item.Product); }
+                            }
+                            if (objmodel.UniqIdDetails != null)
+                            { 
+                            var _bQty= objmodel.UniqIdDetails.Where(x=>x.SrNo==item.SrNo).ToList();
+                                if (_bQty.Count > item.Qty) { throw new Exception("Product ("+ item.Product + ") Qty & Barcode Qty Not Match"); }
+                            }
                         }
                         if (item.ModeForm != 2)
                         {

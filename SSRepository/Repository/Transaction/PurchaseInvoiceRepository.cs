@@ -11,6 +11,7 @@ using System.Net.Http.Headers;
 using SSRepository.Repository.Master;
 using System.Xml.Linq;
 using System.Runtime.ConstrainedExecution;
+using System;
 
 namespace SSRepository.Repository.Transaction
 {
@@ -29,12 +30,35 @@ namespace SSRepository.Repository.Transaction
             TransactionModel model = (TransactionModel)objmodel;
             string error = "";
 
-
-            // error = isAlreadyExist(model, "");
+           
+             error = isAlreadyExist(model, "");
             return error;
 
         }
+        public string isAlreadyExist(TransactionModel model, string Mode)
+        {
+            dynamic cnt;
+            string error = "";
+            if (model.UniqIdDetails != null)
+            {
+                if (model.PkId > 0)
+                {
+                    var _exists = __dbContext.TblProductQTYBarcode.Where(x => (x.TranInId != model.PkId && x.TranInSeriesId != model.FKSeriesId)).ToList().Where(x => model.UniqIdDetails.Any(y => y.Barcode == x.Barcode)).ToList();
+                    if (_exists.Count > 0)
+                    { error = "Barcode Already exists :" + string.Join(",", _exists.Select(x => x.Barcode).ToList()); }
 
+                }
+                else
+                {
+                     var _exists = __dbContext.TblProductQTYBarcode.ToList().Where(x => model.UniqIdDetails.Any(y => y.Barcode == x.Barcode)).ToList();
+                    if (_exists.Count > 0)
+                    { error = "Barcode Already exists :"+ string.Join(",", _exists.Select(x => x.Barcode).ToList()); }
+                
+                }
+            }
+
+            return error;
+        }
         public object SetLastSeries(TransactionModel model, long UserId, string TranAlias, string DocumentType)
         {
             var obj = (from cou in __dbContext.TblPurchaseInvoicetrn
