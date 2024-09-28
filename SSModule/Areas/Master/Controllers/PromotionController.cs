@@ -44,13 +44,14 @@ namespace SSAdmin.Areas.Master.Controllers
             _repositoryProduct = repositoryProduct;
             _repositoryCategory = repositoryCategory;
             _repositoryBrand = repositoryBrand;
-            FKFormID = (long)Handler.Form.Promotion;
+           // FKFormID = (long)Handler.Form.Promotion;
         }
 
         public async Task<IActionResult> List(string id)
         {
-            ViewBag.PromotionDuring = ViewBag.GridName = !string.IsNullOrEmpty(id) ? id : "Sales";
-            ViewBag.FormId = FKFormID;
+            id = !string.IsNullOrEmpty(id) ? id : "Sales";
+            ViewBag.PromotionDuring = ViewBag.GridName =id;
+            ViewBag.FormId = id == "Sales"? (long)Handler.Form.SalesPromotion : (long)Handler.Form.PurchasePromotion;
             return View();
         }
 

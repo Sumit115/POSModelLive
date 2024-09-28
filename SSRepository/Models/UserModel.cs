@@ -4,11 +4,16 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SSRepository.Models
 {
     public class UserModel : BaseModel
     {
+        public UserModel()
+        {
+            MenuList = new List<MenuModel>(); 
+        }
         public long PkUserId { get; set; }
         public string UserId { get; set; } = null!;
 
@@ -36,6 +41,8 @@ namespace SSRepository.Models
         public string? EmployeeName { get; set; }
         public string? BranchName { get; set; }
         public string? CompanyName { get; set; }
+        public List<MenuModel> MenuList { get; set; }
+
 
     }
 
@@ -63,5 +70,23 @@ namespace SSRepository.Models
         public string? Value { get; set; }
         public string? Value2 { get; set; }
     }
-
+    public class MenuModel
+    {
+        public long PKFormID { get; set; }
+        public Nullable<long> FKMasterFormID { get; set; }
+        public int SeqNo { get; set; }
+        public string? FormName { get; set; }
+        public string? ShortName { get; set; }
+        public string? ShortCut { get; set; }
+        public string? ToolTip { get; set; }
+        public string? Image { get; set; }
+        public string? FormType { get; set; }
+        public string? WebURL { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsAccess { get; set; }
+        public bool IsEdit { get; set; }
+        public bool IsCreate { get; set; }
+        public bool IsPrint { get; set; }
+        public bool IsBrowse { get; set; }
+    }
 }

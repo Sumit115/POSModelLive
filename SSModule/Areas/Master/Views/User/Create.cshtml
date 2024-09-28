@@ -40,7 +40,13 @@
                     <span asp-validation-for="Pwd" class="text-danger"></span>
                 </div>
             </div>
-
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Role </label>
+                    <select asp-for="FkRoleId" asp-items="@(new SelectList(ViewBag.RoleList,"PkRoleId","RoleName"))" class="form-control" id="FkRoleId">
+                    </select>
+                </div>
+            </div>
 
 
         </div>

@@ -60,6 +60,8 @@ namespace SSAdmin
         }
         public enum Form
         {
+            //MainMenu start from 1000
+
             Customer = 1,
             Vendor = 2,
             Employee = 3,
@@ -85,8 +87,10 @@ namespace SSAdmin
             Locality = 23,
             Location = 24,
             OpeningStock = 25,
-            Promotion = 26,
-            Recipe = 27,
+            SalesPromotion = 26,
+            PurchasePromotion = 27,
+            Role = 28,
+            Recipe = 29,
 
             SalesOrder = 100,
             SalesInvoice = 101,
@@ -112,6 +116,7 @@ namespace SSAdmin
             SalesOrderStock = 207,
 
             //
+            ImportStock = 300,
 
 
 

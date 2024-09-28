@@ -161,6 +161,11 @@ namespace SSRepository.Repository
                 {
                     MaxID = __dbContext.TblRecipeMas.ToList().Count > 0 ? __dbContext.TblRecipeMas.ToList().Max(x => x.PkRecipeId) : 0;
                 }
+                else if (TableName == "TblRoleMas")
+                {
+                    MaxID = __dbContext.TblRoleMas.ToList().Count > 0 ? __dbContext.TblRoleMas.ToList().Max(x => x.PkRoleId) : 0;
+                }
+
                 return Convert.ToInt64(MaxID) + 1;
             }
             catch (Exception ex)
@@ -835,6 +840,28 @@ namespace SSRepository.Repository
                 ErrMsg = Convert.ToString(cmd.Parameters["@ErrMsg"].Value);
                 con.Close();
             }
+        }
+        public List<FormModel> GetFormList(long? FKMasterFormID=null)
+        {
+            List<FormModel> data = (from cou in __dbContext.TblFormMas
+                                    where cou.IsActive==true &&
+                                    cou.FKMasterFormID == (FKMasterFormID > 0 ? FKMasterFormID : cou.FKMasterFormID)
+                                    select (new FormModel
+                                    {
+                                        PKFormID = cou.PKFormID,
+                                        FKMasterFormID = cou.FKMasterFormID,
+                                        SeqNo = cou.SeqNo,
+                                        FormName = cou.FormName,
+                                        ShortName = cou.ShortName,
+                                        ShortCut = cou.ShortCut,
+                                        ToolTip = cou.ToolTip,
+                                        Image = cou.Image,
+                                        FormType = cou.FormType,
+                                        WebURL = cou.WebURL,
+                                        IsActive = cou.IsActive, 
+                                    }
+                                        )).ToList();
+            return data;
         }
 
     }

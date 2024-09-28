@@ -19,6 +19,6 @@ namespace SSRepository.IRepository
          List<BarcodePrintPreviewModel>    BarcodePrintList(List<BarcodeDetails> model);
         void UpdatePrintBarcode(object objmodel);
         List<ddl> UnitList();
-      
+        public List<FormModel> GetFormList(long? FKMasterFormID=null);
     }
 }

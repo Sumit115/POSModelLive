@@ -5,7 +5,9 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using iTextSharp.text;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
@@ -13,6 +15,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Bcpg;
 using SelectPdf;
 using SSRepository.IRepository;
 using SSRepository.IRepository.Master;
@@ -58,6 +61,7 @@ namespace SSAdmin.Areas
 
         }
 
+        
 
         protected void BindViewBags(object Trans)
         {
@@ -137,9 +141,9 @@ namespace SSAdmin.Areas
             {
                 _repository.BarcodeScan(model, barcode);
             }
-            var ListNotFound = string.Join(",", barcodelist.Where(item => !model.UniqIdDetails.ToList().Any(item2 => 
+            var ListNotFound = string.Join(",", barcodelist.Where(item => !model.UniqIdDetails.ToList().Any(item2 =>
             item2.Barcode == item.ToString())).ToList());
- 
+
             return Json(new
             {
                 status = "success",
@@ -474,7 +478,7 @@ namespace SSAdmin.Areas
             return encoding.GetString(barr, 0, barr.Length);
         }
 
-       
+
         public JsonResult BarcodeList(TransactionModel model, int rowIndex)
         {
             return Json(new

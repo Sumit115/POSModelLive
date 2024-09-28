@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -16,6 +18,20 @@ namespace SSAdmin.Areas
 {
     public class BaseController : Controller
     {
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            if (HttpContext.Session.GetString("LoginId") != null)
+            {
+                string path = Path.Combine("wwwroot", "Data", HttpContext.Session.GetString("LoginId"));
+                string filePath = Path.Combine(path, "menulist.json");
+                var jsondata = System.IO.File.ReadAllText(filePath);
+                if (!string.IsNullOrEmpty(jsondata))
+                {
+                    var _lst = JsonConvert.DeserializeObject<List<MenuModel>>(jsondata);
+                    ViewBag.Menulist = _lst;
+                }
+            }
+        }
 
         public long FKFormID = 0;
 

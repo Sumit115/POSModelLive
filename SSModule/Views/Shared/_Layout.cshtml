@@ -6,8 +6,9 @@
      Context.Session.SetInt32("IsAdmin", Convert.ToInt32(1));
      Context.Session.SetString("Photo", "/Admin/dist/img/avatar04.png");*@
 
-       Context.Response.Redirect("/Auth");
+    Context.Response.Redirect("/Auth");
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -99,451 +100,85 @@
                                 <p>Dashboard</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
-                                <p>
-                                    Master
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>
-                                            Inventory
-                                            <i class="right fas fa-angle-left"></i>
-                                        </p>
-                                    </a>
-                                    <ul class="nav nav-treeview" style="display: none;">
+                        @{
+                            List<SSRepository.Models.MenuModel> _menuList = ViewBag.Menulist;
+                            if (_menuList != null)
+                            {
+                                if (_menuList.Count > 0)
+                                {
+                                    //var request = Context.Request;
+                                    //var path = Convert.ToString(request.Path);
+                                    //if (path == "/Home/Index" || path == "/Home" || _menuList.Any(x => x.WebURL == path))
+                                    //{
+                                        foreach (var mstrMenu in _menuList.Where(x => x.FKMasterFormID == null || x.FKMasterFormID == 0).ToList())
+                                        {
 
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Brand" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Brand<i class="right fas fa-external-link-alt tablink"></i></p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="CategoryGroup" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Section Group<i class="right fas fa-external-link-alt tablink"></i></p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Category" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Section<i class="right fas fa-external-link-alt tablink"></i></p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Product" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Article<i class="right fas fa-external-link-alt tablink"></i></p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="ProductLot" asp-action="Create" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Article Lot<i class="right fas fa-external-link-alt tablink"></i></p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>
-                                            Customer/Vendor
-                                            <i class="right fas fa-angle-left"></i>
-                                        </p>
-                                    </a>
-                                    <ul class="nav nav-treeview" style="display: none;">
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Customer" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>
-                                                    Customer
-                                                    <i class="right fas fa-external-link-alt tablink"></i>
-                                                </p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Vendor" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>
-                                                    Vendor
-                                                    <i class="right fas fa-external-link-alt tablink"></i>
-                                                </p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>
-                                            Accounts
-                                            <i class="right fas fa-angle-left"></i>
-                                        </p>
-                                    </a>
-                                    <ul class="nav nav-treeview" style="display: none;">
 
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="AccountGroup" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Account Group<i class="right fas fa-external-link-alt tablink"></i></p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="AccountMas" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Ledger Account<i class="right fas fa-external-link-alt tablink"></i></p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Bank" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Bank<i class="right fas fa-external-link-alt tablink"></i></p>
-                                            </a>
-                                        </li>
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link">
+                                                    @Html.Raw(mstrMenu.Image)
+                                                    <p>
+                                                        @mstrMenu.FormName
+                                                        <i class="right fas fa-angle-left"></i>
+                                                    </p>
+                                                </a>
+                                                <ul class="nav nav-treeview">
 
-                                    </ul>
-                                </li>
+                                                    @foreach (var menu in _menuList.Where(x => x.FKMasterFormID == mstrMenu.PKFormID).ToList())
+                                                    {
+                                                        var _subMenu = _menuList.Where(x => x.FKMasterFormID == menu.PKFormID).ToList();
+                                                        if (_subMenu.Count > 0)
+                                                        {
+                                                            <li class="nav-item">
+                                                                <a href="#" class="nav-link">
+                                                                    @Html.Raw(menu.Image)
+                                                                    <p>
+                                                                        @menu.FormName
+                                                                        <i class="right fas fa-angle-left"></i>
+                                                                    </p>
+                                                                </a>
+                                                                <ul class="nav nav-treeview" style="display: none;">
+                                                                    @foreach (var _m in _menuList.Where(x => x.FKMasterFormID == menu.PKFormID).ToList())
+                                                                    {
+                                                                        <li class="nav-item">
+                                                                            <a href="@_m.WebURL" class="nav-link">
+                                                                                @Html.Raw(_m.Image)
+                                                                                <p>
+                                                                                    @_m.FormName
+                                                                                    <i class="right fas fa-external-link-alt tablink"></i>
+                                                                                </p>
+                                                                            </a>
+                                                                        </li>
+                                                                    }
+                                                                </ul>
+                                                            </li>
+                                                        }
+                                                        else
+                                                        {
+                                                            <li class="nav-item">
+                                                                <a href="@menu.WebURL" class="nav-link">
+                                                                    @Html.Raw(menu.Image)
+                                                                    <p>
+                                                                        @menu.FormName
+                                                                        <i class="right fas fa-external-link-alt tablink"></i>
+                                                                    </p>
+                                                                </a>
+                                                            </li>
 
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>
-                                            Locations
-                                            <i class="right fas fa-angle-left"></i>
-                                        </p>
-                                    </a>
-                                    <ul class="nav nav-treeview" style="display: none;">
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="City" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>City<i class="right fas fa-external-link-alt tablink"></i></p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Country" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>
-                                                    Country
-                                                    <i class="right fas fa-external-link-alt tablink"></i>
-                                                </p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="State" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>
-                                                    State
-                                                    <i class="right fas fa-external-link-alt tablink"></i>
-                                                </p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="District" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>
-                                                    District
-                                                    <i class="right fas fa-external-link-alt tablink"></i>
-                                                </p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Station" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>
-                                                    Station
-                                                    <i class="right fas fa-external-link-alt tablink"></i>
-                                                </p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Zone" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>
-                                                    Zone
-                                                    <i class="right fas fa-external-link-alt tablink"></i>
-                                                </p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Region" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>
-                                                    Region
-                                                    <i class="right fas fa-external-link-alt tablink"></i>
-                                                </p>
-                                            </a>
-                                        </li>
+                                                        }
+                                                    }
 
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Area" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>
-                                                    Area
-                                                    <i class="right fas fa-external-link-alt tablink"></i>
-                                                </p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Locality" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>
-                                                    Locality
-                                                    <i class="right fas fa-external-link-alt tablink"></i>
-                                                </p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
+                                                </ul>
+                                            </li>
+                                        }
+                                    //}
+                                    //else { Context.Response.Redirect("/Auth"); }
+                                }
+                                else { Context.Response.Redirect("/Auth"); }
+                            }
+                            else { Context.Response.Redirect("/Auth"); }
+                        }
 
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>
-                                            Resources
-                                            <i class="right fas fa-angle-left"></i>
-                                        </p>
-                                    </a>
-                                    <ul class="nav nav-treeview" style="display: none;">
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Employee" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Employee</p>
-                                                <i class="right fas fa-external-link-alt tablink"></i>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Branch" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Branch<i class="right fas fa-external-link-alt tablink"></i></p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Series" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Series<i class="right fas fa-external-link-alt tablink"></i></p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="User" asp-action="List" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>User<i class="right fas fa-external-link-alt tablink"></i></p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>
-                                            Others
-                                            <i class="right fas fa-angle-left"></i>
-                                        </p>
-                                    </a>
-                                    <ul class="nav nav-treeview" style="display: none;">
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Promotion" asp-action="List" asp-route-id="Sales" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Sales Promotion</p>
-                                                <i class="right fas fa-external-link-alt tablink"></i>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="Master" asp-controller="Promotion" asp-action="List" asp-route-id="Purchase" class="nav-link">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Purchase Promotion<i class="right fas fa-external-link-alt tablink"></i></p>
-                                            </a>
-                                        </li>
-
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-chart-pie"></i>
-                                <p>
-                                    Sales
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-area="Transactions" asp-controller="SalesOrder" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Order<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Transactions" asp-controller="SalesInvoice" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Invoice<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Transactions" asp-controller="SalesChallan" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Challan<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Transactions" asp-controller="SalesCrNote" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Credit Note<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Transactions" asp-controller="SalesReturn" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Return<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Transactions" asp-controller="WalkingSalesInvoice" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Walking Invoice<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-columns"></i>
-                                <p>
-                                    Purchase
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-area="Transactions" asp-controller="PurchaseOrder" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Order<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Transactions" asp-controller="PurchaseInvoice" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Invoice<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-columns"></i>
-                                <p>
-                                    Voucher
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-area="Transactions" asp-controller="JournalVoucher" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Journal Voucher<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Transactions" asp-controller="ReceiptVoucher" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Receipt Voucher<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Transactions" asp-controller="PaymentVoucher" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Payment Voucher<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Transactions" asp-controller="ContraVoucher" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Contra Voucher<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-columns"></i>
-                                <p>
-                                    Report
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-
-                                <li class="nav-item">
-                                    <a asp-area="Report" asp-controller="PurchaseStock" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Product Wise Purchase<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Report" asp-controller="SalesStock" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Product Wise Sales<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Report" asp-controller="StockDetailReport" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Stock Detail<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Report" asp-controller="RateendStock" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Rate & Stock<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Report" asp-controller="SalesTransaction" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Sales Transaction<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="Report" asp-controller="PurchaseTransaction" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Purchase Transaction<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a asp-area="Report" asp-controller="SalesOrderStock" asp-action="List" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Sales Order Stock<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-columns"></i>
-                                <p>
-                                    Import 
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-
-                                <li class="nav-item">
-                                    <a asp-area="Option" asp-controller="Import" asp-action="Stock" class="nav-link">
-                                        <i class="fas fa-clipboard-list nav-icon"></i>
-                                        <p>Stock<i class="right fas fa-external-link-alt tablink"></i></p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
                     </ul>
                 </nav>
             </div>
@@ -560,7 +195,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="updateProfile();">Update Profile</button>
-                    <a href="/Home/Index" class="btn btn-secondary">Logout</a>
+                    <a href="/Home" class="btn btn-secondary">Logout</a>
                 </div>
             </div>
         </div>

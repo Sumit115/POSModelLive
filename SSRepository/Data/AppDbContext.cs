@@ -71,12 +71,15 @@ namespace SSRepository.Data
         public virtual DbSet<TblPromotionMas> TblPromotionMas { get; set; } = null!;
         public virtual DbSet<TblRecipeMas> TblRecipeMas { get; set; } = null!;
         public virtual DbSet<TblRecipeDtl> TblRecipeDtl { get; set; } = null!;
+        public virtual DbSet<TblRoleMas> TblRoleMas { get; set; } = null!;
+        public virtual DbSet<TblRoleDtl> TblRoleDtl { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-               //  optionsBuilder.UseSqlServer("server=DESKTOP-OM06UCD\\SQLEXPRESS;database=Jp_POSModel;Trusted_Connection=True;TrustServerCertificate=True");
-               optionsBuilder.UseSqlServer("Data Source=154.61.77.18;database=jaipursoftdata;uid=jaipurdatauser;pwd=btof5zxmgjlyusvnehdc;TrustServerCertificate=True");
+               // optionsBuilder.UseSqlServer("server=DESKTOP-OM06UCD\\SQLEXPRESS;database=Jp_POSModel;Trusted_Connection=True;TrustServerCertificate=True");
+                optionsBuilder.UseSqlServer("Data Source=154.61.77.18;database=jaipursoftdata;uid=jaipurdatauser;pwd=btof5zxmgjlyusvnehdc;TrustServerCertificate=True");
             }
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

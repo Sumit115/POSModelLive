@@ -1,14 +1,15 @@
-﻿using System;
+﻿using SSRepository.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace SSRepository.Data
+namespace SSRepository.Models
 {
-    [Table("tblForm_mas", Schema = "dbo")]
-    public partial class TblFormMas  
+     public class FormModel  
     {
-        [Key] 
         public long PKFormID { get; set; }
         public Nullable<long> FKMasterFormID { get; set; }
         public int SeqNo { get; set; }
@@ -20,5 +21,6 @@ namespace SSRepository.Data
         public string? FormType { get; set; }
         public string? WebURL { get; set; }
         public bool IsActive { get; set; }
+         
     }
 }
