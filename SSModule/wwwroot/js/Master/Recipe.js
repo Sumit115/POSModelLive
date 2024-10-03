@@ -27,8 +27,8 @@ function Load() {
 
     else {
 
-        BindGridIn('DDTIn', JSON.parse($("#hdGridIn").val()), []);
-        BindGridOut('DDTOut', JSON.parse($("#hdGridOut").val()), []);
+        //BindGridIn('DDTIn', JSON.parse($("#hdGridIn").val()), []);
+        //BindGridOut('DDTOut', JSON.parse($("#hdGridOut").val()), []);
 
     }
 }

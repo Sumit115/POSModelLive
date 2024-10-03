@@ -128,7 +128,17 @@ namespace SSAdmin.Areas.Transactions.Controllers
             return Json(res);
 
         }
+        [HttpPost]
+        public JsonResult UpdateTrnSatus(long PkId, long FKSeriesId, string TrnStatus)
+        {
+            _repository.UpdateTrnSatus(PkId, FKSeriesId, TrnStatus);
+            return Json(new
+            {
+                status = "success", 
+            });
 
-        
+        }
+
+
     }
 }

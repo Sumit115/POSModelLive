@@ -13,11 +13,11 @@ using SSRepository.IRepository.Option;
 namespace SSAdmin.Areas.Option.Controllers
 {
     [Area("Option")]
-    public class ImportController : Controller
+    public class ImportController : BaseController
     {
         private readonly IImportRepository _repository;
 
-        public ImportController(IImportRepository repository)
+        public ImportController(IImportRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
             _repository = repository;
 

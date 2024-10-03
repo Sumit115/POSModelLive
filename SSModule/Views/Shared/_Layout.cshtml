@@ -2,7 +2,7 @@
 
 @if (Context.Session.GetString("LoginId") == null || Context.Session.GetString("LoginId") == "")
 {
-    @* Context.Session.SetString("LoginId", Convert.ToString(1));
+   @*  Context.Session.SetString("LoginId", Convert.ToString(1));
      Context.Session.SetInt32("IsAdmin", Convert.ToInt32(1));
      Context.Session.SetString("Photo", "/Admin/dist/img/avatar04.png");*@
 
@@ -46,6 +46,11 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
+                <li class="nav-item f-ctrl" style="display:none">
+                    <a id="btnOpen" class="btn btn-sm btn-key-65" style="background: #288e8b !important;width: 87px;color: #fff;">Open</a>
+                    <a id="btnClose" class="btn btn-sm btn-key-65" style="background: #ffa500 !important;width: 87px;color: #fff;">Close</a>
+                </li>
+              
                 <li class="nav-item f-ctrl" style="display:none">
                     <input id="btnServerSave" tabindex="-1" type="submit" value="Save" class="btn btn-sm btn-key-83" style="background: #288e8b !important;width: 87px;color: #fff;" />
                     <a id="btnServerBack" asp-action="List" class="btn btn-sm btn-key-65" style="background: #f3bfce !important;width: 87px;color: #fff;">Cancel</a>

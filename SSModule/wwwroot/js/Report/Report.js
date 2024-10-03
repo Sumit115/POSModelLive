@@ -16,7 +16,8 @@ var RPTFilter = {
     Product: { Data: [], Filter: null, IdProperty: "PkProductId", Field: "NameToDisplay" },
     Location: { Data: [], Filter: null, IdProperty: "PKLocationID", Field: "Location" },
     Series: { Data: [], Filter: null, IdProperty: "PkSeriesId", Field: "Series" },
-    State: { Data: [], Filter: null, IdProperty: "Text", Field: "Text" },
+    State: { Data: [], Filter: null, IdProperty: "Value", Field: "Text" },
+    TrnStatus: { Data: [{ Value: "P", Text: "Pending", tick: true }, { Value: "I", Text: "Invoice" }, { Value: "C", Text: "Close" }], Filter: '[{ "Text": "P" }]', IdProperty: "Value", Field: "Text" },
 
 };
 
@@ -177,6 +178,8 @@ function ShowFilter(type) {
                         _List.push({ PKID: v.PkId });
                     if (RPTFilter[type].IdProperty == "Text")
                         _List.push({ Text: v.Text });
+                    if (RPTFilter[type].IdProperty == "Value")
+                        _List.push({ Text: v.Value });
                 });
                 RPTFilter[type].Filter = JSON.stringify(_List);
                 $(".popup_d").hide();

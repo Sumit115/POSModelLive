@@ -13,7 +13,18 @@ $(document).ready(function () {
     if ((TranAlias == "SRTN" || TranAlias == "SCRN" || TranAlias == "SORD" || TranAlias == "PORD" || TranAlias == "PINV")) {
         $(".trn-barcode").hide();
     } else { $(".trn-barcode").show(); $("#txtSearchBarcode").focus(); }
-
+    if (TranAlias == "SORD" && tranModel.PkId > 0) {
+        if (tranModel.TrnStatus.trim() == 'P' || tranModel.TrnStatus.trim() == 'C') {
+            if (tranModel.TrnStatus.trim() == 'C') {
+                $("#btnServerSave,#btnClose").hide();
+                $("#btnOpen").show();
+            } else {
+                $("#btnClose").show();
+                $("#btnOpen").hide();
+            }
+        }
+        else if (tranModel.TrnStatus.trim() == 'I') { $("#btnServerSave,#btnClose,#btnOpen").hide(); }
+    } else { $("#btnClose,#btnOpen").hide(); }
     $('#btnServerSave').click(function (e) {
 
         if ($("#loginform1").valid()) {
@@ -1353,5 +1364,35 @@ function UploadFile() {
             alert(res.msg);
 
         $(".loader").hide();
+    });
+}
+
+$('#btnClose').click(function (e) {
+    UpdateTrnSatus('C');
+  
+    return false;
+});
+$('#btnOpen').click(function (e) {
+    UpdateTrnSatus('P');
+
+    return false;
+});
+function UpdateTrnSatus(TrnStatus) {
+    $(".loader").show();
+    $.ajax({
+        type: "POST",
+        url: Handler.currentPath() + 'UpdateTrnSatus',
+        data: { PkId: tranModel.PkId, FKSeriesId: tranModel.FKSeriesId, TrnStatus: TrnStatus },
+        datatype: "json",
+        success: function (res) {
+
+            if (res.status == "success") {
+                location.reload();
+            }
+            else
+                alert(res.msg);
+
+            $(".loader").hide();
+        }
     });
 }

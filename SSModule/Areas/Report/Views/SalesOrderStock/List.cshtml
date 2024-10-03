@@ -8,6 +8,7 @@
     <div class="col-md-9">
     </div>
     <div class="col-md-3 text-right">
+        <button class="btn btn-dark" onclick="ShowFilter('TrnStatus')"><i class="fa fa-filter"></i></button>
         <button class="btn btn-info" onclick="ShowFilter('State')"><i class="fa fa-filter"></i></button>
         <input type="button" value="View" class="btn btn-success" onclick="Render('')">
         <button class="btn btn-dark" onclick="Render('excel')"><i class="fa fa-file-export"></i></button>
@@ -30,8 +31,8 @@
             RPTOption.IdProperty = IdProperty = "sno";
             RPTOption.GridHeight = GridHeight = "85vh";
             RPTOption.Controller = Controller = 'SalesOrderStock';
-            RPTOption.GroupByColumn = 'CategoryGroupName,CategoryName,Product,Batch';
-
+            RPTOption.GroupByColumn = 'PartyName,CategoryGroupName,CategoryName,Product,Batch'; 
+ 
             Render();
         });
         function Render(Export) {
@@ -40,6 +41,7 @@
                     _d["pageNo"] = RPTOption.pageNo;
                     _d["pageSize"] = RPTOption.pageSize;
                      _d["StateFilter"] = RPTFilter.State.Filter;
+                    _d["TrnStatusFilter"] = RPTFilter.TrnStatus.Filter;
                     //_d["CustomerFilter"] = RPTFilter.Customer.Filter;
                     ViewData(_d, Export)
                 }

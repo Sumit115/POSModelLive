@@ -25,7 +25,7 @@ namespace SSRepository.Repository.Report
         {
             var data = new GridLayoutRepository(__dbContext).GetSingleRecord(1, FormId, GridName, ColumnList(GridName));
             List<ColumnStructure> _cs = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData);
-            string clm = "CategoryGroupName,CategoryName,Product,Batch";
+            string clm = "PartyName,CategoryGroupName,CategoryName,Product,Batch,Batch";
             List<string> columnlist = clm.Split(',').ToList().Where(x => _cs.Where(y => y.Fields == x && y.IsActive == 1).ToList().Count > 0).ToList();
             return columnlist.Count > 0 ? string.Join(",", columnlist) : "";
         }
@@ -33,6 +33,7 @@ namespace SSRepository.Repository.Report
         {
             var list = new List<ColumnStructure>();
 
+            list.Add(new ColumnStructure { pk_Id = 1, Orderby = 1, Heading = "Party Name", Fields = "PartyName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
             list.Add(new ColumnStructure { pk_Id = 2, Orderby = 2, Heading = "Section Name", Fields = "CategoryGroupName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
             list.Add(new ColumnStructure { pk_Id = 3, Orderby = 3, Heading = "Sub Section Name", Fields = "CategoryName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
             list.Add(new ColumnStructure { pk_Id = 4, Orderby = 4, Heading = "Artical", Fields = "Product", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
@@ -43,7 +44,7 @@ namespace SSRepository.Repository.Report
             return list;
         }
 
-        public DataTable ViewData(string ReportType, string StateFilter, string GroupByColumn)
+        public DataTable ViewData(string ReportType, string StateFilter, string TrnStatusFilter, string GroupByColumn)
         {
             DataTable dt = new DataTable();
             using (SqlConnection con = new SqlConnection(conn))
@@ -53,6 +54,7 @@ namespace SSRepository.Repository.Report
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ReportType", ReportType);
                 cmd.Parameters.AddWithValue("@StateFilter", GetFilterDataString(StateFilter));
+                cmd.Parameters.AddWithValue("@TrnStatusFilter", GetFilterDataString(TrnStatusFilter));
                 cmd.Parameters.AddWithValue("@GroupByColumn", GroupByColumn);
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(dt);

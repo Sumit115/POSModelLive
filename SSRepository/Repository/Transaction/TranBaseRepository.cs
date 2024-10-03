@@ -125,6 +125,8 @@ namespace SSRepository.Repository.Transaction
                         throw new Exception("Please Enter Valid Amount");
                 }
 
+                if(objmodel.TrnStatus.Trim()=="I" || objmodel.TrnStatus.Trim() == "C")
+                    throw new Exception("Invalid Request");
 
                 Error = ValidData(objmodel);
 

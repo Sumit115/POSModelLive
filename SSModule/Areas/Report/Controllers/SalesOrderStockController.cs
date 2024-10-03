@@ -1,23 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using SSAdmin.Areas.Master.Controllers;
-using SSRepository.IRepository.Transaction;
+﻿using Microsoft.AspNetCore.Mvc; 
 using SSRepository.IRepository;
-using SSRepository.Models;
-using SSRepository.IRepository.Master;
+using SSRepository.Models; 
 using Newtonsoft.Json;
-using System.Data;
-using Microsoft.AspNetCore.Http;
-using SSRepository.Repository;
-using SSRepository.IRepository.Report;
-using Microsoft.SqlServer.Server;
-using System.Reflection;
-using System.IO;
-using ClosedXML.Excel;
-using Newtonsoft.Json.Linq;
-using DocumentFormat.OpenXml.Spreadsheet;
-using iTextSharp.text.pdf;
-using iTextSharp.text;
+using System.Data; 
+using SSRepository.IRepository.Report; 
+using ClosedXML.Excel; 
 
 namespace SSAdmin.Areas.Report.Controllers
 {
@@ -40,14 +27,14 @@ namespace SSAdmin.Areas.Report.Controllers
         }
 
         [HttpPost]
-        public JsonResult List(string StateFilter)
+        public JsonResult List(string StateFilter, string TrnStatusFilter)
         {
 
             DataTable dt = new DataTable();
             try
             {
                 var GroupByColumn = _repository.GroupByColumn(FKFormID, "");
-                dt = _repository.ViewData("L", StateFilter, GroupByColumn);
+                dt = _repository.ViewData("L", StateFilter, TrnStatusFilter, GroupByColumn);
             }
             catch (Exception ex) { }
             var jsonResult = Json(new
@@ -60,7 +47,7 @@ namespace SSAdmin.Areas.Report.Controllers
             return jsonResult;
             //return new JsonResult(data);
         }
-        public ActionResult Export(string StateFilter)
+        public ActionResult Export(string StateFilter, string TrnStatusFilter)
         {
 
 
@@ -70,7 +57,7 @@ namespace SSAdmin.Areas.Report.Controllers
             var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList(); ;
 
             var GroupByColumn = _repository.GroupByColumn(FKFormID, "");
-            DataTable ds = _repository.ViewData("L", StateFilter, GroupByColumn);
+            DataTable ds = _repository.ViewData("L", StateFilter, TrnStatusFilter, GroupByColumn);
             DataRow dr = ds.NewRow();
             dr["OrderQty"] = ds.AsEnumerable().Sum(row => row.Field<decimal>("OrderQty")); ;
             dr["StockQty"] = ds.AsEnumerable().Sum(row => row.Field<decimal>("StockQty")); ;

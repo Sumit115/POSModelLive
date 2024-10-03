@@ -100,7 +100,9 @@ namespace SSRepository.Models
 
         public string? Remark { get; set; }
 
-        public string? Statu { get; set; }
+        public string? InvStatus { get; set; }
+        public bool DraftMode { get; set; }
+        public string? TrnStatus { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]

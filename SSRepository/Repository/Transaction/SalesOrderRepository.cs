@@ -103,12 +103,21 @@ namespace SSRepository.Repository.Transaction
                      new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Shipping Amt ", Fields="Shipping",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                      new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Net Amt", Fields="NetAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                      new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Remark", Fields="Remark",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=12, Orderby =13, Heading ="Status", Fields="TranStatus",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
 
                 };
             }
             return list;
         }
 
+        public void UpdateTrnSatus(long PkId, long FKSeriesId,string TrnStatus)
+        {
+            var entity = __dbContext.TblSalesOrdertrn.Where(x => x.PkId == PkId && x.FKSeriesId == FKSeriesId).FirstOrDefault();
+            entity.TrnStatus = TrnStatus;
+            entity.DraftMode = true;
+            __dbContext.Update(entity);
+            __dbContext.SaveChanges();
+        } 
 
 
     }

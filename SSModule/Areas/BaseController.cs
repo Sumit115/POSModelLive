@@ -61,6 +61,7 @@ namespace SSAdmin.Areas
         public IActionResult ActiveGridColumn(GridStructerModel data)
         {
             data.FkUserId = 1;
+            if (data.FkFormId == 0) data.FkFormId = FKFormID; 
             _gridLayoutRepository.CreateAsync(data, "Edit", data.PkGridId);
             return Json(new
             {

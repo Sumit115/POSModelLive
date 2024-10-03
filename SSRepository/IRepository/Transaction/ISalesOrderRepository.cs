@@ -8,5 +8,6 @@ namespace SSRepository.IRepository.Transaction
     public interface ISalesOrderRepository : ITranBaseRepository
     {
         List<ColumnStructure> ColumnList(string GridName = "");
+        void UpdateTrnSatus(long PkId, long FKSeriesId, string TrnStatus);
     }
 }
