@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+using ClosedXML.Excel;
 
 namespace SSAdmin.Areas.Transactions.Controllers
 {
@@ -28,6 +29,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
         public async Task<IActionResult> List()
         {
+            ViewBag.FormId = FKFormID;
             return View();
         }
 
@@ -40,6 +42,30 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 data = _repository.GetList(FDate, TDate, TranAlias, DocumentType)
             });
         }
+
+        public ActionResult Export(string FDate, string TDate)
+        {
+
+            DataTable dtList = _repository.GetList(FDate, TDate, TranAlias, DocumentType);
+            var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "", ColumnList());
+            var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
+            DataTable _gridColumn = Handler.ToDataTable(model);
+
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                DataTable dt = GenerateExcel(_gridColumn, dtList);
+                wb.Worksheets.Add(dt);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/ms-excel", "Contra-Voucher-List.xls");
+                    // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
+                }
+            }
+
+        }
+
 
         [HttpGet]
         [Route("Transactions/ContraVoucher/Create/{id?}/{FKSeriesID?}/{isPopup?}")]

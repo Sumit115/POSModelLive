@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc; 
+﻿using Microsoft.AspNetCore.Mvc;
 using SSRepository.IRepository;
-using SSRepository.Models; 
+using SSRepository.Models;
 using Newtonsoft.Json;
-using System.Data; 
-using SSRepository.IRepository.Report; 
-using ClosedXML.Excel; 
+using System.Data;
+using SSRepository.IRepository.Report;
+using ClosedXML.Excel;
 
 namespace SSAdmin.Areas.Report.Controllers
 {
@@ -48,13 +48,11 @@ namespace SSAdmin.Areas.Report.Controllers
             //return new JsonResult(data);
         }
         public ActionResult Export(string StateFilter, string TrnStatusFilter)
-        {
-
-
+        { 
             //_repository.ViewData("L", ProductFilter, "");
 
             var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "", ColumnList());
-            var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList(); ;
+            var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
 
             var GroupByColumn = _repository.GroupByColumn(FKFormID, "");
             DataTable ds = _repository.ViewData("L", StateFilter, TrnStatusFilter, GroupByColumn);
@@ -73,7 +71,7 @@ namespace SSAdmin.Areas.Report.Controllers
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/ms-excel", "ReportFile.xls");
+                    return File(stream.ToArray(), "application/ms-excel", "Sales-Order-Stock-ReportFile.xls");
                     // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
                 }
             }
@@ -90,7 +88,7 @@ namespace SSAdmin.Areas.Report.Controllers
             dtList.Rows.Add(dr);
 
             var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, ReportType, ColumnList());
-            var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData);
+            var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
             DataTable _gridColumn = Handler.ToDataTable(model);
 
             DataTable dt = GenerateExcel(_gridColumn, dtList);

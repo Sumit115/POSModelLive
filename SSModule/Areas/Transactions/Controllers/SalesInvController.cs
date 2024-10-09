@@ -9,6 +9,7 @@ using System.Data;
 using SSAdmin.Areas;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+using ClosedXML.Excel;
 
 namespace SSAdmin.Areas.Transactions.Controllers
 {
@@ -34,11 +35,30 @@ namespace SSAdmin.Areas.Transactions.Controllers
             });
         }
 
-        public string Export(string ColumnList, string HeaderList, string Name, string Type)
+         public ActionResult Export(string FDate, string TDate, string LocationFilter)
         {
-            string FileName = "";
 
-            return FileName;
+            DataTable dtList = _repository.GetList(FDate, TDate, TranAlias, DocumentType, LocationFilter);
+            var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "", ColumnList());
+            var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
+            DataTable _gridColumn = Handler.ToDataTable(model);
+
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                DataTable dt = GenerateExcel(_gridColumn, dtList);
+                wb.Worksheets.Add(dt);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    var Fname = "Sales-Invoice-List.xls";
+                    if (TranAlias == "SPSL") { Fname = "Sales-Challan-List.xls"; }
+                    if (TranAlias == "SINV" && DocumentType=="C") { Fname = "Walking-Sales-Invoice-List.xls"; }
+                    return File(stream.ToArray(), "application/ms-excel", Fname);// "Purchase-Invoice-List.xls");
+                    // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
+                }
+            }
+
         }
 
         public void setDefault(TransactionModel model)

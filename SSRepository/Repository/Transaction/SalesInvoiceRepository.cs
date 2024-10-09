@@ -68,6 +68,7 @@ namespace SSRepository.Repository.Transaction
                                join branch in __dbContext.TblBranchMas on cou.FkBranchId equals branch.PkBranchId
                                join location in __dbContext.TblLocationMas on cou.FKLocationID equals location.PkLocationID
                                where cou.TranAlias == TranAlias
+                                && cou.DocumentType == DocumentType
                                select new
                                {
                                    cou,

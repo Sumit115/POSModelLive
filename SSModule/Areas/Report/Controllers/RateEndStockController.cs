@@ -49,25 +49,25 @@ namespace SSAdmin.Areas.Report.Controllers
             //return new JsonResult(data);
         }
 
-        public ActionResult Export( string ProductFilter)
+        public ActionResult Export(string ProductFilter)
         {
-            
+            var GroupByColumn = _repository.GroupByColumn(FKFormID, ""); 
 
-            DataTable ds = _repository.ViewData("L", ProductFilter, "");
+            DataTable dtList = _repository.ViewData("L", ProductFilter, GroupByColumn);
 
             var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "", ColumnList());
-            var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData);
+            var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
             DataTable _gridColumn = Handler.ToDataTable(model);
 
 
             using (XLWorkbook wb = new XLWorkbook())
             {
-                DataTable dt = GenerateExcel(_gridColumn, ds);
+                DataTable dt = GenerateExcel(_gridColumn, dtList);
                 wb.Worksheets.Add(dt);
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/ms-excel", "ReportFile.xls");
+                    return File(stream.ToArray(), "application/ms-excel", "Rate-End-Stock-ReportFile.xls");
                     // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
                 }
             }
@@ -75,7 +75,7 @@ namespace SSAdmin.Areas.Report.Controllers
         }
 
 
-         
+
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {
             return _repository.ColumnList(GridName);

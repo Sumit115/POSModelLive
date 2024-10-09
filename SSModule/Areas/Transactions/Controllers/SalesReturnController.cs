@@ -26,7 +26,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
         public IActionResult List()
         {
-
+            ViewBag.FormId = FKFormID;
             return View();
         }
 

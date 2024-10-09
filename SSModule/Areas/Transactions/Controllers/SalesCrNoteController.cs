@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 namespace SSAdmin.Areas.Transactions.Controllers
 {
     [Area("Transactions")]
-    public class SalesCrNoteController : SalesRtnController
+    public class SalesCrNoteController : SalesRtnController 
     {
 
         public SalesCrNoteController(ISalesCrNoteRepository repository, IGridLayoutRepository gridLayoutRepository, ICompositeViewEngine viewEngine, IWebHostEnvironment webHostEnvironment) : base(repository, gridLayoutRepository, viewEngine, webHostEnvironment)
@@ -27,6 +27,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
         public virtual IActionResult List()
         {
+            ViewBag.FormId = FKFormID;
             return View();
         }
 

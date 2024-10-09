@@ -4,7 +4,7 @@ var ControllerName = "";
 var GridName = "dtl";
 var MinRows = 50;
 $(document).ready(function () {
-    
+    $("#btnClose,#btnOpen").hide();
     ControllerName = $("#hdControllerName").val();
 
     if (ControllerName == "Voucher") { GridName = "viewdtl"; $("#hdGridName").val('viewdtl'); }

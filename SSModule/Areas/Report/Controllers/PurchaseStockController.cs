@@ -65,7 +65,7 @@ namespace SSAdmin.Areas.Report.Controllers
             DataTable dtList = _repository.GetList(FromDate, ToDate, ReportType, TranAlias, ProductFilter, VendorFilter, "", "");
 
             var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, ReportType, ColumnList());
-            var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData);
+            var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
             DataTable _gridColumn = Handler.ToDataTable(model);
 
 
@@ -76,7 +76,7 @@ namespace SSAdmin.Areas.Report.Controllers
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/ms-excel", "ReportFile.xls");
+                    return File(stream.ToArray(), "application/ms-excel", "Product-Wise-Purchase-ReportFile.xls");
                     // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
                 }
             }

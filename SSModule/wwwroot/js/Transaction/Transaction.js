@@ -2,10 +2,12 @@
 var tranModel = null;
 var ControllerName = "";
 var TranAlias = "";
+
+
 $(document).ready(function () {
     Common.InputFormat();
     Load();
-
+    tranModel.TrnStatus = Handler.isNullOrEmpty(tranModel.TrnStatus) ? "P" : tranModel.TrnStatus;
     TranAlias = tranModel.ExtProperties.TranAlias;
     $("#hdFormId").val(tranModel.ExtProperties.FKFormID);
     $("#hdGridName").val('dtl');

@@ -9,10 +9,11 @@ function ShowGridColumn() {
     });
 }
 function View() {
+     
     $('#' + GridId).empty();
     Common.Get("." + filterclass, "", function (flag, _d) {
         if (flag) {
-           
+     
             _d["pageNo"] = pageNo;
             _d["pageSize"] = pageSize;
             if (typeof RPTFilter !== 'undefined') {
@@ -161,11 +162,27 @@ function bindGrid(GridId, data, IdProperty) {
 };
 
 function ExportToExcel() {
+    debugger;
     Common.Get("." + filterclass, "", function (flag, _d) {
+        debugger;
         if (flag) {
+            if (typeof RPTFilter !== 'undefined') {
+                _d["LocationFilter"] = RPTFilter.Location.Filter;
+            }
+            _d["pageNo"] = pageNo;
+            _d["pageSize"] = pageSize;
+            var param = "";
+            var Export = 'excel';
+            $.each(_d, function (i, val) {
 
+                if (!Common.isNullOrEmpty(val)) {
+                    param += i + "=" + val + "&";
+                }
+            });
             //  var url = $(location).attr('href').replace('List', 'Export');
-            var downloadUrl = 'Export';
+          //  var downloadUrl = 'Export';
+            var downloadUrl = Handler.currentPath() +'Export?Type=' + Export + '&' + param + '';
+
             var a = document.createElement("a");
             a.href = downloadUrl;
             a.download = "ReportFile.xls";

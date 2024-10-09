@@ -130,7 +130,7 @@ namespace SSRepository.Repository.Transaction
             {
                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="#", Fields="sno",Width=5,IsActive=1, SearchType=0,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Entry Date", Fields="Entrydt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Entry No", Fields="Entrydt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                 new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Entry No", Fields="EntryNo",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Vendor", Fields="PartyName",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Mobile", Fields="PartyMobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Gross", Fields="GrossAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
