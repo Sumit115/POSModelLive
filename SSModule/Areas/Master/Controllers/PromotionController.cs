@@ -85,7 +85,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    var Fname = PromotionDuring+ "-Promotion -List.xls";
+                    var Fname = PromotionDuring+ "-Promotion-List.xls";
                     return File(stream.ToArray(), "application/ms-excel", Fname);// "Purchase-Invoice-List.xls");
                     // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
                 }

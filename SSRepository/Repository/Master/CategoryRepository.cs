@@ -218,12 +218,10 @@ namespace SSRepository.Repository.Master
             var list = new List<ColumnStructure>
             {
                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Section Name", Fields="Category",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=1, Orderby =2, Heading ="Section Group", Fields="GroupName",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=1, Orderby =3, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=1, Orderby =4, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-            };
+                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Section Group", Fields="GroupName",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+               };
             return list;
         }
 

@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SSRepository.Repository.Master;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Drawing.Printing;
+using ClosedXML.Excel;
+using System.Data;
 
 namespace SSAdmin.Areas.Master.Controllers
 {
@@ -33,6 +35,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         public async Task<IActionResult> List()
         {
+            ViewBag.FormId = FKFormID;
             return View();
         }
 
@@ -46,27 +49,27 @@ namespace SSAdmin.Areas.Master.Controllers
             });
         }
 
-        public string Export(string ColumnList, string HeaderList, string Name, string Type)
+        public ActionResult Export(int pageNo, int pageSize)
         {
-            string FileName = "";
-            //try
-            //{
-            //    List<BankModel> model = new List<BankModel>();
-            //    string result = CommonCore.API(ControllerName, "export", GetAPIDefaultParam());
-            //    if (CommonCore.CheckError(result) == "")
-            //    {
-            //        model = JsonConvert.DeserializeObject<List<BankModel>>(result);
-            //        FileName = Common.Export(model, HeaderList, ColumnList, Name, Type);
-            //    }
-            //    else
-            //        FileName = result;
-            //}
-            //catch (Exception ex)
-            //{
-            //    CommonCore.WriteLog(ex, "Export " + Type, ControllerName, GetErrorLogParam());
-            //    return CommonCore.SetError(ex.Message);
-            //}
-            return FileName;
+            var _d = _repository.GetList(pageSize, pageNo);
+            DataTable dtList = Handler.ToDataTable(_d);
+            var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "", ColumnList());
+            var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
+            DataTable _gridColumn = Handler.ToDataTable(model);
+
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                DataTable dt = GenerateExcel(_gridColumn, dtList);
+                wb.Worksheets.Add(dt);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/ms-excel", "Section-List.xls");// "Purchase-Invoice-List.xls");
+                    // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
+                }
+            }
+
         }
 
         public async Task<IActionResult> Create(long id, string pageview = "")

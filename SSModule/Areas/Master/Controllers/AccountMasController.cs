@@ -50,8 +50,30 @@ namespace SSAdmin.Areas.Master.Controllers
                 data = _repository.GetList(pageSize, pageNo)
             });
         }
+        public ActionResult Export(int pageNo, int pageSize)
+        {
+            var _d = _repository.GetList(pageSize, pageNo);
+            DataTable dtList = Handler.ToDataTable(_d);
+            var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "", ColumnList());
+            var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
+            DataTable _gridColumn = Handler.ToDataTable(model);
 
-       
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                DataTable dt = GenerateExcel(_gridColumn, dtList);
+                wb.Worksheets.Add(dt);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/ms-excel", "Ledger-Account-List.xls");// "Purchase-Invoice-List.xls");
+                    // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
+                }
+            }
+
+        }
+
+
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
             AccountMasModel Model = new AccountMasModel();
@@ -169,30 +191,7 @@ namespace SSAdmin.Areas.Master.Controllers
             return response;
         }
 
-        public ActionResult Export()
-        {
-          var  lst= _repository.GetList(1000, 1);
-
-
-            var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "", ColumnList());
-            var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
-            DataTable _gridColumn = Handler.ToDataTable(model);
-            DataTable dtList= Handler.ToDataTable(lst);
-
-            using (XLWorkbook wb = new XLWorkbook())
-            {
-                DataTable dt = Handler.GenerateExcel(_gridColumn, dtList);
-                wb.Worksheets.Add(dt);
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/ms-excel", "ReportFile.xls");
-                    // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
-                }
-            }
-
-        }
-
+  
 
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {

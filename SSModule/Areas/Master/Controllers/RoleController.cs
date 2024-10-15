@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SSRepository.Repository.Master;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Drawing.Printing;
+using ClosedXML.Excel;
+using System.Data;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace SSAdmin.Areas.Master.Controllers
 {
@@ -31,6 +34,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         public async Task<IActionResult> List()
         {
+            ViewBag.FormId = FKFormID;
             return View();
         }
 
@@ -44,6 +48,29 @@ namespace SSAdmin.Areas.Master.Controllers
             });
         }
 
+        public ActionResult Export(int pageNo, int pageSize)
+        {
+
+            var _d = _repository.GetList(pageSize, pageNo);
+            DataTable dtList = Handler.ToDataTable(_d);
+            var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "", ColumnList());
+            var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
+            DataTable _gridColumn = Handler.ToDataTable(model);
+
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                DataTable dt = GenerateExcel(_gridColumn, dtList);
+                wb.Worksheets.Add(dt);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/ms-excel", "Role-List.xls");// "Purchase-Invoice-List.xls");
+                    // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
+                }
+            }
+
+        }
 
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
