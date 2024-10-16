@@ -27,6 +27,13 @@ $(document).ready(function () {
         }
         else if (tranModel.TrnStatus.trim() == 'I') { $("#btnServerSave,#btnClose,#btnOpen").hide(); }
     } else { $("#btnClose,#btnOpen").hide(); }
+    if (ControllerName == 'SalesInvoiceTouch') {
+        $("#btnServerBack").attr('href', 'javascript:void(0)')
+        $("#btnServerBack").click(function () { location.reload(); });
+        var $ul = $('#ul_Category li:first');
+        BindCategoryProduct_Touch($($ul).find('a'));
+    }
+
     $('#btnServerSave').click(function (e) {
 
         if ($("#loginform1").valid()) {
@@ -626,19 +633,19 @@ function Bind_cgGridUniqIdTextbox(args, rowIndex, _d) {
         if (args.cell != undefined) {
             var field = cgGridUniqIdTextbox.columns[args.cell].field;
             debugger;
-             var SrNo = args.grid.getDataItem(args.row)["SrNo"];
+            var SrNo = args.grid.getDataItem(args.row)["SrNo"];
             var Barcode = args.grid.getDataItem(args.row)["Barcode"];
             if (field == "Delete") {
                 var _List = cgGridUniqIdTextbox.getData().filter(function (el) { return el.Barcode != Barcode });
 
                 Bind_cgGridUniqIdTextbox(args, rowIndex, _List);
             }
-         }
+        }
     });
 
     $("#btnAddNewBarcode").off("click").on("click", function () {
         var barcode = $("#txtBarcode").val();
-        
+
         var _List = cgGridUniqIdTextbox.getData().filter(function (el) { return !Handler.isNullOrEmpty(el.Barcode) })
 
         if (!Handler.isNullOrEmpty(barcode)) {
@@ -658,14 +665,14 @@ function Bind_cgGridUniqIdTextbox(args, rowIndex, _d) {
 
     $("#btnSelectBarcode").off("click").on("click", function () {
         var _List = cgGridUniqIdTextbox.getData().filter(function (el) { return !Handler.isNullOrEmpty(el.Barcode) });
-         let SrNo = tranModel.TranDetails[rowIndex].SrNo;
-        
+        let SrNo = tranModel.TranDetails[rowIndex].SrNo;
+
         tranModel.UniqIdDetails = tranModel.UniqIdDetails.filter((u) => {
             return u.SrNo != SrNo
         })
         var _existBarcode = [];
         $(_List).each(function (i, v) {
-             var _exist = $.grep(tranModel.UniqIdDetails, function (item) {
+            var _exist = $.grep(tranModel.UniqIdDetails, function (item) {
                 return item.Barcode == v.Barcode;
             });
 
@@ -679,7 +686,7 @@ function Bind_cgGridUniqIdTextbox(args, rowIndex, _d) {
         if (_existBarcode.length > 0) {
             alert("Barcode Already Exists : " + _existBarcode.join(","));
         } else { $(".popup_d").hide(); }
-       
+
     });
 
 
@@ -1371,7 +1378,7 @@ function UploadFile() {
 
 $('#btnClose').click(function (e) {
     UpdateTrnSatus('C');
-  
+
     return false;
 });
 $('#btnOpen').click(function (e) {
@@ -1397,4 +1404,59 @@ function UpdateTrnSatus(TrnStatus) {
             $(".loader").hide();
         }
     });
+}
+
+function BindCategoryProduct_Touch($cntrl) {
+    $("#ul_Category a").removeClass('active');
+    $($cntrl).addClass('active');
+    var id = ($($cntrl).attr('data-itemid'));
+    $('#div_CategoryProduct').html('');
+    $.ajax({
+        type: "POST",
+        url: Handler.currentPath() + 'GetProductListByCat',
+        data: { PkCategoryId: id },
+        datatype: "json",
+        success: function (res) {
+            if (res.status == "success") {
+                $(res.data).each(function (i, v) {
+                    var htm = '';
+                    htm += '<div class="col-md-3">';
+                    htm += '<div class="callout callout-success" onclick="ProductTouch(this)" data-itemid="' + v.PkProductId +'">';
+                    htm += '<p><strong>'+v.Product+'</strong></p>';
+                    htm += '</div>';
+                    htm += '</div>'; 
+                    $('#div_CategoryProduct').append(htm);
+                });
+            } else {
+                alert(res.msg);
+            }
+        }
+    })
+}
+
+function ProductTouch($cntrl) {
+    $(".loader").show();
+    tranModel.TranDetails = GetDataFromGrid();
+    var id = $($cntrl).attr('data-itemid');
+    $.ajax({
+        type: "POST",
+        url: Handler.currentPath() + 'ProductTouch',
+        data: { model: tranModel, PkProductId: id },
+        datatype: "json", success: function (res) {
+            if (res.status == "success") {
+                tranModel = res.data;
+                //$(tranModel.TranDetails).each(function (i, v) {
+                //    v["ProductName"] = parseInt(v.FkProductId);
+                //});
+                BindGrid('DDT', tranModel.TranDetails);
+
+                setFooterData(tranModel);
+                setPaymentDetail(tranModel);
+
+            }
+            else
+                alert(res.msg);
+            $(".loader").hide();
+        }
+    })
 }

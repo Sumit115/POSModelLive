@@ -79,7 +79,7 @@ namespace SSRepository.Data
             if (!optionsBuilder.IsConfigured)
             {
                 //Local
-                //optionsBuilder.UseSqlServer("server=DESKTOP-OM06UCD\\SQLEXPRESS;database=Jp_POSModel;Trusted_Connection=True;TrustServerCertificate=True");
+               // optionsBuilder.UseSqlServer("server=DESKTOP-OM06UCD\\SQLEXPRESS;database=Jp_POSModel;Trusted_Connection=True;TrustServerCertificate=True");
 
                 //Live https://jaipursoft.com/
                  optionsBuilder.UseSqlServer("Data Source=154.61.77.18;database=jaipursoftdata;uid=jaipurdatauser;pwd=btof5zxmgjlyusvnehdc;TrustServerCertificate=True");

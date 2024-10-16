@@ -134,6 +134,29 @@ namespace SSAdmin.Areas
 
 
         }
+        public JsonResult ProductTouch(TransactionModel model, long PkProductId)
+        {
+            try
+            {
+                return Json(new
+                {
+                    status = "success",
+                    data = _repository.ProductTouch(model, PkProductId)
+                });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = "error",
+                    msg = ex.Message,
+                });
+            }
+
+
+        }
+
         [HttpPost]
         public IActionResult BarcodeFiles(TransactionModel model, List<string> barcodelist)
         {

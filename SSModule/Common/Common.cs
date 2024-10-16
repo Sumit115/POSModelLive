@@ -105,6 +105,7 @@ namespace SSAdmin
             ContraVoucher = 110,
             WalkingSalesInvoice = 111,
             Voucher = 112,
+            SalesInvoiceTouch = 113,
 
             //200-report
             SalesStock = 200,

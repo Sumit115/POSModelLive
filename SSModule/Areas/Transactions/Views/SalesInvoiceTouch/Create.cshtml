@@ -1,0 +1,64 @@
+﻿@model SSRepository.Models.TransactionModel
+
+@{
+    ViewData["Title"] = "Sales Invoice Touch";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    a.active.nav-link {
+        background: #000;
+        color: #fff !important;
+        border: 1px solid #000;
+    }
+</style>
+
+<input type="hidden" id="hdTranType" value="Sales" />
+
+<div class="row" style="margin-right:0px;margin-left: -4.5px;">
+    <div class="p-2" style="flex: 0 0 95%;max-width: 96%;">
+        <form class="row g-3 form" id="loginform1">
+            <div class="col-md-1">
+                <ul class="nav nav-treeview" style="display: block;" id="ul_Category">
+                    @foreach (SSRepository.Models.CategoryModel item in ViewBag.CategoryList)
+                    {
+                        <li class="nav-item">
+                            <a data-itemid="@item.PkCategoryId" onclick="BindCategoryProduct_Touch(this)" href="javascript:void(0)" class="nav-link border pl-2 text-dark">
+                                <span>@item.Category</span>
+                            </a>
+                        </li>
+                    }
+
+                </ul>
+            </div>
+            <div class="col-md-4 ">
+                <div class="row border border-left p-3" id="div_CategoryProduct">
+                   @* <div class="col-md-3">
+                        <div class="callout callout-success" onclick="ProductClick(this)" asp-productid="1">
+                            <p><strong> Prd 1 </strong></p> 
+                        </div>
+                    </div>*@
+                
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="row">
+                    <partial name="~/Views/Shared/Transactions/_tranHeader.cshtml" />
+                    <partial name="~/Views/Shared/Transactions/_tranGrid.cshtml" />
+                    <partial name="~/Views/Shared/Transactions/_tranFooter.cshtml" />
+                </div>
+            </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PkId" />
+            <input type="hidden" id="hdData" value="@ViewBag.Data" />
+            <input type="hidden" id="hdControllerName" value="SalesInvoiceTouch" />
+
+        </form>
+    </div>
+    <partial name="~/Views/Shared/Transactions/_tranRight.cshtml" />
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/transaction/transaction.js"></script>
+}

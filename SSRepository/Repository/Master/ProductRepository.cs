@@ -33,7 +33,7 @@ namespace SSRepository.Repository.Master
             return error;
         }
 
-        public List<ProductModel> GetList(int pageSize, int pageNo = 1, string search = "")
+        public List<ProductModel> GetList(int pageSize, int pageNo = 1, string search = "", long FkCatId = 0)
         {
 
             if (search != null) search = search.ToLower();
@@ -44,6 +44,7 @@ namespace SSRepository.Repository.Master
                                                              into tembrand
                                        from brand in tembrand.DefaultIfEmpty()
                                        where (EF.Functions.Like(cou.Product.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                       && cou.FKProdCatgId==(FkCatId>0?FkCatId:cou.FKProdCatgId)
                                        orderby cou.PkProductId
                                        select (new ProductModel
                                        {
@@ -206,12 +207,12 @@ namespace SSRepository.Repository.Master
 
             return data;
         }
-        public object GetDrpProduct(int pageno, int pagesize, string search = "", long FkCatId = 0)
+        public object GetDrpProduct(int pageSize, int pageNo = 1, string search = "", long FkCatId = 0)
         {
             if (search != null) search = search.ToLower();
             if (search == null) search = "";
 
-            var result = GetList(pagesize, pageno, search);
+            var result = GetList(pageSize, pageNo, search);
             result.Insert(0, new ProductModel { PkProductId = 0, Product = "Select" });
 
 
