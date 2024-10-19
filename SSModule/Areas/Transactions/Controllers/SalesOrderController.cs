@@ -123,8 +123,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
         {
             ResModel res = new ResModel();
             try
-            {
-
+            { 
                 string Error = _repository.Create(model);
                 if (string.IsNullOrEmpty(Error))
                 {

@@ -121,6 +121,10 @@ namespace SSRepository.Models
 
         public Nullable<long> FKOrderID { get; set; }
          public Nullable<long> FKOrderSrID { get; set; }
+        public DateTime? OrderScheduleDate { get; set; } 
+        public string? ConcernPersonName { get; set; }
+        public string? ConcernPersonMobile { get; set; }
+
         public List<BarcodeUniqVM> UniqIdDetails { get; set; }
 
     }

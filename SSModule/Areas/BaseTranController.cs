@@ -512,5 +512,39 @@ namespace SSAdmin.Areas
 
         }
 
+        [HttpPost]
+        public JsonResult GetInvoiceBilty(long FkID, long FKSeriesId, long FormId)
+        {
+            if (FormId == 0) FormId = FKFormID; 
+            return Json(new
+            {
+                status = "success",
+                data = _repository.GetInvoiceBilty(FkID, FKSeriesId, FormId)
+            });
+
+        }
+        [HttpPost]
+        public JsonResult SaveInvoiceBilty(long FkID, long FKSeriesId, long FormId, string BiltyNo, string Image)
+        {
+            if (FormId == 0) FormId = FKFormID;
+
+            var error = _repository.SaveInvoiceBilty(LoginId,FkID, FKSeriesId, FormId, BiltyNo, Image);
+            if (string.IsNullOrEmpty(error))
+            {
+                return Json(new
+                {
+                    status = "success",
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    status = "error", 
+                    msg = error,
+                });
+            }
+
+        }
     }
 }

@@ -14,6 +14,7 @@ namespace SSRepository.Data
         {
         }
 
+        public virtual DbSet<TblImgRemarkMas> TblImgRemarkMas { get; set; } = null!;
         public virtual DbSet<TblBranchMas> TblBranchMas { get; set; } = null!;
         public virtual DbSet<TblCompany> TblCompanies { get; set; } = null!;
         public virtual DbSet<TblEmployeeMas> TblEmployeeMas { get; set; } = null!;
@@ -79,13 +80,13 @@ namespace SSRepository.Data
             if (!optionsBuilder.IsConfigured)
             {
                 //Local
-               // optionsBuilder.UseSqlServer("server=DESKTOP-OM06UCD\\SQLEXPRESS;database=Jp_POSModel;Trusted_Connection=True;TrustServerCertificate=True");
+               optionsBuilder.UseSqlServer("server=DESKTOP-OM06UCD\\SQLEXPRESS;database=Jp_POSModel;Trusted_Connection=True;TrustServerCertificate=True");
 
                 //Live https://jaipursoft.com/
-                 optionsBuilder.UseSqlServer("Data Source=154.61.77.18;database=jaipursoftdata;uid=jaipurdatauser;pwd=btof5zxmgjlyusvnehdc;TrustServerCertificate=True");
+                // optionsBuilder.UseSqlServer("Data Source=154.61.77.18;database=jaipursoftdata;uid=jaipurdatauser;pwd=btof5zxmgjlyusvnehdc;TrustServerCertificate=True");
 
                 //New https://annu.jaipursoft.com/
-                //optionsBuilder.UseSqlServer("Data Source=154.61.77.18;database=annujaipurdb;uid=anjpdbus;pwd=R2#sd#S$;TrustServerCertificate=True");
+                // optionsBuilder.UseSqlServer("Data Source=154.61.77.18;database=annujaipurdb;uid=anjpdbus;pwd=R2#sd#S$;TrustServerCertificate=True");
             }
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

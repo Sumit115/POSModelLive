@@ -29,6 +29,7 @@
 <partial name="~/Views/Shared/partial/_Grid.cshtml" />
 <ul id="contextMenu" style="display:none;position:absolute">
     <li id="contextInvoiceDownload" data="InvoiceDownload">Download</li>
+    <li id="contextInvoiceBilty" data="InvoiceBilty">Bilty</li>
 </ul>
 @section Scripts {
 
@@ -42,6 +43,11 @@
             document.getElementById("FDate").valueAsDate = new Date();
             document.getElementById("TDate").valueAsDate = new Date();
             View();
+
         });
+    </script>
+    <script>
+
+         
     </script>
 }

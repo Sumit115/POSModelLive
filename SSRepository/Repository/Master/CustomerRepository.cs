@@ -292,7 +292,7 @@ namespace SSRepository.Repository.Master
             {
 
                 PartyModel oldModel = GetSingleRecord(Tbl.PkCustomerId);
-                ID = Tbl.PkCustomerId;
+                ID = Tbl.PkCustomerId; 
                 UpdateData(Tbl, false);
                 //AddMasterLog(oldModel, __FormID, tblCountry.FKCustomerID, oldModel.PkCustomerId, oldModel.FKCustomerID, oldModel.DATE_MODIFIED);
             }

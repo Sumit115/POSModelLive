@@ -42,8 +42,9 @@ namespace SSRepository.Data
         public string? InvStatus { get; set; }
         public bool DraftMode { get; set; }
         public string? TrnStatus { get; set; } 
-
-        
+        public DateTime? OrderScheduleDate { get; set; } 
+        public string? ConcernPersonName { get; set; }
+        public string? ConcernPersonMobile { get; set; }
 
     }
 }

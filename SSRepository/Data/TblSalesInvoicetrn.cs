@@ -48,6 +48,7 @@ namespace SSRepository.Data
         public string? PartyAddress { get; set; } 
         public string? PartyDob { get; set; }
         public string? PartyMarriageDate { get; set; }
+        public string? BiltyNo { get; set; }
 
 
     }

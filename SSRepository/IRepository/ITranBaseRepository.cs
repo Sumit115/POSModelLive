@@ -50,6 +50,8 @@ namespace SSRepository.IRepository
 
         long GetIdbyEntryNo(long EntryNo, long FKSeriesId);
         object BarcodeList(TransactionModel model, int rowIndex);
+        string SaveInvoiceBilty(long FkUserId,long FkID, long FKSeriesId, long FkFormId, string BiltyNo, string Image);
+        object GetInvoiceBilty(long FkID, long FKSeriesId, long FkFormId);
 
     }
 }

@@ -91,19 +91,22 @@ namespace SSRepository.Repository.Transaction
             {
                 list = new List<ColumnStructure>
                 {
-                     new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="#", Fields="sno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                     new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Date", Fields="Entrydt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                     new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Party Name", Fields="PartyName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                     new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Party Mobile", Fields="PartyMobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                     new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Invoice No.", Fields="Inum",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                     new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Amt", Fields="GrossAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                     new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Tax Amt", Fields="TaxAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                     new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Discount Amt", Fields="TotalDiscount",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                     new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="RoundOf Amt", Fields="RoundOfDiff",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=1,  Orderby =1,  Heading ="#", Fields="sno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=2,  Orderby =2,  Heading ="Date", Fields="Entrydt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=3,  Orderby =3,  Heading ="Party Name", Fields="PartyName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=4,  Orderby =4,  Heading ="Party Mobile", Fields="PartyMobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=5,  Orderby =5,  Heading ="Invoice No.", Fields="Inum",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=6,  Orderby =6,  Heading ="Amt", Fields="GrossAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=7,  Orderby =7,  Heading ="Tax Amt", Fields="TaxAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=8,  Orderby =8,  Heading ="Discount Amt", Fields="TotalDiscount",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=9,  Orderby =9,  Heading ="RoundOf Amt", Fields="RoundOfDiff",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                      new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Shipping Amt ", Fields="Shipping",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                      new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Net Amt", Fields="NetAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                      new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Remark", Fields="Remark",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                     new ColumnStructure{ pk_Id=12, Orderby =13, Heading ="Status", Fields="TranStatus",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Status", Fields="TranStatus",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=14, Orderby =14, Heading ="Schedule Date", Fields="OrderScheduleDt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=15, Orderby =15, Heading ="Concern Person Name", Fields="ConcernPersonName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                     new ColumnStructure{ pk_Id=16, Orderby =16, Heading ="Concern Person Mobile", Fields="ConcernPersonMobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
 
                 };
             }

@@ -21,9 +21,9 @@ namespace SSAdmin.Areas
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            //HttpContext.Session.SetString("LoginId", Convert.ToString(1));
-            //HttpContext.Session.SetInt32("IsAdmin", Convert.ToInt32(1));
-            //HttpContext.Session.SetString("Photo", "/Admin/dist/img/avatar04.png");
+            HttpContext.Session.SetString("LoginId", Convert.ToString(1));
+            HttpContext.Session.SetInt32("IsAdmin", Convert.ToInt32(1));
+            HttpContext.Session.SetString("Photo", "/Admin/dist/img/avatar04.png");
 
             if (HttpContext.Session.GetString("LoginId") != null)
             {

@@ -7,7 +7,7 @@ var TranAlias = "";
 $(document).ready(function () {
     Common.InputFormat();
     Load();
-    tranModel.TrnStatus = Handler.isNullOrEmpty(tranModel.TrnStatus) ? "P" : tranModel.TrnStatus;
+    tranModel.TrnStatus = Handler.isNullOrEmpty(tranModel.TrnStatus) ? "P" : tranModel.TrnStatus.replace('\u0000','');
     TranAlias = tranModel.ExtProperties.TranAlias;
     $("#hdFormId").val(tranModel.ExtProperties.FKFormID);
     $("#hdGridName").val('dtl');
@@ -95,7 +95,7 @@ function Load() {
     tranModel = JSON.parse($("#hdData").val());
     if (PkId > 0) {
         console.clear();
-        console.log(tranModel.TranDetails);
+        console.log(tranModel);
         $(tranModel.TranDetails).each(function (i, v) {
             //  v["Product"] = parseInt(v.FkProductId);
             v["ModeForm"] = 1;
@@ -481,7 +481,7 @@ function BindGrid(GridId, data) {
 function BarcodePopupUniqId_CheckboxList(args, rowIndex) {
 
     tranModel.TranDetails = GetDataFromGrid();
-
+    debugger;
     if (tranModel.TranDetails.length > 0) {
         $(".loader").show();
         $.ajax({
@@ -977,7 +977,7 @@ function setPaymentDetail(data) {
 
 
 function setGridRowData(args, data, rowIndex, fieldName) {
-
+    debugger;
     if (fieldName == 'Delete') {
         args.grid.getDataItem(args.row).ModeForm = 2
     }
@@ -1063,7 +1063,7 @@ function GetAndCheckBarcodeQty(_d) {
     var _NotFound = []
     _d.filter(function (element) {
         var _srnoList = tranModel.UniqIdDetails.filter((u) => { return u.SrNo == element.SrNo });
-        if (_srnoList.length != element.Qty)
+        if (_srnoList.length != element.Qty && element.ModeForm!=2)
             _NotFound.push(element.Product);
     });
     return _NotFound
@@ -1100,7 +1100,12 @@ function SaveRecord() {
 
                                     if (res.status == "success") {
                                         alert('Save Successfully..');
-                                        window.location = Handler.currentPath() + 'List';
+                                         if (ControllerName == 'SalesInvoiceTouch') {
+                                            location.reload();
+                                         } else {
+                                             window.location = Handler.currentPath() + 'List';
+                                      }
+                                            
                                     }
                                     else
                                         alert(res.msg);
@@ -1460,3 +1465,4 @@ function ProductTouch($cntrl) {
         }
     })
 }
+

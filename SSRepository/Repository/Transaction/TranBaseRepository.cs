@@ -21,6 +21,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SSRepository.Repository.Transaction
 {
@@ -488,6 +489,7 @@ namespace SSRepository.Repository.Transaction
                     if (aa != null)
                     {
                         data = aa[0];
+                        data.TrnStatus = data.TrnStatus.Trim().Replace("\0", "");
                         if (data.BranchDetails != null)
                         {
                             if (data.BranchDetails.Count > 0)
@@ -815,7 +817,7 @@ namespace SSRepository.Repository.Transaction
                         }
                         else { detail.SrNo = 1; }
 
-                         detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+                        detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
                         detail.Product = dtProduct.Rows[0]["Product"].ToString();
                         detail.Qty = 1;
                         detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
@@ -860,13 +862,13 @@ namespace SSRepository.Repository.Transaction
 
                         CalculateExe(detail);
                         detail.Barcode = "Barcode";
-                          model.TranDetails.Add(detail);
-                        
+                        model.TranDetails.Add(detail);
+
                     }
                     else
                     {
                         int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == detail.FkProductId && a.FkLotId == detail.FkLotId && a.ModeForm != 2);
-                        model.TranDetails[rowIndex].Qty += 1; 
+                        model.TranDetails[rowIndex].Qty += 1;
                         CalculateExe(model.TranDetails[rowIndex]);
                     }
 
@@ -1756,6 +1758,10 @@ namespace SSRepository.Repository.Transaction
 
             var lst = (from cou in __dbContext.TblProductQTYBarcode
                        where cou.FkLotID == model.TranDetails[rowIndex].FkLotId && cou.FkProductId == model.TranDetails[rowIndex].FkProductId
+                       && ((cou.TranOutId == model.PkId || cou.TranOutId == null)
+                       && (cou.TranOutSeriesId == model.FKSeriesId || cou.TranOutSeriesId == null)
+                       && (cou.TranOutSrNo == model.TranDetails[rowIndex].SrNo || cou.TranOutSrNo == null)
+                       )
                        select new
                        {
                            Barcode = cou.Barcode,
@@ -1882,5 +1888,78 @@ namespace SSRepository.Repository.Transaction
             return list.OrderBy(x => x.Orderby).ToList();
         }
 
+        public string SaveInvoiceBilty(long FkUserId, long FkID, long FKSeriesId, long FkFormId, string BiltyNo, string Image)
+        {
+            string error = "";
+            TblSalesInvoicetrn Tbl = new TblSalesInvoicetrn();
+            TblImgRemarkMas TblImg = new TblImgRemarkMas();
+
+            var _entity = __dbContext.TblSalesInvoicetrn.Find(FkID);
+            var _entityImg = __dbContext.TblImgRemarkMas.Where(x => x.FKID == FkID && x.FKSeriesId == FKSeriesId && x.FkFormId == FkFormId).FirstOrDefault();
+            if (_entity != null)
+            {
+                Tbl = _entity;
+                Tbl.BiltyNo =  BiltyNo;
+                __dbContext.Update(Tbl);
+                if (_entityImg != null)
+                {
+                    TblImg = _entityImg;
+                    TblImg.FKID = FkID;
+                    TblImg.FKSeriesId = FKSeriesId;
+                    TblImg.FkFormId = FkFormId;
+                    TblImg.Image = Image;
+                    __dbContext.Update(TblImg);
+                }
+                else
+                {
+                    TblImg.FKID = FkID;
+                    TblImg.FKSeriesId = FKSeriesId;
+                    TblImg.FkFormId = FkFormId;
+                    TblImg.Image = Image;
+                    TblImg.FKCreatedByID = FkUserId;
+                    TblImg.FKUserID = FkUserId;
+                    TblImg.CreationDate = DateTime.Now;
+                    TblImg.ModifiedDate = DateTime.Now;
+
+                     __dbContext.Add(TblImg);
+                }
+                __dbContext.SaveChanges();
+
+                //  return Tbl.PkId;
+            }
+
+            else { error = "data not found"; }
+            return error;
+        }
+        public object GetInvoiceBilty(long FkID, long FKSeriesId, long FkFormId)
+        {
+            var data = new object();
+
+            var _entity = __dbContext.TblSalesInvoicetrn.Find(FkID);
+            var _entityImg = __dbContext.TblImgRemarkMas.Where(x => x.FKID == FkID && x.FKSeriesId == FKSeriesId && x.FkFormId == FkFormId).FirstOrDefault();
+            if (_entity != null)
+            {
+
+                if (_entityImg != null)
+                {
+                    data = new
+                    {
+                        _entity.BiltyNo,
+                        _entityImg.Image
+                    };
+                }
+                else
+                { 
+                    data = new { _entity.BiltyNo, Image = "" };
+                }
+                //  return Tbl.PkId;
+            }
+
+
+            return data;
+        }
+        //AddImagesAndRemark(obj.PkcountryId, obj.FKCustomerID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
     }
+
+
 }
