@@ -62,10 +62,8 @@ namespace SSAdmin.Areas.Master.Controllers
                 {
                     wb.SaveAs(stream);
                     return File(stream.ToArray(), "application/ms-excel", "User-List.xls");// "Purchase-Invoice-List.xls");
-                    // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
                 }
             }
-
         }
 
         public async Task<IActionResult> Create(long id, string pageview = "")
@@ -114,7 +112,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 //model.FkRoleId = 0;
                 model.IsAdmin = 0;
                 model.FkRegId = 1;
-                model.Usertype = (int)en_src.Employee;
+                model.Usertype = (int)Handler.en_src.Employee;
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";

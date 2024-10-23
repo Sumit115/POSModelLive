@@ -1,44 +1,38 @@
-﻿using DocumentFormat.OpenXml.InkML;
-using DocumentFormat.OpenXml.Spreadsheet;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
-using NuGet.Protocol.Core.Types;
 using SSAdmin.Constant;
-using SSRepository.Data;
 using SSRepository.IRepository;
-using SSRepository.IRepository.Master;
 using SSRepository.Models;
-using SSRepository.Repository;
 using System.Data;
 
 namespace SSAdmin.Areas
 {
+    [Authorize]
     public class BaseController : Controller
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            HttpContext.Session.SetString("LoginId", Convert.ToString(1));
-            HttpContext.Session.SetInt32("IsAdmin", Convert.ToInt32(1));
-            HttpContext.Session.SetString("Photo", "/Admin/dist/img/avatar04.png");
-
-            if (HttpContext.Session.GetString("LoginId") != null)
+            string path = Path.Combine("wwwroot", "Data", HttpContext.User.FindFirst("PkID")?.Value ?? "");
+            string filePath = Path.Combine(path, "menulist.json");
+            var jsondata = System.IO.File.ReadAllText(filePath);
+            if (!string.IsNullOrEmpty(jsondata))
             {
-                string path = Path.Combine("wwwroot", "Data", HttpContext.Session.GetString("LoginId"));
-                string filePath = Path.Combine(path, "menulist.json");
-                var jsondata = System.IO.File.ReadAllText(filePath);
-                if (!string.IsNullOrEmpty(jsondata))
-                {
-                    var _lst = JsonConvert.DeserializeObject<List<MenuModel>>(jsondata);
-                    ViewBag.Menulist = _lst;
-                }
+                var _lst = JsonConvert.DeserializeObject<List<MenuModel>>(jsondata);
+                ViewBag.Menulist = _lst;
             }
         }
 
         public long FKFormID = 0;
+
+        public int LoginId
+        {
+            get
+            {
+                return Convert.ToInt32(User.FindFirst("PkID")?.Value);
+            }
+        }
 
         public readonly IGridLayoutRepository _gridLayoutRepository;
         public BaseController(IGridLayoutRepository gridLayoutRepository)
@@ -66,7 +60,7 @@ namespace SSAdmin.Areas
         public IActionResult ActiveGridColumn(GridStructerModel data)
         {
             data.FkUserId = 1;
-            if (data.FkFormId == 0) data.FkFormId = FKFormID; 
+            if (data.FkFormId == 0) data.FkFormId = FKFormID;
             _gridLayoutRepository.CreateAsync(data, "Edit", data.PkGridId);
             return Json(new
             {
@@ -133,12 +127,12 @@ namespace SSAdmin.Areas
         public JsonResult GetBarcodeList(List<BarcodeDetails> model)
         {
             try
-            { 
-                   var data = _gridLayoutRepository.BarcodePrintList(model).ToList();
+            {
+                var data = _gridLayoutRepository.BarcodePrintList(model).ToList();
                 return Json(new
                 {
                     status = "success",
-                    data, 
+                    data,
                 });
 
             }
@@ -151,7 +145,6 @@ namespace SSAdmin.Areas
                 });
             }
         }
-
 
         [HttpPost]
         public JsonResult BarcodePrintPriview(BarcodePrintModel model)
@@ -197,6 +190,7 @@ namespace SSAdmin.Areas
                 });
             }
         }
+        
         public ActionResult _barcodePrintPriview()
         {
             var model = new BarcodePrintModel();
@@ -204,38 +198,7 @@ namespace SSAdmin.Areas
             // model.BarcodePrintPreviewModel = _gridLayoutRepository.BarcodePrintList("BarcodePrint_");
             return PartialView(model);
         }
-        public int LoginId
-        {
-            get
-            {
-                return Convert.ToInt32(HttpContext.Session.GetString("LoginId"));
-            }
-        }
-        public int src_Id
-        {
-            get
-            {
-                return Convert.ToInt32(HttpContext.Session.GetString("LoginId"));
-            }
-        }
-        public en_src src
-        {
-            get
-            {
-                return Enum.Parse<en_src>(HttpContext.Session.GetString("src")); ;
-            }
-        }
-
-        public enum en_src
-        {
-            SuperAdmin, //=0
-            Admin,//=1
-            User,//=2
-            Branch,//=3
-            Customer,//=4
-            Employee,//5
-        }
-
+        
     }
- 
+
 }

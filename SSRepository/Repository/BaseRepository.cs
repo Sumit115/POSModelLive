@@ -5,19 +5,13 @@ using Newtonsoft.Json;
 using SSRepository.Data;
 using SSRepository.IRepository;
 using SSRepository.Models;
-using SSRepository.Repository.Master;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 
 namespace SSRepository.Repository
 {
     public class Repository<T> : BaseRepository, IRepository<T> where T : class, IEntity
     {
-
-
         public Repository(AppDbContext dbContext) : base(dbContext)
         {
         }
@@ -191,82 +185,9 @@ namespace SSRepository.Repository
             __dbContext = dbContext;
         }
 
-        protected long __UserId
-        {
-            get
-            {
-                return 0;// _contextAccessor.HttpContext.Session.GetString("FkUserId");
-            }
-        }
+      
 
-        /* public bool IsValidToken(string Token, Int64 UserID)
-         {
-             string ConnectionString = "";
-             ApiToken obj = new ApiToken(); Int64 RGUserID = 0; bool result = true; Int64 ClientUserID = 0; string Remarks = "MSSQL";
-             if (!String.IsNullOrEmpty(Token))
-             {
-                 var Reg = (from c in _ERPcontext.tblClientToken where c.AuthKey == Token select new ApiToken { UserID = c.RGUserID, ConnectionString = c.FkUser.FkclientReg.ConnectionString  = Token, ClientUserID = c.FKUserID, Remarks = c.FkUser.FkclientReg.Remarks }).FirstOrDefault();
-                 if (Reg != null)
-                 {
-                     ConnectionString = Reg.ConnectionString;
-                     RGUserID = Reg.UserID;
-                     ClientUserID = Reg.ClientUserID;
-                     Remarks = Reg.Remarks;
-                 }
-             }
-
-             if (String.IsNullOrEmpty(ConnectionString) || UserID == 0 || RGUserID != UserID)
-             {
-                 result = false;
-             }
-             else
-             {
-                 result = true;
-                 _contextAccessor.HttpContext.Session.SetString("DBType", Remarks);
-                 _contextAccessor.HttpContext.Session.SetString("ConnectionString", ConnectionString);
-                 _contextAccessor.HttpContext.Session.Set<Int64>("UserID", UserID);
-                 _contextAccessor.HttpContext.Session.Set<Int64>("ClientUserID", ClientUserID);
-                 objSystemDef = GetSysDefaultJson();
-                 objReturnTypes = SetReturnType();
-             }
-
-             return result;
-         }*/
-
-
-        //protected SystemDef SetSysDefault()
-        //{
-        //    SystemDef sDef = new SystemDef();
-        //    try
-        //    {
-        //        if (_contextAccessor.HttpContext.Session.Get<List<SysDefaultModel>>("SysDefault") == null || _contextAccessor.HttpContext.Session.Get<List<SysDefaultModel>>("SysDefault").Count == 0)
-        //        {
-        //            string sysData = CommonCore.ReadJson("SysDefault" + GetUserID(), GetErrorLogParam(), "data");
-        //            if (!String.IsNullOrEmpty(sysData))
-        //            {
-        //                sDef = JsonConvert.DeserializeObject<SystemDef>(sysData);
-        //            }
-        //            _contextAccessor.HttpContext.Session.Set("SysDefault", sDef);
-        //        }
-        //        else
-        //        {
-        //            sDef = _contextAccessor.HttpContext.Session.Get<SystemDef>("SysDefault");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        string error = ex.Message;
-        //        string sysData = CommonCore.ReadJson("SysDefault" + GetUserID(), GetErrorLogParam(), "data");
-        //        if (!String.IsNullOrEmpty(sysData))
-        //        {
-        //            sDef = JsonConvert.DeserializeObject<SystemDef>(sysData);
-        //        }
-        //        _contextAccessor.HttpContext.Session.Set("SysDefault", sDef);
-        //    }
-        //    return sDef;
-        //}
-
-
+        
 
         #region Add/Update/Delete Data
         public virtual void AddData(object entity, bool IsRange)
@@ -330,12 +251,8 @@ namespace SSRepository.Repository
                 }
                 catch (Exception ex)
                 {
-                    //WriteLog(ex, "SaveData", "TranRepository", _contextAccessor.HttpContext.Session.Get<Int64>("UserID"));
                     trans.Rollback();
-                    ResponseModel response = new ResponseModel();
-                    response.ID = 0;
-                    response.Response = "Error: " + ex.Message;
-                    return JsonConvert.SerializeObject(response);
+                   throw ex;
                 }
             }
         }
@@ -403,8 +320,7 @@ namespace SSRepository.Repository
                 }
                 catch (Exception ex)
                 {
-                    //WriteLog(ex, "SaveClientData", "step1", _contextAccessor.HttpContext.Session.Get<Int64>("UserID"));
-                    trans.Rollback();
+                     trans.Rollback();
                     return ex.Message;
                 }
             }

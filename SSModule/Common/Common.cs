@@ -1,45 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using SSRepository.Models;
 using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Data.OleDb;
-using SSRepository;
-using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
 using System.Reflection;
-using SSRepository.Models;
 
 namespace SSAdmin
 {
-    public class Handler : Controller
+    public class Handler
     {
-        public int LoginId
-        {
-            get
-            {
-                return Convert.ToInt32(HttpContext.Session.GetString("LoginId"));
-            }
-        }
-        public int src_Id
-        {
-            get
-            {
-                return Convert.ToInt32(HttpContext.Session.GetString("LoginId"));
-            }
-        }
-        public en_src src
-        {
-            get
-            {
-                return Enum.Parse<en_src>(HttpContext.Session.GetString("src")); ;
-            }
-        }
+
         public enum en_src
         {
             SuperAdmin, //=0
@@ -50,14 +17,6 @@ namespace SSAdmin
             Employee,//5
         }
 
-
-        public enum en_PayMode
-        {
-            Cash,
-            Wallet,
-            Paytm,
-            Razorpay,
-        }
         public enum Form
         {
             //MainMenu start from 1000
@@ -154,7 +113,7 @@ namespace SSAdmin
             SPSL,//Sales Challan
             SRTN,//Sales Return
             SCRN,//Sales Cr Note
-           
+
             PINV,//Purchase Invoice
             PORD,//Purchase Order
 
@@ -180,57 +139,10 @@ namespace SSAdmin
                    new ddl { Text = "Receipt Voucher", Value = "V_RC",Value2="" },
             };
         }
-        public static string GetTranAliasName(string  TranAlias)
+        public static string GetTranAliasName(string TranAlias)
         {
             var _state = GetDrpTranAlias().ToList().Where(x => x.Value == TranAlias).FirstOrDefault();
             return _state != null ? _state.Text : "";
-        }
-        public static bool IsMobileNumber(string number)
-        {
-            return Regex.Match(number, @"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$").Success;
-        }
-
-        public static DataTable GetDataTableFromObjects(object o)
-        {
-            Type t = o.GetType();
-            DataTable dt = new DataTable(t.Name);
-            foreach (System.Reflection.PropertyInfo pi in t.GetProperties())
-            {
-                //dt.Columns.Add(new DataColumn(pi.Name, Nullable.GetUnderlyingType(pi.PropertyType) ?? pi.PropertyType));
-                var column = new DataColumn
-                {
-                    ColumnName = pi.Name,
-                    DataType = pi.PropertyType.Name.Contains("Nullable") ? typeof(string) : pi.PropertyType
-                };
-
-                dt.Columns.Add(column);
-            }
-
-            DataRow dr = dt.NewRow();
-            foreach (DataColumn dc in dt.Columns)
-            {
-                dr[dc.ColumnName] = o.GetType().GetProperty(dc.ColumnName).GetValue(o, null);
-            }
-            dt.Rows.Add(dr);
-            return dt;
-        }
-
-        public static DataTable ObjectToDataTable(object o)
-        {
-            DataTable dt = new DataTable("OutputData");
-            DataRow dr = dt.NewRow();
-            dt.Rows.Add(dr);
-            o.GetType().GetProperties().ToList().ForEach(f =>
-            {
-                try
-                {
-                    f.GetValue(o, null);
-                    dt.Columns.Add(f.Name, f.PropertyType);
-                    dt.Rows[0][f.Name] = f.GetValue(o, null);
-                }
-                catch { }
-            });
-            return dt;
         }
 
         public static DataTable ToDataTable<T>(List<T> items)
@@ -255,50 +167,6 @@ namespace SSAdmin
             }
 
             return dataTable;
-        }
-
-        public static DataTable GenerateExcel(DataTable _gridColumn, DataTable data)
-        {
-
-            string ColHead = "";
-            string ColField = "";
-            foreach (DataRow dr in _gridColumn.Rows)
-            {
-                if (_gridColumn.Columns.Contains("field"))
-                {
-                    if (data.Columns.Contains(dr["field"].ToString()))
-                    {
-                        ColHead += dr["name"].ToString() + ",";
-                        ColField += dr["field"].ToString() + ",";
-                    }
-                }
-                else
-                {
-                    if (data.Columns.Contains(dr["Fields"].ToString()))
-                    {
-                        ColHead += dr["Heading"].ToString() + ",";
-                        ColField += dr["Fields"].ToString() + ",";
-                    }
-                }
-            }
-            if (!string.IsNullOrEmpty(ColHead))
-            {
-                ColHead = ColHead.Substring(0, ColHead.Length - 1);
-                ColField = ColField.Substring(0, ColField.Length - 1);
-            }
-
-            string[] arrColHead = ColHead.Split(',');
-            string[] arrColField = ColField.Split(',');
-            System.Data.DataView view = new System.Data.DataView(data);
-            System.Data.DataTable selected = view.ToTable("Selected", false, arrColField);
-            for (int i = 0; i < arrColHead.Length; i++)
-            {
-                selected.Columns[arrColField[i]].ColumnName = arrColHead[i];
-                selected.AcceptChanges();
-            }
-
-            return selected;
-
         }
 
         public static string ConvertNumbertoWords(Int64 rup)
@@ -477,41 +345,41 @@ namespace SSAdmin
             return result;
         }
 
-        public static List<ddl> GetDrpState(bool Isddl=true)
+        public static List<ddl> GetDrpState(bool Isddl = true)
         {
             var list = new List<ddl>();
             if (Isddl)
             {
                 list.Add(new ddl { Text = "Select", Value = "", Value2 = "" });
             }
-              list.Add(new ddl { Text = "Andhra Pradesh", Value = "Andhra Pradesh" ,Value2="28"});
-            list.Add(new ddl { Text = "Arunachal Pradesh", Value = "Arunachal Pradesh" , Value2 = "12"});
-            list.Add(new ddl { Text = "Assam", Value = "Assam" , Value2 = "18"});
-            list.Add(new ddl { Text = "Bihar", Value = "Bihar" , Value2 = "10"});
-            list.Add(new ddl { Text = "Chhattisgarh", Value = "Chhattisgarh" , Value2 = "22"});
-            list.Add(new ddl { Text = "Goa", Value = "Goa" , Value2 = "30"});
-            list.Add(new ddl { Text = "Gujarat", Value = "Gujarat" , Value2 = "24"});
-            list.Add(new ddl { Text = "Haryana", Value = "Haryana" , Value2 = "06"});
-            list.Add(new ddl { Text = "Himachal Pradesh", Value = "Himachal Pradesh" , Value2 = "02"});
-            list.Add(new ddl { Text = "Jharkhand", Value = "Jharkhand" , Value2 = "20"});
-            list.Add(new ddl { Text = "Karnataka", Value = "Karnataka" , Value2 = "29"});
-            list.Add(new ddl { Text = "Kerala", Value = "Kerala" , Value2 = "32"});
-            list.Add(new ddl { Text = "Madhya Pradesh", Value = "Madhya Pradesh" , Value2 = "23"});
-            list.Add(new ddl { Text = "Maharashtra", Value = "Maharashtra" , Value2 = "27"});
-            list.Add(new ddl { Text = "Manipur", Value = "Manipur" , Value2 = "14"});
-            list.Add(new ddl { Text = "Meghalaya", Value = "Meghalaya" , Value2 = "17"});
-            list.Add(new ddl { Text = "Mizoram", Value = "Mizoram" , Value2 = "15"});
-            list.Add(new ddl { Text = "Nagaland", Value = "Nagaland" , Value2 = "13"});
-            list.Add(new ddl { Text = "Odisha", Value = "Odisha" , Value2 = "21"});
-            list.Add(new ddl { Text = "Punjab", Value = "Punjab" , Value2 = "03"});
-            list.Add(new ddl { Text = "Rajasthan", Value = "Rajasthan" , Value2 = "08"});
-            list.Add(new ddl { Text = "Sikkim", Value = "Sikkim" , Value2 = "11"});
-            list.Add(new ddl { Text = "Tamil Nadu", Value = "Tamil Nadu" , Value2 = "33"});
-            list.Add(new ddl { Text = "Telangana", Value = "Telangana" , Value2 = "36"});
-            list.Add(new ddl { Text = "Tripura", Value = "Tripura" , Value2 = "16"});
-            list.Add(new ddl { Text = "Uttar Pradesh", Value = "Uttar Pradesh" , Value2 = "09"});
-            list.Add(new ddl { Text = "Uttarakhand", Value = "Uttarakhand" , Value2 = "05"});
-            list.Add(new ddl { Text = "West Bengal", Value = "West Bengal" , Value2 = "19"});
+            list.Add(new ddl { Text = "Andhra Pradesh", Value = "Andhra Pradesh", Value2 = "28" });
+            list.Add(new ddl { Text = "Arunachal Pradesh", Value = "Arunachal Pradesh", Value2 = "12" });
+            list.Add(new ddl { Text = "Assam", Value = "Assam", Value2 = "18" });
+            list.Add(new ddl { Text = "Bihar", Value = "Bihar", Value2 = "10" });
+            list.Add(new ddl { Text = "Chhattisgarh", Value = "Chhattisgarh", Value2 = "22" });
+            list.Add(new ddl { Text = "Goa", Value = "Goa", Value2 = "30" });
+            list.Add(new ddl { Text = "Gujarat", Value = "Gujarat", Value2 = "24" });
+            list.Add(new ddl { Text = "Haryana", Value = "Haryana", Value2 = "06" });
+            list.Add(new ddl { Text = "Himachal Pradesh", Value = "Himachal Pradesh", Value2 = "02" });
+            list.Add(new ddl { Text = "Jharkhand", Value = "Jharkhand", Value2 = "20" });
+            list.Add(new ddl { Text = "Karnataka", Value = "Karnataka", Value2 = "29" });
+            list.Add(new ddl { Text = "Kerala", Value = "Kerala", Value2 = "32" });
+            list.Add(new ddl { Text = "Madhya Pradesh", Value = "Madhya Pradesh", Value2 = "23" });
+            list.Add(new ddl { Text = "Maharashtra", Value = "Maharashtra", Value2 = "27" });
+            list.Add(new ddl { Text = "Manipur", Value = "Manipur", Value2 = "14" });
+            list.Add(new ddl { Text = "Meghalaya", Value = "Meghalaya", Value2 = "17" });
+            list.Add(new ddl { Text = "Mizoram", Value = "Mizoram", Value2 = "15" });
+            list.Add(new ddl { Text = "Nagaland", Value = "Nagaland", Value2 = "13" });
+            list.Add(new ddl { Text = "Odisha", Value = "Odisha", Value2 = "21" });
+            list.Add(new ddl { Text = "Punjab", Value = "Punjab", Value2 = "03" });
+            list.Add(new ddl { Text = "Rajasthan", Value = "Rajasthan", Value2 = "08" });
+            list.Add(new ddl { Text = "Sikkim", Value = "Sikkim", Value2 = "11" });
+            list.Add(new ddl { Text = "Tamil Nadu", Value = "Tamil Nadu", Value2 = "33" });
+            list.Add(new ddl { Text = "Telangana", Value = "Telangana", Value2 = "36" });
+            list.Add(new ddl { Text = "Tripura", Value = "Tripura", Value2 = "16" });
+            list.Add(new ddl { Text = "Uttar Pradesh", Value = "Uttar Pradesh", Value2 = "09" });
+            list.Add(new ddl { Text = "Uttarakhand", Value = "Uttarakhand", Value2 = "05" });
+            list.Add(new ddl { Text = "West Bengal", Value = "West Bengal", Value2 = "19" });
 
 
             return list;
@@ -522,16 +390,5 @@ namespace SSAdmin
             return _state != null ? _state.Value2 : "";
         }
 
-        public static void Log(string title, string Des)
-        {
-            string path = "";
-            path = Path.Combine("wwwroot", "logs");
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path); 
-
-            string sPath = Path.Combine(path, "log_" + DateTime.Now.ToString("ddMMyy") + ".txt");
-
-            System.IO.File.AppendAllText(sPath, "\r\n\r\n" + DateTime.Now.ToString("HH:mm:ss fff") + " [" + title + "] : " + Des);
-        }
     }
 }

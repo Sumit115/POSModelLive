@@ -1,15 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
-
-@if (Context.Session.GetString("LoginId") == null || Context.Session.GetString("LoginId") == "")
-{
-   @*  Context.Session.SetString("LoginId", Convert.ToString(1));
-     Context.Session.SetInt32("IsAdmin", Convert.ToInt32(1));
-     Context.Session.SetString("Photo", "/Admin/dist/img/avatar04.png");*@
-
-    Context.Response.Redirect("/Auth");
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -90,7 +79,7 @@
                 </li>
             </ul>
         </nav>
-        <aside class="main-sidebar sidebar-dark-primary elevation-4" style="margin-top: 45px;">
+        <aside class="main-sidebar sidebar-dark-primary elevation-4" style="margin-top: 45px;height: 93vh;min-height:93vh">
 
             <!-- Sidebar -->
             <div class="sidebar">

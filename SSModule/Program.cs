@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -17,8 +20,28 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    // Add global authorization filter
+    var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+    options.Filters.Add(new AuthorizeFilter(policy));
+});
+
 builder.Services.AddMvc();
- 
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie(options =>
+        {
+            options.LoginPath = "/Auth";  // Path to the login page
+            options.LogoutPath = "/Auth/Logout"; // Path to the logout page
+            options.Cookie.HttpOnly = true;        // Makes cookie inaccessible from JavaScript for security
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Use secure cookies (HTTPS only)
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(720); // Set expiration time for the cookie
+            options.SlidingExpiration = true;      // Extends cookie expiration on active requests
+        });
+
 builder.Services.AddMvc().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.Formatting = Formatting.Indented;
@@ -31,16 +54,17 @@ builder.Services.AddMvc().AddNewtonsoftJson(options =>
         res.NamingStrategy = null;  // <<!-- this removes the camelcasing
     }
 });
+
 builder.Services.AddHttpContextAccessor();
 //builder.Services.AddScoped<ITableMasRepository, TableMasRepository>();>();
 //builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddDbContext<AppDbContext>(options =>
-{ 
+{
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 builder.Services.AddSession();
 
- 
+
 builder.Services.AddScoped<IGridLayoutRepository, GridLayoutRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IVendorRepository, VendorRepository>();
@@ -56,7 +80,7 @@ builder.Services.AddScoped<ISalesInvoiceRepository, SalesInvoiceRepository>();
 builder.Services.AddScoped<ISeriesRepository, SeriesRepository>();
 builder.Services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
 builder.Services.AddScoped<IPurchaseInvoiceRepository, PurchaseInvoiceRepository>();
-builder.Services.AddScoped<ISalesChallanRepository, SalesChallanRepository>(); 
+builder.Services.AddScoped<ISalesChallanRepository, SalesChallanRepository>();
 builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 builder.Services.AddScoped<ILoginRepository, LoginRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
@@ -100,6 +124,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>

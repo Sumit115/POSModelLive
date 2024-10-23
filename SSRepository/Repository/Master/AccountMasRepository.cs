@@ -204,12 +204,8 @@ namespace SSRepository.Repository.Master
                 }
                 catch (Exception ex)
                 {
-                    //WriteLog(ex, "SaveData", "TranRepository", _contextAccessor.HttpContext.Session.Get<Int64>("UserID"));
                     trans.Rollback();
-                    ResponseModel response = new ResponseModel();
-                    response.ID = 0;
-                    response.Response = "Error: " + ex.Message;
-                    return JsonConvert.SerializeObject(response);
+                    throw ex;
                 }
             }
             return Error;
