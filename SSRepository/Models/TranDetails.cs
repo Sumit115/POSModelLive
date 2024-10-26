@@ -86,6 +86,8 @@ namespace SSRepository.Models
         public Nullable<long> OrderSrNo { get; set; }
         public Nullable<long> FKOrderSrID { get; set; }
         public string? SubCategoryName { get; set; }
+        public Nullable<long> LinkSrNo { get; set; }
+        public string? PromotionType { get; set; }
 
     }
 }

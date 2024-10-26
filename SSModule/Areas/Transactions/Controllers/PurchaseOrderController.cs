@@ -22,7 +22,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
             _repository = repository;
             TranType = "P";
             TranAlias = "PORD";
-            StockFlag = "I";
+            StockFlag = "A";
             FKFormID = (long)Handler.Form.PurchaseOrder;
             PostInAc = false;
         }

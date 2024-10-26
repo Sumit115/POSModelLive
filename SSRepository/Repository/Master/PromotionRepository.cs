@@ -77,7 +77,7 @@ namespace SSRepository.Repository.Master
 
         public PromotionModel GetSingleRecord(long PkPromotionId)
         {
-            
+
             PromotionModel data = new PromotionModel();
             data = (from cou in __dbContext.TblPromotionMas
                     join _prd in __dbContext.TblProductMas on cou.FKProdID equals (int?)_prd.PkProductId into _prdmp
@@ -129,23 +129,34 @@ namespace SSRepository.Repository.Master
                         FKProdID = cou.FKProdID,
                         FkProdCatgId = cou.FkProdCatgId,
                         FkBrandId = cou.FkBrandId,
-                        //FkPromotionGroupId = cou.FkPromotionGroupId,
-                        //PromotionSize_lst = (from ad in __dbContext.TblPromotionSizeLnk
-                        //                        //  join loc in __dbContext.TblBranchMas on ad.FKLocationID equals loc.PkBranchId
-                        //                    where (ad.FkPromotionId == cou.PkPromotionId)
-                        //                    select (new PromotionSizeLnkModel
-                        //                    {
-                        //                        PkId = ad.PkId,
-                        //                        Size = ad.Size,
-                        //                        FkPromotionId = ad.FkPromotionId,
-                        //                    })).ToList(),
+                        //FkPromotionGroupId = cou.FkPromotionGroupId, 
                         ProductName = prd.Product,
                         CategoryName = cat.CategoryName,
-                        BrandName=brand.BrandName,
-                       CustomerName = cust.Name ,
-                       VendorName = vendor.Name,
-                       LocationName=location.Location,
-                       PromotionProductName=freePrd.Product,
+                        BrandName = brand.BrandName,
+                        CustomerName = cust.Name,
+                        VendorName = vendor.Name,
+                        LocationName = location.Location,
+                        PromotionProductName = freePrd.Product,
+                        PromotionLnk_lst = (from ad in __dbContext.TblPromotionLnk
+                                            join cat in __dbContext.TblCategoryMas on ad.FkLinkId equals cat.PkCategoryId
+                                            where (ad.FkPromotionId == cou.PkPromotionId)
+                                            select (new PromotionLnkModel
+                                            {
+                                                PkId = ad.PkId,
+                                                FkLinkId = ad.FkLinkId,
+                                                FkPromotionId = ad.FkPromotionId,
+                                                CategoryName = cat.CategoryName,
+                                            })).ToList(),
+                        PromotionLocation_lst = (from ad in __dbContext.TblPromotionLocationLnk
+                                                 join loc in __dbContext.TblLocationMas on ad.FKLocationId equals loc.PkLocationID
+                                                 where (ad.FkPromotionId == cou.PkPromotionId)
+                                                 select (new PromotionLocationLnkModel
+                                                 {
+                                                     PkId = ad.PkId,
+                                                     FkLocationId = ad.FKLocationId,
+                                                     FkPromotionId = ad.FkPromotionId,
+                                                     LocationName = loc.Location,
+                                                 })).ToList(),
                     })).FirstOrDefault();
             return data;
         }
@@ -248,7 +259,106 @@ namespace SSRepository.Repository.Master
                 UpdateData(Tbl, false);
                 //AddMasterLog(oldModel, __FormID, tblCountry.FKPromotionID, oldModel.PkPromotionId, oldModel.FKPromotionID, oldModel.DATE_MODIFIED);
             }
+            if (model.PromotionLocation_lst != null)
+            {
+                List<TblPromotionLocationLnk> lstAdd = new List<TblPromotionLocationLnk>();
+                // List<TblPromotionLocationLnk> lstEdit = new List<TblPromotionLocationLnk>();
+                List<TblPromotionLocationLnk> lstDel = new List<TblPromotionLocationLnk>();
+                foreach (var item in model.PromotionLocation_lst)
+                {
+                    TblPromotionLocationLnk locObj = new TblPromotionLocationLnk();
+                    locObj.FKLocationId = item.FkLocationId;
+                    locObj.FkPromotionId = Tbl.PkPromotionId;
+                    locObj.PkId = item.PkId;
 
+
+                    //   lstAdd.Add(locObj);
+                    if (item.Mode == 1)
+                    {
+                        //locObj.ModifiedDate = DateTime.Now;
+                        //lstEdit.Add(locObj);
+                    }
+                    else if (item.Mode == 0)
+                    {
+                        //  locObj.PKAccountDtlId = getIdOfSeriesByEntity("PKAccountDtlId", null, Tbl, "TblAccountDtl");
+                        locObj.FKCreatedByID = model.FKCreatedByID;
+                        locObj.FKUserID = model.FKUserId;
+                        locObj.CreationDate = DateTime.Now;
+                        locObj.ModifiedDate = DateTime.Now;
+                        lstAdd.Add(locObj);
+                    }
+
+                    else
+                    {
+                        var res1 = (from x in __dbContext.TblPromotionLocationLnk
+                                    where x.FkPromotionId == locObj.FkPromotionId && x.FKLocationId == locObj.FKLocationId
+                                    && x.PkId == locObj.PkId
+                                    select x).Count();
+                        if (res1 > 0)
+                        {
+                            lstDel.Add(locObj);
+                        }
+                    }
+
+                }
+
+                if (lstDel.Count() > 0)
+                    DeleteData(lstDel, true);
+                //if (lstEdit.Count() > 0)
+                //    UpdateData(lstEdit, true); 
+                if (lstAdd.Count() > 0)
+                    AddData(lstAdd, true);
+            }
+            if (model.PromotionLnk_lst != null)
+            {
+                List<TblPromotionLnk> lstAdd = new List<TblPromotionLnk>();
+                // List<PromotionLnk_lst> lstEdit = new List<PromotionLnk_lst>();
+                List<TblPromotionLnk> lstDel = new List<TblPromotionLnk>();
+                foreach (var item in model.PromotionLnk_lst)
+                {
+                    TblPromotionLnk locObj = new TblPromotionLnk();
+                    locObj.FkLinkId = item.FkLinkId;
+                    locObj.FkPromotionId = Tbl.PkPromotionId;
+                    locObj.PkId = item.PkId;
+
+
+                    //   lstAdd.Add(locObj);
+                    if (item.Mode == 1)
+                    {
+                        //locObj.ModifiedDate = DateTime.Now;
+                        //lstEdit.Add(locObj);
+                    }
+                    else if (item.Mode == 0)
+                    {
+                        //  locObj.PKAccountDtlId = getIdOfSeriesByEntity("PKAccountDtlId", null, Tbl, "TblAccountDtl");
+                        locObj.FKCreatedByID = model.FKCreatedByID;
+                        locObj.FKUserID = model.FKUserId;
+                        locObj.CreationDate = DateTime.Now;
+                        locObj.ModifiedDate = DateTime.Now;
+                        lstAdd.Add(locObj);
+                    }
+
+                    else
+                    {
+                        var res1 = (from x in __dbContext.TblPromotionLnk
+                                    where x.FkPromotionId == locObj.FkPromotionId && x.FkLinkId == locObj.FkLinkId
+                                    && x.PkId == locObj.PkId
+                                    select x).Count();
+                        if (res1 > 0)
+                        {
+                            lstDel.Add(locObj);
+                        }
+                    }
+
+                }
+
+                if (lstDel.Count() > 0)
+                    DeleteData(lstDel, true);
+                //if (lstEdit.Count() > 0)
+                //    UpdateData(lstEdit, true); 
+                if (lstAdd.Count() > 0)
+                    AddData(lstAdd, true);
+            }
 
             //AddImagesAndRemark(obj.PkcountryId, obj.FKPromotionID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
@@ -279,23 +389,4 @@ namespace SSRepository.Repository.Master
 
 
     }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+} 

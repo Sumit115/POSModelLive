@@ -58,15 +58,16 @@
                             <span asp-validation-for="PromotionName" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Location </label>
+                    @*  <div class="col-md-4">
+                    <div class="form-group">
+                    <label class="control-label">Location </label>
 
-                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkLocationId" }, { "Class", "val-cus-drp" }, { "event", "" },
-                            { "value", Model.FKLocationId }, { "text", Model.LocationName }, { "uri", "" }})
+                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkLocationId" }, { "Class", "val-cus-drp" }, { "event", "" },
+                    { "value", Model.FKLocationId }, { "text", Model.LocationName }, { "uri", "" }})
 
-                        </div>
                     </div>
+                    </div>*@
+
                     @if (ViewBag.PromotionDuring == "Purchase")
                     {
                         <div class="col-md-4">
@@ -91,6 +92,69 @@
                             </div>
                         </div>
                     }
+                    <div class="col-md-12">
+                        <div class="border p-2">
+                            <h5>Location</h5>
+                            <div class="row">
+
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkLocationId" }, { "Class", "val-cus-drp" }, { "event", "" },
+                                        { "value", "" }, { "text", "" }, { "uri", "" }})
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <input type="hidden" id="hidLocationIndex" autocomplete="off" value="">
+                                        <input type="button" class="btn btn-warning" value="Add" onclick="addLocations()" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <table id="tblLocation" class="shelf-tblCatSize table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Location</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="md-height">
+                                            @{
+                                                int AcNo = -1;
+                                            }
+                                            @if (Model.PromotionLocation_lst != null)
+                                            {
+                                                for (int i = 0; i < Model.PromotionLocation_lst.Count; i++)
+                                                {
+                                                    AcNo++;
+                                                    <tr index="0">
+
+                                                        <td class="tabel-td-xs">
+                                                            <input readonly="readonly" id="PromotionLocation_lst_@(i)__LocationName" name="PromotionLocation_lst[@i].LocationName" type="text" value="@Model.PromotionLocation_lst[i].LocationName" tabindex="-1">
+                                                        </td>
+
+                                                        <td class="tabel-td-xs">
+                                                            <input id="PromotionLocation_lst_@(i)__Mode" name="PromotionLocation_lst[@i].Mode" type="hidden" value="1">
+                                                            <input id="PromotionLocation_lst_@(i)__PkId" name="PromotionLocation_lst[@i].PkId" type="hidden" value="@Model.PromotionLocation_lst[i].PkId">
+                                                            <input id="PromotionLocation_lst_@(i)__FkLocationId" name="PromotionLocation_lst[@i].FkLocationId" type="hidden" value="@Model.PromotionLocation_lst[i].FkLocationId">
+                                                            <span class="action-icon" onclick="UpdateLocation(this,@i,'del')">
+                                                                <i class="fa fa-trash"></i>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+
+                                                }
+
+                                            }
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label">Apply On</label>
@@ -99,12 +163,13 @@
                                 <option value="Category">Category</option>
                                 <option value="Brand">Brand</option>
                                 <option value="Invoice Value">Invoice Value</option>
+                                <option value="XonX">XonX</option>
                             </select>
 
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="form-group" id="div_Promotionddl">
                             <label class="control-label">Promotion</label>
                             <select asp-for="Promotion" class="form-control" onchange="hideShow(true)">
                                 <option value="Free Product">Free Product</option>
@@ -130,14 +195,14 @@
                         <input type="text" asp-for="PromotionApplyQty" class="form-control" />
                         <span asp-validation-for="PromotionApplyQty" class="text-danger"></span>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Unit </label>
-                            <select asp-for="FkPromotionApplyUnitId" asp-items="@(new SelectList(ViewBag.UnitList,"Value","Text"))" class="form-control">
-                            </select>
+                    @*<div class="col-md-4">
+                    <div class="form-group">
+                    <label>Unit </label>
+                    <select asp-for="FkPromotionApplyUnitId" asp-items="@(new SelectList(ViewBag.UnitList,"Value","Text"))" class="form-control">
+                    </select>
 
-                        </div>
                     </div>
+                    </div>*@
 
 
                 </div>
@@ -179,13 +244,73 @@
                     <div class="col-md-12">
                         <h4 id="divheading">Free Product</h4>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-12" id="div_FreeSingle">
                         <div class="form-group">
                             <label class="control-label">Free Product </label>
 
                             @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkPromotionProdId" }, { "Class", "val-cus-drp" }, { "event", "" },
                             { "value", Model.FkPromotionProdId }, { "text", Model.PromotionProductName }, { "uri", "" }})
 
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="div_FreeMultiCategory">
+                        <div class="border p-2">
+                           @* <h5>Location</h5>*@
+                            <div class="row">
+
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkLinkId" }, { "Class", "val-cus-drp" }, { "event", "" },
+                                        { "value", "" }, { "text", "" }, { "uri", "" }})
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <input type="hidden" id="hidCategoryIndex" autocomplete="off" value="">
+                                        <input type="button" class="btn btn-warning" value="Add" onclick="addCategory()" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12" >
+                                    <table id="tblCategory" class="shelf-tblCatSize table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Category</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="md-height">
+
+                                            @if (Model.PromotionLnk_lst != null)
+                                            {
+                                                for (int i = 0; i < Model.PromotionLnk_lst.Count; i++)
+                                                {
+                                                    <tr index="0">
+                                                        <td class="tabel-td-xs">
+                                                            <input readonly="readonly" id="PromotionLnk_lst_@(i)__CategoryName" name="PromotionLnk_lst[@i].CategoryName" type="text" value="@Model.PromotionLnk_lst[i].CategoryName" tabindex="-1">
+                                                        </td>
+
+                                                        <td class="tabel-td-xs">
+                                                            <input id="PromotionLnk_lst_@(i)__Mode" name="PromotionLnk_lst[@i].Mode" type="hidden" value="1">
+                                                            <input id="PromotionLnk_lst_@(i)__PkId" name="PromotionLnk_lst[@i].PkId" type="hidden" value="@Model.PromotionLnk_lst[i].PkId">
+                                                            <input id="PromotionLnk_lst_@(i)__FkLinkId" name="PromotionLnk_lst[@i].FkLinkId" type="hidden" value="@Model.PromotionLnk_lst[i].FkLinkId">
+                                                            <span class="action-icon" onclick="UpdateCategory(this,@i,'del')">
+                                                                <i class="fa fa-trash"></i>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+
+                                                }
+
+                                            }
+                                        </tbody>
+
+                                    </table>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                     <div class=" col-md-4">
@@ -198,14 +323,14 @@
                         <input type="text" asp-for="PromotionQty" class="form-control" />
                         <span asp-validation-for="PromotionQty" class="text-danger"></span>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Unit </label>
-                            <select asp-for="FkPromotionUnitId" asp-items="@(new SelectList(ViewBag.UnitList,"Value","Text"))" class="form-control">
-                            </select>
+                    @* <div class="col-md-4">
+                    <div class="form-group">
+                    <label>Unit </label>
+                    <select asp-for="FkPromotionUnitId" asp-items="@(new SelectList(ViewBag.UnitList,"Value","Text"))" class="form-control">
+                    </select>
 
-                        </div>
                     </div>
+                    </div>*@
                 </div>
             </div>
         </div>
@@ -221,7 +346,10 @@
     <script>
         $(document).ready(function () {
             $("#btnServerBack").attr("href", "/Master/Promotion/List/@ViewBag.PromotionDuring");
-
+            $("#Promotion option[value*='Free Point']").prop('disabled', true);
+            if ($("#PromotionApplyOn").val() != "Invoice Value") {
+                $("#Promotion option[value*='Free Point']").prop('disabled', true);
+            }
             hideShow();
             $('#btnServerSave').click(function (e) {
                 e.preventDefault();
@@ -236,30 +364,39 @@
         function hideShow(Ischange) {
             var _applyOn = $("#PromotionApplyOn").val();
             var _promotion = $("#Promotion").val();
+            $("#div_Promotionddl,#div_FreeSingle").show();
+            $("#div_FreeMultiCategory,#divCategory,#divBrand,#divProduct").hide();
+             
+
             if (Ischange) {
                 $("#FKProdID,#FkProdCatgId,#FkBrandId,#FkPromotionProdId,#drpFkPromotionProdId,#PromotionApplyAmt,#PromotionApplyQty,#PromotionAmt,#PromotionQty").val('0');
                 $("#drpFKProdID,#drpFkProdCatgId,#drpFkBrandId,#drpFkPromotionProdId").val('');
                 $("#FkPromotionApplyUnitId,FkPromotionUnitId").val('1')
+                $("#Promotion option[value*='Free Point']").prop('disabled', true);
+                $("#Promotion").val('Free Product');
+               // $("#tblCategory tbody").hide('');
             }
             $("#divheading").text(_promotion);
 
             $("#PromotionApplyAmt,#PromotionApplyQty,#PromotionAmt,#FkPromotionApplyUnitId,#drpFkPromotionProdId,#PromotionQty,#FkPromotionUnitId").attr("readonly", "readonly");
 
 
+            if (_applyOn != "XonX") {
+                if (_promotion == "Free Product") {
+                    $("#PromotionApplyQty,#FkPromotionApplyUnitId,#drpFkPromotionProdId,#PromotionAmt,#PromotionQty,#FkPromotionUnitId").removeAttr("readonly");
+                }
+                else if (_promotion == "Free Qty") {
+                    $("#PromotionApplyQty,#FkPromotionApplyUnitId,#PromotionQty").removeAttr("readonly");
+                }
+                else if (_promotion == "Trade Discount" || _promotion == "Scheme Discount") {
+                    $("#PromotionApplyQty,#FkPromotionApplyUnitId,#PromotionAmt").removeAttr("readonly");
+                }
+                else if (_promotion == "Free Point") {
+                    $("#PromotionApplyAmt,#PromotionAmt").removeAttr("readonly");
 
-            if (_promotion == "Free Product") {
-                $("#PromotionApplyQty,#FkPromotionApplyUnitId,#drpFkPromotionProdId,#PromotionAmt,#PromotionQty,#FkPromotionUnitId").removeAttr("readonly");
+                }
             }
-            else if (_promotion == "Free Qty") {
-                $("#PromotionApplyQty,#FkPromotionApplyUnitId,#PromotionQty").removeAttr("readonly");
-            }
-            else if (_promotion == "Trade Discount" || _promotion == "Scheme Discount") {
-                $("#PromotionApplyQty,#FkPromotionApplyUnitId,#PromotionAmt").removeAttr("readonly");
-            }
-            else if (_promotion == "Free Point") {
-                $("#PromotionApplyAmt,#PromotionAmt").removeAttr("readonly");
 
-            }
 
             if (_applyOn == "Product") {
                 $("#divCategory,#divBrand").hide();
@@ -277,8 +414,147 @@
                 $("#divCategory,#divProduct,#divBrand").hide();
                 // $("").show();
                 $("#PromotionApplyAmt,#PromotionApplyAmt").removeAttr("readonly");
+                $("#Promotion option[value*='Free Point']").prop('disabled', false);
+
+            }
+            else if (_applyOn == "XonX") {
+                $("#divProduct,#divBrand,#div_Promotionddl,#div_FreeSingle").hide(); 
+                $("#divheading").text("Add Category");
+                $("#divProduct,#div_FreeMultiCategory").show(); 
+                $("#PromotionApplyQty,#FkPromotionApplyUnitId,#PromotionQty").removeAttr("readonly");
+
             }
         }
 
     </script>
+
+    <script>
+        function addLocations() {
+
+            var rowCount = $('#tblLocation tbody tr').length;
+
+
+            var index = $("#hidLocationIndex").val();
+            var Exists = false;
+
+            var FkLocationId = $("#FkLocationId").val();
+            if (FkLocationId != '') {
+                $('#tblLocation tr').each(function (ind) {
+                    if ($("#PromotionLocation_lst_" + ind + "__FkLocationId").val() == FkLocationId && index !== ind.toString() && $("#PromotionLocation_lst_" + ind + "__Mode").val() != '2') {
+                        alert("Already Exists");
+                        Exists = true;
+                    }
+                });
+
+                if (!Exists) {
+
+
+                    if (index === "") {
+                        var html = '<tr index="' + rowCount + '">';
+                        html += '<td class="tabel-td-xs">  <input  id="PromotionLocation_lst_' + rowCount + '__LocationName" name="PromotionLocation_lst[' + rowCount + '].LocationName" type="text" value="' + $("#drpFkLocationId").val() + '" tabindex="-1"> </td>';
+                        html += '<td class="tabel-td-xs">';
+                        html += '<input id="PromotionLocation_lst_' + rowCount + '__Mode" name="PromotionLocation_lst[' + rowCount + '].Mode" type="hidden" value="0">';
+                        html += '<input id="PromotionLocation_lst_' + rowCount + '__PkId" name="PromotionLocation_lst[' + rowCount + '].PkId" type="hidden" value="0">';
+                        html += '<input id="PromotionLocation_lst_' + rowCount + '__FkLocationId" name="PromotionLocation_lst[' + rowCount + '].FkLocationId" type="hidden" value="' + $("#FkLocationId").val() + '">';
+                        html += '<span class="action-icon" onclick="UpdateLocation(this,' + rowCount + ',\'del\')"><i class="fa fa-trash" /></span> </td>';
+
+                        html += '</tr>';
+
+                        $("#tblLocation tbody").append(html);
+                    } else {
+                        // $("#PromotionLocation_lst_" + index + "__Location").val($("#txtLocation").val());
+                        //  $("#PromotionLocation_lst_" + index + "__Mode").val('1');
+
+                    }
+                    $("#txtLocation").val('');
+                    //$("#FklocalityGridId").prop('selectedIndex', 0);
+                    //DropDownReset('FklocalityGridId');
+                }
+            }
+            else { alert("Insert Location"); }
+            // }
+            return false;
+        }
+
+        function UpdateLocation(obj, index, action) {
+            //if (action === 'edit') {
+            //    $("#hidLocationIndex").val(index);
+            //    $("#FklocalityGridId").val($("#PromotionLocation_lst_" + index + "__FKLocationID").val());
+            //    // $("#drpFklocalityGridId").val($("#PromotionLocation_lst_" + index + "__Location").val());
+            //    $("#OpeningBalance").val($("#PromotionLocation_lst_" + index + "__Location").val());
+            //    $('#thDrCr').find("input[value='" + $("#PromotionLocation_lst_" + index + "__type").val() + "']").prop('checked', true);
+            //    $(obj).closest('tr').removeClass('tbl-delete');
+            //} else
+
+            if (action === 'del') {
+                $(obj).closest('tr').addClass('tbl-delete');
+                $("#PromotionLocation_lst_" + index + "__Mode").val('2');
+            }
+        }
+    </script>
+    <script>
+        function addCategory() {
+
+            var rowCount = $('#tblCategory tbody tr').length;
+
+
+            var index = $("#hidCategoryIndex").val();
+            var Exists = false;
+
+            var FkLinkId = $("#FkLinkId").val();
+            if (FkLinkId != '') {
+                $('#tblCategory tr').each(function (ind) {
+                    if ($("#PromotionLnk_lst_" + ind + "__FkLinkId").val() == FkLinkId && index !== ind.toString() && $("#PromotionLnk_lst_" + ind + "__Mode").val() != '2') {
+                        alert("Already Exists");
+                        Exists = true;
+                    }
+                });
+
+                if (!Exists) {
+
+
+                    if (index === "") {
+                        var html = '<tr index="' + rowCount + '">';
+                        html += '<td class="tabel-td-xs">  <input  id="PromotionLnk_lst_' + rowCount + '__LocationName" name="PromotionLnk_lst[' + rowCount + '].LocationName" type="text" value="' + $("#drpFkLinkId").val() + '" tabindex="-1"> </td>';
+                        html += '<td class="tabel-td-xs">';
+                        html += '<input id="PromotionLnk_lst_' + rowCount + '__Mode" name="PromotionLnk_lst[' + rowCount + '].Mode" type="hidden" value="0">';
+                        html += '<input id="PromotionLnk_lst_' + rowCount + '__PkId" name="PromotionLnk_lst[' + rowCount + '].PkId" type="hidden" value="0">';
+                        html += '<input id="PromotionLnk_lst_' + rowCount + '__FkLinkId" name="PromotionLnk_lst[' + rowCount + '].FkLinkId" type="hidden" value="' + $("#FkLinkId").val() + '">';
+                        html += '<span class="action-icon" onclick="UpdateLocation(this,' + rowCount + ',\'del\')"><i class="fa fa-trash" /></span> </td>';
+
+                        html += '</tr>';
+
+                        $("#tblCategory tbody").append(html);
+                    } else {
+                        // $("#PromotionLnk_lst_" + index + "__Location").val($("#txtLocation").val());
+                        //  $("#PromotionLnk_lst_" + index + "__Mode").val('1');
+
+                    }
+                    $("#txtLocation").val('');
+                    //$("#FklocalityGridId").prop('selectedIndex', 0);
+                    //DropDownReset('FklocalityGridId');
+                }
+            }
+            else { alert("Insert Location"); }
+            // }
+            return false;
+        }
+
+        function UpdateLocation(obj, index, action) {
+            //if (action === 'edit') {
+            //    $("#hidLocationIndex").val(index);
+            //    $("#FklocalityGridId").val($("#PromotionLnk_lst_" + index + "__FKLinkId").val());
+            //    // $("#drpFklocalityGridId").val($("#PromotionLnk_lst_" + index + "__Location").val());
+            //    $("#OpeningBalance").val($("#PromotionLnk_lst_" + index + "__Location").val());
+            //    $('#thDrCr').find("input[value='" + $("#PromotionLnk_lst_" + index + "__type").val() + "']").prop('checked', true);
+            //    $(obj).closest('tr').removeClass('tbl-delete');
+            //} else
+
+            if (action === 'del') {
+                $(obj).closest('tr').addClass('tbl-delete');
+                $("#PromotionLnk_lst_" + index + "__Mode").val('2');
+            }
+        }
+    </script>
+}
 }

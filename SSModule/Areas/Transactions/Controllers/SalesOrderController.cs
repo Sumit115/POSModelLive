@@ -26,7 +26,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
             _repository = repository;
             TranType = "S";
             TranAlias = "SORD";
-            StockFlag = "C";
+            StockFlag = "A";
             FKFormID = (long)Handler.Form.SalesOrder;
             PostInAc = false; 
         }

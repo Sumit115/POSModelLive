@@ -70,6 +70,8 @@ namespace SSRepository.Data
         public virtual DbSet<TblWalletMas> TblWalletMas { get; set; } = null!;
         public virtual DbSet<TblProductQTYBarcode> TblProductQTYBarcode { get; set; } = null!;
         public virtual DbSet<TblPromotionMas> TblPromotionMas { get; set; } = null!;
+        public virtual DbSet<TblPromotionLocationLnk> TblPromotionLocationLnk { get; set; } = null!;
+        public virtual DbSet<TblPromotionLnk> TblPromotionLnk { get; set; } = null!;
         public virtual DbSet<TblRecipeMas> TblRecipeMas { get; set; } = null!;
         public virtual DbSet<TblRecipeDtl> TblRecipeDtl { get; set; } = null!;
         public virtual DbSet<TblRoleMas> TblRoleMas { get; set; } = null!;
@@ -80,7 +82,7 @@ namespace SSRepository.Data
             if (!optionsBuilder.IsConfigured)
             {
                 //Local
-                //optionsBuilder.UseSqlServer("server=DESKTOP-OM06UCD\\SQLEXPRESS;database=Jp_POSModel;Trusted_Connection=True;TrustServerCertificate=True");
+               // optionsBuilder.UseSqlServer("server=DESKTOP-OM06UCD\\SQLEXPRESS;database=Jp_POSModel;Trusted_Connection=True;TrustServerCertificate=True");
 
                 //Live https://jaipursoft.com/
                 optionsBuilder.UseSqlServer("Data Source=154.61.77.18;database=jaipursoftdata;uid=jaipurdatauser;pwd=btof5zxmgjlyusvnehdc;TrustServerCertificate=True");

@@ -61,7 +61,9 @@ namespace SSRepository.Models
         public string? PromotionFromTime_str { get { return !string.IsNullOrEmpty(PromotionFromTime) ? DateTime.ParseExact(PromotionFromTime, "H:mm", null, System.Globalization.DateTimeStyles.None).ToString("hh:mm tt") : ""; } }
         public string? PromotionToTime_str { get { return !string.IsNullOrEmpty(PromotionToTime) ? DateTime.ParseExact(PromotionToTime, "H:mm", null, System.Globalization.DateTimeStyles.None).ToString("hh:mm tt") : ""; } }
 
-
+        public List<PromotionLocationLnkModel>? PromotionLocation_lst { get; set; }
+        public List<PromotionLnkModel>? PromotionLnk_lst { get; set; }
+       
     }
 
 }

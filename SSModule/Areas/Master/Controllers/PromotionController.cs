@@ -125,7 +125,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 ModelState.AddModelError("", ex.Message);
             }
             //BindViewBags(0, tblBankMas);
-            ViewBag.UnitList = _repository.UnitList();
+           // ViewBag.UnitList = _repository.UnitList();
             return View(Model);
         }
 
@@ -171,7 +171,7 @@ namespace SSAdmin.Areas.Master.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
             }
-            ViewBag.UnitList = _repository.UnitList();
+         //   ViewBag.UnitList = _repository.UnitList();
             ViewBag.PromotionDuring = model.PromotionDuring;
 
             return View(model);
@@ -234,6 +234,11 @@ namespace SSAdmin.Areas.Master.Controllers
         public object FkBrandId(int pageSize, int pageNo = 1, string search = "")
         {
             return _repositoryBrand.GetList(pageSize, pageNo, search);
+        }
+        [HttpPost]
+        public object FkLinkId(int pageSize, int pageNo = 1, string search = "")
+        {
+            return _repositoryCategory.GetList(pageSize, pageNo, search);
         }
 
     }
