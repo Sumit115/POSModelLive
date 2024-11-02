@@ -17,6 +17,8 @@ namespace SSRepository.Models
         public int ModeForm { get; set; }
 
         public long FkProductId { get; set; }
+        public long FKProdCatgId { get; set; }
+        public long FkBrandId { get; set; }
         public long FkLotId { get; set; }//=0  
 
         //New Start 19-02-2024

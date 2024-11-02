@@ -68,6 +68,7 @@ namespace SSRepository.Repository.Master
                                              FKProdID = cou.FKProdID,
                                              FkProdCatgId = cou.FkProdCatgId,
                                              FkBrandId = cou.FkBrandId,
+                                             SequenceNo = cou.SequenceNo,
                                              //FkPromotionGroupId = cou.FkPromotionGroupId,
                                              //GroupName = catGrp.PromotionGroupName,
                                          }
@@ -137,6 +138,7 @@ namespace SSRepository.Repository.Master
                         VendorName = vendor.Name,
                         LocationName = location.Location,
                         PromotionProductName = freePrd.Product,
+                        SequenceNo = cou.SequenceNo,
                         PromotionLnk_lst = (from ad in __dbContext.TblPromotionLnk
                                             join cat in __dbContext.TblCategoryMas on ad.FkLinkId equals cat.PkCategoryId
                                             where (ad.FkPromotionId == cou.PkPromotionId)
@@ -242,6 +244,7 @@ namespace SSRepository.Repository.Master
             Tbl.FKProdID = model.FKProdID > 0 ? model.FKProdID : null;
             Tbl.FkProdCatgId = model.FkProdCatgId > 0 ? model.FkProdCatgId : null;
             Tbl.FkBrandId = model.FkBrandId > 0 ? model.FkBrandId : null;
+            Tbl.SequenceNo = model.SequenceNo > 0 ? model.SequenceNo : 99;
             Tbl.ModifiedDate = DateTime.Now;
             if (Mode == "Create")
             {

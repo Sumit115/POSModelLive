@@ -92,6 +92,13 @@
                             </div>
                         </div>
                     }
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Sequence No</label>
+                            <input type="number" asp-for="SequenceNo" class="form-control" />
+                            <span asp-validation-for="SequenceNo" class="text-danger"></span>
+                        </div>
+                    </div>
                     <div class="col-md-12">
                         <div class="border p-2">
                             <h5>Location</h5>
@@ -175,8 +182,8 @@
                                 <option value="Free Product">Free Product</option>
                                 <option value="Free Qty">Free Qty</option>
                                 <option value="Trade Discount">Trade Discount (%)</option>
-                                <option value="Scheme Discount">Scheme Discount (%)</option>
-                                <option value="Free Point">Free Point</option>
+                           @*     <option value="Scheme Discount">Scheme Discount (%)</option>
+                           *@     <option value="Free Point">Free Point</option>
                             </select>
 
                         </div>
@@ -373,7 +380,7 @@
                 $("#drpFKProdID,#drpFkProdCatgId,#drpFkBrandId,#drpFkPromotionProdId").val('');
                 $("#FkPromotionApplyUnitId,FkPromotionUnitId").val('1')
                 $("#Promotion option[value*='Free Point']").prop('disabled', true);
-                $("#Promotion").val('Free Product');
+                //$("#Promotion").val('Free Product');
                // $("#tblCategory tbody").hide('');
             }
             $("#divheading").text(_promotion);

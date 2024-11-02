@@ -42,6 +42,7 @@ namespace SSRepository.Data
         public long? FKProdID { get; set; }
         public long? FkProdCatgId { get; set; }
         public long? FkBrandId { get; set; }
+        public long SequenceNo { get; set; }
 
-       }
+    }
 }

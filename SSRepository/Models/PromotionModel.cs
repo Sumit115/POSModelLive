@@ -54,6 +54,7 @@ namespace SSRepository.Models
         public string? BrandName { get; set; }
         public string? PromotionProductName { get; set; }
 
+        public long  SequenceNo { get; set; }
 
         //For extra
         public string? PromotionFromDt_str { get { return PromotionFromDt != null ? PromotionFromDt.Value.ToString("dd/MM/yyyy") : ""; } }

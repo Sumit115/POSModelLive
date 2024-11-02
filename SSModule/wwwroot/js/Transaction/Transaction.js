@@ -1002,6 +1002,8 @@ function setGridRowData(args, data, rowIndex, fieldName) {
         args.item["SrNo"] = data[rowIndex].SrNo;
         args.item["PkProductId"] = data[rowIndex].PkProductId;
         args.item["FkProductId"] = data[rowIndex].FkProductId;
+        args.item["FkBrandId"] = data[rowIndex].FkBrandId;
+        args.item["FKProdCatgId"] = data[rowIndex].FKProdCatgId;
         args.item["FkLotId"] = data[rowIndex].FkLotId;
         args.item["FKOrderID"] = data[rowIndex].FKOrderID;
         args.item["FKOrderSrID"] = data[rowIndex].FKOrderSrID;
