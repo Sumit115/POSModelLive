@@ -6,8 +6,7 @@ namespace SSRepository.IRepository
 
     public interface ILoginRepository:IBaseRepository
     {
-        UserModel? Login(string UserId, string Pwd);
-        UserModel  LoginV2(string UserId, string Pwd);
+        UserModel ValidateUser(long UserId);
         void Logout();
     }
 }

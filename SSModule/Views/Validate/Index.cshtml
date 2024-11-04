@@ -1,0 +1,28 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+
+    <title></title>
+</head>
+<body class="main-bg">
+
+
+    <a id="btnAccess" asp-controller="Validate" asp-action="index" style="display: none;">Access ERP</a>
+
+    <script src="~/js/jquery.min.js"></script>
+   <script>
+        $(document).ready(function(){            
+           
+            window.location.href = $("#btnAccess").attr("href") + "?Id=0";
+        })
+    </script>
+
+</body>
+</html>
+
