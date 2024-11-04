@@ -21,38 +21,16 @@ namespace SSRepository.Repository
 
         }
 
-        public UserModel? Login(string UserId, string Pwd)
-        {
-            return __dbContext.TblUserMas.Where(x => x.UserId == UserId && x.Pwd == Pwd)
-                .Select(x => new UserModel
-                {
-                    PkUserId = x.PkUserId,
-                    UserId = x.UserId,
-                    FkRegId = x.FkRegId,
-                    //CompanyName = x.CompanyName,
-                    Usertype = x.Usertype,
-                    FkBranchId = x.FkBranchId,
-                    //BranchName = x.BranchName,
-                    FkRoleId = x.FkRoleId,
-                    Expiredt = x.Expiredt,
-                    ExpirePwddt = x.ExpirePwddt,
-                    IsAdmin = x.IsAdmin,
-                    FkEmployeeId = x.FkEmployeeId,
-                    //EmployeeName = x.EmployeeName,
-
-                }).FirstOrDefault();
-        }
-        public string usp_Dashboard(string UserId, string Pwd)
+        public string usp_Dashboard(long UserId)
         {
             DataSet ds = new DataSet();
             string data = "";
             using (SqlConnection con = new SqlConnection(conn))
             {
                 con.Open();
-                SqlCommand cmd = new SqlCommand("usp_Dashboard", con);
+                SqlCommand cmd = new SqlCommand("usp_ValidateUser", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@UserId", UserId);
-                cmd.Parameters.AddWithValue("@Pwd", Pwd);
+                cmd.Parameters.AddWithValue("@PkUserId", UserId);
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(ds);
 
@@ -61,13 +39,13 @@ namespace SSRepository.Repository
             }
             return data;
         }
-        public UserModel LoginV2(string UserId, string Pwd)
+        public UserModel ValidateUser(long UserId)
         {
 
             UserModel data = new UserModel();
 
             string ErrMsg = "";
-            string dd = usp_Dashboard(UserId, Pwd);
+            string dd = usp_Dashboard(UserId);
             if (dd != null)
             {
                 List<UserModel> aa = JsonConvert.DeserializeObject<List<UserModel>>(dd);

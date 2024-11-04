@@ -1,5 +1,10 @@
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using LMS.Data;
+using LMS.IRepository;
+using LMS.Repository;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -29,7 +34,14 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AuthorizeFilter(policy));
 });
 
-builder.Services.AddMvc();
+builder.Services.AddMvc(options =>
+{
+
+    options.MaxModelBindingCollectionSize = int.MaxValue;
+
+});
+builder.Services.Configure<FormOptions>(x => x.ValueCountLimit = 22048);
+
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(options =>
@@ -62,9 +74,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
-builder.Services.AddSession();
 
+builder.Services.AddDbContext<ssodbContext>(options =>
+{
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(80);//You can set Time  
+});
+
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IGridLayoutRepository, GridLayoutRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IVendorRepository, VendorRepository>();
@@ -113,10 +134,26 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    //app.UseBrowserLink();
+    //app.UseDeveloperExceptionPage();
+
+    app.UseExceptionHandler("/Auth/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+else
+{
+    app.UseExceptionHandler("/Auth/Error");
+}
+app.Use(async (ctx, next) =>
+{
+    await next();
+
+    if (ctx.Response.StatusCode == 404 && !ctx.Response.HasStarted)
+    {
+        ctx.Request.Path = "/Auth/index";
+    }
+});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

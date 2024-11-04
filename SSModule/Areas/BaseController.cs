@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using SSAdmin.Constant;
 using SSRepository.IRepository;
 using SSRepository.Models;
+using System;
 using System.Data;
 
 namespace SSAdmin.Areas
@@ -12,9 +15,23 @@ namespace SSAdmin.Areas
     [Authorize]
     public class BaseController : Controller
     {
+
+        
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            string path = Path.Combine("wwwroot", "Data", HttpContext.User.FindFirst("PkID")?.Value ?? "");
+            string path = Path.Combine("wwwroot", "Data");
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            path = Path.Combine(path, Convert.ToString(HttpContext.User.FindFirst("CompanyName")?.Value ?? ""));
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+
+            path = Path.Combine(path, Convert.ToString(HttpContext.User.FindFirst("UserId")?.Value ?? ""));
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
             string filePath = Path.Combine(path, "menulist.json");
             var jsondata = System.IO.File.ReadAllText(filePath);
             if (!string.IsNullOrEmpty(jsondata))

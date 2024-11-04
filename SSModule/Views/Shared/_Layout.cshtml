@@ -1,4 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+
+@if (Context.Session.GetString("UserID") == null || Context.Session.GetString("UserID") == "")
+{
+    Context.Response.Redirect("/Validate");
+}
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -11,7 +19,27 @@
     <link href="~/dist/css/adminlte.min.css" rel="stylesheet" />
     <link href="~/SlickGrid/slick.grid.css" rel="stylesheet" />
     <link href="~/css/root.css" rel="stylesheet" />
+    <style>
+        /* width */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
 
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+
+            /* Handle on hover */
+            ::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+    </style>
 </head>
 <body class="sidebar-mini sidebar-collapse @ViewData["bdClass"] ">
     <input type="hidden" id="hdFormId" value="@ViewBag.FormId" />
@@ -39,7 +67,7 @@
                     <a id="btnOpen" class="btn btn-sm btn-key-65" style="background: #288e8b !important;width: 87px;color: #fff;">Open</a>
                     <a id="btnClose" class="btn btn-sm btn-key-65" style="background: #ffa500 !important;width: 87px;color: #fff;">Close</a>
                 </li>
-              
+
                 <li class="nav-item f-ctrl" style="display:none">
                     <input id="btnServerSave" tabindex="-1" type="submit" value="Save" class="btn btn-sm btn-key-83" style="background: #288e8b !important;width: 87px;color: #fff;" />
                     <a id="btnServerBack" asp-action="List" class="btn btn-sm btn-key-65" style="background: #f3bfce !important;width: 87px;color: #fff;">Cancel</a>
@@ -79,10 +107,10 @@
                 </li>
             </ul>
         </nav>
-        <aside class="main-sidebar sidebar-dark-primary elevation-4" style="margin-top: 45px;height: 93vh;min-height:93vh">
+        <aside class="main-sidebar sidebar-dark-primary elevation-4" style="margin-top: 45px;height: calc(100vh - 45px);min-height:calc(100vh - 45px);">
 
             <!-- Sidebar -->
-            <div class="sidebar">
+            <div class="sidebar" style="height: 100%;">
                 <!-- Sidebar user panel (optional) -->
 
                 <nav class="mt-2" id="div_Menu">
@@ -104,67 +132,67 @@
                                     //var path = Convert.ToString(request.Path);
                                     //if (path == "/Home/Index" || path == "/Home" || _menuList.Any(x => x.WebURL == path))
                                     //{
-                                        foreach (var mstrMenu in _menuList.Where(x => x.FKMasterFormID == null || x.FKMasterFormID == 0).ToList())
-                                        {
+                                    foreach (var mstrMenu in _menuList.Where(x => x.FKMasterFormID == null || x.FKMasterFormID == 0).ToList())
+                                    {
 
 
-                                            <li class="nav-item">
-                                                <a href="#" class="nav-link">
-                                                    @Html.Raw(mstrMenu.Image)
-                                                    <p>
-                                                        @mstrMenu.FormName
-                                                        <i class="right fas fa-angle-left"></i>
-                                                    </p>
-                                                </a>
-                                                <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="#" class="nav-link">
+                                                @Html.Raw(mstrMenu.Image)
+                                                <p>
+                                                    @mstrMenu.FormName
+                                                    <i class="right fas fa-angle-left"></i>
+                                                </p>
+                                            </a>
+                                            <ul class="nav nav-treeview">
 
-                                                    @foreach (var menu in _menuList.Where(x => x.FKMasterFormID == mstrMenu.PKFormID).ToList())
+                                                @foreach (var menu in _menuList.Where(x => x.FKMasterFormID == mstrMenu.PKFormID).ToList())
+                                                {
+                                                    var _subMenu = _menuList.Where(x => x.FKMasterFormID == menu.PKFormID).ToList();
+                                                    if (_subMenu.Count > 0)
                                                     {
-                                                        var _subMenu = _menuList.Where(x => x.FKMasterFormID == menu.PKFormID).ToList();
-                                                        if (_subMenu.Count > 0)
-                                                        {
-                                                            <li class="nav-item">
-                                                                <a href="#" class="nav-link">
-                                                                    @Html.Raw(menu.Image)
-                                                                    <p>
-                                                                        @menu.FormName
-                                                                        <i class="right fas fa-angle-left"></i>
-                                                                    </p>
-                                                                </a>
-                                                                <ul class="nav nav-treeview" style="display: none;">
-                                                                    @foreach (var _m in _menuList.Where(x => x.FKMasterFormID == menu.PKFormID).ToList())
-                                                                    {
-                                                                        <li class="nav-item">
-                                                                            <a href="@_m.WebURL" class="nav-link">
-                                                                                @Html.Raw(_m.Image)
-                                                                                <p>
-                                                                                    @_m.FormName
-                                                                                    <i class="right fas fa-external-link-alt tablink"></i>
-                                                                                </p>
-                                                                            </a>
-                                                                        </li>
-                                                                    }
-                                                                </ul>
-                                                            </li>
-                                                        }
-                                                        else
-                                                        {
-                                                            <li class="nav-item">
-                                                                <a href="@menu.WebURL" class="nav-link">
-                                                                    @Html.Raw(menu.Image)
-                                                                    <p>
-                                                                        @menu.FormName
-                                                                        <i class="right fas fa-external-link-alt tablink"></i>
-                                                                    </p>
-                                                                </a>
-                                                            </li>
-
-                                                        }
+                                                        <li class="nav-item">
+                                                            <a href="#" class="nav-link">
+                                                                @Html.Raw(menu.Image)
+                                                                <p>
+                                                                    @menu.FormName
+                                                                    <i class="right fas fa-angle-left"></i>
+                                                                </p>
+                                                            </a>
+                                                            <ul class="nav nav-treeview" style="display: none;">
+                                                                @foreach (var _m in _menuList.Where(x => x.FKMasterFormID == menu.PKFormID).ToList())
+                                                                {
+                                                                    <li class="nav-item">
+                                                                        <a href="@_m.WebURL" class="nav-link">
+                                                                            @Html.Raw(_m.Image)
+                                                                            <p>
+                                                                                @_m.FormName
+                                                                                <i class="right fas fa-external-link-alt tablink"></i>
+                                                                            </p>
+                                                                        </a>
+                                                                    </li>
+                                                                }
+                                                            </ul>
+                                                        </li>
                                                     }
+                                                    else
+                                                    {
+                                                        <li class="nav-item">
+                                                            <a href="@menu.WebURL" class="nav-link">
+                                                                @Html.Raw(menu.Image)
+                                                                <p>
+                                                                    @menu.FormName
+                                                                    <i class="right fas fa-external-link-alt tablink"></i>
+                                                                </p>
+                                                            </a>
+                                                        </li>
 
-                                                </ul>
-                                            </li>
-                                        }
+                                                    }
+                                                }
+
+                                            </ul>
+                                        </li>
+                                    }
                                     //}
                                     //else { Context.Response.Redirect("/Auth"); }
                                 }
@@ -198,7 +226,7 @@
     <div class="content-wrapper">
         <!-- Main content -->
         <div class="content p-0 pt-1">
-            <div class="container-fluid p-0" style="background-color: #fff;min-height: calc(100vh - 67px);">
+            <div class="container-fluid" style="background-color: #fff;min-height: calc(100vh - 67px);padding-right: 8px;padding-left: 0px;">
 
                 @RenderBody()
             </div>
