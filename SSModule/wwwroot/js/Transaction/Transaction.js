@@ -1115,7 +1115,7 @@ function SaveRecord() {
                                 data: { model: tranModel },
                                 datatype: "json",
                                 success: function (res) {
-
+                                    debugger;
                                     if (res.status == "success") {
                                         alert('Save Successfully..');
                                         if (ControllerName == 'SalesInvoiceTouch') {
@@ -1125,8 +1125,11 @@ function SaveRecord() {
                                         }
 
                                     }
-                                    else
+                                    else {
                                         alert(res.msg);
+                                        tranModel = res.data;
+                                        BindGrid('DDT', tranModel.TranDetails);
+                                    }
                                 }
                             });
                         }

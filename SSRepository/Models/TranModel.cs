@@ -39,7 +39,7 @@ namespace SSRepository.Models
         public long FKLocationID { get; set; }//=bind From Js on Series Selection(Fk_BranchId)
         public string? BranchStateName { get; set; }
         //=true
-                                                   //nEw End
+        //nEw End
 
         public long FkPartyId { get; set; }
 
@@ -86,7 +86,7 @@ namespace SSRepository.Models
         public Nullable<decimal> CreditAmt { get; set; }
         public Nullable<System.DateTime> CreditDate { get; set; }
         public Nullable<long> FKPostAccID { get; set; }
-        public string? Account{ get; set; }
+        public string? Account { get; set; }
         public bool Cheque { get; set; }
         public Nullable<decimal> ChequeAmt { get; set; }
         public string? ChequeNo { get; set; }
@@ -120,12 +120,15 @@ namespace SSRepository.Models
         public int IsUploadExcelFile { get; set; } = 0;
 
         public Nullable<long> FKOrderID { get; set; }
-         public Nullable<long> FKOrderSrID { get; set; }
-        public DateTime? OrderScheduleDate { get; set; } 
+        public Nullable<long> FKOrderSrID { get; set; }
+        public DateTime? OrderScheduleDate { get; set; }
         public string? ConcernPersonName { get; set; }
         public string? ConcernPersonMobile { get; set; }
 
         public List<BarcodeUniqVM> UniqIdDetails { get; set; }
+        
+        //For Promotion / Save 
+        public bool IsTranChange { get; set; }
 
     }
 
@@ -137,12 +140,12 @@ namespace SSRepository.Models
         public bool PostInAc { get; set; }
         public long FKFormID { get; set; }
         public string LastEntryNo { get; set; }
-        public string DocumentType { get; set; } 
+        public string DocumentType { get; set; }
     }
     public class BarcodeUniqVM
     {
         public int SrNo { get; set; }
-        public string  Barcode { get; set; } 
+        public string Barcode { get; set; }
     }
 
 }

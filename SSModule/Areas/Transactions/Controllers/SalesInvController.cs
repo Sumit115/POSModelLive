@@ -10,6 +10,7 @@ using SSAdmin.Areas;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using ClosedXML.Excel;
+using iTextSharp.text.pdf;
 
 namespace SSAdmin.Areas.Transactions.Controllers
 {
@@ -111,11 +112,12 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 if (string.IsNullOrEmpty(Error))
                 {
                     res.status = "success";
-                }
+                 }
                 else
                 {
                     res.status = "warr";
                     res.msg = Error;
+                    res.data = model;
                 }
 
             }

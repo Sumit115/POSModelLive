@@ -49,12 +49,13 @@ namespace SSRepository.Repository.Transaction
             Error = ValidateData(model);
             if (Error == "")
             {
+                setVoucherDetails(model);
 
                 long Id = 0;
                 long SeriesNo = 0;
-                var aa = JsonConvert.SerializeObject(model);
-
+                //  var aa = JsonConvert.SerializeObject(model);
                 SaveData(model, ref Id, ref Error, ref SeriesNo);
+
             }
             return Error;
         }
@@ -65,12 +66,20 @@ namespace SSRepository.Repository.Transaction
             string Error = "";
             try
             {
+                if (objmodel.FkPartyId <= 0 || objmodel.FkPartyId == null) 
+                    throw new Exception("Party Detail Required");
+              
+                if (objmodel.FKSeriesId <= 0 || objmodel.FKSeriesId == null)
+                    throw new Exception("Series Required");
+
                 //
                 setDefaultBeforeSave(objmodel);
 
+                if (objmodel.ExtProperties.TranType == "S")
+                    setPromotion(objmodel);
+
                 //CalculateExe(objmodel);
-                setGridTotal(objmodel);
-                setPaymentDetail(objmodel);
+
 
                 if (objmodel.TranDetails != null)
                 {
@@ -88,14 +97,15 @@ namespace SSRepository.Repository.Transaction
                                 var _check = __dbContext.TblSalesInvoicedtl.Where(x => x.FkLotId == item.FkLotId && x.FkProductId == item.FkProductId).FirstOrDefault();
                                 if (_check != null) { throw new Exception("Product Not Update After Sale :" + item.Product); }
                             }
-                            if (objmodel.UniqIdDetails != null)
-                            {
-                                var _bQty = objmodel.UniqIdDetails.Where(x => x.SrNo == item.SrNo).ToList();
-                                if (_bQty.Count > item.Qty) { throw new Exception("Product (" + item.Product + ") Qty & Barcode Qty Not Match"); }
-                            }
+                            
                         }
                         if (item.ModeForm != 2)
                         {
+                            if (objmodel.UniqIdDetails != null)
+                            {
+                                var _bQty = objmodel.UniqIdDetails.Where(x => x.SrNo == item.SrNo).ToList();
+                                if (_bQty.Count != item.Qty) { throw new Exception("Product (" + item.Product + ") Qty & Barcode Qty Not Match"); }
+                            }
                             if (string.IsNullOrEmpty(item.Batch))
                             {
                                 throw new Exception("Size Required on Product " + item.Product);
@@ -121,17 +131,20 @@ namespace SSRepository.Repository.Transaction
                     throw new Exception("Please Enter Valid Credit Detail");
 
 
-                setVoucherDetails(objmodel);
-                if (objmodel.VoucherDetails != null)
-                {
-                    if (objmodel.VoucherDetails.ToList().Sum(x => x.CreditAmt) != objmodel.VoucherDetails.ToList().Sum(x => x.DebitAmt))
-                        throw new Exception("Please Enter Valid Amount");
-                }
+                //if (objmodel.VoucherDetails != null)
+                //{
+                //    if (objmodel.VoucherDetails.ToList().Sum(x => x.CreditAmt) != objmodel.VoucherDetails.ToList().Sum(x => x.DebitAmt))
+                //        throw new Exception("Please Enter Valid Amount");
+                //}
 
                 if (objmodel.TrnStatus.Trim() == "I" || objmodel.TrnStatus.Trim() == "C")
                     throw new Exception("Invalid Request");
 
+
                 Error = ValidData(objmodel);
+                setGridTotal(objmodel);
+                setPaymentDetail(objmodel);
+
 
             }
             catch (Exception ex) { Error = ex.Message; }
@@ -588,6 +601,8 @@ namespace SSRepository.Repository.Transaction
 
                 setGridTotal(model);
                 setPaymentDetail(model);
+                model.IsTranChange = true;
+
             }
             catch (Exception ex) { }
             return model;
@@ -625,6 +640,7 @@ namespace SSRepository.Repository.Transaction
 
             setGridTotal(model);
             setPaymentDetail(model);
+            model.IsTranChange = true;
             return model;
         }
 
@@ -799,6 +815,7 @@ namespace SSRepository.Repository.Transaction
                         setGridTotal(model);
                         setPaymentDetail(model);
                     }
+                    model.IsTranChange = true;
                 }
             }
             catch (Exception ex)
@@ -898,7 +915,7 @@ namespace SSRepository.Repository.Transaction
                     setGridTotal(model);
                     setPaymentDetail(model);
                 }
-
+                model.IsTranChange = true;
             }
             catch (Exception ex)
             {
@@ -1006,7 +1023,7 @@ namespace SSRepository.Repository.Transaction
                     else { notFound_List.Add(ProductName); }
                 }
                 model.NotFound = string.Join(",", notFound_List.ToList());
-
+                model.IsTranChange = true;
             }
             catch (Exception ex)
             {
@@ -1017,9 +1034,9 @@ namespace SSRepository.Repository.Transaction
         public void removePromotion(TransactionModel model)
         {
             model.TranDetails.Where(x => x.LinkSrNo > 0).ToList().ForEach(x => x.ModeForm = 2);
-            model.TranDetails.Where(x => x.PromotionType == "PFPT").ToList().ForEach(x => { x.PromotionType = "" });
-            model.TranDetails.Where(x => x.PromotionType == "PFQT").ToList().ForEach(x => { x.FreeQty = 0; x.PromotionType = "" });
-            // model.TranDetails.Where(x => x.PromotionType == "PFQT").ToList().ForEach(x => { x.FreeQty = 0; x.PromotionType = "" });
+            model.TranDetails.Where(x => x.PromotionType == "PFPT").ToList().ForEach(x => { x.PromotionType = ""; });
+            model.TranDetails.Where(x => x.PromotionType == "PFQT").ToList().ForEach(x => { x.FreeQty = 0; x.PromotionType = ""; });
+              model.TranDetails.Where(x => !string.IsNullOrEmpty(x.PromotionType)).ToList().ForEach(x => { x.PromotionType = ""; });
             //model.TranDetails.Where(x => !string.IsNullOrEmpty(x.PromotionType)).ToList().ForEach(x => x.PromotionType = "");
         }
         public void setPromotion(TransactionModel model)
@@ -1034,11 +1051,11 @@ namespace SSRepository.Repository.Transaction
                                         from locationLnk in _locationmpLnk.DefaultIfEmpty()
                                             //join _location in __dbContext.TblLocationMas on cou.FKLocationId equals (Int64?)_location.PkLocationID into _locationmp
                                             //from location in _locationmp.DefaultIfEmpty()
-                                        where cou.PromotionDuring == "Sales"
+                                        where cou.PromotionDuring == ((model.TranAlias == "PINV" || model.TranAlias == "PORD") ? "Purchase" : "Sales")
                                         && (cou.FkCustomerId == null || cou.FkCustomerId == model.FkPartyId)
-                                        && (cou.FKLocationId == null || cou.FKLocationId == model.FKLocationID)
+                                        && (locationLnk.FKLocationId == null || locationLnk.FKLocationId == model.FKLocationID)
                                         && ((cou.PromotionFromDt == null && cou.PromotionToDt == null) || ((cou.PromotionFromDt != null ? cou.PromotionFromDt.Value : Cdt).Date <= Cdt.Date && (cou.PromotionToDt != null ? cou.PromotionToDt.Value : Cdt).Date >= Cdt.Date))
-                                        && ((string.IsNullOrEmpty(cou.PromotionFromTime) && string.IsNullOrEmpty(cou.PromotionToTime)) || ((!string.IsNullOrEmpty(cou.PromotionFromTime) ? TimeSpan.Parse(cou.PromotionFromTime) : Cdt.TimeOfDay) <= Cdt.TimeOfDay && (!string.IsNullOrEmpty(cou.PromotionToTime) ? TimeSpan.Parse(cou.PromotionToTime) : Cdt.TimeOfDay) >= Cdt.TimeOfDay))
+                                        // && ((string.IsNullOrEmpty(cou.PromotionFromTime) && string.IsNullOrEmpty(cou.PromotionToTime)) || ((!string.IsNullOrEmpty(cou.PromotionFromTime) ? TimeSpan.Parse(cou.PromotionFromTime) : Cdt.TimeOfDay) <= Cdt.TimeOfDay && (!string.IsNullOrEmpty(cou.PromotionToTime) ? TimeSpan.Parse(cou.PromotionToTime) : Cdt.TimeOfDay) >= Cdt.TimeOfDay))
                                         orderby cou.SequenceNo ascending
                                         select new
                                         {
@@ -1062,7 +1079,7 @@ namespace SSRepository.Repository.Transaction
                         var itemPromo = _itemPromo.cou;
                         if (itemPromo.PromotionApplyOn == "Product")
                         {
-                            var _lst = model.TranDetails.Where(x => x.Qty >= itemPromo.PromotionApplyQty && x.FkProductId == itemPromo.FKProdID && x.LinkSrNo <= 0 && string.IsNullOrEmpty(x.PromotionType)).ToList();
+                            var _lst = model.TranDetails.Where(x => x.Qty >= itemPromo.PromotionApplyQty && x.FkProductId == itemPromo.FKProdID && (x.LinkSrNo <= 0 || x.LinkSrNo == null) && string.IsNullOrEmpty(x.PromotionType)).ToList();
                             if (_lst.Count > 0)
                             {
                                 foreach (var item in _lst)
@@ -1138,6 +1155,7 @@ namespace SSRepository.Repository.Transaction
                         }
                     }
                 }
+                model.IsTranChange = false;
             }
         }
 
@@ -1473,6 +1491,8 @@ namespace SSRepository.Repository.Transaction
                 model.FKPostAccID = vendor.FkAccountID;
                 model.Account = vendor.Name;
             }
+            model.IsTranChange = true;
+
             return model;
         }
 
@@ -1523,6 +1543,8 @@ namespace SSRepository.Repository.Transaction
                 model.BillingRate = obj.BillingRate;
                 model.BranchStateName = obj.BranchStateName;
             }
+            model.IsTranChange = true;
+
             return model;
         }
 
