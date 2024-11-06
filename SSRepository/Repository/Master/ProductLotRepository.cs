@@ -80,13 +80,13 @@ namespace SSRepository.Repository.Master
                         join Pbrand in __dbContext.TblBrandMas on prd.FkBrandId equals Pbrand.PkBrandId
                                               into tembrand
                         from brand in tembrand.DefaultIfEmpty()
-                        join Pstock in __dbContext.TblProdStockDtl on cou.FKProductId equals Pstock.FKProductId
-                                            into temstock
-                        from stock in temstock.DefaultIfEmpty()
-
-                        //join Pstock in __dbContext.TblProdStockDtl on new { cou.FKProductId, cou.PkLotId } equals new { Pstock.FKProductId, Pstock.FKLotID }
-                        //                 into temstock
+                        //join Pstock in __dbContext.TblProdStockDtl on cou.FKProductId equals Pstock.FKProductId
+                        //                    into temstock
                         //from stock in temstock.DefaultIfEmpty()
+
+                        join Pstock in __dbContext.TblProdStockDtl on new { cou.FKProductId, cou.PkLotId } equals new { Pstock.FKProductId, PkLotId= Pstock.FKLotID }
+                                         into temstock
+                        from stock in temstock.DefaultIfEmpty()
                         where cou.FKProductId == FkProductId
                         // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                         // orderby cou.PkLotId
