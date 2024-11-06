@@ -132,7 +132,7 @@ namespace SSRepository.Repository.Transaction
                             }
                             else
                             {
-                                if (_bQty.Count > 0) { throw new Exception("Product (" + item.Product + ")  Barcode Not Allowed"); }
+                              //  if (_bQty.Count > 0) { throw new Exception("Product (" + item.Product + ")  Barcode Not Allowed"); }
                             }
                         }
                         if (string.IsNullOrEmpty(item.Batch))

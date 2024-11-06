@@ -68,6 +68,7 @@ namespace SSRepository.Models
 
         //Other
         public string? ProductName { get; set; }
+        public decimal? CurStock { get; set; }
 
     }
 }

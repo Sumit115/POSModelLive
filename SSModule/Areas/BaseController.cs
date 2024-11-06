@@ -47,7 +47,7 @@ namespace SSAdmin.Areas
         {
             get
             {
-                return Convert.ToInt32(User.FindFirst("PkID")?.Value);
+                return Convert.ToInt32(User.FindFirst("UserId")?.Value);
             }
         }
 

@@ -14,8 +14,8 @@ namespace SSRepository.Data
          public decimal OpStock { get; set; }
         public decimal InStock { get; set; }
         public decimal OutStock { get; set; }
-        public decimal CurStock { get; set; }
-        public DateTime StockDate { get; set; }
+            public decimal CurStock { get; set; }
+            public DateTime StockDate { get; set; }
 
         //public TblProdLotDtl Fk { get; set; }
         //[ForeignKey("FKLocationID")]

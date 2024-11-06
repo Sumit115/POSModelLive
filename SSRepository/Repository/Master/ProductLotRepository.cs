@@ -80,6 +80,13 @@ namespace SSRepository.Repository.Master
                         join Pbrand in __dbContext.TblBrandMas on prd.FkBrandId equals Pbrand.PkBrandId
                                               into tembrand
                         from brand in tembrand.DefaultIfEmpty()
+                        join Pstock in __dbContext.TblProdStockDtl on cou.FKProductId equals Pstock.FKProductId
+                                            into temstock
+                        from stock in temstock.DefaultIfEmpty()
+
+                        //join Pstock in __dbContext.TblProdStockDtl on new { cou.FKProductId, cou.PkLotId } equals new { Pstock.FKProductId, Pstock.FKLotID }
+                        //                 into temstock
+                        //from stock in temstock.DefaultIfEmpty()
                         where cou.FKProductId == FkProductId
                         // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                         // orderby cou.PkLotId
@@ -114,7 +121,8 @@ namespace SSRepository.Repository.Master
                             InTrnFKSeriesID = cou.InTrnFKSeriesID,
                             InTrnsno = cou.InTrnsno,
                             Remarks = cou.Remarks,
-                            ProductName = prd.Product
+                            ProductName = prd.Product,
+                            CurStock = stock.CurStock
                         }).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
@@ -266,10 +274,10 @@ namespace SSRepository.Repository.Master
         {
             var list = new List<ColumnStructure>
             {
-                 new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Article Name", Fields="LotName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Article No", Fields="LotNo",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                 //new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Article Name", Fields="LotName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                 // new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Article No", Fields="LotNo",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Barcode", Fields="Barcode",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Alias", Fields="LotAlias",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                //  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Alias", Fields="LotAlias",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                 new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Size", Fields="Batch",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                  new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Color ", Fields="Color",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                  new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="MRP ", Fields="MRP",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="F.2" },
@@ -282,16 +290,17 @@ namespace SSRepository.Repository.Master
                  new ColumnStructure{ pk_Id=14, Orderby =14, Heading ="Remark", Fields="Remarks",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                  new ColumnStructure{ pk_Id=12, Orderby =15, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=13, Orderby =16, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=14, Orderby =17, Heading ="Cur. Stock", Fields="CurStock",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
 
             };
             return list;
         }
-        public string UpdateProdLotDtl(long PkLotId,long FKProductId, string ColumnName,decimal Value)
+        public string UpdateProdLotDtl(long PkLotId, long FKProductId, string ColumnName, decimal Value)
         {
             string error = "";
             try
             {
-                string Qry = "Update tblProdLot_dtl set "+ ColumnName + "='"+ Value + "' where PkLotId="+ PkLotId + " and FKProductId="+ FKProductId + "";
+                string Qry = "Update tblProdLot_dtl set " + ColumnName + "='" + Value + "' where PkLotId=" + PkLotId + " and FKProductId=" + FKProductId + "";
                 ExecuteQuery(Qry, ref error);
             }
             catch (Exception ex) { error = ex.Message; }
