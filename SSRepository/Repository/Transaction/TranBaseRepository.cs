@@ -54,7 +54,7 @@ namespace SSRepository.Repository.Transaction
                 long Id = 0;
                 long SeriesNo = 0;
                 //  var aa = JsonConvert.SerializeObject(model);
-                SaveData(model, ref Id, ref Error, ref SeriesNo);
+                   SaveData(model, ref Id, ref Error, ref SeriesNo);
 
             }
             return Error;
@@ -66,9 +66,9 @@ namespace SSRepository.Repository.Transaction
             string Error = "";
             try
             {
-                if (objmodel.FkPartyId <= 0 || objmodel.FkPartyId == null) 
+                if (objmodel.FkPartyId <= 0 || objmodel.FkPartyId == null)
                     throw new Exception("Party Detail Required");
-              
+
                 if (objmodel.FKSeriesId <= 0 || objmodel.FKSeriesId == null)
                     throw new Exception("Series Required");
 
@@ -83,7 +83,7 @@ namespace SSRepository.Repository.Transaction
 
                 if (objmodel.TranDetails != null)
                 {
-                    foreach (var item in objmodel.TranDetails.Where(x => x.FkProductId > 0))
+                    foreach (var item in objmodel.TranDetails.Where(x => x.FkProductId > 0 && x.ModeForm != 2))
                     {
                         //if (string.IsNullOrEmpty(item.Color))
                         //{
@@ -97,21 +97,49 @@ namespace SSRepository.Repository.Transaction
                                 var _check = __dbContext.TblSalesInvoicedtl.Where(x => x.FkLotId == item.FkLotId && x.FkProductId == item.FkProductId).FirstOrDefault();
                                 if (_check != null) { throw new Exception("Product Not Update After Sale :" + item.Product); }
                             }
-                            
-                        }
-                        if (item.ModeForm != 2)
-                        {
-                            if (objmodel.UniqIdDetails != null)
+                            if (item.CodingScheme == "fixed")
                             {
-                                var _bQty = objmodel.UniqIdDetails.Where(x => x.SrNo == item.SrNo).ToList();
+                                if (objmodel.UniqIdDetails != null)
+                                {
+                                    var _bQty = objmodel.UniqIdDetails.Where(x => x.SrNo == item.SrNo).ToList();
+                                    if (_bQty.Count > 0) { throw new Exception("Product (" + item.Product + ")  Barcode Not Allowed"); }
+                                }
+                            }
+                            else if (item.CodingScheme == "Lot")
+                            {
+                                if (objmodel.UniqIdDetails != null)
+                                {
+                                    var _bQty = objmodel.UniqIdDetails.Where(x => x.SrNo == item.SrNo).ToList();
+                                    if (_bQty.Count > 1) { throw new Exception("Only 1 Barcode Required Product (" + item.Product + ") "); }
+                                }
+                            }
+                            else
+                            {
+                                if (objmodel.UniqIdDetails != null)
+                                {
+                                    var _bQty = objmodel.UniqIdDetails.Where(x => x.SrNo == item.SrNo).ToList();
+                                    if (_bQty.Count > item.Qty) { throw new Exception("Product (" + item.Product + ") Qty & Barcode Qty Not Match"); }
+                                }
+                            }
+                        }
+
+                        if (objmodel.UniqIdDetails != null && objmodel.ExtProperties.TranType == "S")
+                        {
+                            var _bQty = objmodel.UniqIdDetails.Where(x => x.SrNo == item.SrNo).ToList();
+                            if (item.CodingScheme == "Unique")
+                            {
                                 if (_bQty.Count != item.Qty) { throw new Exception("Product (" + item.Product + ") Qty & Barcode Qty Not Match"); }
                             }
-                            if (string.IsNullOrEmpty(item.Batch))
+                            else
                             {
-                                throw new Exception("Size Required on Product " + item.Product);
+                                if (_bQty.Count > 0) { throw new Exception("Product (" + item.Product + ")  Barcode Not Allowed"); }
                             }
-                            CalculateExe(item);
                         }
+                        if (string.IsNullOrEmpty(item.Batch))
+                        {
+                            throw new Exception("Size Required on Product " + item.Product);
+                        }
+                        CalculateExe(item);
                     }
 
                 }
@@ -178,7 +206,6 @@ namespace SSRepository.Repository.Transaction
             BANK_ACCOUNTS = 10,
             ROUND_OFF_AC = 11,
             Walking_Customer = 12,
-            m
         }
         public void setDefaultBeforeSave(TransactionModel model)
         {
@@ -666,6 +693,7 @@ namespace SSRepository.Repository.Transaction
                     detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
                     detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
                     detail.Product = dtProduct.Rows[0]["Product"].ToString();
+                    detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
                     detail.Qty = 1;
                     detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
                     detail.FKLocationID = model.FKLocationID;
@@ -729,8 +757,6 @@ namespace SSRepository.Repository.Transaction
                         //check
                         var detail = new TranDetails();
                         detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                        detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
-                        detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
                         detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
 
                         var _old = model.TranDetails.ToList().Where(x => x.FkProductId == detail.FkProductId && x.FkLotId == detail.FkLotId && x.ModeForm != 2).FirstOrDefault();
@@ -749,6 +775,7 @@ namespace SSRepository.Repository.Transaction
                             detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
                             detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
                             detail.Product = dtProduct.Rows[0]["Product"].ToString();
+                            detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
                             detail.Qty = 1;
                             detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
                             detail.FKLocationID = model.FKLocationID;
@@ -840,8 +867,6 @@ namespace SSRepository.Repository.Transaction
                     //check
                     var detail = new TranDetails();
                     detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                    detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
-                    detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
                     detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
 
                     var _old = model.TranDetails.ToList().Where(x => x.FkProductId == detail.FkProductId && x.FkLotId == detail.FkLotId && x.ModeForm != 2).FirstOrDefault();
@@ -859,6 +884,7 @@ namespace SSRepository.Repository.Transaction
                         detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
                         detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
                         detail.Product = dtProduct.Rows[0]["Product"].ToString();
+                        detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
                         detail.Qty = 1;
                         detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
                         detail.FKLocationID = model.FKLocationID;
@@ -945,8 +971,6 @@ namespace SSRepository.Repository.Transaction
                         //check
                         var detail = new TranDetails();
                         detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                        detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
-                        detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
                         detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
 
                         var _old = model.TranDetails.ToList().Where(x => x.FkProductId == detail.FkProductId && x.FkLotId == detail.FkLotId && x.ModeForm != 2 && x.Batch == Size).FirstOrDefault();
@@ -962,7 +986,10 @@ namespace SSRepository.Repository.Transaction
 
                             detail.Barcode = "";
                             detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+                            detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
+                            detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
                             detail.Product = dtProduct.Rows[0]["Product"].ToString();
+                            detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
                             detail.Qty = Qty;
                             detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
                             detail.FKLocationID = model.FKLocationID;
@@ -1036,7 +1063,7 @@ namespace SSRepository.Repository.Transaction
             model.TranDetails.Where(x => x.LinkSrNo > 0).ToList().ForEach(x => x.ModeForm = 2);
             model.TranDetails.Where(x => x.PromotionType == "PFPT").ToList().ForEach(x => { x.PromotionType = ""; });
             model.TranDetails.Where(x => x.PromotionType == "PFQT").ToList().ForEach(x => { x.FreeQty = 0; x.PromotionType = ""; });
-              model.TranDetails.Where(x => !string.IsNullOrEmpty(x.PromotionType)).ToList().ForEach(x => { x.PromotionType = ""; });
+            model.TranDetails.Where(x => !string.IsNullOrEmpty(x.PromotionType)).ToList().ForEach(x => { x.PromotionType = ""; });
             //model.TranDetails.Where(x => !string.IsNullOrEmpty(x.PromotionType)).ToList().ForEach(x => x.PromotionType = "");
         }
         public void setPromotion(TransactionModel model)
@@ -1098,6 +1125,7 @@ namespace SSRepository.Repository.Transaction
                                             _detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
                                             _detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
                                             _detail.Product = dtProduct.Rows[0]["Product"].ToString();
+                                            _detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
                                             _detail.Qty = qty;
                                             _detail.FreeQty = 0;
                                             _detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 

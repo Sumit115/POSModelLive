@@ -234,71 +234,71 @@ function BindGrid(GridId, data) {
                 var LinkSrNo = args.item["LinkSrNo"];
                 if (Handler.isNullOrEmpty(LinkSrNo) || LinkSrNo <= 0) {
 
-                if (field != "InvoiceDate" && field != "FKInvoiceID_Text" && field != "Product" && Common.isNullOrEmpty(args.item["Product"])) {
-                    alert("Select Product Frist");
-                    cg_ClearRow(args)
-                    cg.outGrid.gotoCell(args.row, DrpIndex["Product"], true);
-                }
-                else if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
-                    if (tranModel.FkPartyId > 0) {
-                        if (field == "Product") {
-                            var InvoiceDate = args.item["InvoiceDate"];
-                            var FKInvoiceID = args.item["FKInvoiceID"];
-                            Common.ajax(Handler.currentPath() + "InvoiceProductList?FkPartyId=" + tranModel.FkPartyId + "&FKInvoiceID=" + FKInvoiceID + "&InvoiceDate=" + InvoiceDate + "", {}, "Please Wait...", function (res) {
-                                Handler.hide();
-                                ProductList = res;
-                                $("#hdProductList").val(JSON.stringify(res));
-                                cg.setOptionArray(DrpIndex["ProductName_Text"], res, "ProductName", false, "Product", "InvoiceSrNo", "1");
+                    if (field != "InvoiceDate" && field != "FKInvoiceID_Text" && field != "Product" && Common.isNullOrEmpty(args.item["Product"])) {
+                        alert("Select Product Frist");
+                        cg_ClearRow(args)
+                        cg.outGrid.gotoCell(args.row, DrpIndex["Product"], true);
+                    }
+                    else if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
+                        if (tranModel.FkPartyId > 0) {
+                            if (field == "Product") {
+                                var InvoiceDate = args.item["InvoiceDate"];
+                                var FKInvoiceID = args.item["FKInvoiceID"];
+                                Common.ajax(Handler.currentPath() + "InvoiceProductList?FkPartyId=" + tranModel.FkPartyId + "&FKInvoiceID=" + FKInvoiceID + "&InvoiceDate=" + InvoiceDate + "", {}, "Please Wait...", function (res) {
+                                    Handler.hide();
+                                    ProductList = res;
+                                    $("#hdProductList").val(JSON.stringify(res));
+                                    cg.setOptionArray(DrpIndex["ProductName_Text"], res, "ProductName", false, "Product", "InvoiceSrNo", "1");
 
-                            });
+                                });
+                            }
+                            else if (field == "FKInvoiceID_Text") {
+                                var InvoiceDate = args.item["InvoiceDate"];
+                                Common.ajax(Handler.currentPath() + "InvoiceList?FkPartyId=" + tranModel.FkPartyId + "&InvoiceDate=" + InvoiceDate + "", {}, "Please Wait...", function (res) {
+                                    Handler.hide();
+                                    $("#hdInvoiceList").val(JSON.stringify(res));
+                                    cg.setOptionArray(DrpIndex["FKInvoiceID_Text"], res, "FKInvoiceID", false, "Inum", "FKInvoiceID", "1");
+
+                                });
+                            }
                         }
-                        else if (field == "FKInvoiceID_Text") {
-                            var InvoiceDate = args.item["InvoiceDate"];
-                            Common.ajax(Handler.currentPath() + "InvoiceList?FkPartyId=" + tranModel.FkPartyId + "&InvoiceDate=" + InvoiceDate + "", {}, "Please Wait...", function (res) {
-                                Handler.hide();
-                                $("#hdInvoiceList").val(JSON.stringify(res));
-                                cg.setOptionArray(DrpIndex["FKInvoiceID_Text"], res, "FKInvoiceID", false, "Inum", "FKInvoiceID", "1");
-
-                            });
+                        else {
+                            alert("Select Party Frist");
+                            cg_ClearRow(args)
                         }
                     }
                     else {
-                        alert("Select Party Frist");
-                        cg_ClearRow(args)
-                    }
-                }
-                else {
-                    if (field == "Batch" || field == "Color" || field == "MRP") {
+                        if (field == "Batch" || field == "Color" || field == "MRP") {
 
-                        if (tranModel.ExtProperties.StockFlag == "I" || TranAlias == "SORD") {
-                            if (args.item["ModeForm"] != "1") { args.item["FkLotId"] = 0; }
-                            var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
-                            //var Batch = args.item["Batch"];
-                            //var Color = args.item["Color"];
-                            if (field == "Batch") {
-                                Common.ajax(Handler.currentPath() + "CategorySizeListByProduct?FkProductId=" + FkProductId + "", {}, "Please Wait...", function (res) {
-                                    Handler.hide();
-                                    cg.setOptionArray(DrpIndex["Batch"], res, "Batch", false, "Size", "Size", "1");
-                                });
-                            }
-                            if (field == "Color") {
-                                var data = { name: field, pageNo: 1, pageSize: 1000, search: '', RowParam: FkProductId, ExtraParam: TranAlias };
-
-                                $.ajax({
-                                    url: Handler.currentPath() + 'trandtldropList', data: data, async: false, dataType: 'JSON', success: function (res) {
+                            if (tranModel.ExtProperties.StockFlag == "I" || TranAlias == "SORD") {
+                                if (args.item["ModeForm"] != "1") { args.item["FkLotId"] = 0; }
+                                var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
+                                //var Batch = args.item["Batch"];
+                                //var Color = args.item["Color"];
+                                if (field == "Batch") {
+                                    Common.ajax(Handler.currentPath() + "CategorySizeListByProduct?FkProductId=" + FkProductId + "", {}, "Please Wait...", function (res) {
                                         Handler.hide();
-                                        cg.setOptionArray(DrpIndex["Color"], res, "Color", false, "Color", "Color", "1");
-                                    }, error: function (request, status, error) {
-                                    }
-                                });
-                                //Common.ajax(Handler.currentPath() + "ProductLotDtlList?FkProductId=" + FkProductId + "&Batch=" + Batch + "&Color=" + Color + "", {}, "Please Wait...", function (res) {
-                                //    Handler.hide();
-                                //    cg.setOptionArray(DrpIndex["Color"], res, "Color", false, "Color", "Color", "1");
-                                //});
-                            }
+                                        cg.setOptionArray(DrpIndex["Batch"], res, "Batch", false, "Size", "Size", "1");
+                                    });
+                                }
+                                if (field == "Color") {
+                                    var data = { name: field, pageNo: 1, pageSize: 1000, search: '', RowParam: FkProductId, ExtraParam: TranAlias };
 
+                                    $.ajax({
+                                        url: Handler.currentPath() + 'trandtldropList', data: data, async: false, dataType: 'JSON', success: function (res) {
+                                            Handler.hide();
+                                            cg.setOptionArray(DrpIndex["Color"], res, "Color", false, "Color", "Color", "1");
+                                        }, error: function (request, status, error) {
+                                        }
+                                    });
+                                    //Common.ajax(Handler.currentPath() + "ProductLotDtlList?FkProductId=" + FkProductId + "&Batch=" + Batch + "&Color=" + Color + "", {}, "Please Wait...", function (res) {
+                                    //    Handler.hide();
+                                    //    cg.setOptionArray(DrpIndex["Color"], res, "Color", false, "Color", "Color", "1");
+                                    //});
+                                }
+
+                            }
                         }
-                    }
                     }
                 } else { alert('Promotion Artical Not Update'); args.grid.gotoCell(args.row, '', true); console.clear(); }
             }
@@ -443,7 +443,9 @@ function BindGrid(GridId, data) {
                     }
                     else {
                         if (FkProductId > 0 && FkLotId > 0) {
-                            BarcodePopupUniqId_CheckboxList(args, args.row);
+                            var CodingScheme = args.grid.getDataItem(args.row)["CodingScheme"];
+                            if (CodingScheme == 'Unique')
+                                BarcodePopupUniqId_CheckboxList(args, args.row);
                         }
                         else
                             alert('select Size');
@@ -579,46 +581,48 @@ var cgGridUniqIdTextbox = null;
 function BarcodePopupUniqId_ListWith_Textbox(args, rowIndex) {
 
     tranModel.TranDetails = GetDataFromGrid();
+    var CodingScheme = args.grid.getDataItem(args.row)["CodingScheme"];
     var SrNo = args.grid.getDataItem(args.row)["SrNo"];
+    if (CodingScheme != 'fixed') {
+        if (tranModel.TranDetails.length > 0) {
+            $(".loader").show();
+            var filteredDetails = tranModel.UniqIdDetails.filter(x => x.SrNo == SrNo);
 
-    if (tranModel.TranDetails.length > 0) {
-        $(".loader").show();
-        var filteredDetails = tranModel.UniqIdDetails.filter(x => x.SrNo == SrNo);
+            var htm = '';
+            htm += '<div class="mb-4 card">';
+            htm += '   <div class="card-body"> ';
+            htm += '       <div class="row mb-3"> ';
+            htm += '           <div class="col-md-6"> ';
+            htm += '               <div class="card-title">Add Barcode</div> ';
+            htm += '           </div>';
+            htm += '           <div class="col-md-6 text-center"> ';
+            // htm += '               <input type="button" id="btnSelectBarcode" value="Done" class="btn btn-success" />';
+            htm += '           </div> ';
+            htm += '       </div> ';
+            htm += '       <div class="row mb-3"> ';
+            htm += '           <div class="col-md-8"> ';
+            htm += '               <input type="text" id="txtBarcode" value="" class="form-control" />';
+            htm += '           </div>';
+            htm += '           <div class="col-md-4"> ';
+            htm += '               <input type="button" id="btnAddNewBarcode" value="Add" class="btn btn-success w-100" />';
+            htm += '           </div> ';
+            htm += '       </div> ';
+            htm += '       <div class="row">';
+            htm += '           <div class="col-md-12" id="WUCFilterUniqIdTextbox"> ';
+            htm += '           </div>';
+            htm += '           <div class="col-md-12 text-center"> ';
+            htm += '               <input type="hidden" id="txtCodingScheme" value="' + CodingScheme + '" />';
+            htm += '               <input type="button" id="btnSelectBarcode" value="Done" class="btn btn-success" />';
+            htm += '           </div> ';
 
-        var htm = '';
-        htm += '<div class="mb-4 card">';
-        htm += '   <div class="card-body"> ';
-        htm += '       <div class="row mb-3"> ';
-        htm += '           <div class="col-md-6"> ';
-        htm += '               <div class="card-title">Add Barcode</div> ';
-        htm += '           </div>';
-        htm += '           <div class="col-md-6 text-center"> ';
-        // htm += '               <input type="button" id="btnSelectBarcode" value="Done" class="btn btn-success" />';
-        htm += '           </div> ';
-        htm += '       </div> ';
-        htm += '       <div class="row mb-3"> ';
-        htm += '           <div class="col-md-8"> ';
-        htm += '               <input type="text" id="txtBarcode" value="" class="form-control" />';
-        htm += '           </div>';
-        htm += '           <div class="col-md-4"> ';
-        htm += '               <input type="button" id="btnAddNewBarcode" value="Add" class="btn btn-success w-100" />';
-        htm += '           </div> ';
-        htm += '       </div> ';
-        htm += '       <div class="row">';
-        htm += '           <div class="col-md-12" id="WUCFilterUniqIdTextbox"> ';
-        htm += '           </div>';
-        htm += '           <div class="col-md-12 text-center"> ';
-        htm += '               <input type="button" id="btnSelectBarcode" value="Done" class="btn btn-success" />';
-        htm += '           </div> ';
+            htm += '          </div>  ';
+            htm += '   </div>';
+            htm += '   </div>';
 
-        htm += '          </div>  ';
-        htm += '   </div>';
-        htm += '   </div>';
-
-        Handler.popUp(htm, { width: "400px", height: "500px" }, function () { });
-        Bind_cgGridUniqIdTextbox(args, rowIndex, filteredDetails)
-        $(".loader").hide();
-
+            Handler.popUp(htm, { width: "400px", height: "500px" }, function () { });
+            Bind_cgGridUniqIdTextbox(args, rowIndex, filteredDetails)
+            $(".loader").hide();
+        }
     }
 }
 function Bind_cgGridUniqIdTextbox(args, rowIndex, _d) {
@@ -655,18 +659,21 @@ function Bind_cgGridUniqIdTextbox(args, rowIndex, _d) {
 
     $("#btnAddNewBarcode").off("click").on("click", function () {
         var barcode = $("#txtBarcode").val();
-
+        var CodingScheme = $("#txtCodingScheme").val();
+        let SrNo = tranModel.TranDetails[rowIndex].SrNo;
         var _List = cgGridUniqIdTextbox.getData().filter(function (el) { return !Handler.isNullOrEmpty(el.Barcode) })
 
         if (!Handler.isNullOrEmpty(barcode)) {
-            if (_List.filter(function (el) { return el.Barcode == barcode }).length == 0) {
-                let SrNo = tranModel.TranDetails[rowIndex].SrNo;
-                _List.push({ "Barcode": barcode, SrNo: SrNo });
-                Bind_cgGridUniqIdTextbox(args, rowIndex, _List);
-                $("#txtBarcode").val('');
-            }
-            else
-                alert('Barcode Already exists');
+            if ((_List.filter(function (el) { return el.SrNo == SrNo }).length == 0 && CodingScheme == 'Lot') || CodingScheme == 'Unique') {
+                if (_List.filter(function (el) { return el.Barcode == barcode }).length == 0) {
+                    _List.push({ "Barcode": barcode, SrNo: SrNo });
+                    Bind_cgGridUniqIdTextbox(args, rowIndex, _List);
+                    $("#txtBarcode").val('');
+                }
+                else
+                    alert('Barcode Already exists');
+            } else
+                alert('Only 1 barcode Required');
         }
         else
             alert('Please Enter Barcode');
@@ -762,6 +769,7 @@ function cg_ClearRow(args) {
     args.item["FKInvoiceSrID"] = 0;
     args.item["InvoiceDate"] = "";
     args.item["Barcode"] = "";
+    args.item["CodingScheme"] = "";
     cg.updateRefreshDataRow(args.row);
 }
 function BarcodeScan(barcode) {
@@ -866,34 +874,34 @@ function ColumnChange(args, rowIndex, fieldName) {
     tranModel.TranDetails = GetDataFromGrid();
     debugger;
     if (tranModel.TranDetails.length > 0) {
-       // if (Handler.isNullOrEmpty(tranModel.TranDetails[rowIndex].LinkSrNo) || tranModel.TranDetails[rowIndex].LinkSrNo <= 0 || fieldName == 'Delete') {
-            $(".loader").show();
-            $.ajax({
-                type: "POST",
-                url: Handler.currentPath() + 'ColumnChange',
-                data: { model: tranModel, rowIndex: rowIndex, fieldName: fieldName },
-                datatype: "json",
-                success: function (res) {
+        // if (Handler.isNullOrEmpty(tranModel.TranDetails[rowIndex].LinkSrNo) || tranModel.TranDetails[rowIndex].LinkSrNo <= 0 || fieldName == 'Delete') {
+        $(".loader").show();
+        $.ajax({
+            type: "POST",
+            url: Handler.currentPath() + 'ColumnChange',
+            data: { model: tranModel, rowIndex: rowIndex, fieldName: fieldName },
+            datatype: "json",
+            success: function (res) {
 
-                    if (res.status == "success") {
-                        tranModel = res.data;
-                        setFooterData(tranModel);
-                        setPaymentDetail(tranModel);
-                        //if (Handler.isNullOrEmpty(tranModel.TranDetails[rowIndex].PromotionType)) {
-                            setGridRowData(args, tranModel.TranDetails, rowIndex, fieldName);
-                        //} else {
-                        //BindGrid('DDT', tranModel.TranDetails);
-                        //args.grid.gotoCell(args.row, args.cell + 1, true)
-                            
-                       // }
-                    }
-                    else
-                        alert(res.msg);
+                if (res.status == "success") {
+                    tranModel = res.data;
+                    setFooterData(tranModel);
+                    setPaymentDetail(tranModel);
+                    //if (Handler.isNullOrEmpty(tranModel.TranDetails[rowIndex].PromotionType)) {
+                    setGridRowData(args, tranModel.TranDetails, rowIndex, fieldName);
+                    //} else {
+                    //BindGrid('DDT', tranModel.TranDetails);
+                    //args.grid.gotoCell(args.row, args.cell + 1, true)
 
-                    $(".loader").hide();
+                    // }
                 }
-            });
-       // } else { alert('Promotion Artical Not Update'); BindGrid('DDT', tranModel.TranDetails); }
+                else
+                    alert(res.msg);
+
+                $(".loader").hide();
+            }
+        });
+        // } else { alert('Promotion Artical Not Update'); BindGrid('DDT', tranModel.TranDetails); }
     }
 }
 
@@ -1032,9 +1040,23 @@ function setGridRowData(args, data, rowIndex, fieldName) {
         args.item["FKInvoiceSrID"] = data[rowIndex].FKInvoiceSrID;
         args.item["FKLocationID"] = data[rowIndex].FKLocationID;
         args.item["ReturnTypeID"] = data[rowIndex].ReturnTypeID;
-        args.item["Barcode"] = "Barcode";//data[rowIndex].Barcode;
+        // args.item["Barcode"] = "Barcode";//data[rowIndex].Barcode;
         args.item["Delete"] = 'Delete';
 
+        var CodingScheme = data[rowIndex].CodingScheme;
+        args.item["CodingScheme"] = CodingScheme;
+        if (tranModel.ExtProperties.TranType == "P") {
+            if (CodingScheme == 'fixed')
+                args.item["Barcode"] = "";
+            else
+                args.item["Barcode"] = "Barcode";
+        }
+        else if (tranModel.ExtProperties.TranType == "S") {
+            if (CodingScheme == 'Unique')
+                args.item["Barcode"] = "Barcode";
+            else
+                args.item["Barcode"] = "";
+        }
     }
     cg.updateRefreshDataRow(args.row);
     cg.updateAndRefreshTotal();
@@ -1081,7 +1103,7 @@ function GetAndCheckBarcodeQty(_d) {
     var _NotFound = []
     _d.filter(function (element) {
         var _srnoList = tranModel.UniqIdDetails.filter((u) => { return u.SrNo == element.SrNo });
-        if (_srnoList.length != element.Qty && element.ModeForm != 2)
+        if (_srnoList.length != element.Qty && element.ModeForm != 2 && element.CodingScheme =='Unique')
             _NotFound.push(element.Product);
     });
     return _NotFound

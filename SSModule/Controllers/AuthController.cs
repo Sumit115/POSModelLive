@@ -33,13 +33,13 @@ namespace SSAdmin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            
+
             SignInModel model = new SignInModel();
 #if DEBUG
             model.UserID = "Aburoad@gmail.com";
             model.Password = "Admin";
 #endif
-            return View(model); 
+            return View(model);
         }
 
         [HttpPost]
@@ -88,7 +88,7 @@ namespace SSAdmin.Controllers
         [HttpGet]
         public IActionResult Error()
         {
-            
+
             return View();
         }
 
