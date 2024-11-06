@@ -130,10 +130,7 @@ namespace SSRepository.Repository.Transaction
                             {
                                 if (_bQty.Count != item.Qty) { throw new Exception("Product (" + item.Product + ") Qty & Barcode Qty Not Match"); }
                             }
-                            else
-                            {
-                                if (_bQty.Count > 0) { throw new Exception("Product (" + item.Product + ")  Barcode Not Allowed"); }
-                            }
+                            
                         }
                         if (string.IsNullOrEmpty(item.Batch))
                         {
