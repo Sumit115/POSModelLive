@@ -54,7 +54,7 @@ namespace SSRepository.Repository.Transaction
                 long Id = 0;
                 long SeriesNo = 0;
                 //  var aa = JsonConvert.SerializeObject(model);
-                   SaveData(model, ref Id, ref Error, ref SeriesNo);
+                SaveData(model, ref Id, ref Error, ref SeriesNo);
 
             }
             return Error;
@@ -129,7 +129,7 @@ namespace SSRepository.Repository.Transaction
                             if (item.CodingScheme == "Unique")
                             {
                                 if (_bQty.Count != item.Qty) { throw new Exception("Product (" + item.Product + ") Qty & Barcode Qty Not Match"); }
-                            } 
+                            }
                         }
                         if (string.IsNullOrEmpty(item.Batch))
                         {
@@ -1057,8 +1057,9 @@ namespace SSRepository.Repository.Transaction
         public void removePromotion(TransactionModel model)
         {
             model.TranDetails.Where(x => x.LinkSrNo > 0).ToList().ForEach(x => x.ModeForm = 2);
-            model.TranDetails.Where(x => x.PromotionType == "PFPT").ToList().ForEach(x => { x.PromotionType = ""; });
-            model.TranDetails.Where(x => x.PromotionType == "PFQT").ToList().ForEach(x => { x.FreeQty = 0; x.PromotionType = ""; });
+            model.TranDetails.Where(x => x.PromotionType == "PFPT" || x.PromotionType == "CFPT" || x.PromotionType == "BFPT").ToList().ForEach(x => { x.PromotionType = ""; });
+            model.TranDetails.Where(x => x.PromotionType == "PFQT" || x.PromotionType == "CFQT" || x.PromotionType == "BFQT").ToList().ForEach(x => { x.FreeQty = 0; x.PromotionType = ""; });
+            model.TranDetails.Where(x => x.PromotionType == "PTDT" || x.PromotionType == "CTDT" || x.PromotionType == "BTDT").ToList().ForEach(x => { x.TradeDisc = 0; x.TradeDiscAmt = 0; x.PromotionType = ""; });
             model.TranDetails.Where(x => !string.IsNullOrEmpty(x.PromotionType)).ToList().ForEach(x => { x.PromotionType = ""; });
             //model.TranDetails.Where(x => !string.IsNullOrEmpty(x.PromotionType)).ToList().ForEach(x => x.PromotionType = "");
         }
@@ -1100,9 +1101,21 @@ namespace SSRepository.Repository.Transaction
                     foreach (var _itemPromo in _entityPromotion)
                     {
                         var itemPromo = _itemPromo.cou;
-                        if (itemPromo.PromotionApplyOn == "Product")
+                        if (itemPromo.PromotionApplyOn == "Product" || itemPromo.PromotionApplyOn == "Category" || itemPromo.PromotionApplyOn == "Brand")
                         {
-                            var _lst = model.TranDetails.Where(x => x.Qty >= itemPromo.PromotionApplyQty && x.FkProductId == itemPromo.FKProdID && (x.LinkSrNo <= 0 || x.LinkSrNo == null) && string.IsNullOrEmpty(x.PromotionType)).ToList();
+                            var _lst = new List<TranDetails>();
+                            if (itemPromo.PromotionApplyOn == "Product")
+                            {
+                                _lst = model.TranDetails.Where(x => x.Qty >= itemPromo.PromotionApplyQty && x.FkProductId == itemPromo.FKProdID && (x.LinkSrNo <= 0 || x.LinkSrNo == null) && string.IsNullOrEmpty(x.PromotionType)).ToList();
+                            }
+                            else if (itemPromo.PromotionApplyOn == "Category")
+                            {
+                                _lst = model.TranDetails.Where(x => x.Qty >= itemPromo.PromotionApplyQty && x.FKProdCatgId == itemPromo.FkProdCatgId && (x.LinkSrNo <= 0 || x.LinkSrNo == null) && string.IsNullOrEmpty(x.PromotionType)).ToList();
+                            }
+                            else if (itemPromo.PromotionApplyOn == "Brand")
+                            {
+                                _lst = model.TranDetails.Where(x => x.Qty >= itemPromo.PromotionApplyQty && x.FkBrandId == itemPromo.FkBrandId && (x.LinkSrNo <= 0 || x.LinkSrNo == null) && string.IsNullOrEmpty(x.PromotionType)).ToList();
+                            }
                             if (_lst.Count > 0)
                             {
                                 foreach (var item in _lst)
@@ -1122,8 +1135,8 @@ namespace SSRepository.Repository.Transaction
                                             _detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
                                             _detail.Product = dtProduct.Rows[0]["Product"].ToString();
                                             _detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
-                                            _detail.Qty = qty;
-                                            _detail.FreeQty = 0;
+                                            _detail.Qty = 0;
+                                            _detail.FreeQty = qty;
                                             _detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
                                             _detail.FKLocationID = model.FKLocationID;
                                             _detail.ReturnTypeID = 2;
@@ -1153,7 +1166,10 @@ namespace SSRepository.Repository.Transaction
                                             _detail.Barcode = "Barcode";
                                             model.TranDetails.Add(_detail);
                                             CalculateExe(_detail);
-                                            item.PromotionType = "PFPT";
+                                            if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PFPT"; }
+                                            else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CFPT"; }
+                                            else if (itemPromo.PromotionApplyOn == "Brand") { item.PromotionType = "BFPT"; }
+                                            
 
                                             //break;
                                         }
@@ -1162,21 +1178,27 @@ namespace SSRepository.Repository.Transaction
                                     {
                                         decimal qty = Decimal.Truncate(item.Qty / (decimal)itemPromo.PromotionApplyQty) * (decimal)itemPromo.PromotionQty;
                                         item.FreeQty = (decimal)itemPromo.PromotionQty;
-                                        item.PromotionType = "PFQT";
+                                         if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PFQT"; }
+                                        else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CFQT"; }
+                                        else if (itemPromo.PromotionApplyOn == "Brand") { item.PromotionType = "BFQT"; }
+
                                         //  CalculateExe(item);
+                                    }
+                                    else if (itemPromo.Promotion == "Free Point" && itemPromo.PromotionAmt > 0)
+                                    {
+                                        item.TradeDisc = (decimal)itemPromo.PromotionAmt;
+                                        item.TradeDiscAmt = 0;
+                                        CalculateExe(item); 
+                                        if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PTDT"; }
+                                        else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CTDT"; }
+                                        else if (itemPromo.PromotionApplyOn == "Brand") { item.PromotionType = "BTDT"; }
+
                                     }
                                 }
                             }
 
                         }
-                        else if (itemPromo.PromotionApplyOn == "Category")
-                        {
 
-                        }
-                        else if (itemPromo.PromotionApplyOn == "Brand")
-                        {
-
-                        }
                     }
                 }
                 model.IsTranChange = false;
