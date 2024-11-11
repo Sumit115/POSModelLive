@@ -54,8 +54,8 @@ namespace SSRepository.Repository.Transaction
                 long Id = 0;
                 long SeriesNo = 0;
                 //  var aa = JsonConvert.SerializeObject(model);
-                SaveData(model, ref Id, ref Error, ref SeriesNo);
-
+                // SaveData(model, ref Id, ref Error, ref SeriesNo);
+                Error = "p";
             }
             return Error;
         }
@@ -1059,7 +1059,7 @@ namespace SSRepository.Repository.Transaction
             model.TranDetails.Where(x => x.LinkSrNo > 0).ToList().ForEach(x => x.ModeForm = 2);
             model.TranDetails.Where(x => x.PromotionType == "PFPT" || x.PromotionType == "CFPT" || x.PromotionType == "BFPT").ToList().ForEach(x => { x.PromotionType = ""; });
             model.TranDetails.Where(x => x.PromotionType == "PFQT" || x.PromotionType == "CFQT" || x.PromotionType == "BFQT").ToList().ForEach(x => { x.FreeQty = 0; x.PromotionType = ""; });
-            model.TranDetails.Where(x => x.PromotionType == "PTDT" || x.PromotionType == "CTDT" || x.PromotionType == "BTDT").ToList().ForEach(x => { x.TradeDisc = 0; x.TradeDiscAmt = 0; x.PromotionType = ""; });
+            model.TranDetails.Where(x => x.PromotionType == "PTDT" || x.PromotionType == "CTDT" || x.PromotionType == "BTDT" || x.PromotionType == "XOXT").ToList().ForEach(x => { x.TradeDisc = 0; x.TradeDiscAmt = 0; x.PromotionType = ""; });
             model.TranDetails.Where(x => !string.IsNullOrEmpty(x.PromotionType)).ToList().ForEach(x => { x.PromotionType = ""; });
             //model.TranDetails.Where(x => !string.IsNullOrEmpty(x.PromotionType)).ToList().ForEach(x => x.PromotionType = "");
         }
@@ -1093,18 +1093,15 @@ namespace SSRepository.Repository.Transaction
                 //).ToList().Where(x => ((string.IsNullOrEmpty(x.PromotionFromTime) && string.IsNullOrEmpty(x.PromotionToTime)) || ((!string.IsNullOrEmpty(x.PromotionFromTime) ? TimeSpan.Parse(x.PromotionFromTime) : Cdt.TimeOfDay) <= Cdt.TimeOfDay && (!string.IsNullOrEmpty(x.PromotionToTime) ? TimeSpan.Parse(x.PromotionToTime) : Cdt.TimeOfDay) >= Cdt.TimeOfDay))
                 //).OrderBy(x=>x.SequenceNo).ToList();
 
-
-
-
                 if (_entityPromotion.Count > 0)
                 {
                     foreach (var _itemPromo in _entityPromotion)
                     {
                         var itemPromo = _itemPromo.cou;
-                        if (itemPromo.PromotionApplyOn == "Product" || itemPromo.PromotionApplyOn == "Category" || itemPromo.PromotionApplyOn == "Brand")
+                        if (itemPromo.PromotionApplyOn == "XonX" || itemPromo.PromotionApplyOn == "Product" || itemPromo.PromotionApplyOn == "Category" || itemPromo.PromotionApplyOn == "Brand")
                         {
                             var _lst = new List<TranDetails>();
-                            if (itemPromo.PromotionApplyOn == "Product")
+                            if (itemPromo.PromotionApplyOn == "Product" || itemPromo.PromotionApplyOn == "XonX")
                             {
                                 _lst = model.TranDetails.Where(x => x.Qty >= itemPromo.PromotionApplyQty && x.FkProductId == itemPromo.FKProdID && (x.LinkSrNo <= 0 || x.LinkSrNo == null) && string.IsNullOrEmpty(x.PromotionType)).ToList();
                             }
@@ -1120,79 +1117,99 @@ namespace SSRepository.Repository.Transaction
                             {
                                 foreach (var item in _lst)
                                 {
-                                    if (itemPromo.Promotion == "Free Product" && itemPromo.FkPromotionProdId > 0 && itemPromo.PromotionQty > 0)
+                                    if (itemPromo.PromotionApplyOn == "XonX" && itemPromo.PromotionQty > 0)
                                     {
-                                        decimal qty = Decimal.Truncate(item.Qty / (decimal)itemPromo.PromotionApplyQty) * (decimal)itemPromo.PromotionQty;
-                                        string BillingRate = !string.IsNullOrEmpty(model.BillingRate) ? model.BillingRate : (model.TranAlias == "PORD" || model.TranAlias == "PINV") ? "PurchaseRate" : "SaleRate";
-
-                                        DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail("", (long)itemPromo.FkPromotionProdId, 0, "", model.FKOrderID, model.FKOrderSrID);
-                                        if (dtProduct.Rows.Count > 0)
+                                        var _lstForApplyPromo = (from cou in model.TranDetails
+                                                                 join locationLnk in __dbContext.TblPromotionLnk on cou.FKProdCatgId equals (Int64?)locationLnk.FkLinkId //into _locationmpLnk
+                                                                 where locationLnk.FkPromotionId == itemPromo.PkPromotionId && cou.Qty>0
+                                                              && (cou.LinkSrNo <= 0 || cou.LinkSrNo == null) && string.IsNullOrEmpty(cou.PromotionType)
+                                                                 select new
+                                                                 {
+                                                                     cou,
+                                                                 }).ToList();
+                                        var disc = 100 / (decimal)itemPromo.PromotionQty;
+                                        foreach (var _ap in _lstForApplyPromo)
                                         {
-                                            var _detail = new TranDetails();
-                                            _detail.SrNo = model.TranDetails.ToList().Where(x => x.FkProductId > 0 && x.Qty > 0).ToList().Max(x => x.SrNo) + 1;
-                                            _detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                                            _detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
-                                            _detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
-                                            _detail.Product = dtProduct.Rows[0]["Product"].ToString();
-                                            _detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
-                                            _detail.Qty = 0;
-                                            _detail.FreeQty = qty;
-                                            _detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
-                                            _detail.FKLocationID = model.FKLocationID;
-                                            _detail.ReturnTypeID = 2;
-                                            _detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
-                                            _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
-
-                                            if (BillingRate == "MRP") { _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString()); }
-                                            if (BillingRate == "SaleRate") { _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString()); }
-                                            if (BillingRate == "TradeRate") { _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString()); }
-                                            if (BillingRate == "DistributionRate") { _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString()); }
-                                            if (BillingRate == "PurchaseRate") { _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["PurchaseRate"].ToString()); }
-
-                                            _detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
-                                            _detail.Color = dtProduct.Rows[0]["Color"].ToString();
-                                            _detail.Batch = dtProduct.Rows[0]["Batch"].ToString();
-                                            _detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
-                                            _detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
-                                            _detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
-
-                                            _detail.GstRate = (_detail.SaleRate < 1000 ? 5 : 18);
-                                            _detail.Rate = Math.Round(Convert.ToDecimal(_detail.SaleRate) * (100 / (100 + _detail.GstRate)), 2);
-
-
-                                            _detail.TradeRate = _detail.DistributionRate = _detail.SaleRate;
-                                            _detail.LinkSrNo = item.SrNo;
-                                            //item.PromotionType =   itemPromo.Promotion == "Free Product" ? "PFPT" : "PFQT";
-                                            _detail.Barcode = "Barcode";
-                                            model.TranDetails.Add(_detail);
-                                            CalculateExe(_detail);
-                                            if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PFPT"; }
-                                            else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CFPT"; }
-                                            else if (itemPromo.PromotionApplyOn == "Brand") { item.PromotionType = "BFPT"; }
-                                            
-
-                                            //break;
+                                            _ap.cou.TradeDisc = disc;
+                                            _ap.cou.TradeDiscAmt = 0;
+                                            CalculateExe((TranDetails)_ap.cou);
                                         }
                                     }
-                                    else if (itemPromo.Promotion == "Free Qty" && itemPromo.PromotionQty > 0)
+                                    else
                                     {
-                                        decimal qty = Decimal.Truncate(item.Qty / (decimal)itemPromo.PromotionApplyQty) * (decimal)itemPromo.PromotionQty;
-                                        item.FreeQty = (decimal)itemPromo.PromotionQty;
-                                         if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PFQT"; }
-                                        else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CFQT"; }
-                                        else if (itemPromo.PromotionApplyOn == "Brand") { item.PromotionType = "BFQT"; }
+                                        if (itemPromo.Promotion == "Free Product" && itemPromo.FkPromotionProdId > 0 && itemPromo.PromotionQty > 0)
+                                        {
+                                            decimal qty = Decimal.Truncate(item.Qty / (decimal)itemPromo.PromotionApplyQty) * (decimal)itemPromo.PromotionQty;
+                                            string BillingRate = !string.IsNullOrEmpty(model.BillingRate) ? model.BillingRate : (model.TranAlias == "PORD" || model.TranAlias == "PINV") ? "PurchaseRate" : "SaleRate";
 
-                                        //  CalculateExe(item);
-                                    }
-                                    else if (itemPromo.Promotion == "Free Point" && itemPromo.PromotionAmt > 0)
-                                    {
-                                        item.TradeDisc = (decimal)itemPromo.PromotionAmt;
-                                        item.TradeDiscAmt = 0;
-                                        CalculateExe(item); 
-                                        if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PTDT"; }
-                                        else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CTDT"; }
-                                        else if (itemPromo.PromotionApplyOn == "Brand") { item.PromotionType = "BTDT"; }
+                                            DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail("", (long)itemPromo.FkPromotionProdId, 0, "", model.FKOrderID, model.FKOrderSrID);
+                                            if (dtProduct.Rows.Count > 0)
+                                            {
+                                                var _detail = new TranDetails();
+                                                _detail.SrNo = model.TranDetails.ToList().Where(x => x.FkProductId > 0 && x.Qty > 0).ToList().Max(x => x.SrNo) + 1;
+                                                _detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+                                                _detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
+                                                _detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
+                                                _detail.Product = dtProduct.Rows[0]["Product"].ToString();
+                                                _detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
+                                                _detail.Qty = 0;
+                                                _detail.FreeQty = qty;
+                                                _detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
+                                                _detail.FKLocationID = model.FKLocationID;
+                                                _detail.ReturnTypeID = 2;
+                                                _detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
+                                                _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
 
+                                                if (BillingRate == "MRP") { _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString()); }
+                                                if (BillingRate == "SaleRate") { _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString()); }
+                                                if (BillingRate == "TradeRate") { _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString()); }
+                                                if (BillingRate == "DistributionRate") { _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString()); }
+                                                if (BillingRate == "PurchaseRate") { _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["PurchaseRate"].ToString()); }
+
+                                                _detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
+                                                _detail.Color = dtProduct.Rows[0]["Color"].ToString();
+                                                _detail.Batch = dtProduct.Rows[0]["Batch"].ToString();
+                                                _detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
+                                                _detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
+                                                _detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
+
+                                                _detail.GstRate = (_detail.SaleRate < 1000 ? 5 : 18);
+                                                _detail.Rate = Math.Round(Convert.ToDecimal(_detail.SaleRate) * (100 / (100 + _detail.GstRate)), 2);
+
+
+                                                _detail.TradeRate = _detail.DistributionRate = _detail.SaleRate;
+                                                _detail.LinkSrNo = item.SrNo;
+                                                //item.PromotionType =   itemPromo.Promotion == "Free Product" ? "PFPT" : "PFQT";
+                                                _detail.Barcode = "Barcode";
+                                                model.TranDetails.Add(_detail);
+                                                CalculateExe(_detail);
+                                                if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PFPT"; }
+                                                else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CFPT"; }
+                                                else if (itemPromo.PromotionApplyOn == "Brand") { item.PromotionType = "BFPT"; }
+
+                                                //break;
+                                            }
+                                        }
+                                        else if (itemPromo.Promotion == "Free Qty" && itemPromo.PromotionQty > 0)
+                                        {
+                                            decimal qty = Decimal.Truncate(item.Qty / (decimal)itemPromo.PromotionApplyQty) * (decimal)itemPromo.PromotionQty;
+                                            item.FreeQty = (decimal)itemPromo.PromotionQty;
+                                            if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PFQT"; }
+                                            else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CFQT"; }
+                                            else if (itemPromo.PromotionApplyOn == "Brand") { item.PromotionType = "BFQT"; }
+
+                                            //  CalculateExe(item);
+                                        }
+                                        else if (itemPromo.Promotion == "Trade Discount" && itemPromo.PromotionAmt > 0)
+                                        {
+                                            item.TradeDisc = (decimal)itemPromo.PromotionAmt;
+                                            item.TradeDiscAmt = 0;
+                                            CalculateExe(item);
+                                            if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PTDT"; }
+                                            else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CTDT"; }
+                                            else if (itemPromo.PromotionApplyOn == "Brand") { item.PromotionType = "BTDT"; }
+
+                                        }
                                     }
                                 }
                             }
