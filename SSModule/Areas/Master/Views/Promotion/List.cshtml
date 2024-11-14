@@ -6,7 +6,9 @@
     <input style="display:none" id="PromotionDuring" name="PromotionDuring" type="text" value="@ViewBag.PromotionDuring" />
 </div>
 <partial name="~/Views/Shared/partial/_Grid.cshtml" />;
-
+<ul id="contextMenu" style="display:none;position:absolute">
+    <li id="contextDelete" data="Delete">Delete</li>
+</ul>
 @section Scripts {
     <script src="~/js/master/browser.js"></script>
     <script>

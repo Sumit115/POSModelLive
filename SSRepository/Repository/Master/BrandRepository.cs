@@ -70,14 +70,14 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpBrand(int pageno, int pagesize, string search = "")
+        public object GetDrpBrand(int pageSize, int pageNo = 1, string search = "")
         {
             if (search != null) search = search.ToLower();
             if (search == null) search = "";
 
-            var result = GetList(pagesize, pageno, search);
+            var result = GetList(pageSize, pageNo, search);
 
-            result.Insert(0, new BrandModel { PkBrandId = 0, BrandName = "Select" });
+         //   result.Insert(0, new BrandModel { PkBrandId = 0, BrandName = "Select" });
 
             return (from r in result
                     select new

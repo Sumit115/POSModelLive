@@ -53,6 +53,23 @@ namespace SSRepository.Repository.Master
                                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
+        public object GetDrpCategory(int pageSize, int pageNo = 1, string search = "")
+        {
+            if (search != null) search = search.ToLower();
+            if (search == null) search = "";
+
+            var result = GetList(pageSize, pageNo, search);
+
+         //   result.Insert(0, new CategoryModel { PkCategoryId = 0, CategoryName = "Select" });
+
+            return (from r in result
+                    select new
+                    {
+                        r.PkCategoryId,
+                        r.Category,
+                        r.GroupName,
+                    }).ToList(); ;
+        }
 
         public CategoryModel GetSingleRecord(long PkCategoryId)
         {

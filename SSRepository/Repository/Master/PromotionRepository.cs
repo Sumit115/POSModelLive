@@ -139,16 +139,6 @@ namespace SSRepository.Repository.Master
                         LocationName = location.Location,
                         PromotionProductName = freePrd.Product,
                         SequenceNo = cou.SequenceNo,
-                        PromotionLnk_lst = (from ad in __dbContext.TblPromotionLnk
-                                            join cat in __dbContext.TblCategoryMas on ad.FkLinkId equals cat.PkCategoryId
-                                            where (ad.FkPromotionId == cou.PkPromotionId)
-                                            select (new PromotionLnkModel
-                                            {
-                                                PkId = ad.PkId,
-                                                FkLinkId = ad.FkLinkId,
-                                                FkPromotionId = ad.FkPromotionId,
-                                                CategoryName = cat.CategoryName,
-                                            })).ToList(),
                         PromotionLocation_lst = (from ad in __dbContext.TblPromotionLocationLnk
                                                  join loc in __dbContext.TblLocationMas on ad.FKLocationId equals loc.PkLocationID
                                                  where (ad.FkPromotionId == cou.PkPromotionId)
@@ -160,6 +150,49 @@ namespace SSRepository.Repository.Master
                                                      LocationName = loc.Location,
                                                  })).ToList(),
                     })).FirstOrDefault();
+
+            if (data != null)
+            {
+                if (data.PromotionApplyOn == "Category" || data.PromotionApplyOn == "XonX")
+                {
+                    data.PromotionLnk_lst = (from ad in __dbContext.TblPromotionLnk
+                                             join cat in __dbContext.TblCategoryMas on ad.FkLinkId equals cat.PkCategoryId
+                                             where (ad.FkPromotionId == data.PkPromotionId)
+                                             select (new PromotionLnkModel
+                                             {
+                                                 PkId = ad.PkId,
+                                                 FkLinkId = ad.FkLinkId,
+                                                 FkPromotionId = ad.FkPromotionId,
+                                                 LinkName = cat.CategoryName,
+                                             })).ToList();
+                }
+                else if (data.PromotionApplyOn == "Product")
+                {
+                    data.PromotionLnk_lst = (from ad in __dbContext.TblPromotionLnk
+                                             join cat in __dbContext.TblProductMas on ad.FkLinkId equals cat.PkProductId
+                                             where (ad.FkPromotionId == data.PkPromotionId)
+                                             select (new PromotionLnkModel
+                                             {
+                                                 PkId = ad.PkId,
+                                                 FkLinkId = ad.FkLinkId,
+                                                 FkPromotionId = ad.FkPromotionId,
+                                                 LinkName = cat.Product,
+                                             })).ToList();
+                }
+                else if (data.PromotionApplyOn == "Brand")
+                {
+                    data.PromotionLnk_lst = (from ad in __dbContext.TblPromotionLnk
+                                             join cat in __dbContext.TblBrandMas on ad.FkLinkId equals cat.PkBrandId
+                                             where (ad.FkPromotionId == data.PkPromotionId)
+                                             select (new PromotionLnkModel
+                                             {
+                                                 PkId = ad.PkId,
+                                                 FkLinkId = ad.FkLinkId,
+                                                 FkPromotionId = ad.FkPromotionId,
+                                                 LinkName = cat.BrandName,
+                                             })).ToList();
+                }
+            }
             return data;
         }
 
@@ -295,14 +328,15 @@ namespace SSRepository.Repository.Master
                     {
                         var res1 = (from x in __dbContext.TblPromotionLocationLnk
                                     where x.FkPromotionId == locObj.FkPromotionId && x.FKLocationId == locObj.FKLocationId
-                                    && x.PkId == locObj.PkId
+                                     && x.PkId == locObj.PkId
                                     select x).Count();
                         if (res1 > 0)
                         {
                             lstDel.Add(locObj);
                         }
                     }
-
+////////////////////////
+                   
                 }
 
                 if (lstDel.Count() > 0)
@@ -322,9 +356,7 @@ namespace SSRepository.Repository.Master
                     TblPromotionLnk locObj = new TblPromotionLnk();
                     locObj.FkLinkId = item.FkLinkId;
                     locObj.FkPromotionId = Tbl.PkPromotionId;
-                    locObj.PkId = item.PkId;
-
-
+                    locObj.PkId = item.PkId; 
                     //   lstAdd.Add(locObj);
                     if (item.Mode == 1)
                     {
@@ -345,14 +377,13 @@ namespace SSRepository.Repository.Master
                     {
                         var res1 = (from x in __dbContext.TblPromotionLnk
                                     where x.FkPromotionId == locObj.FkPromotionId && x.FkLinkId == locObj.FkLinkId
-                                    && x.PkId == locObj.PkId
+                                     && x.PkId == locObj.PkId
                                     select x).Count();
                         if (res1 > 0)
                         {
                             lstDel.Add(locObj);
                         }
-                    }
-
+                    } 
                 }
 
                 if (lstDel.Count() > 0)
@@ -369,13 +400,15 @@ namespace SSRepository.Repository.Master
         {
             var list = new List<ColumnStructure>
             {
-                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Name", Fields="PromotionName",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="From Date", Fields="PromotionFromDt_str",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="To Date", Fields="PromotionToDt_str",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="From Time", Fields="PromotionFromTime_str",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="To Time", Fields="PromotionToTime_str",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Apply On", Fields="PromotionApplyOn",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Promotion", Fields="Promotion",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=1, Orderby =0, Heading ="SequenceNo", Fields="SequenceNo",Width=5,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=2, Orderby =1, Heading ="Name", Fields="PromotionName",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=3, Orderby =2, Heading ="From Date", Fields="PromotionFromDt_str",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=4, Orderby =3, Heading ="To Date", Fields="PromotionToDt_str",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=5, Orderby =4, Heading ="From Time", Fields="PromotionFromTime_str",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=6, Orderby =5, Heading ="To Time", Fields="PromotionToTime_str",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=7, Orderby =6, Heading ="Apply On", Fields="PromotionApplyOn",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=8, Orderby =7, Heading ="Promotion", Fields="Promotion",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                //  new ColumnStructure{ pk_Id=50,Orderby =50,Heading ="Del",       Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" }
 
 
             };
@@ -392,4 +425,4 @@ namespace SSRepository.Repository.Master
 
 
     }
-} 
+}

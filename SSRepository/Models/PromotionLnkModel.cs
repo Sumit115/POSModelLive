@@ -15,7 +15,7 @@ namespace SSRepository.Models
         public long FkLinkId { get; set; }
 
         public string? PromotionName { get; set; }
-        public string? CategoryName { get; set; }
+        public string? LinkName { get; set; }
 
         public int Mode { get; set; }
 

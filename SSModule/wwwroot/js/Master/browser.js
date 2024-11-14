@@ -41,7 +41,7 @@ function View() {
     });
 };
 function bindGrid(GridId, data, IdProperty) {
-
+   
     Common.Grid(parseInt(FormId), GridName, function (s) {
         var cg = new coGrid("#" + GridId);
         UDI = cg;
@@ -114,7 +114,7 @@ function bindGrid(GridId, data, IdProperty) {
             else if (command == "Delete") {
                 $.ajax({
                     type: "POST",
-                    url: 'DeleteRecord',
+                    url: Handler.currentPath() + 'DeleteRecord',
                     data: { PKID: pk_Id },
                     datatype: "json",
                     success: function (res) {

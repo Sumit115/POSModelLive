@@ -213,7 +213,7 @@ namespace SSRepository.Repository.Master
             if (search == null) search = "";
 
             var result = GetList(pageSize, pageNo, search);
-            result.Insert(0, new ProductModel { PkProductId = 0, Product = "Select" });
+           // result.Insert(0, new ProductModel { PkProductId = 0, Product = "Select" });
 
 
             return (from r in result

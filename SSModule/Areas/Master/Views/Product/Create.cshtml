@@ -29,6 +29,7 @@
                         <div class="form-group">
                             <label class="control-label">Brand <span asp-validation-for="FkBrandId" class="text-danger"></span></label>
                             <select asp-for="FkBrandId" asp-items="@(new SelectList(ViewBag.BrandList,"PkBrandId","BrandName"))" class="form-control" id="BrandId">
+                                <option>Select</option>
                             </select>
 
                         </div>

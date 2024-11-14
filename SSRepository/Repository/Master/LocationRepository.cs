@@ -71,15 +71,15 @@ namespace SSRepository.Repository.Master
                     {
                         Loc.PkLocationID,
                         Loc.Location,
-                        Loc.Alias,
-                        Loc.Address,
-                        Loc.FkStationID,
-                        Loc.Pincode,
-                        Loc.Phone1,
-                        Loc.Phone2,
-                        Loc.Fax,
-                        Loc.Email,
-                        Loc.Website,
+                        //Loc.Alias,
+                        //Loc.Address,
+                        //Loc.FkStationID,
+                        //Loc.Pincode,
+                        //Loc.Phone1,
+                        //Loc.Phone2,
+                        //Loc.Fax,
+                        //Loc.Email,
+                        //Loc.Website,
                     }
                    )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
 

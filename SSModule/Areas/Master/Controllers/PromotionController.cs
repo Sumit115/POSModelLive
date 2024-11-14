@@ -211,35 +211,33 @@ namespace SSAdmin.Areas.Master.Controllers
         }
         [HttpPost]
         public object FkLocationId(int pageSize, int pageNo = 1, string search = "")
-        {
+       {
+
             return _repositoryLocation.GetDrpLocation(pageSize, pageNo, search);
         }
-        [HttpPost]
-        public object FKProdID(int pageSize, int pageNo = 1, string search = "")
-        {
-            return _repositoryProduct.GetList(pageSize, pageNo, search);
-        }
-
+     
         [HttpPost]
         public object FkPromotionProdId(int pageSize, int pageNo = 1, string search = "")
         {
-            return _repositoryProduct.GetList(pageSize, pageNo, search);
+            return _repositoryProduct.GetDrpProduct(pageSize, pageNo, search);
         }
         [HttpPost]
-        public object FkProdCatgId(int pageSize, int pageNo = 1, string search = "")
+        public object FkCategoryId(int pageSize, int pageNo = 1, string search = "")
         {
-            return _repositoryCategory.GetList(pageSize, pageNo, search);
+            return _repositoryCategory.GetDrpCategory(pageSize, pageNo, search);
         }
         [HttpPost]
         public object FkBrandId(int pageSize, int pageNo = 1, string search = "")
         {
-            return _repositoryBrand.GetList(pageSize, pageNo, search);
+            return _repositoryBrand.GetDrpBrand(pageSize, pageNo, search);
         }
+     
         [HttpPost]
-        public object FkLinkId(int pageSize, int pageNo = 1, string search = "")
+        public object FkProductId(int pageSize, int pageNo = 1, string search = "")
         {
-            return _repositoryCategory.GetList(pageSize, pageNo, search);
+            return _repositoryProduct.GetDrpProduct(pageSize, pageNo, search);
         }
+
 
     }
 }

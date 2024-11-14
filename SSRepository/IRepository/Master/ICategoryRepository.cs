@@ -11,6 +11,7 @@ namespace SSRepository.IRepository.Master
         string isAlreadyExist(CategoryModel tblBankMas, string Mode);
         List<CategoryModel> GetList(int pageSize, int pageNo = 1, string search = "", long CategoryGroupId = 0);
         CategoryModel GetSingleRecord(long PkID);
+        object GetDrpCategory(int pageSize, int pageNo = 1, string search = "");
 
         string DeleteRecord(long PKID);
     }
