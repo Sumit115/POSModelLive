@@ -129,6 +129,7 @@ namespace SSRepository.Models
         
         //For Promotion / Save 
         public bool IsTranChange { get; set; }
+        public decimal FreePoint { get; set; }
 
     }
 

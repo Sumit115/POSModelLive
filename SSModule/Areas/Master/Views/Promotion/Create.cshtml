@@ -275,7 +275,7 @@
                                                             <input id="PromotionLnk_lst_@(i)__Mode" name="PromotionLnk_lst[@i].Mode" type="hidden" value="1">
                                                             <input id="PromotionLnk_lst_@(i)__PkId" name="PromotionLnk_lst[@i].PkId" type="hidden" value="@Model.PromotionLnk_lst[i].PkId">
                                                             <input id="PromotionLnk_lst_@(i)__FkLinkId" name="PromotionLnk_lst[@i].FkLinkId" type="hidden" value="@Model.PromotionLnk_lst[i].FkLinkId">
-                                                            <span class="action-icon" onclick="UpdateCategory(this,@i,'del')">
+                                                            <span class="action-icon" onclick="UpdatePromotionLnk(this,@i,'del')">
                                                                 <i class="fa fa-trash"></i>
                                                             </span>
                                                         </td>
@@ -363,6 +363,9 @@
                 $("#drpFKProductId,#drpFKCategoryId,#drpFkBrandId,#drpFkPromotionProdId").val('');
                 $("#FkPromotionApplyUnitId,FkPromotionUnitId").val('1')
                 $("#Promotion option[value*='Free Point']").prop('disabled', true);
+                $("#Promotion option[value*='Free Qty'],#Promotion option[value*='Trade Discount']").prop('disabled', false);
+                $("#Promotion").val('Free Product');
+
                 //$("#Promotion").val('Free Product');
                 // $("#tblPromotionLnk tbody").hide('');
                 $('#tblPromotionLnk tbody').html('');
@@ -392,6 +395,7 @@
                 $("#divheadingApplyOn").text(""); 
                 $("#PromotionApplyAmt").removeAttr("readonly");
                 $("#Promotion option[value*='Free Point']").prop('disabled', false);
+                $("#Promotion option[value*='Free Qty'],#Promotion option[value*='Trade Discount']").prop('disabled', true);
 
                 if (_promotion == "Free Product" || _promotion == "Free Qty") {
                     $("#drpFkPromotionProdId,#PromotionQty").removeAttr("readonly");

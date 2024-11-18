@@ -54,15 +54,14 @@ namespace SSRepository.Repository.Transaction
                 long Id = 0;
                 long SeriesNo = 0;
                 //  var aa = JsonConvert.SerializeObject(model);
-                  SaveData(model, ref Id, ref Error, ref SeriesNo);
-                //Error = "p";
+               // SaveData(model, ref Id, ref Error, ref SeriesNo);
+                Error = "p";
             }
             return Error;
         }
 
         public string ValidateData(TransactionModel objmodel)
-        {
-
+        { 
             string Error = "";
             try
             {
@@ -168,7 +167,9 @@ namespace SSRepository.Repository.Transaction
                 Error = ValidData(objmodel);
                 setGridTotal(objmodel);
                 setPaymentDetail(objmodel);
-
+                //set Promotion Invoice Value
+                if (objmodel.ExtProperties.TranType == "S")
+                    setPromotion_InvoiceValue(objmodel);
 
             }
             catch (Exception ex) { Error = ex.Message; }
@@ -186,7 +187,7 @@ namespace SSRepository.Repository.Transaction
             catch (Exception ex) { Error = ex.Message; }
             return Error;
         }
-         
+
         public enum AccountId
         {
             PURCHASE_TAXABLE_GOODS = 1,
@@ -1055,7 +1056,7 @@ namespace SSRepository.Repository.Transaction
         }
         public void removePromotion(TransactionModel model)
         {
-            model.TranDetails.Where(x => x.LinkSrNo > 0).ToList().ForEach(x => x.ModeForm = 2);
+            model.TranDetails.Where(x => x.LinkSrNo > 0 || x.PromotionType == "IVFP").ToList().ForEach(x => x.ModeForm = 2);
             model.TranDetails.Where(x => x.PromotionType == "PFPT" || x.PromotionType == "CFPT" || x.PromotionType == "BFPT").ToList().ForEach(x => { x.PromotionType = ""; });
             model.TranDetails.Where(x => x.PromotionType == "PFQT" || x.PromotionType == "CFQT" || x.PromotionType == "BFQT").ToList().ForEach(x => { x.FreeQty = 0; x.PromotionType = ""; });
             model.TranDetails.Where(x => x.PromotionType == "PTDT" || x.PromotionType == "CTDT" || x.PromotionType == "BTDT" || x.PromotionType == "XOXT").ToList().ForEach(x => { x.TradeDisc = 0; x.TradeDiscAmt = 0; x.PromotionType = ""; });
@@ -1079,6 +1080,7 @@ namespace SSRepository.Repository.Transaction
                                         && (locationLnk.FKLocationId == null || locationLnk.FKLocationId == model.FKLocationID)
                                         && ((cou.PromotionFromDt == null && cou.PromotionToDt == null) || ((cou.PromotionFromDt != null ? cou.PromotionFromDt.Value : Cdt).Date <= Cdt.Date && (cou.PromotionToDt != null ? cou.PromotionToDt.Value : Cdt).Date >= Cdt.Date))
                                         // && ((string.IsNullOrEmpty(cou.PromotionFromTime) && string.IsNullOrEmpty(cou.PromotionToTime)) || ((!string.IsNullOrEmpty(cou.PromotionFromTime) ? TimeSpan.Parse(cou.PromotionFromTime) : Cdt.TimeOfDay) <= Cdt.TimeOfDay && (!string.IsNullOrEmpty(cou.PromotionToTime) ? TimeSpan.Parse(cou.PromotionToTime) : Cdt.TimeOfDay) >= Cdt.TimeOfDay))
+                                       && cou.PromotionApplyOn != "Invoice Value"
                                         orderby cou.SequenceNo ascending
                                         select new
                                         {
@@ -1249,6 +1251,110 @@ namespace SSRepository.Repository.Transaction
                             }
 
                         }
+
+                    }
+                }
+                model.IsTranChange = false;
+            }
+        }
+        public void setPromotion_InvoiceValue(TransactionModel model)
+        {
+            if (model.TranDetails != null)
+            {
+                DateTime Cdt = DateTime.Now;
+
+                var _entityPromotion = (from cou in __dbContext.TblPromotionMas
+                                        join _locationLnk in __dbContext.TblPromotionLocationLnk on cou.PkPromotionId equals (Int64?)_locationLnk.FkPromotionId into _locationmpLnk
+                                        from locationLnk in _locationmpLnk.DefaultIfEmpty()
+                                            //join _location in __dbContext.TblLocationMas on cou.FKLocationId equals (Int64?)_location.PkLocationID into _locationmp
+                                            //from location in _locationmp.DefaultIfEmpty()
+                                        where cou.PromotionDuring == ((model.TranAlias == "PINV" || model.TranAlias == "PORD") ? "Purchase" : "Sales")
+                                        && (cou.FkCustomerId == null || cou.FkCustomerId == model.FkPartyId)
+                                        && (locationLnk.FKLocationId == null || locationLnk.FKLocationId == model.FKLocationID)
+                                        && ((cou.PromotionFromDt == null && cou.PromotionToDt == null) || ((cou.PromotionFromDt != null ? cou.PromotionFromDt.Value : Cdt).Date <= Cdt.Date && (cou.PromotionToDt != null ? cou.PromotionToDt.Value : Cdt).Date >= Cdt.Date))
+                                        // && ((string.IsNullOrEmpty(cou.PromotionFromTime) && string.IsNullOrEmpty(cou.PromotionToTime)) || ((!string.IsNullOrEmpty(cou.PromotionFromTime) ? TimeSpan.Parse(cou.PromotionFromTime) : Cdt.TimeOfDay) <= Cdt.TimeOfDay && (!string.IsNullOrEmpty(cou.PromotionToTime) ? TimeSpan.Parse(cou.PromotionToTime) : Cdt.TimeOfDay) >= Cdt.TimeOfDay))
+                                       && cou.PromotionApplyOn == "Invoice Value" && cou.PromotionAmt <= model.NetAmt
+                                        orderby cou.SequenceNo ascending
+                                        select new
+                                        {
+                                            cou,
+                                        }).FirstOrDefault();
+
+                //var _entityPromotion = __dbContext.TblPromotionMas.Where(x => x.PromotionDuring == "Sales"
+                //&& (x.FkCustomerId == null || x.FkCustomerId == model.FkPartyId)
+                //&& (x.FKLocationId == null || x.FKLocationId == model.FKLocationID)
+                //&& ((x.PromotionFromDt == null && x.PromotionToDt == null) || ((x.PromotionFromDt != null ? x.PromotionFromDt.Value : Cdt).Date <= Cdt.Date && (x.PromotionToDt != null ? x.PromotionToDt.Value : Cdt).Date >= Cdt.Date))
+                //).ToList().Where(x => ((string.IsNullOrEmpty(x.PromotionFromTime) && string.IsNullOrEmpty(x.PromotionToTime)) || ((!string.IsNullOrEmpty(x.PromotionFromTime) ? TimeSpan.Parse(x.PromotionFromTime) : Cdt.TimeOfDay) <= Cdt.TimeOfDay && (!string.IsNullOrEmpty(x.PromotionToTime) ? TimeSpan.Parse(x.PromotionToTime) : Cdt.TimeOfDay) >= Cdt.TimeOfDay))
+                //).OrderBy(x=>x.SequenceNo).ToList();
+
+                if (_entityPromotion != null)
+                {
+                    var itemPromo = _entityPromotion.cou;
+                    if (itemPromo != null)
+                    {
+                        int l = (int)Decimal.Truncate(Convert.ToDecimal(model.NetAmt) / (decimal)itemPromo.PromotionApplyAmt);
+
+                        // var itemPromo = _itemPromo.cou;
+                        // if (itemPromo.PromotionApplyOn == "Product" || itemPromo.PromotionApplyOn == "Category" || itemPromo.PromotionApplyOn == "Brand")
+                        // {
+                        if (l>0 && (itemPromo.Promotion == "Free Product") && itemPromo.FkPromotionProdId > 0 && itemPromo.PromotionQty > 0)
+                        { 
+                            string BillingRate = !string.IsNullOrEmpty(model.BillingRate) ? model.BillingRate : (model.TranAlias == "PORD" || model.TranAlias == "PINV") ? "PurchaseRate" : "SaleRate";
+                            decimal qty = (decimal)itemPromo.PromotionQty * l;
+
+                            DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail("", (long)itemPromo.FkPromotionProdId, 0, "", model.FKOrderID, model.FKOrderSrID);
+                            if (dtProduct.Rows.Count > 0)
+                            {
+                                var _detail = new TranDetails();
+                                _detail.SrNo = model.TranDetails.ToList().Where(x => x.FkProductId > 0 && x.Qty > 0).ToList().Max(x => x.SrNo) + 1;
+                                _detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+                                _detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
+                                _detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
+                                _detail.Product = dtProduct.Rows[0]["Product"].ToString();
+                                _detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
+                                _detail.Qty = 0;
+                                _detail.FreeQty = qty;
+                                _detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
+                                _detail.FKLocationID = model.FKLocationID;
+                                _detail.ReturnTypeID = 2;
+                                _detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
+                                _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
+
+                                if (BillingRate == "MRP") { _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString()); }
+                                if (BillingRate == "SaleRate") { _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString()); }
+                                if (BillingRate == "TradeRate") { _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString()); }
+                                if (BillingRate == "DistributionRate") { _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString()); }
+                                if (BillingRate == "PurchaseRate") { _detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["PurchaseRate"].ToString()); }
+
+                                _detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
+                                _detail.Color = dtProduct.Rows[0]["Color"].ToString();
+                                _detail.Batch = dtProduct.Rows[0]["Batch"].ToString();
+                                _detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
+                                _detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
+                                _detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
+
+                                _detail.GstRate = (_detail.SaleRate < 1000 ? 5 : 18);
+                                _detail.Rate = Math.Round(Convert.ToDecimal(_detail.SaleRate) * (100 / (100 + _detail.GstRate)), 2);
+
+
+                                _detail.TradeRate = _detail.DistributionRate = _detail.SaleRate;
+                                _detail.LinkSrNo = 0;
+                                //item.PromotionType =   itemPromo.Promotion == "Free Product" ? "PFPT" : "PFQT";
+                                _detail.Barcode = "Barcode";
+                                _detail.PromotionType = "IVFP";
+                                model.TranDetails.Add(_detail);
+                                CalculateExe(_detail);
+
+                                //break;
+                            }
+                        }
+                        else if (itemPromo.Promotion == "Free Point" && itemPromo.PromotionAmt > 0  )
+                        {
+                            model.FreePoint = (decimal)itemPromo.PromotionAmt * l;
+                        }
+
+                        // }
+
 
                     }
                 }
