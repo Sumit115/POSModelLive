@@ -18,6 +18,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Reflection.Metadata;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -545,6 +546,7 @@ namespace SSRepository.Repository.Transaction
             CalculateExe_For_Update(data);
             return data;
         }
+
         public void CalculateExe_For_Update(TransactionModel model)
         {
             foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
@@ -562,73 +564,81 @@ namespace SSRepository.Repository.Transaction
         {
             try
             {
-                if (fieldName == "Product")
-                {
-                    if (model.TranDetails[rowIndex].FkId == 0)
-                    {
-                        setProductinfo(model, model.TranDetails[rowIndex]);
-                        //  setPromotion(model, model.TranDetails[rowIndex]);
-                        CalculateExe(model.TranDetails[rowIndex]);
-                    }
-                }
-                else if (fieldName == "ProductReturn")
-                {
-                    setReturnProductinfo(model, model.TranDetails[rowIndex]);
-                    CalculateExe(model.TranDetails[rowIndex]);
+                if (model.TranDetails.Count <= rowIndex)
+                    throw new Exception("Invalid");
 
-                }
-                else if (fieldName == "Batch")
-                {
-                    setProductinfoByBatch(model, model.TranDetails[rowIndex]);
-                    CalculateExe(model.TranDetails[rowIndex]);
 
-                }
-                else if (fieldName == "Color")
+                switch (fieldName)
                 {
-                    setProductinfoByColor(model, model.TranDetails[rowIndex]);
-                    CalculateExe(model.TranDetails[rowIndex]);
+                    case "Product":
+                        if (model.TranDetails[rowIndex].FkId == 0)
+                        {
+                            TranDetailDefault(model, model.TranDetails[rowIndex]);
+                            GetSetProduct(model, model.TranDetails[rowIndex], "", 0, model.FKOrderID, model.FKOrderSrID);
+                        }
+                        break;
+                    case "Batch":
+                    case "Color":
+                        setBatch(model, model.TranDetails[rowIndex]);
+                        break;
+                    case "TradeDisc":
+                        model.TranDetails[rowIndex].TradeDiscAmt = 0;
+                        break;
+                    case "Delete":
+                        model.TranDetails[rowIndex].ModeForm = 2;
+                        model.UniqIdDetails = model.UniqIdDetails.Where(x => x.SrNo != model.TranDetails[rowIndex].SrNo).ToList();
+                        break;
+                    case "ProductReturn":
+                        setReturnProduct(model, model.TranDetails[rowIndex]);
+                        break;
+                    case "FKInvoiceID":
+                        setInvoiceinfo(model, model.TranDetails[rowIndex]);
+                        break;
+                    case "Qty":
+                    case "FreeQty":
+                    default:
+                        break;
+                }
 
-                }
-                else if (fieldName == "Qty")
-                {
-                    //setPromotion(model, model.TranDetails[rowIndex]);
-                    CalculateExe(model.TranDetails[rowIndex]);
-                }
-                else if (fieldName == "FreeQty")
-                {
-                    //setPromotion(model, model.TranDetails[rowIndex]);
-                    CalculateExe(model.TranDetails[rowIndex]);
-                }
-                else if (fieldName == "Delete")
-                {
-                    model.TranDetails[rowIndex].ModeForm = 2;
-                    model.UniqIdDetails = model.UniqIdDetails.Where(x => x.SrNo != model.TranDetails[rowIndex].SrNo).ToList();
-                }
-                else if (fieldName == "TradeDisc")
-                {
-                    model.TranDetails[rowIndex].TradeDiscAmt = 0;
-                    CalculateExe(model.TranDetails[rowIndex]);
-
-                }
-                else if (fieldName == "FKInvoiceID")
-                {
-                    setProductinfoByColor(model, model.TranDetails[rowIndex]);
-                    CalculateExe(model.TranDetails[rowIndex]);
-                }
-                else if (fieldName == "Inum")
-                {
-                    setInvoiceinfo(model, model.TranDetails[rowIndex]);
-                    CalculateExe(model.TranDetails[rowIndex]);
-                }
-                else { CalculateExe(model.TranDetails[rowIndex]); }
-
+                CalculateExe(model.TranDetails[rowIndex]);
                 setGridTotal(model);
                 setPaymentDetail(model);
                 model.IsTranChange = true;
-
             }
             catch (Exception ex) { }
             return model;
+        }
+
+        public void TranDetailDefault(TransactionModel model, TranDetails detail)
+        {
+
+            if (detail.SrNo == 0)
+            {
+                var _checkSrNo = model.TranDetails.ToList();
+                if (_checkSrNo.Count > 0)
+                {
+                    detail.SrNo = _checkSrNo.Max(x => x.SrNo) + 1;
+                }
+                else
+                {
+                    detail.SrNo = 1;
+                }
+            }
+
+            if (detail.FKLocationID == 0)
+                detail.FKLocationID = model.FKLocationID;
+
+            if (detail.Qty == 0)
+                detail.Qty = 1;
+
+            if (detail.FKLocationID == 0)
+                detail.FKLocationID = model.FKLocationID;
+
+            if (detail.PromotionType == null)
+                detail.PromotionType = "";
+
+            if (detail.ReturnTypeID == 0)
+                detail.ReturnTypeID = 2;
         }
 
         public object ApplyRateDiscount(TransactionModel model, string type, decimal discount)
@@ -667,393 +677,148 @@ namespace SSRepository.Repository.Transaction
             return model;
         }
 
-        public void setProductinfo(TransactionModel model, TranDetails? detail)
+        public void GetSetProduct(TransactionModel model, TranDetails detail, string Barcode = "", long LotId = 0, long? FKOrderID = 0, long? FKOrderSrID = 0)
         {
-            string BillingRate = !string.IsNullOrEmpty(model.BillingRate) ? model.BillingRate : (model.TranAlias == "PORD" || model.TranAlias == "PINV") ? "PurchaseRate" : "SaleRate";
 
-            if (detail != null)
+            DataTable dtProduct = GetProduct(Barcode, detail.FKLocationID, detail.FkProductId, LotId, "", false, model.TranAlias, model.FkPartyId, FKOrderID, FKOrderSrID);
+
+            SetProduct(model, detail, dtProduct);
+        }
+
+        public DataTable GetProduct(string Barcode, Int64 FKLocationID, long ProductId, long LotId, string ProductName, bool ItemByBarcode, String TranAlias, Int64 FKPartyID = 0, long? FKOrderID = 0, long? FKOrderSrID = 0)
+        {
+
+            DataTable dt = new DataTable();
+            using (SqlConnection con = new SqlConnection(conn))
             {
-                DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail("", detail.FkProductId, 0, "", model.FKOrderID, model.FKOrderSrID);
-                if (dtProduct.Rows.Count > 0)
+                con.Open();
+                SqlCommand cmd = new SqlCommand("usp_GetProductDetail", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Barcode", Barcode);
+                cmd.Parameters.AddWithValue("@ProductId", ProductId);
+                cmd.Parameters.AddWithValue("@LotId", LotId);
+                cmd.Parameters.AddWithValue("@ProductName", ProductName);
+                cmd.Parameters.AddWithValue("@FKOrderID", FKOrderID);
+                cmd.Parameters.AddWithValue("@FKOrderSrID", FKOrderSrID);
+                SqlDataAdapter adp = new SqlDataAdapter(cmd);
+                adp.Fill(dt);
+                con.Close();
+            }
+            return dt;
+        }
+
+        private void SetProduct(TransactionModel model, TranDetails detail, DataTable dtProduct)
+        {
+            if (dtProduct.Rows.Count > 0)
+            {
+                detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+                detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
+                detail.Color = dtProduct.Rows[0]["Color"].ToString();
+                detail.Batch = dtProduct.Rows[0]["Batch"].ToString();
+
+                detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
+                detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
+                detail.Product = dtProduct.Rows[0]["Product"].ToString();
+                detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
+
+                detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
+                detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
+                detail.TradeRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString());
+                detail.DistributionRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString());
+
+                detail.Rate = Convert.ToDecimal(dtProduct.Rows[0][model.BillingRate].ToString());
+                detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
+                detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
+                detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
+                if (model.TranAlias == "PORD" || model.TranAlias == "PINV")
                 {
-                    var _checkSrNo = model.TranDetails.ToList().Where(x => x.FkProductId > 0 && x.Qty > 0).ToList();
-                    if (_checkSrNo.Count > 0)
-                    {
-                        detail.SrNo = _checkSrNo.Max(x => x.SrNo) + 1;
-
-                    }
-                    else { detail.SrNo = 1; }
-
-
-                    detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                    detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
-                    detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
-                    detail.Product = dtProduct.Rows[0]["Product"].ToString();
-                    detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
-                    detail.Qty = 1;
-                    detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
-                    detail.FKLocationID = model.FKLocationID;
-                    detail.ReturnTypeID = 2;
-
-                    detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
-                    detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
-
-                    if (BillingRate == "MRP") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString()); }
-                    if (BillingRate == "SaleRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString()); }
-                    if (BillingRate == "TradeRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString()); }
-                    if (BillingRate == "DistributionRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString()); }
-                    if (BillingRate == "PurchaseRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["PurchaseRate"].ToString()); }
-
-                    detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
-                    detail.Color = dtProduct.Rows[0]["Color"].ToString();
-                    detail.Batch = dtProduct.Rows[0]["Batch"].ToString();
-                    detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
-                    detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
-                    detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
-                    if (model.TranAlias == "PORD" || model.TranAlias == "PINV")
-                    {
-                        detail.FkLotId = 0;
-                    }
-
-                    detail.GstRate = (detail.SaleRate < 1000 ? 5 : 18);
-                    detail.Rate = Math.Round(Convert.ToDecimal(detail.SaleRate) * (100 / (100 + detail.GstRate)), 2);
-
-                    detail.TradeDisc = 0;
-                    detail.TradeDiscAmt = 0;
-                    detail.TradeDiscType = "";
-
-                    if (model.FkPartyId > 0 && (model.TranAlias == "SORD" || model.TranAlias == "SINV"))
-                    {
-                        var _cust = new CustomerRepository(__dbContext).GetSingleRecord(model.FkPartyId);
-                        detail.TradeDisc = _cust.Disc;
-
-                    }
-                    detail.TradeRate = detail.DistributionRate = detail.SaleRate;
-                    detail.LinkSrNo = 0;
-                    detail.PromotionType = "";
+                    detail.FkLotId = 0;
                 }
-                else
+
+                if (model.FkPartyId > 0 && model.ExtProperties.TranType == "S")
                 {
-                    detail.FkProductId = 0;
+                    var _cust = new CustomerRepository(__dbContext).GetSingleRecord(model.FkPartyId);
+                    detail.TradeDisc = _cust.Disc;
                 }
+
+            }
+            else
+            {
+                detail.FkProductId = 0;
             }
         }
-        public object BarcodeScan(TransactionModel model, string barcode)
+
+        private void setBatch(TransactionModel model, TranDetails detail)
         {
 
-            try
+            DataTable dtProduct = GetProduct("", detail.FKLocationID, detail.FkProductId, detail.FkLotId, "", false, model.ExtProperties.TranAlias);
+            if (dtProduct.Rows.Count > 0)
             {
-                string BillingRate = !string.IsNullOrEmpty(model.BillingRate) ? model.BillingRate : (model.TranAlias == "PORD" || model.TranAlias == "PINV") ? "PurchaseRate" : "SaleRate";
-                if (model.UniqIdDetails.Where(x => x.Barcode == barcode && x.SrNo > 0).ToList().Count == 0)
+                detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
+                detail.Color = dtProduct.Rows[0]["Color"].ToString();
+                detail.Batch = dtProduct.Rows[0]["Batch"].ToString();
+                detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
+                detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
+                detail.TradeRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString());
+                detail.DistributionRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString());
+                detail.Rate = Convert.ToDecimal(dtProduct.Rows[0][model.BillingRate].ToString());
+            }
+        }
+        public object BarcodeScan(TransactionModel model, string Barcode)
+        {
+            DataTable dtProduct = GetProduct(Barcode, model.FKLocationID, 0, 0, "", false, model.TranAlias, model.FkPartyId, model.FKOrderID, model.FKOrderSrID);
+
+            long FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+            long FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
+            var drdetail = model.TranDetails.Where(x => x.FkProductId == FkProductId && x.FkLotId == FkLotId && x.ModeForm != 2)
+                .FirstOrDefault();
+            if (drdetail != null)
+            {
+                int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == FkProductId && a.FkLotId == FkLotId && a.ModeForm != 2);
+                SetProduct(model, drdetail, dtProduct);
+
+                
+                model.TranDetails[rowIndex].Qty += 1;
+                CalculateExe(model.TranDetails[rowIndex]);
+                // Check Product UNique/Lot/PRoduct
+                var _check = model.UniqIdDetails.ToList().Where(x => x.Barcode == Barcode).FirstOrDefault();
+                if (_check == null)
                 {
-                    DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail(barcode, 0, 0, "", model.FKOrderID, model.FKOrderSrID);
-                    if (dtProduct.Rows.Count > 0)
-                    {
-
-                        //check
-                        var detail = new TranDetails();
-                        detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                        detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
-
-                        var _old = model.TranDetails.ToList().Where(x => x.FkProductId == detail.FkProductId && x.FkLotId == detail.FkLotId && x.ModeForm != 2).FirstOrDefault();
-                        if (_old == null)
-                        {
-                            var _checkSrNo = model.TranDetails.ToList().Where(x => x.FkProductId > 0 && x.Qty > 0).ToList();
-                            if (_checkSrNo.Count > 0)
-                            {
-                                detail.SrNo = _checkSrNo.Max(x => x.SrNo) + 1;
-
-                            }
-                            else { detail.SrNo = 1; }
-
-                            detail.Barcode = barcode;
-                            detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                            detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
-                            detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
-                            detail.Product = dtProduct.Rows[0]["Product"].ToString();
-                            detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
-                            detail.Qty = 1;
-                            detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
-                            detail.FKLocationID = model.FKLocationID;
-                            detail.ReturnTypeID = 2;
-
-                            detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
-                            detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
-
-                            if (BillingRate == "MRP") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString()); }
-                            if (BillingRate == "SaleRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString()); }
-                            if (BillingRate == "TradeRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString()); }
-                            if (BillingRate == "DistributionRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString()); }
-                            if (BillingRate == "PurchaseRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["PurchaseRate"].ToString()); }
-
-                            detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
-                            detail.Color = dtProduct.Rows[0]["Color"].ToString();
-                            detail.Batch = dtProduct.Rows[0]["Batch"].ToString();
-                            detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
-                            detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
-                            detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
-
-                            if (model.TranAlias == "PORD" || model.TranAlias == "PINV")
-                            {
-                                detail.FkLotId = 0;
-                            }
-
-                            detail.GstRate = (detail.SaleRate < 1000 ? 5 : 18);
-                            detail.Rate = Math.Round(Convert.ToDecimal(detail.SaleRate) * (100 / (100 + detail.GstRate)), 2);
-
-                            detail.TradeDisc = 0;
-                            detail.TradeDiscAmt = 0;
-                            detail.TradeDiscType = "";
-
-                            if (model.FkPartyId > 0 && (model.TranAlias == "SORD" || model.TranAlias == "SINV"))
-                            {
-                                var _cust = new CustomerRepository(__dbContext).GetSingleRecord(model.FkPartyId);
-                                detail.TradeDisc = _cust.Disc;
-
-                            }
-                            detail.TradeRate = detail.DistributionRate = detail.SaleRate;
-
-                            CalculateExe(detail);
-                            detail.Barcode = "Barcode";
-                            detail.BarcodeTest = barcode;
-                            model.TranDetails.Add(detail);
-                            var _check = model.UniqIdDetails.ToList().Where(x => x.Barcode == barcode).FirstOrDefault();
-                            if (_check == null)
-                            {
-                                model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = detail.SrNo, Barcode = barcode });
-                            }
-                        }
-                        else
-                        {
-                            int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == detail.FkProductId && a.FkLotId == detail.FkLotId && a.ModeForm != 2);
-                            model.TranDetails[rowIndex].Qty += 1;
-                            var _check = model.UniqIdDetails.ToList().Where(x => x.Barcode == barcode).FirstOrDefault();
-                            if (_check == null)
-                            {
-                                model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = model.TranDetails[rowIndex].SrNo, Barcode = barcode });
-                            }
-                            CalculateExe(model.TranDetails[rowIndex]);
-                        }
-
-                        setGridTotal(model);
-                        setPaymentDetail(model);
-                    }
-                    model.IsTranChange = true;
+                    model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = model.TranDetails[rowIndex].SrNo, Barcode = Barcode });
                 }
             }
-            catch (Exception ex)
+            else
             {
+                var detail = new TranDetails();
+                TranDetailDefault(model, detail);
+                SetProduct(model, detail, dtProduct);
+                detail.Barcode = "Barcode";
+                detail.BarcodeTest = Barcode;
 
-                throw ex;
+                CalculateExe(detail);
+                model.TranDetails.Add(detail);
+
+                // Check Product UNique/Lot/PRoduct
+                model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = detail.SrNo, Barcode = Barcode });
+
             }
 
             return model;
         }
         public object ProductTouch(TransactionModel model, long PkProductId)
         {
+            var detail = new TranDetails();
 
-            try
-            {
-                string BillingRate = !string.IsNullOrEmpty(model.BillingRate) ? model.BillingRate : (model.TranAlias == "PORD" || model.TranAlias == "PINV") ? "PurchaseRate" : "SaleRate";
-
-                DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail("", PkProductId, 0, "", model.FKOrderID, model.FKOrderSrID);
-                if (dtProduct.Rows.Count > 0)
-                {
-
-                    //check
-                    var detail = new TranDetails();
-                    detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                    detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
-
-                    var _old = model.TranDetails.ToList().Where(x => x.FkProductId == detail.FkProductId && x.FkLotId == detail.FkLotId && x.ModeForm != 2).FirstOrDefault();
-                    if (_old == null)
-                    {
-                        var _checkSrNo = model.TranDetails.ToList().Where(x => x.FkProductId > 0 && x.Qty > 0).ToList();
-                        if (_checkSrNo.Count > 0)
-                        {
-                            detail.SrNo = _checkSrNo.Max(x => x.SrNo) + 1;
-
-                        }
-                        else { detail.SrNo = 1; }
-
-                        detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                        detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
-                        detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
-                        detail.Product = dtProduct.Rows[0]["Product"].ToString();
-                        detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
-                        detail.Qty = 1;
-                        detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
-                        detail.FKLocationID = model.FKLocationID;
-                        detail.ReturnTypeID = 2;
-
-                        detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
-                        detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
-
-                        if (BillingRate == "MRP") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString()); }
-                        if (BillingRate == "SaleRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString()); }
-                        if (BillingRate == "TradeRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString()); }
-                        if (BillingRate == "DistributionRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString()); }
-                        if (BillingRate == "PurchaseRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["PurchaseRate"].ToString()); }
-
-                        detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
-                        detail.Color = dtProduct.Rows[0]["Color"].ToString();
-                        detail.Batch = dtProduct.Rows[0]["Batch"].ToString();
-                        detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
-                        detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
-                        detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
-
-                        if (model.TranAlias == "PORD" || model.TranAlias == "PINV")
-                        {
-                            detail.FkLotId = 0;
-                        }
-
-                        detail.GstRate = (detail.SaleRate < 1000 ? 5 : 18);
-                        detail.Rate = Math.Round(Convert.ToDecimal(detail.SaleRate) * (100 / (100 + detail.GstRate)), 2);
-
-                        detail.TradeDisc = 0;
-                        detail.TradeDiscAmt = 0;
-                        detail.TradeDiscType = "";
-
-                        if (model.FkPartyId > 0 && (model.TranAlias == "SORD" || model.TranAlias == "SINV"))
-                        {
-                            var _cust = new CustomerRepository(__dbContext).GetSingleRecord(model.FkPartyId);
-                            detail.TradeDisc = _cust.Disc;
-
-                        }
-                        detail.TradeRate = detail.DistributionRate = detail.SaleRate;
-
-                        CalculateExe(detail);
-                        detail.Barcode = "Barcode";
-                        model.TranDetails.Add(detail);
-
-                    }
-                    else
-                    {
-                        int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == detail.FkProductId && a.FkLotId == detail.FkLotId && a.ModeForm != 2);
-                        model.TranDetails[rowIndex].Qty += 1;
-                        CalculateExe(model.TranDetails[rowIndex]);
-                    }
-
-                    setGridTotal(model);
-                    setPaymentDetail(model);
-                }
-                model.IsTranChange = true;
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-
+            model.TranDetails.Add(detail);
+            TranDetailDefault(model, detail);
+            GetSetProduct(model, detail, "", 0, model.FKOrderID, model.FKOrderSrID);
+            CalculateExe(detail);
+            setGridTotal(model);
+            SetPaymentDetail(model);
             return model;
         }
-        public object FileUpload(TransactionModel model, DataTable dt)
-        {
-            try
-            {
-                model.NotFound = "";
-                List<string> notFound_List = new List<string>();
-                string BillingRate = !string.IsNullOrEmpty(model.BillingRate) ? model.BillingRate : (model.TranAlias == "PORD" || model.TranAlias == "PINV") ? "PurchaseRate" : "SaleRate";
-                foreach (DataRow dr in dt.Rows)
-                {
-                    string ProductName = dr[0].ToString();
-                    string Size = dr[1].ToString();
-                    int Qty = Convert.ToInt32(dr[2].ToString());
 
-                    DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail("", 0, 0, ProductName, model.FKOrderID, model.FKOrderSrID);
-                    if (dtProduct.Rows.Count > 0)
-                    {
-
-                        //check
-                        var detail = new TranDetails();
-                        detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                        detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
-
-                        var _old = model.TranDetails.ToList().Where(x => x.FkProductId == detail.FkProductId && x.FkLotId == detail.FkLotId && x.ModeForm != 2 && x.Batch == Size).FirstOrDefault();
-                        if (_old == null)
-                        {
-                            var _checkSrNo = model.TranDetails.ToList().Where(x => x.FkProductId > 0 && x.Qty > 0).ToList();
-                            if (_checkSrNo.Count > 0)
-                            {
-                                detail.SrNo = _checkSrNo.Max(x => x.SrNo) + 1;
-
-                            }
-                            else { detail.SrNo = 1; }
-
-                            detail.Barcode = "";
-                            detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                            detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
-                            detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
-                            detail.Product = dtProduct.Rows[0]["Product"].ToString();
-                            detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
-                            detail.Qty = Qty;
-                            detail.ModeForm = 0;//0=Add,1=Edit,2=Delete 
-                            detail.FKLocationID = model.FKLocationID;
-                            detail.ReturnTypeID = 2;
-
-                            detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
-                            detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
-
-                            if (BillingRate == "MRP") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString()); }
-                            if (BillingRate == "SaleRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString()); }
-                            if (BillingRate == "TradeRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString()); }
-                            if (BillingRate == "DistributionRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString()); }
-                            if (BillingRate == "PurchaseRate") { detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["PurchaseRate"].ToString()); }
-
-                            detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString()); ;
-                            detail.Color = dtProduct.Rows[0]["Color"].ToString();
-                            detail.Batch = Size;//dtProduct.Rows[0]["Batch"].ToString();
-                            detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
-                            detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
-                            detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
-
-                            if (model.TranAlias == "PORD" || model.TranAlias == "PINV")
-                            {
-                                detail.FkLotId = 0;
-                            }
-
-                            detail.GstRate = (detail.SaleRate < 1000 ? 5 : 18);
-                            detail.Rate = Math.Round(Convert.ToDecimal(detail.SaleRate) * (100 / (100 + detail.GstRate)), 2);
-
-                            detail.TradeDisc = 0;
-                            detail.TradeDiscAmt = 0;
-                            detail.TradeDiscType = "";
-
-                            if (model.FkPartyId > 0 && (model.TranAlias == "SORD" || model.TranAlias == "SINV"))
-                            {
-                                var _cust = new CustomerRepository(__dbContext).GetSingleRecord(model.FkPartyId);
-                                detail.TradeDisc = _cust.Disc;
-
-                            }
-                            detail.TradeRate = detail.DistributionRate = detail.SaleRate;
-
-                            CalculateExe(detail);
-                            model.TranDetails.Add(detail);
-                        }
-                        else
-                        {
-                            int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == detail.FkProductId && a.Batch == Size);
-                            model.TranDetails[rowIndex].Qty += 1;
-
-                            CalculateExe(model.TranDetails[rowIndex]);
-                        }
-
-
-
-                        setGridTotal(model);
-                        setPaymentDetail(model);
-                    }
-                    else { notFound_List.Add(ProductName); }
-                }
-                model.NotFound = string.Join(",", notFound_List.ToList());
-                model.IsTranChange = true;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message + " Rep");
-            }
-            return model;
-        }
+        #region Promotion
         public void removePromotion(TransactionModel model)
         {
             model.TranDetails.Where(x => x.LinkSrNo > 0 || x.PromotionType == "IVFP").ToList().ForEach(x => x.ModeForm = 2);
@@ -1144,7 +909,7 @@ namespace SSRepository.Repository.Transaction
                                         decimal qty = Decimal.Truncate(item.Qty / (decimal)itemPromo.PromotionApplyQty) * (decimal)itemPromo.PromotionQty;
                                         string BillingRate = !string.IsNullOrEmpty(model.BillingRate) ? model.BillingRate : (model.TranAlias == "PORD" || model.TranAlias == "PINV") ? "PurchaseRate" : "SaleRate";
 
-                                        DataTable dtProduct = new ProductRepository(__dbContext).GetProductDetail("", (long)itemPromo.FkPromotionProdId, 0, "", model.FKOrderID, model.FKOrderSrID);
+                                        DataTable dtProduct = GetProductDetail("", (long)itemPromo.FkPromotionProdId, 0, "", model.FKOrderID, model.FKOrderSrID);
                                         if (dtProduct.Rows.Count > 0)
                                         {
                                             var _detail = new TranDetails();
@@ -1188,6 +953,7 @@ namespace SSRepository.Repository.Transaction
                                             if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PFPT"; }
                                             else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CFPT"; }
                                             else if (itemPromo.PromotionApplyOn == "Brand") { item.PromotionType = "BFPT"; }
+
 
                                             //break;
                                         }
@@ -1361,27 +1127,24 @@ namespace SSRepository.Repository.Transaction
                 model.IsTranChange = false;
             }
         }
+        #endregion
 
-
-        public void setReturnProductinfo(TransactionModel model, TranDetails? detail)
+        public void setReturnProduct(TransactionModel model, TranDetails detail)
         {
-            if (detail != null)
-            {
-                var _invoice = (from saledtl in __dbContext.TblSalesInvoicedtl
-                                join sale in __dbContext.TblSalesInvoicetrn on saledtl.FkId equals sale.PkId
-                                join series in __dbContext.TblSeriesMas on sale.FKSeriesId equals series.PkSeriesId
-                                join cou in __dbContext.TblProductMas on saledtl.FkProductId equals cou.PkProductId
-
-                                where sale.FkPartyId == model.FkPartyId
-                                && saledtl.SrNo == detail.InvoiceSrNo
-                                select (new
-                                {
-                                    sale,
-                                    saledtl,
-                                    series,
-                                    cou
-                                }
-                               )).FirstOrDefault();
+            var _invoice = (from saledtl in __dbContext.TblSalesInvoicedtl
+                            join sale in __dbContext.TblSalesInvoicetrn on saledtl.FkId equals sale.PkId
+                            join series in __dbContext.TblSeriesMas on sale.FKSeriesId equals series.PkSeriesId
+                            join cou in __dbContext.TblProductMas on saledtl.FkProductId equals cou.PkProductId
+                            where sale.FkPartyId == model.FkPartyId
+                            && saledtl.SrNo == detail.InvoiceSrNo
+                            select (new
+                            {
+                                sale,
+                                saledtl,
+                                series,
+                                cou
+                            }
+                           )).FirstOrDefault();
 
 
                 if (_invoice != null)
@@ -1475,31 +1238,28 @@ namespace SSRepository.Repository.Transaction
             }
         }
 
-        public void setInvoiceinfo(TransactionModel model, TranDetails? detail)
+        public void setInvoiceinfo(TransactionModel model, TranDetails detail)
         {
-            if (detail != null)
+
+            var _invoice = (from sale in __dbContext.TblSalesInvoicetrn
+                            join c in __dbContext.TblSeriesMas on sale.FKSeriesId equals c.PkSeriesId
+                            where sale.FkPartyId == model.FkPartyId && sale.PkId == detail.FKInvoiceID
+                            orderby sale.EntryDate
+                            select (new
+                            {
+                                FKInvoiceID = sale.PkId,
+                                Inum = c.Series + sale.EntryNo,
+                                sale.EntryDate,
+                                sale.FKSeriesId,
+                            }
+                           )).FirstOrDefault();
+
+            if (_invoice != null)
             {
-
-                var _invoice = (from sale in __dbContext.TblSalesInvoicetrn
-                                join c in __dbContext.TblSeriesMas on sale.FKSeriesId equals c.PkSeriesId
-                                where sale.FkPartyId == model.FkPartyId && sale.PkId == detail.FKInvoiceID
-                                orderby sale.EntryDate
-                                select (new
-                                {
-                                    FKInvoiceID = sale.PkId,
-                                    Inum = c.Series + sale.EntryNo,
-                                    sale.EntryDate,
-                                    sale.FKSeriesId,
-                                }
-                               )).FirstOrDefault();
-                if (_invoice != null)
-                {
-                    detail.InvoiceDate = _invoice.EntryDate.Date;
-                    detail.FKInvoiceID_Text = _invoice.Inum;
-                    detail.FKInvoiceSrID = _invoice.FKSeriesId;
-                }
-
-
+                TranDetailDefault(model, detail);
+                detail.InvoiceDate = _invoice.EntryDate.Date;
+                detail.FKInvoiceID_Text = _invoice.Inum;
+                detail.FKInvoiceSrID = _invoice.FKSeriesId;
             }
         }
 
@@ -1517,45 +1277,48 @@ namespace SSRepository.Repository.Transaction
 
         public void CalculateExe(TranDetails item)
         {
-            decimal gstper = (item.SaleRate < 1000 ? 5 : 18);
-            decimal Rate = (item.TradeDisc > 0 ? (Convert.ToDecimal(item.SaleRate) - (Convert.ToDecimal(item.SaleRate) * item.TradeDisc / 100)) : (Math.Round(Convert.ToDecimal(item.SaleRate) * (100 / (100 + gstper)), 2)));
-            if (item.TradeDiscAmt > 0 && item.TradeDisc == 0)
+            
+            decimal GrossAmt = item.Rate * item.Qty;
+            if (item.TradeDisc > 0)
             {
-                Rate = Convert.ToDecimal(item.SaleRate) - item.TradeDiscAmt;
+                item.TradeDiscAmt = Math.Round(GrossAmt * (item.TradeDisc / 100),2);
             }
-            item.Rate = Rate;
-            decimal amt = item.Rate * item.Qty;
-            decimal decAmt = item.TradeDisc > 0 ? ((Convert.ToDecimal(item.SaleRate) * item.Qty) * item.TradeDisc / 100) : item.TradeDiscAmt;
+            else if(item.TradeDiscAmt > 0)
+            {
+                item.TradeDisc = Math.Round((item.TradeDiscAmt / GrossAmt) * 100,2);
+            }
+            
 
-            item.GstRate = (item.Rate < 1000 ? 5 : 18);
-            item.TradeDiscAmt = decAmt;
-            item.GstAmt = Math.Round(amt * item.GstRate / 100, 2);
-            item.GrossAmt = Math.Round(amt, 2) - item.GstAmt;//Math.Round(item.Rate * item.Qty, 2) ;
-            //item.SCRate = Math.Round(item.GstRate / 2, 2);
-            //item.SCAmt = Math.Round(item.GstAmt / 2, 2);
-            item.NetAmt = Math.Round(item.GrossAmt + item.GstAmt, 2);
-            item.TaxableAmt = Math.Round(item.GrossAmt, 2);// - (item.SchemeDiscAmt + item.TradeDiscAmt + item.LotDiscAmt), 2);
+            item.GrossAmt = Math.Round((GrossAmt - item.TradeDiscAmt), 2);
+            item.GstRate = (item.GrossAmt / 2) < 1000 ? 5 : 18;
+            item.TaxableAmt = Math.Round(((item.GrossAmt*100) /(100 + item.GstRate)), 2);
 
-
-            // model.TranDetails = model.TranDetails.Where(x => x.FkProductId > 0).ToList();
+            item.GstAmt = Math.Round((item.TaxableAmt * 100) / item.GstRate , 2);
+            item.NetAmt = Math.Round(item.TaxableAmt + item.GstAmt, 2);
         }
 
-        public void setGridTotal(TransactionModel model)
+        public void SetGridTotal(TransactionModel model)
         {
-            model.GrossAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.GrossAmt), 2);
+            model.GrossAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TaxableAmt), 2);
             model.TaxAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.GstAmt), 2);
             model.CashDiscountAmt = 0;
-            if (model.CashDiscType == "R" && model.CashDiscount > 0 && model.CashDiscount <= model.GrossAmt) { model.CashDiscountAmt = Math.Round(model.CashDiscount, 2); }
-            else if (model.CashDiscType == "P" && model.CashDiscount > 0 && model.CashDiscount <= 100) { model.CashDiscountAmt = Math.Round((model.GrossAmt * model.CashDiscount / 100), 2); }
-            else { model.CashDiscount = 0; }
+            if (model.CashDiscType == "R" && model.CashDiscount > 0 && model.CashDiscount <= model.GrossAmt) { 
+                model.CashDiscountAmt = Math.Round(model.CashDiscount, 2);
+            }
+            else if (model.CashDiscType == "P" && model.CashDiscount > 0 && model.CashDiscount <= 100) { 
+                model.CashDiscountAmt = Math.Round((model.GrossAmt * model.CashDiscount / 100), 2);
+            }
+            else { 
+                model.CashDiscount = 0; 
+            }
             model.TradeDiscAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2);
             model.TotalDiscount = model.CashDiscountAmt + model.TradeDiscAmt;
-            //model.NetAmt = Math.Round(model.GrossAmt + model.TaxAmt + model.Shipping + model.OtherCharge - model.RoundOfDiff - model.TotalDiscount, 2);
-            model.NetAmt = Math.Round(model.GrossAmt + model.TaxAmt + model.Shipping + model.OtherCharge - model.RoundOfDiff, 2);
+            decimal NetAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);
+            model.NetAmt = Math.Round((NetAmt - model.CashDiscountAmt) + model.Shipping + model.OtherCharge - model.RoundOfDiff, 2);
 
         }
 
-        public void setPaymentDetail(TransactionModel model)
+        public void SetPaymentDetail(TransactionModel model)
         {
             decimal _remAmt = model.NetAmt;
             if (model.CreditCard || model.Cheque || model.Credit || model.Cash)
@@ -1568,7 +1331,14 @@ namespace SSRepository.Repository.Transaction
                     }
                     _remAmt -= (decimal)model.CreditCardAmt;
                 }
-                else { model.CreditCard = false; model.CreditCardAmt = 0; model.CreditCardNo = ""; model.CreditCardDate = null; model.FKBankCreditCardID = null; }
+                else
+                {
+                    model.CreditCard = false;
+                    model.CreditCardAmt = 0;
+                    model.CreditCardNo = "";
+                    model.CreditCardDate = null;
+                    model.FKBankCreditCardID = null;
+                }
 
 
                 if (model.Cheque && model.ChequeAmt > 0 && _remAmt > 0)
@@ -1579,8 +1349,13 @@ namespace SSRepository.Repository.Transaction
                     }
                     _remAmt -= (decimal)model.ChequeAmt;
                 }
-                else { model.Cheque = false; model.ChequeAmt = 0; model.ChequeNo = ""; model.ChequeDate = null; model.FKBankChequeID = null; }
-
+                else { 
+                    model.Cheque = false; 
+                    model.ChequeAmt = 0; 
+                    model.ChequeNo = ""; 
+                    model.ChequeDate = null; 
+                    model.FKBankChequeID = null; 
+                }
 
                 if (model.Credit && model.CreditAmt > 0 && _remAmt > 0)
                 {
@@ -1590,8 +1365,11 @@ namespace SSRepository.Repository.Transaction
                     }
                     _remAmt -= (decimal)model.CreditAmt;
                 }
-                else { model.Credit = false; model.CreditAmt = 0; model.CreditDate = null; }
-
+                else { 
+                    model.Credit = false; 
+                    model.CreditAmt = 0; 
+                    model.CreditDate = null; 
+                }
 
                 if (model.Cash && model.CashAmt > 0 && _remAmt > 0)
                 {
@@ -1601,17 +1379,26 @@ namespace SSRepository.Repository.Transaction
                     }
                     _remAmt -= (decimal)model.CashAmt;
                 }
-                else { model.Cash = false; model.CashAmt = 0; }
+                else { 
+                    model.Cash = false; 
+                    model.CashAmt = 0; 
+                }
 
-                if (_remAmt > 0) { model.Cash = true; model.CashAmt += _remAmt; }
+                if (_remAmt > 0) { 
+                    model.Cash = true; 
+                    model.CashAmt += _remAmt; 
+                }
             }
-            else { model.Cash = true; model.CashAmt = _remAmt; }
+            else { 
+                model.Cash = true; 
+                model.CashAmt = _remAmt; 
+            }
         }
 
 
         public object PaymentDetail(TransactionModel model)
         {
-            setPaymentDetail(model);
+            SetPaymentDetail(model);
             return model;
         }
 
@@ -2307,8 +2094,6 @@ namespace SSRepository.Repository.Transaction
                     __dbContext.Add(TblImg);
                 }
                 __dbContext.SaveChanges();
-
-                //  return Tbl.PkId;
             }
 
             else { error = "data not found"; }
@@ -2333,9 +2118,10 @@ namespace SSRepository.Repository.Transaction
                 }
                 else
                 {
-                    data = new { _entity.BiltyNo, Image = "" };
+                    data = new { 
+                        _entity.BiltyNo, Image = "" 
+                    };
                 }
-                //  return Tbl.PkId;
             }
 
 

@@ -50,6 +50,7 @@ namespace SSAdmin
             PurchasePromotion = 27,
             Role = 28,
             Recipe = 29,
+            Company = 30,
 
             SalesOrder = 100,
             SalesInvoice = 101,

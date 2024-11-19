@@ -9,5 +9,8 @@ namespace SSRepository.IRepository.Transaction
     {
         List<ColumnStructure> ColumnList(string GridName = "");
         void UpdateTrnSatus(long PkId, long FKSeriesId, string TrnStatus);
+
+
+        object FileUpload(TransactionModel model, DataTable dt);
     }
 }

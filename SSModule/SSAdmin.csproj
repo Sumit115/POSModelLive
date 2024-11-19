@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Areas\Master\Views\Company\List.cshtml" />
     <Content Remove="wwwroot\js\Master\Recipe.js" />
   </ItemGroup>
 
@@ -62,9 +63,9 @@
     <None Include="Areas\Master\Views\Locality\List.cshtml" />
     <None Include="Areas\Master\Views\Location\Create.cshtml" />
     <None Include="Areas\Master\Views\OpeningStock\Create.cshtml" />
+    <None Include="Areas\Master\Views\Product\List.cshtml" />
     <None Include="Areas\Master\Views\ProductLot\Create.cshtml" />
     <None Include="Areas\Master\Views\Product\Create.cshtml" />
-    <None Include="Areas\Master\Views\Product\List.cshtml" />
     <None Include="Areas\Master\Views\Region\Create.cshtml" />
     <None Include="Areas\Master\Views\Region\List.cshtml" />
     <None Include="Areas\Master\Views\Series\Create.cshtml" />

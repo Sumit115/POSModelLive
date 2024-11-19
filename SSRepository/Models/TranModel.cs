@@ -27,7 +27,7 @@ namespace SSRepository.Models
         public long PkId { get; set; }
         public long FKSeriesId { get; set; }
         public string SeriesName { get; set; }
-        public string? BillingRate { get; set; }
+        public string BillingRate { get; set; }
         public long? EntryNo { get; set; }//backend se 1,2,3,
 
 

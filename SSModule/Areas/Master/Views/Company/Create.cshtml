@@ -1,0 +1,123 @@
+﻿@model SSRepository.Models.CompanyModel
+
+@{
+    ViewData["Title"] = "Company Info";
+    ViewData["bdClass"] = "page";
+}
+<div class="p-3">
+    <form asp-action="Create" class="g-3" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PkCompanyId" />
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label class="control-label">Name <span asp-validation-for="CompanyName" class="text-danger"></span></label>
+                    <input asp-for="CompanyName" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">ContactPerson <span asp-validation-for="ContactPerson" class="text-danger"></span></label>
+                    <input asp-for="ContactPerson" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Email <span asp-validation-for="Email" class="text-danger"></span></label>
+                    <input asp-for="Email" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Mobile <span asp-validation-for="Mobile" class="text-danger"></span></label>
+                    <input asp-for="Mobile" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="control-label">Address <span asp-validation-for="Address" class="text-danger"></span></label>
+                    <input asp-for="Address" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">City <span asp-validation-for="City" class="text-danger"></span></label>
+                    <input asp-for="City" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">State <span asp-validation-for="State" class="text-danger"></span></label>
+                    <select asp-for="State" class="form-control" asp-items="@(new SelectList(ViewBag.StateList,"Value","Text"))">
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Pin <span asp-validation-for="Pin" class="text-danger"></span></label>
+                    <input asp-for="Pin" class="form-control" />
+                    <input type="hidden" asp-for="Country" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">GST No. <span asp-validation-for="Gstn" class="text-danger"></span></label>
+                    <input asp-for="Gstn" class="form-control" />
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Logo <span asp-validation-for="LogoImg" class="text-danger"></span></label>
+                    <input type="file" id="file_Image" onchange="return UploadImage('Image')" accept="image/*" class="requied d-block" />
+
+                    <input asp-for="LogoImg" type="hidden" />
+                    <img id="dummyimage_Image" class="img-md img-avatar" style="height: 50px;width: 50px;" src="@Model.LogoImg" />
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Thumbnail <span asp-validation-for="ThumbnailImg" class="text-danger"></span></label>
+                    <input type="file" id="file_Thumbnail" onchange="return UploadImage('Thumbnail')" accept="image/*" class="requied d-block" />
+
+                    <input asp-for="ThumbnailImg" type="hidden" />
+                    <img id="dummyimage_Thumbnail" class="img-md img-avatar" style="height: 50px;width: 50px;" src="@Model.ThumbnailImg" />
+
+                </div>
+            </div>
+
+
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+
+        $(document).ready(function () {
+            $("#btnServerBack").remove();
+            $('#btnServerSave').click(function (e) {
+                e.preventDefault();
+                $("form").submit();
+            });
+        })
+        UploadImage = (id) => {
+            var file = document.querySelector('input[id="file_' + id + '"]').files[0];
+            // $("#FileName").val(file.name);
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                $("#" + id).val(reader.result);
+                $("#dummyimage_" + id).attr("src", reader.result);
+                $("#dummyimage_" + id).show();
+            };
+        }
+    </script>
+}

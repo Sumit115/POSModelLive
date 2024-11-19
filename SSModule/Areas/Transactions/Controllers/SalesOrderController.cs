@@ -156,5 +156,103 @@ namespace SSAdmin.Areas.Transactions.Controllers
         }
 
 
+        [HttpPost]
+        public IActionResult UploadFile(TransactionModel model, IFormFile file)
+        {
+
+            try
+            {
+                //Handler.Log("UploadFile", "In Try");
+                if (file != null)
+                {
+                    //Handler.Log("UploadFile", "File Not Null");
+
+                    DataTable dt = new DataTable();
+                    string path = "";
+                    path = Path.Combine("wwwroot", "ExcelFile");
+                    if (!Directory.Exists(path))
+                        Directory.CreateDirectory(path);
+
+                    string rn = new Random().Next(0, 9999).ToString("D6");
+                    string filename = rn + DateTime.Now.Ticks + file.FileName;
+                    //Handler.Log("UploadFile", "File Name :"+ filename);
+
+                    string filePath = Path.Combine(path, filename);
+                    //Handler.Log("UploadFile", "File Path :" + filePath);
+
+                    using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        //Handler.Log("UploadFile", "fileStream");
+
+                        file.CopyToAsync(fileStream);
+                        //Handler.Log("UploadFile", "fileStream copy");
+
+                        fileStream.Close();
+
+                        //Handler.Log("UploadFile", "fileStream close");
+
+                    }
+                    using (StreamReader sr = new StreamReader(filePath))
+                    {
+                        //Handler.Log("UploadFile", "StreamReader");
+
+                        string[] headers = sr.ReadLine().Split(',');
+                        //Handler.Log("UploadFile", "StreamReader headers:"+ headers);
+
+                        foreach (string header in headers)
+                        {
+                            dt.Columns.Add(header.Trim());
+                            //Handler.Log("UploadFile", "dt Column Added:" + header.Trim());
+
+                        }
+                        while (!sr.EndOfStream)
+                        {
+                            string[] rows = sr.ReadLine().Split(',');
+                            DataRow dr = dt.NewRow();
+                            for (int i = 0; i < headers.Length; i++)
+                            {
+                                dr[i] = rows[i].Trim();
+                                //Handler.Log("UploadFile", "dt Row Added:" + rows[i].Trim());
+                            }
+                            dt.Rows.Add(dr);
+                            //Handler.Log("UploadFile", "dt Row Added Done");
+
+                        }
+                        sr.Close();
+                        //Handler.Log("UploadFile", "StreamReader Close");
+
+
+                    }
+                    if (dt.Rows.Count > 0)
+                    {
+                        //Handler.Log("UploadFile", "dt Row Count");
+
+                        model.IsUploadExcelFile = 1;
+                        return Json(new
+                        {
+                            status = "success",
+                            data = _repository.FileUpload(model, dt)
+                        });
+                    }
+                    else
+                        throw new Exception("Invalid Data");
+                }
+                else
+                    throw new Exception("File Not Uploaded Please Retry after Some Time");
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = "error",
+                    msg = ex.Message + " controller",
+                });
+            }
+
+
+
+        }
+
+
     }
 }
