@@ -138,7 +138,7 @@ namespace SSRepository.Repository.Transaction
                     string Size = dr[1].ToString();
                     int Qty = Convert.ToInt32(dr[2].ToString());
 
-                    DataTable dtProduct = GetProductDetail("", 0, 0, ProductName, model.FKOrderID, model.FKOrderSrID);
+                    DataTable dtProduct = GetProduct("", model.FKLocationID, 0, 0, ProductName, false,model.ExtProperties.TranAlias,model.FkPartyId, model.FKOrderID, model.FKOrderSrID);
                     if (dtProduct.Rows.Count > 0)
                     {
 
@@ -218,8 +218,8 @@ namespace SSRepository.Repository.Transaction
 
 
 
-                        setGridTotal(model);
-                        setPaymentDetail(model);
+                        SetGridTotal(model);
+                        SetPaymentDetail(model);
                     }
                     else { notFound_List.Add(ProductName); }
                 }
