@@ -185,9 +185,9 @@ namespace SSRepository.Repository
             __dbContext = dbContext;
         }
 
-      
 
-        
+
+
 
         #region Add/Update/Delete Data
         public virtual void AddData(object entity, bool IsRange)
@@ -252,7 +252,7 @@ namespace SSRepository.Repository
                 catch (Exception ex)
                 {
                     trans.Rollback();
-                   throw ex;
+                    throw ex;
                 }
             }
         }
@@ -320,7 +320,7 @@ namespace SSRepository.Repository
                 }
                 catch (Exception ex)
                 {
-                     trans.Rollback();
+                    trans.Rollback();
                     return ex.Message;
                 }
             }
@@ -585,9 +585,11 @@ namespace SSRepository.Repository
         public string GetSysDefaultsByKey(string SysDefKey)
         {
 
-            return (from x in __dbContext.TblSysDefaults
-                    where x.SysDefKey == SysDefKey
-                    select x).FirstOrDefault().SysDefValue;
+            var _entity = (from x in __dbContext.TblSysDefaults
+                           where x.SysDefKey == SysDefKey
+                           select x).FirstOrDefault();
+
+            return _entity != null ? _entity.SysDefValue : "";
         }
 
         public List<SysDefaultsModel> GetSysDefaultsList(string search = "")
@@ -626,6 +628,39 @@ namespace SSRepository.Repository
 
                     }
                 }
+                __dbContext.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+        public void InsertUpdateSysDefaults(string SysDefKey, string SysDefValue)
+        {
+            try
+            { 
+                var _entity = __dbContext.TblSysDefaults.Where(x => x.SysDefKey == SysDefKey).FirstOrDefault();
+                if (_entity != null)
+                {
+                    TblSysDefaults Tbl = new TblSysDefaults();
+                    Tbl = _entity;
+                    Tbl.SysDefValue = SysDefValue;
+                    UpdateData(Tbl, false);
+                }
+                else
+                {
+                    TblSysDefaults Tbl = new TblSysDefaults();
+                    Tbl.PKSysDefID = 450;
+                    Tbl.SysDefKey = SysDefKey;
+                    Tbl.SysDefValue = SysDefValue;
+                    Tbl.FKUserID = 1;
+                    Tbl.DATE_MODIFIED = DateTime.Now;
+                    AddData(Tbl, false);
+
+                }
+
                 __dbContext.SaveChanges();
 
             }
@@ -757,10 +792,10 @@ namespace SSRepository.Repository
                 con.Close();
             }
         }
-        public List<FormModel> GetFormList(long? FKMasterFormID=null)
+        public List<FormModel> GetFormList(long? FKMasterFormID = null)
         {
             List<FormModel> data = (from cou in __dbContext.TblFormMas
-                                    where cou.IsActive==true &&
+                                    where cou.IsActive == true &&
                                     cou.FKMasterFormID == (FKMasterFormID > 0 ? FKMasterFormID : cou.FKMasterFormID)
                                     select (new FormModel
                                     {
@@ -774,7 +809,7 @@ namespace SSRepository.Repository
                                         Image = cou.Image,
                                         FormType = cou.FormType,
                                         WebURL = cou.WebURL,
-                                        IsActive = cou.IsActive, 
+                                        IsActive = cou.IsActive,
                                     }
                                         )).ToList();
             return data;

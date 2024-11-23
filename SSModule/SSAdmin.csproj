@@ -263,6 +263,7 @@
     <Folder Include="Areas\Option\Models\" />
     <Folder Include="wwwroot\InvoicePDF\" />
     <Folder Include="wwwroot\logs\" />
+    <Folder Include="wwwroot\Database\" />
   </ItemGroup>
 
 </Project>
