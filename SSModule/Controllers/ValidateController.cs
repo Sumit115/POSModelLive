@@ -51,7 +51,7 @@ namespace SSAdmin.Controllers
                     DateTime? dbdt = null;
                     if (DateTime.TryParse(dbdtStr, out d))
                     {
-                        dbdt = Convert.ToDateTime(d);
+                         dbdt = Convert.ToDateTime(d);
                     }
                     var _databaseFiles = Directory.EnumerateFiles(Path.Combine("wwwroot", "Database"))
                        .Select(x => new
@@ -68,17 +68,22 @@ namespace SSAdmin.Controllers
                         {
                             try
                             {
+                                if (item.file == "wwwroot\\Database\\usp_PurchaseInvoiceAddUpd-24-11-2024-01-15-AM.sql")
+                                { 
+                                }
                                 var _sql = System.IO.File.ReadAllText(item.file);
                                 var aa = _repository.ExecNonQuery(_sql);
                             }
                             catch (Exception ex)
                             {
+                                var _sql = System.IO.File.ReadAllText(item.file);
+
                                 var logfilePath = Path.Combine("wwwroot", "Logs");
                                 if (!Directory.Exists(logfilePath))
                                     Directory.CreateDirectory(logfilePath);
 
                                 logfilePath = Path.Combine(logfilePath, "sqlQuery.txt");
-
+                               
                                 FileInfo logfile = new FileInfo(logfilePath);
                                 if (!logfile.Exists)
                                 {
