@@ -9,11 +9,11 @@ using SSRepository.Repository;
 
 namespace SSAdmin.Controllers
 {
-
-    public class HomeController : BaseController
+    [AllowAnonymous]
+    public class HomeController:Controller
     {
 
-        public HomeController(IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
+        public HomeController(IGridLayoutRepository gridLayoutRepository) 
         {
 
         }
