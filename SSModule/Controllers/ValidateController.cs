@@ -4,6 +4,8 @@ using LMS.IRepository;
 using LMS.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using SSRepository.IRepository;
 using System.Globalization;
@@ -41,7 +43,7 @@ namespace SSAdmin.Controllers
             {
                 HttpContext.Session.SetString("ConnectionString", Convert.ToString(HttpContext.User.FindFirst("ConnectionString")?.Value));
                 HttpContext.Session.SetString("UserID", Convert.ToString(HttpContext.User.FindFirst("UserId")?.Value));
-
+                //DeployStoredProcedures();
                 var entity = _repository.ValidateUser(Convert.ToInt64(HttpContext.User.FindFirst("UserId")?.Value));
                 if (entity != null)
                 {
@@ -149,6 +151,34 @@ namespace SSAdmin.Controllers
                 Response.Redirect("/Auth");
             }
             return View();
+        }
+
+        public void DeployStoredProcedures()
+        {
+            var scriptFiles = Directory.GetFiles("wwwroot\\DataBase", "*.sql");
+
+
+            using (var connection = new SqlConnection(HttpContext.Session.GetString("ConnectionString")))
+            {
+                try
+                {
+                    connection.Open();
+
+                    foreach (var scriptFile in scriptFiles)
+                    {
+                        var script = System.IO.File.ReadAllText(scriptFile);
+                        using (var command = new SqlCommand(script, connection))
+                        {
+                            command.ExecuteNonQuery();
+                            }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to execute scripts on : {ex.Message}");
+                }
+            }
+
         }
     }
 }
