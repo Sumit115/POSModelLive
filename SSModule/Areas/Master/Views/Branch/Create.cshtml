@@ -94,6 +94,14 @@
                     <span asp-validation-for="Pin" class="text-danger"></span>
                 </div>
             </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Image</label>
+                    <input type="file" class="form-control" asp-for="MyImage1" />
+                    <input type="hidden" asp-for="Image1" />
+                    <img src="@Model.Image1" style="height: 100px;width: 100px;" />
+                </div>
+            </div>
         </div>
 
     </form>

@@ -20,7 +20,7 @@ namespace SSRepository.Data
         public string? Country { get; set; }
         public long? FkRegId { get; set; }
         public string? BranchCode { get; set; }
-        public string? Location { get; set; }
-
+        public string? Location { get; set; } 
+        public string? Image1 { get; set; }
     }
 }

@@ -33,13 +33,19 @@ namespace SSAdmin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-
-            SignInModel model = new SignInModel();
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Validate");
+            }
+            else
+            {
+                SignInModel model = new SignInModel();
 #if DEBUG
-            model.UserID = "Aburoad@gmail.com";
-            model.Password = "Admin";
+                        model.UserID = "Aburoad@gmail.com";
+                        model.Password = "Admin";
 #endif
-            return View(model);
+                return View(model);
+            }
         }
 
         [HttpPost]

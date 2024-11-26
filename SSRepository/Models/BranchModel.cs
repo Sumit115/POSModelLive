@@ -1,4 +1,5 @@
-﻿using SSRepository.Data;
+﻿using Microsoft.AspNetCore.Http;
+using SSRepository.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -31,6 +32,7 @@ namespace SSRepository.Models
         public virtual TblCompany? FkCompany { get; set; }
 
         public string? City { get; set; }
-
+        public string? Image1 { get; set; } 
+        public IFormFile? MyImage1 { set; get; }
     }
 }

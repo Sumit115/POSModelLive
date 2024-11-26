@@ -74,7 +74,8 @@ namespace SSRepository.Repository.Master
                                           Country = cou.Country,
                                           FkRegId = cou.FkRegId,
                                           BranchCode = cou.BranchCode,
-                                          Location = cou.Location, 
+                                          Location = cou.Location,
+                                          Image1 = cou.Image1,
                                       }
                                      )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -106,6 +107,7 @@ namespace SSRepository.Repository.Master
                         FkRegId = cou.FkRegId,
                         BranchCode = cou.BranchCode,
                         Location = cou.Location,
+                        Image1 = cou.Image1,
                     })).FirstOrDefault();
             return data;
         }
@@ -196,6 +198,7 @@ namespace SSRepository.Repository.Master
             Tbl.BranchCode = model.BranchCode;
             Tbl.Location = model.Location;
             Tbl.ModifiedDate= DateTime.Now;
+            Tbl.Image1 = model.Image1;
             if (Mode == "Create")
             {
                 Tbl.FKCreatedByID = model.FKCreatedByID;

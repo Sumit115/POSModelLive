@@ -22,13 +22,13 @@ namespace SSAdmin.Areas.Master.Controllers
     public class BranchController : BaseController
     {
         private readonly IBranchRepository _repository;
-        
-        public BranchController(IBranchRepository repository, IGridLayoutRepository gridLayoutRepository):base(gridLayoutRepository)
+
+        public BranchController(IBranchRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
             _repository = repository;
             FKFormID = (long)Handler.Form.Branch;
         }
-       
+
         public async Task<IActionResult> List()
         {
             ViewBag.FormId = FKFormID;
@@ -83,6 +83,12 @@ namespace SSAdmin.Areas.Master.Controllers
                 {
                     ViewBag.PageType = "Edit";
                     Model = _repository.GetSingleRecord(id);
+                    //if (!string.IsNullOrEmpty(Model.Image1))
+                    //{
+                    //    string path = Path.Combine("wwwroot", "Data");
+                    //    path = Path.Combine(path, Convert.ToString(HttpContext.User.FindFirst("CompanyName")?.Value ?? ""));
+                    //    Model.Image1 = Path.Combine(path, Model.Image1);
+                    //}
                 }
                 else
                 {
@@ -111,6 +117,19 @@ namespace SSAdmin.Areas.Master.Controllers
                 model.FkRegId = 1;
                 if (ModelState.IsValid)
                 {
+                    if (model.MyImage1 != null)
+                    {
+                        string path = Path.Combine("wwwroot", "Data");
+                        string CompFolder = Convert.ToString(HttpContext.User.FindFirst("CompanyName")?.Value ?? "");
+                        path = Path.Combine(path, CompFolder);
+                        string filePath = Path.Combine(path, model.MyImage1.FileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            model.MyImage1.CopyTo(stream);
+                        }
+
+                        model.Image1 = "/Data/" + CompFolder + "/" + model.MyImage1.FileName;
+                    }
                     string Mode = "Create";
                     if (model.PkBranchId > 0)
                     {

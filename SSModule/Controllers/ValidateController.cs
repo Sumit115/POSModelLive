@@ -70,10 +70,7 @@ namespace SSAdmin.Controllers
                             foreach (var item in _databaseFiles)
                             {
                                 try
-                                {
-                                    if (item.file == "wwwroot\\Database\\usp_PurchaseInvoiceAddUpd-24-11-2024-01-15-AM.sql")
-                                    {
-                                    }
+                                { 
                                     var _sql = System.IO.File.ReadAllText(item.file);
                                     var aa = _repository.ExecNonQuery(_sql);
                                 }
