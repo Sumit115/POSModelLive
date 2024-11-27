@@ -82,6 +82,7 @@ namespace SSRepository.Data
         public virtual DbSet<TblRecipeDtl> TblRecipeDtl { get; set; } = null!;
         public virtual DbSet<TblRoleMas> TblRoleMas { get; set; } = null!;
         public virtual DbSet<TblRoleDtl> TblRoleDtl { get; set; } = null!;
+        public virtual DbSet<TblUnitMas> TblUnitMas { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

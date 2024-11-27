@@ -126,6 +126,7 @@ builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 builder.Services.AddScoped<IImportRepository, ImportRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<IUnitRepository, UnitRepository>();
 
 
 builder.Services.AddControllers().AddNewtonsoftJson();

@@ -763,14 +763,7 @@ namespace SSRepository.Repository
 
         }
 
-        public List<ddl> UnitList()
-        {
-            return new List<ddl> {
-                 new ddl { Value = "1", Text = "Unit 1" },
-                new ddl { Value = "2", Text = "Unit 2" },
-                new ddl { Value = "3", Text = "Unit 3" }
-            };
-        }
+        
 
         public void ExecuteQuery(string Qry, ref string ErrMsg)
         {

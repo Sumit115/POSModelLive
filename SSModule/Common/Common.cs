@@ -51,6 +51,7 @@ namespace SSAdmin
             Role = 28,
             Recipe = 29,
             Company = 30,
+            Unit = 31,
 
             SalesOrder = 100,
             SalesInvoice = 101,
