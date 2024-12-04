@@ -55,7 +55,7 @@ namespace SSRepository.Repository.Transaction
                 long Id = 0;
                 long SeriesNo = 0;
                 //  var aa = JsonConvert.SerializeObject(model);
-                  SaveData(model, ref Id, ref Error, ref SeriesNo);
+                SaveData(model, ref Id, ref Error, ref SeriesNo);
                 //Error = "p";
             }
             return Error;
@@ -769,7 +769,7 @@ namespace SSRepository.Repository.Transaction
                 detail.Rate = Convert.ToDecimal(dtProduct.Rows[0][model.BillingRate].ToString());
             }
         }
-        public object BarcodeScan(TransactionModel model, string Barcode)
+        public object BarcodeScan(TransactionModel model, string Barcode, bool isCalGridTotal)
         {
             DataTable dtProduct = GetProduct(Barcode, model.FKLocationID, 0, 0, "", false, model.TranAlias, model.FkPartyId, model.FKOrderID, model.FKOrderSrID);
 
@@ -807,7 +807,11 @@ namespace SSRepository.Repository.Transaction
                 model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = detail.SrNo, Barcode = Barcode });
 
             }
-
+            if (isCalGridTotal)
+            {
+                SetGridTotal(model);
+                SetPaymentDetail(model);
+            }
             return model;
         }
         public object ProductTouch(TransactionModel model, long PkProductId)
@@ -1059,7 +1063,7 @@ namespace SSRepository.Repository.Transaction
                         else if (itemPromo.Promotion == "Free Point" && itemPromo.PromotionAmt > 0)
                         {
                             model.FreePoint = (decimal)itemPromo.PromotionAmt * l;
-                        } 
+                        }
                         // } 
                     }
                 }
@@ -1128,6 +1132,48 @@ namespace SSRepository.Repository.Transaction
                 detail.FKInvoiceSrID = _invoice.FKSeriesId;
             }
         }
+        public object AutoFillLastRecord(TransactionModel model)
+        {
+            if (model.TranDetails != null)
+            {
+                var tranDetail = model.TranDetails.ToList().OrderByDescending(x => x.SrNo).FirstOrDefault();
+                var detail = new TranDetails();
+                model.TranDetails.Add(detail);
+                TranDetailDefault(model, detail);
+                detail.FkProductId = tranDetail.FkProductId;
+                detail.Qty = tranDetail.Qty;
+                detail.FkLotId = tranDetail.FkLotId;
+                detail.Color = tranDetail.Color;
+                detail.Batch = tranDetail.Batch;
+
+                detail.FkBrandId = tranDetail.FkBrandId;
+                detail.FKProdCatgId = tranDetail.FKProdCatgId;
+                detail.Product = tranDetail.Product;
+                detail.CodingScheme = tranDetail.CodingScheme;
+
+                detail.MRP = tranDetail.MRP;
+                detail.SaleRate = tranDetail.SaleRate;
+                detail.TradeRate = tranDetail.TradeRate;
+                detail.DistributionRate = tranDetail.DistributionRate;
+
+                detail.Rate = tranDetail.Rate;
+                detail.TradeDisc = tranDetail.TradeDisc;
+                //detail.FKOrderID = tranDetail.FKOrderID;
+                //detail.FKOrderSrID = tranDetail.FKOrderSrID;
+                //detail.OrderSrNo = tranDetail.OrderSrNo; 
+                //if (model.TranAlias == "PORD" || model.TranAlias == "PINV")
+                //{
+                //    detail.FkLotId = 0;
+                //}
+
+
+                CalculateExe(detail);
+                SetGridTotal(model);
+                SetPaymentDetail(model);
+            }
+
+            return model;
+        }
 
         public void CalculateExe(TransactionModel model)
         {
@@ -1159,7 +1205,7 @@ namespace SSRepository.Repository.Transaction
             item.GstRate = (item.GrossAmt / 2) < 1000 ? 5 : 18;
             item.TaxableAmt = Math.Round(((item.GrossAmt * 100) / (100 + item.GstRate)), 2);
 
-           // item.GstAmt = Math.Round((item.TaxableAmt * 100) / item.GstRate, 2);
+            // item.GstAmt = Math.Round((item.TaxableAmt * 100) / item.GstRate, 2);
             item.GstAmt = Math.Round((item.TaxableAmt * item.GstRate) / 100, 2);
             item.NetAmt = Math.Round(item.TaxableAmt + item.GstAmt, 2);
         }
@@ -2005,6 +2051,16 @@ namespace SSRepository.Repository.Transaction
             return data;
         }
         //AddImagesAndRemark(obj.PkcountryId, obj.FKCustomerID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
+
+        public object GetPrintData(long PkId, long FkSeriesId)
+        {
+            var model = GetSingleRecord(PkId, FkSeriesId);
+            SeriesRepository repSeries = new SeriesRepository(__dbContext);
+            var FormatName = repSeries.GetSingleRecord(model.FKSeriesId).FormatName;
+            FormatName = string.IsNullOrEmpty(FormatName) ? "Wholesale" : FormatName;
+
+            return new { model= model, FormatName= FormatName };
+        }
     }
 
 

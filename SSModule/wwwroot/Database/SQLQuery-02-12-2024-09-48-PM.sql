@@ -1,0 +1,1 @@
+ Update tblSeries_mas set [FormatName]=Isnull([FormatName],'Wholesale')

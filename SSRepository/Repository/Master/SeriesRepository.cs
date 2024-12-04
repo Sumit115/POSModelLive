@@ -173,7 +173,7 @@ namespace SSRepository.Repository.Master
             error = isAlreadyExist(model, Mode);
             if (string.IsNullOrEmpty(error) && model.PkSeriesId > 0)
             {
-                error = isAvailableForEdit(model, Mode);
+               // error = isAvailableForEdit(model, Mode);
             }
             return error;
 
@@ -190,10 +190,8 @@ namespace SSRepository.Repository.Master
             }
 
             Tbl.Series = model.Series;
-            Tbl.SeriesNo = model.SeriesNo;
-            //Tbl.FkBranchId = model.FkBranchId;
+             //Tbl.FkBranchId = model.FkBranchId;
             Tbl.BillingRate = model.BillingRate;
-            Tbl.TranAlias = model.TranAlias;
             Tbl.FormatName = model.FormatName;
             Tbl.ResetNoFor = model.ResetNoFor;
             Tbl.AllowWalkIn = model.AllowWalkIn;
@@ -206,6 +204,8 @@ namespace SSRepository.Repository.Master
             Tbl.ModifiedDate = DateTime.Now;
             if (Mode == "Create")
             {
+                Tbl.SeriesNo = model.SeriesNo;
+                Tbl.TranAlias = model.TranAlias;
                 Tbl.FKCreatedByID = model.FKCreatedByID;
                 Tbl.FKUserID = model.FKUserId;
                 Tbl.CreationDate = DateTime.Now;

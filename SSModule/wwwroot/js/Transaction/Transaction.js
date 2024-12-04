@@ -5,6 +5,7 @@ var TranAlias = "";
 
 
 $(document).ready(function () {
+   
     Common.InputFormat();
     Load();
     tranModel.TrnStatus = Handler.isNullOrEmpty(tranModel.TrnStatus) ? "P" : tranModel.TrnStatus.replace('\u0000', '');
@@ -33,7 +34,11 @@ $(document).ready(function () {
         var $ul = $('#ul_Category li:first');
         BindCategoryProduct_Touch($($ul).find('a'));
     }
-
+    $(document.body).keyup(function (e) {
+        if (e.keyCode == 120 && e.ctrlKey) {
+            AutoFillLastRecord();
+        }
+    });
     $('#btnServerSave').click(function (e) {
 
         if ($("#loginform1").valid()) {
@@ -314,6 +319,8 @@ function BindGrid(GridId, data) {
                 //if (Handler.isNullOrEmpty(LinkSrNo) || LinkSrNo <= 0 ) {
 
                 if (field == "Product") {
+                    args.item["SrNo"] = 0;
+
                     if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
                         var InvoiceSrNo = Common.isNullOrEmpty(args.item["ProductName"]) ? 0 : parseFloat(args.item["ProductName"]);
                         //var data = ProductList.filter(function (element) { return (element.InvoiceSrNo == InvoiceSrNo); });
@@ -1103,7 +1110,7 @@ function GetAndCheckBarcodeQty(_d) {
     var _NotFound = []
     _d.filter(function (element) {
         var _srnoList = tranModel.UniqIdDetails.filter((u) => { return u.SrNo == element.SrNo });
-        if (_srnoList.length != element.Qty && element.ModeForm != 2 && element.CodingScheme =='Unique')
+        if (_srnoList.length != element.Qty && element.ModeForm != 2 && element.CodingScheme == 'Unique')
             _NotFound.push(element.Product);
     });
     return _NotFound
@@ -1507,5 +1514,36 @@ function ProductTouch($cntrl) {
             $(".loader").hide();
         }
     })
+}
+
+function AutoFillLastRecord() {
+    
+    tranModel.TranDetails = GetDataFromGrid();
+    if (tranModel.TranDetails.length > 0) {
+        $(".loader").show();
+        $.ajax({
+            type: "POST",
+            url: Handler.currentPath() + 'AutoFillLastRecord',
+            data: { model: tranModel },
+            datatype: "json", success: function (res) {
+                if (res.status == "success") {
+                    tranModel = res.data;
+                    //$(tranModel.TranDetails).each(function (i, v) {
+                    //    v["ProductName"] = parseInt(v.FkProductId);
+                    //});
+                    BindGrid('DDT', tranModel.TranDetails);
+
+                    setFooterData(tranModel);
+                    setPaymentDetail(tranModel);
+
+                }
+                else
+                    alert(res.msg);
+                $(".loader").hide();
+            }
+        })
+    }
+    else
+        alert('please insert any 1 record');
 }
 

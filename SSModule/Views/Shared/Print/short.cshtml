@@ -1,0 +1,137 @@
+﻿@using SSAdmin;
+@model SSRepository.Models.TransactionModel
+@{
+    Layout = null;
+}
+
+<html>
+<head>
+    <style>
+        @@media print {
+            @@page {
+                margin: 0;
+            }
+        }</style>
+</head>
+<body>
+    <table>
+        <tbody>
+            <tr>
+                <td colspan="6" style="text-align: center;"><h1>@Model.Branch.BranchName</h1></td>
+            </tr>
+            <tr>
+                <td colspan="6" style="border-top: 1px solid #ced4da;border-bottom: 1px solid #ced4da;padding: 6px 0;">Name : @Model.PartyName | @Model.PartyMobile </td>
+            </tr>
+            <tr>
+                <td colspan="3">Date : @Model.EntryDate.ToString("dd/MM/yyyy")</td>
+                <td colspan="3" style="text-align: right;">@Model.SeriesName@Model.EntryNo</td>
+            </tr>
+           @* <tr>
+                <td colspan="3" style="padding-bottom: 10px;">Payment : @Model.Paymode</td>
+                <td colspan="3" style="text-align: right;padding-bottom: 10px;">Bill No : @Model.PkId </td>
+            </tr>*@
+            <tr>
+                <td style="border-top: 1px solid #ced4da;border-bottom: 1px solid #ced4da;padding: 6px 0;">No.</td>
+                <td style="border-top: 1px solid #ced4da;border-bottom: 1px solid #ced4da;padding: 6px 0;" colspan="2">Item</td>
+                <td style="border-top: 1px solid #ced4da;border-bottom: 1px solid #ced4da;padding: 6px 0;">Qty</td>
+                <td style="border-top: 1px solid #ced4da;border-bottom: 1px solid #ced4da;padding: 6px 0;text-align: center;">Price</td>
+                <td style="border-top: 1px solid #ced4da;border-bottom: 1px solid #ced4da;padding: 6px 0;">Amount</td>
+            </tr>
+            @{
+                int cnt = 0;
+            }
+            @foreach (var item in Model.TranDetails)
+            {
+                cnt++;
+                <tr>
+                    <td>@cnt.</td>
+                    <td colspan="2"> @item.Product</td>
+                    <td style="text-align: center;">
+                        @item.Qty.ToString("G29")
+                    </td>
+                    <td style="text-align: center;">
+                        @item.Rate.ToString("G29")
+                    </td>
+                    <td style="text-align: center;">
+                        @item.NetAmt.ToString("G29")
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td colspan="3" style="text-align: right;border-top: 1px solid #ced4da;border-bottom: 1px solid #ced4da;padding: 6px 0;">Total</td>
+                <td style="border-top: 1px solid #ced4da;border-bottom: 1px solid #ced4da;padding: 6px 0;text-align: center;">
+                    @Model.TranDetails.Sum(x=>x.Qty)
+                </td>
+                <td style="border-top: 1px solid #ced4da;border-bottom: 1px solid #ced4da;padding: 6px 0;">
+                    SubTotal
+                </td>
+                <td style="border-top: 1px solid #ced4da;border-bottom: 1px solid #ced4da;padding: 6px 0;text-align: center;">
+                    @Model.GrossAmt
+                </td>
+            </tr>
+            @if (Model.TotalDiscount > 0)
+            {
+                <tr>
+                    <td colspan="5" style="text-align: right;">Discount</td>
+                    <td style="text-align: center;">
+                        @Model.TotalDiscount
+                    </td>
+                </tr>
+            }
+            @if (Model.Shipping > 0)
+            {
+                <tr>
+                    <td colspan="5" style="text-align: right;">Shipping</td>
+                    <td style="text-align: center;">
+                        @Model.Shipping
+                    </td>
+                </tr>
+            }
+            @if (Model.OtherCharge > 0)
+            {
+                <tr>
+                    <td colspan="5" style="text-align: right;">Container Charge</td>
+                    <td style="text-align: center;">
+                        @Model.OtherCharge
+                    </td>
+                </tr>
+            }
+            @if (Model.TaxAmt > 0)
+            {
+                <tr>
+                    <td colspan="5" style="text-align: right;">CGST</td>
+                    <td style="text-align: center;">
+                        @(Model.TaxAmt / 2)
+                    </td>
+                </tr>
+                  <tr>
+                    <td colspan="5" style="text-align: right;">SGST</td>
+                    <td style="text-align: center;">
+                        @(Model.TaxAmt / 2)
+                    </td>
+                </tr>
+                
+            }
+            @if (Model.RoundOfDiff > 0)
+            {
+                <tr>
+                    <td colspan="5" style="text-align: right;">Round  Off</td>
+                    <td style="text-align: center;">
+                        @Model.RoundOfDiff
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td colspan="5" style="text-align: right;border-top: 1px solid #ced4da;border-bottom: 1px solid #ced4da;padding: 6px 0;"><b>Grand Total</b></td>
+                <td style="border-top: 1px solid #ced4da;border-bottom: 1px solid #ced4da;padding: 6px 0;text-align: center;">
+                    @Model.NetAmt
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6" style="text-align: center;padding-top: 16px;"><h3><b style="">Thanks For Order</b></h3></td>
+
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

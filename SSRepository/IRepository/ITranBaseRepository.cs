@@ -8,8 +8,9 @@ namespace SSRepository.IRepository
         string Create(TransactionModel model);
         DataTable GetList(string FromDate, string ToDate, string SeriesFilter, string DocumentType, string LocationFilter = "");
         TransactionModel GetSingleRecord(long PkId, long FkSeriesId);
-        object BarcodeScan(TransactionModel model, string barcode);
+        object BarcodeScan(TransactionModel model, string barcode,bool isCalGridTotal);
         object ProductTouch(TransactionModel model, long PkProductId);
+        object AutoFillLastRecord(TransactionModel model);
 
         object FooterChange(TransactionModel model, string fieldName);
         object PaymentDetail(TransactionModel model);
@@ -51,6 +52,8 @@ namespace SSRepository.IRepository
         object BarcodeList(TransactionModel model, int rowIndex);
         string SaveInvoiceBilty(long FkUserId,long FkID, long FKSeriesId, long FkFormId, string BiltyNo, string Image);
         object GetInvoiceBilty(long FkID, long FKSeriesId, long FkFormId);
+
+        object GetPrintData(long PkId, long FkSeriesId);
 
     }
 }

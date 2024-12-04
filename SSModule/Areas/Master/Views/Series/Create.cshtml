@@ -17,21 +17,31 @@
 
         <div class="row">
 
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Series Name</label>
                     <input asp-for="Series" class="form-control" />
                     <span asp-validation-for="Series" class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Series No</label>
                     <input asp-for="SeriesNo" class="form-control" />
                     <span asp-validation-for="SeriesNo" class="text-danger"></span>
                 </div>
             </div>
-
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Format</label>
+                    <select asp-for="FormatName" class="form-control">
+                        <option value="Wholesale">Wholesale</option>
+                        <option value="Walking">Walking</option>
+                        <option value="short">short</option>
+                    </select>
+                    <span asp-validation-for="FormatName" class="text-danger"></span>
+                </div>
+            </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Tran Alias</label>

@@ -16,6 +16,7 @@ using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Bcpg;
+using Org.BouncyCastle.Crypto.Engines;
 using SelectPdf;
 using SSRepository.IRepository;
 using SSRepository.IRepository.Master;
@@ -43,6 +44,7 @@ namespace SSAdmin.Areas
     {
         private readonly TRepository _repository;
         private readonly TGridLayoutRepository _GridLayoutRepository;
+        //  private readonly ISeriesRepository _repositorySeries;
         public string TranType = "";
         public string TranAlias = "";
         public string StockFlag = "";
@@ -58,10 +60,11 @@ namespace SSAdmin.Areas
             this._GridLayoutRepository = GridLayoutRepository;
             this.viewEngine = viewEngine;
             _webHostEnvironment = webHostEnvironment;
+            // _repositorySeries = repositorySeries;
 
         }
 
-        
+
 
         protected void BindViewBags(object Trans)
         {
@@ -119,7 +122,7 @@ namespace SSAdmin.Areas
                 return Json(new
                 {
                     status = "success",
-                    data = _repository.BarcodeScan(model, barcode)
+                    data = _repository.BarcodeScan(model, barcode, true)
                 });
 
             }
@@ -160,9 +163,11 @@ namespace SSAdmin.Areas
         [HttpPost]
         public IActionResult BarcodeFiles(TransactionModel model, List<string> barcodelist)
         {
+            int sno = 0;
             foreach (string barcode in barcodelist)
             {
-                _repository.BarcodeScan(model, barcode);
+                sno++;
+                _repository.BarcodeScan(model, barcode, barcodelist.Count == sno ? true : false);
             }
             var ListNotFound = string.Join(",", barcodelist.Where(item => !model.UniqIdDetails.ToList().Any(item2 =>
             item2.Barcode == item.ToString())).ToList());
@@ -173,6 +178,28 @@ namespace SSAdmin.Areas
                 data = model,
                 ListNotFound
             });
+
+        }
+        public JsonResult AutoFillLastRecord(TransactionModel model)
+        {
+            try
+            {
+                return Json(new
+                {
+                    status = "success",
+                    data = _repository.AutoFillLastRecord(model)
+                });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = "error",
+                    msg = ex.Message,
+                });
+            }
+
 
         }
 
@@ -316,10 +343,11 @@ namespace SSAdmin.Areas
             ResModel res = new ResModel();
             try
             {
-                var model = new TransactionModel();
+                // var model = new TransactionModel();
                 //var model = _repository.GetSingleRecord(Id, 0);
-                model = _repository.GetSingleRecord(PkId, FkSeriesId);
-
+                var data = _repository.GetPrintData(PkId, FkSeriesId);
+                var FormatName = data.GetType().GetProperties().First(o => o.Name == "FormatName").GetValue(data, null);
+                TransactionModel model = (TransactionModel)data.GetType().GetProperties().First(o => o.Name == "model").GetValue(data, null);
 
                 string webRootPath = _webHostEnvironment.WebRootPath;
                 string contentRootPath = _webHostEnvironment.ContentRootPath;
@@ -335,7 +363,9 @@ namespace SSAdmin.Areas
 
                 using (StringWriter sw = new StringWriter())
                 {
-                    IView view = viewEngine.FindView(ControllerContext, "_Print", true).View;
+                    //IView view = viewEngine.FindView(ControllerContext, "_Print", false).View;
+                    // IView view = viewEngine.FindView(ControllerContext, "~/Views/Shared/Print/_Print.cshtml",  false).View;
+                    IView view = viewEngine.GetView("", "~/Views/Shared/Print/" + FormatName + ".cshtml", isMainPage: false).View;
                     ViewContext viewContext = new ViewContext(ControllerContext, view, ViewData, TempData, sw, new HtmlHelperOptions());
 
                     view.RenderAsync(viewContext).Wait();
@@ -419,7 +449,7 @@ namespace SSAdmin.Areas
         [HttpPost]
         public JsonResult GetInvoiceBilty(long FkID, long FKSeriesId, long FormId)
         {
-            if (FormId == 0) FormId = FKFormID; 
+            if (FormId == 0) FormId = FKFormID;
             return Json(new
             {
                 status = "success",
@@ -433,7 +463,7 @@ namespace SSAdmin.Areas
         {
             if (FormId == 0) FormId = FKFormID;
 
-            var error = _repository.SaveInvoiceBilty(LoginId,FkID, FKSeriesId, FormId, BiltyNo, Image);
+            var error = _repository.SaveInvoiceBilty(LoginId, FkID, FKSeriesId, FormId, BiltyNo, Image);
             if (string.IsNullOrEmpty(error))
             {
                 return Json(new
@@ -445,7 +475,7 @@ namespace SSAdmin.Areas
             {
                 return Json(new
                 {
-                    status = "error", 
+                    status = "error",
                     msg = error,
                 });
             }

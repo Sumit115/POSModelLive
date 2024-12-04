@@ -105,6 +105,7 @@ namespace SSAdmin.Controllers
                                         System.IO.File.AppendAllText(logfilePath, "\n \n \n" + DateTime.Now.ToString());
                                         System.IO.File.AppendAllText(logfilePath, "\n" + Convert.ToString(HttpContext.User.FindFirst("ConnectionString")?.Value));
                                         System.IO.File.AppendAllText(logfilePath, "\n" + item.fileName);
+                                        System.IO.File.AppendAllText(logfilePath, "\n" + ex.Message.ToString());
                                         System.IO.File.AppendAllText(logfilePath, "\n" + ex.StackTrace.ToString());
                                     }
                                 }
@@ -130,6 +131,8 @@ namespace SSAdmin.Controllers
                                 fs.Write(author, 0, author.Length);
                                 author = new UTF8Encoding(true).GetBytes("\n" + Convert.ToString(HttpContext.User.FindFirst("ConnectionString")?.Value));
                                 fs.Write(author, 0, author.Length);
+                                author = new UTF8Encoding(true).GetBytes("\n" + ex.Message.ToString());
+                                fs.Write(author, 0, author.Length);
                                 author = new UTF8Encoding(true).GetBytes("\n" + ex.StackTrace.ToString());
                                 fs.Write(author, 0, author.Length);
                             }
@@ -138,6 +141,7 @@ namespace SSAdmin.Controllers
                         {
                             System.IO.File.AppendAllText(logfilePath, "\n \n \n" + DateTime.Now.ToString());
                             System.IO.File.AppendAllText(logfilePath, "\n" + Convert.ToString(HttpContext.User.FindFirst("ConnectionString")?.Value));
+                            System.IO.File.AppendAllText(logfilePath, "\n" + ex.Message.ToString());
                             System.IO.File.AppendAllText(logfilePath, "\n" + ex.StackTrace.ToString());
                         }
 
