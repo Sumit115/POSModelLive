@@ -121,37 +121,29 @@ namespace SSAdmin.Areas.Transactions.Controllers
         [HttpPost]
         public JsonResult Create(TransactionModel model)
         {
+            ResModel res = new ResModel();
             try
             {
                 //var aa = JsonConvert.SerializeObject(model);
                  string Error = _repository.Create(model);
                 if (string.IsNullOrEmpty(Error))
                 {
-                    return Json(new
-                    {
-                        status = "success",
-                        msg = Error
-                    });
+                    res.status = "success";
                 }
                 else
                 {
-                    return Json(new
-                    {
-                        status = "error",
-                        msg = Error
-                    });
+                    res.status = "warr";
+                    res.msg = Error;
+                    res.data = model;
                 }
 
             }
             catch (Exception ex)
             {
-
-                ModelState.AddModelError("", ex.Message);
+                res.status = "warr";
+                res.msg = ex.Message;
             }
-            return Json(new
-            {
-                status = "success"
-            });
+            return Json(res);
 
         }
 

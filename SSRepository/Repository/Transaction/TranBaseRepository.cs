@@ -119,7 +119,7 @@ namespace SSRepository.Repository.Transaction
                                 if (objmodel.UniqIdDetails != null)
                                 {
                                     var _bQty = objmodel.UniqIdDetails.Where(x => x.SrNo == item.SrNo).ToList();
-                                    if (_bQty.Count > item.Qty) { throw new Exception("Product (" + item.Product + ") Qty & Barcode Qty Not Match"); }
+                                    if (_bQty.Count > (item.Qty+ item.FreeQty)) { throw new Exception("Product (" + item.Product + ") Qty & Barcode Qty Not Match"); }
                                 }
                             }
                         }
@@ -129,7 +129,7 @@ namespace SSRepository.Repository.Transaction
                             var _bQty = objmodel.UniqIdDetails.Where(x => x.SrNo == item.SrNo).ToList();
                             if (item.CodingScheme == "Unique")
                             {
-                                if (_bQty.Count != item.Qty) { throw new Exception("Product (" + item.Product + ") Qty & Barcode Qty Not Match"); }
+                                if (_bQty.Count != (item.Qty + item.FreeQty)) { throw new Exception("Product (" + item.Product + ") Qty & Barcode Qty Not Match"); }
                             }
                         }
                         if (string.IsNullOrEmpty(item.Batch))

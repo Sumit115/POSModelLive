@@ -104,7 +104,20 @@ function Load() {
         $(tranModel.TranDetails).each(function (i, v) {
             //  v["Product"] = parseInt(v.FkProductId);
             v["ModeForm"] = 1;
-            v["Barcode"] = 'Barcode';
+            var CodingScheme = v["CodingScheme"]; 
+            if (tranModel.ExtProperties.TranType == "P") {
+                if (CodingScheme == 'fixed')
+                    v["Barcode"] = "";
+                else
+                    v["Barcode"] = "Barcode";
+            }
+            else if (tranModel.ExtProperties.TranType == "S") {
+                if (CodingScheme == 'Unique')
+                    v["Barcode"] = "Barcode";
+                else
+                    v["Barcode"] = "";
+            }
+           // v["Barcode"] = 'Barcode';
             v["Delete"] = 'Delete';
         });
         BindGrid('DDT', tranModel.TranDetails);
@@ -1109,8 +1122,10 @@ function GetDataFromGrid(ifForsave) {
 function GetAndCheckBarcodeQty(_d) {
     var _NotFound = []
     _d.filter(function (element) {
+        debugger;
+        let totalQty = (parseFloat(element.Qty) + parseFloat(element.FreeQty))
         var _srnoList = tranModel.UniqIdDetails.filter((u) => { return u.SrNo == element.SrNo });
-        if (_srnoList.length != element.Qty && element.ModeForm != 2 && element.CodingScheme == 'Unique')
+        if (_srnoList.length != totalQty && element.ModeForm != 2 && element.CodingScheme == 'Unique')
             _NotFound.push(element.Product);
     });
     return _NotFound

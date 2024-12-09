@@ -128,8 +128,8 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 {
                     res.status = "warr";
                     res.msg = Error;
+                    res.data = model;
                 }
-
             }
             catch (Exception ex)
             {

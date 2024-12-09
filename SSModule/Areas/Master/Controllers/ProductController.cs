@@ -92,6 +92,9 @@ namespace SSAdmin.Areas.Master.Controllers
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
             ProductModel Model = new ProductModel();
+            Model.Genration = "Automatic";
+            Model.CodingScheme = "Unique";
+            Model.HSNCode = "621030";
             try
             {
 
@@ -108,8 +111,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 }
                 else
                 {
-                    ViewBag.PageType = "Create";
-
+                    ViewBag.PageType = "Create"; 
                 }
                 ViewBag.BrandList = _brandRepository.GetDrpBrand( 1000,1);
                 ViewBag.UnitList = _unitRepository.GetDrpUnit(1000,1); 

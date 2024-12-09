@@ -100,9 +100,9 @@
                         <div class="form-group">
                             <label class="control-label">Coding scheme <span asp-validation-for="CodingScheme" class="text-danger"></span></label>
                             <select asp-for="CodingScheme" class="form-control">
+                                <option value="Unique">Unique</option>
                                 <option value="fixed">fixed</option>
                                 <option value="Lot">Lot</option>
-                                <option value="Unique">Unique</option>
                             </select>
 
                         </div>
@@ -240,125 +240,125 @@
                     </div>
                 </div>
                 <div class="row" style="border:solid 1px #ccc;">
-                        <div class="col-md-2">
-                            <div class="form-group">
+                    <div class="col-md-2">
+                        <div class="form-group">
                             <label class="control-label">Article No.</label>
-                                <input type="text" id="txtLotNo" readonly="readonly" class="form-control" tabindex="-1">
-                            </div>
-                        </div>
-                        <div class="col-md-2 dIsBatchApplied" style="display: block;">
-                            <div class="form-group">
-                            <label class="control-label">Name</label>
-                                <input type="text" id="txtBatch" class="form-control" fdprocessedid="m66p7g">
-                            </div>
-                        </div>
-                        <div class="col-md-2 dIsColorApplied" style="display: block;">
-                            <div class="form-group">
-                                <label class="control-label">Color</label>
-                                <select class="form-control" id="Color" name="Color" fdprocessedid="c3u2lv">
-                                    <option value=""></option>
-                                    <option value="black">black</option>
-                                    <option value="Blue">Blue</option>
-                                    <option value="erfvwgbet5r4fecdw">erfvwgbet5r4fecdw</option>
-                                    <option value="Orange">Orange</option>
-                                    <option value="RED">RED</option>
-                                    <option value="Red 1">Red 1</option>
-                                    <option value="Yellow">Yellow</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label class="control-label">MRP</label>
-                                <input type="text" id="txtmrp" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-2 dIsExpiryApplied" style="display: block;">
-                            <div class="form-group">
-                                <label class="control-label"> Expiry Date</label>
-                                <input type="text" id="txtexpdate" class=" jsdate form-control hasDatepicker" fdprocessedid="txblew">
-                            </div>
-                        </div>
-                        <div class="col-md-2 dIsMfgDateApplied" style="display: block;">
-                            <div class="form-group">
-                                <label class="control-label">Mfg. date</label>
-                                <input type="text" id="txtmfgdate" class=" jsdate form-control hasDatepicker" fdprocessedid="3nqqed">
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label class="control-label">Sale Rate</label>
-                                <input type="text" id="txtsalerate" class=" form-control decimal defzero" fdprocessedid="sdcnfu">
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label class="control-label">Trade Rate</label>
-                                <input type="text" id="txttraderate" class=" form-control decimal defzero" fdprocessedid="1tp0e">
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label class="control-label">Distribution Rate</label>
-                                <input type="text" id="txtdistrate" class=" form-control decimal defzero" fdprocessedid="vet1o">
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label class="control-label">Purcahse Rate</label>
-                                <input type="text" id="txtpurchase" class=" form-control decimal defzero" fdprocessedid="zkqywc">
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label class="control-label">Barcode</label>
-                                <input type="text" id="txtbarcode" class=" form-control" readonly="readonly" fdprocessedid="ang4b">
-                            </div>
-                        </div>
-                        
-                        
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <input type="hidden" id="hidProdLot1Index" value="">
-
-                                <input class="btn btn-warning default-margine-top" type="button" value="Add" onclick="addLot1()" id="btnLot" fdprocessedid="qab5d">
-                            </div>
-                        </div>
-                        <div class="fixed-clo-grid comn-grid default-height-grid tabpanel product-grid" style="border:solid 1px #ccc;" tabindex="-1">
-                            @* <table id="tblLot1" cellspacing="0" cellpadding="0">
-                            <thead>
-                            <tr>
-                            <th class="tabel-td-drp"> Lot No. </th>
-                            <th class="IsBatchApplied" style="display: table-cell;"> Batch</th>
-                            <th class="IsColorApplied" style="display: table-cell;"> Color</th>
-                            <th><label id="OpQty2">Op. Qty (Packs)</label></th>
-                            <th> MRP</th>
-                            <th class="IsExpiryApplied" style="display: table-cell;"> Expiry Date</th>
-                            <th class="IsMfgDateApplied" style="display: table-cell;"> Mfg. date</th>
-                            <th> Sale Rate</th>
-                            <th> Suggested Rate</th>
-                            <th> Trade Rate</th>
-                            <th> Distribution Rate</th>
-                            <th> Sale Rate Unit</th>
-                            <th> Purcahse Rate</th>
-                            <th> Cost Rate</th>
-                            <th> Purchase Rate Unit</th>
-                            <th> Barcode</th>
-                            <th> Manufacturer</th>
-                            <th> STax Code</th>
-                            <th> PTax Code</th>
-                            <th><label id="lblContain2">Packs Contains PCSs</label></th>
-                            <th><label id="CurQty2">Curr. Qty (Packs)</label></th>
-                            <th> Stock Date </th>
-                            </tr>
-                            </thead>
-                            <tbody class="fixed-clo-grid-scroll">
-                            <tr index="0"><td class="tabel-td-drp">  <div class="col-sm-5 col-xs-5"><input tabindex="-1" readonly="true" id="TblProdLotDtl_0__PklotNo" name="TblProdLotDtl[0].PklotNo" type="text" value=""></div> <div class="col-sm-7 col-xs-7 text-center">  <input tabindex="-1" id="TblProdLotDtl_0__ModeForm" name="TblProdLotDtl[0].ModeForm" type="hidden" value="0"> <span id="ltEdit" class="action-icon" onclick="UpdateLot1(this,0,'edit')"><i class="fa fa-pencil"></i></span>  &nbsp; | &nbsp; <span class="action-icon" onclick="UpdateLot1(this,0,'del')"><i class="fa fa-trash"></i></span> &nbsp; | &nbsp; <span class="action-icon" onclick="setAddLocValue(this,0,'AddLoc')"><span style="margin:7px 0px;" class="btn btn-warning">Add Loc</span></span> </div></td><td style="display: table-cell;">  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__Batch" name="TblProdLotDtl[0].Batch" type="text" value=""> </td><td style="display: table-cell;">  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__Color" name="TblProdLotDtl[0].Color" type="text" value=""> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__OpQty" name="TblProdLotDtl[0].OpQty" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__MRP" name="TblProdLotDtl[0].MRP" type="text" value="100"> </td><td style="display: table-cell;">  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__ExpiryDate" name="TblProdLotDtl[0].ExpiryDate" type="text" value=""> </td><td style="display: table-cell;">  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__MfgDate" name="TblProdLotDtl[0].MfgDate" type="text" value=""> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__SaleRate" name="TblProdLotDtl[0].SaleRate" type="text" value="10"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__SuggestedRate" name="TblProdLotDtl[0].SuggestedRate" type="text" value="10"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__TradeRate" name="TblProdLotDtl[0].TradeRate" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__DistributionRate" name="TblProdLotDtl[0].DistributionRate" type="text" value="0"> <input id="TblProdLotDtl_0__SNo" name="TblProdLotDtl[0].SNo" type="hidden" value="1" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__MrpsaleRateUnitText" name="TblProdLotDtl[0].MrpsaleRateUnitText" type="text" value="Packs"> <input id="TblProdLotDtl_0__MRPSaleRateUnit" name="TblProdLotDtl[0].MRPSaleRateUnit" type="hidden" value="1" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__PurchaseRate" name="TblProdLotDtl[0].PurchaseRate" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__CostRate" name="TblProdLotDtl[0].CostRate" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__PurchaseRateUnitText" name="TblProdLotDtl[0].PurchaseRateUnitText" type="text" value="Packs"> <input id="TblProdLotDtl_0__PurchaseRateUnit" name="TblProdLotDtl[0].PurchaseRateUnit" type="hidden" value="1" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__Barcode" name="TblProdLotDtl[0].Barcode" type="text" value=""> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__fgGroup" name="TblProdLotDtl[0].fgGroup" type="text" value="">  <input id="TblProdLotDtl_0__FkmfgGroupId" name="TblProdLotDtl[0].FkmfgGroupId" type="hidden" value="0" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__saleTax" name="TblProdLotDtl[0].saleTax" type="text" value="">  <input id="TblProdLotDtl_0__FKSaleTaxID" name="TblProdLotDtl[0].FKSaleTaxID" type="hidden" value="0" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__purchaseTax" name="TblProdLotDtl[0].purchaseTax" type="text" value="">  <input id="TblProdLotDtl_0__FKPurchaseTaxID" name="TblProdLotDtl[0].FKPurchaseTaxID" type="hidden" value="0" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__ProdConv1" name="TblProdLotDtl[0].ProdConv1" type="text" value="2.00"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__curQty" name="TblProdLotDtl[0].curQty" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__StockDate" name="TblProdLotDtl[0].StockDate" type="text" value=""> </td></tr>
-                            </tbody>
-                            </table> *@
+                            <input type="text" id="txtLotNo" readonly="readonly" class="form-control" tabindex="-1">
                         </div>
                     </div>
+                    <div class="col-md-2 dIsBatchApplied" style="display: block;">
+                        <div class="form-group">
+                            <label class="control-label">Name</label>
+                            <input type="text" id="txtBatch" class="form-control" fdprocessedid="m66p7g">
+                        </div>
+                    </div>
+                    <div class="col-md-2 dIsColorApplied" style="display: block;">
+                        <div class="form-group">
+                            <label class="control-label">Color</label>
+                            <select class="form-control" id="Color" name="Color" fdprocessedid="c3u2lv">
+                                <option value=""></option>
+                                <option value="black">black</option>
+                                <option value="Blue">Blue</option>
+                                <option value="erfvwgbet5r4fecdw">erfvwgbet5r4fecdw</option>
+                                <option value="Orange">Orange</option>
+                                <option value="RED">RED</option>
+                                <option value="Red 1">Red 1</option>
+                                <option value="Yellow">Yellow</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">MRP</label>
+                            <input type="text" id="txtmrp" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-2 dIsExpiryApplied" style="display: block;">
+                        <div class="form-group">
+                            <label class="control-label"> Expiry Date</label>
+                            <input type="text" id="txtexpdate" class=" jsdate form-control hasDatepicker" fdprocessedid="txblew">
+                        </div>
+                    </div>
+                    <div class="col-md-2 dIsMfgDateApplied" style="display: block;">
+                        <div class="form-group">
+                            <label class="control-label">Mfg. date</label>
+                            <input type="text" id="txtmfgdate" class=" jsdate form-control hasDatepicker" fdprocessedid="3nqqed">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Sale Rate</label>
+                            <input type="text" id="txtsalerate" class=" form-control decimal defzero" fdprocessedid="sdcnfu">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Trade Rate</label>
+                            <input type="text" id="txttraderate" class=" form-control decimal defzero" fdprocessedid="1tp0e">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Distribution Rate</label>
+                            <input type="text" id="txtdistrate" class=" form-control decimal defzero" fdprocessedid="vet1o">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Purcahse Rate</label>
+                            <input type="text" id="txtpurchase" class=" form-control decimal defzero" fdprocessedid="zkqywc">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Barcode</label>
+                            <input type="text" id="txtbarcode" class=" form-control" readonly="readonly" fdprocessedid="ang4b">
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <input type="hidden" id="hidProdLot1Index" value="">
+
+                            <input class="btn btn-warning default-margine-top" type="button" value="Add" onclick="addLot1()" id="btnLot" fdprocessedid="qab5d">
+                        </div>
+                    </div>
+                    <div class="fixed-clo-grid comn-grid default-height-grid tabpanel product-grid" style="border:solid 1px #ccc;" tabindex="-1">
+                        @* <table id="tblLot1" cellspacing="0" cellpadding="0">
+                        <thead>
+                        <tr>
+                        <th class="tabel-td-drp"> Lot No. </th>
+                        <th class="IsBatchApplied" style="display: table-cell;"> Batch</th>
+                        <th class="IsColorApplied" style="display: table-cell;"> Color</th>
+                        <th><label id="OpQty2">Op. Qty (Packs)</label></th>
+                        <th> MRP</th>
+                        <th class="IsExpiryApplied" style="display: table-cell;"> Expiry Date</th>
+                        <th class="IsMfgDateApplied" style="display: table-cell;"> Mfg. date</th>
+                        <th> Sale Rate</th>
+                        <th> Suggested Rate</th>
+                        <th> Trade Rate</th>
+                        <th> Distribution Rate</th>
+                        <th> Sale Rate Unit</th>
+                        <th> Purcahse Rate</th>
+                        <th> Cost Rate</th>
+                        <th> Purchase Rate Unit</th>
+                        <th> Barcode</th>
+                        <th> Manufacturer</th>
+                        <th> STax Code</th>
+                        <th> PTax Code</th>
+                        <th><label id="lblContain2">Packs Contains PCSs</label></th>
+                        <th><label id="CurQty2">Curr. Qty (Packs)</label></th>
+                        <th> Stock Date </th>
+                        </tr>
+                        </thead>
+                        <tbody class="fixed-clo-grid-scroll">
+                        <tr index="0"><td class="tabel-td-drp">  <div class="col-sm-5 col-xs-5"><input tabindex="-1" readonly="true" id="TblProdLotDtl_0__PklotNo" name="TblProdLotDtl[0].PklotNo" type="text" value=""></div> <div class="col-sm-7 col-xs-7 text-center">  <input tabindex="-1" id="TblProdLotDtl_0__ModeForm" name="TblProdLotDtl[0].ModeForm" type="hidden" value="0"> <span id="ltEdit" class="action-icon" onclick="UpdateLot1(this,0,'edit')"><i class="fa fa-pencil"></i></span>  &nbsp; | &nbsp; <span class="action-icon" onclick="UpdateLot1(this,0,'del')"><i class="fa fa-trash"></i></span> &nbsp; | &nbsp; <span class="action-icon" onclick="setAddLocValue(this,0,'AddLoc')"><span style="margin:7px 0px;" class="btn btn-warning">Add Loc</span></span> </div></td><td style="display: table-cell;">  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__Batch" name="TblProdLotDtl[0].Batch" type="text" value=""> </td><td style="display: table-cell;">  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__Color" name="TblProdLotDtl[0].Color" type="text" value=""> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__OpQty" name="TblProdLotDtl[0].OpQty" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__MRP" name="TblProdLotDtl[0].MRP" type="text" value="100"> </td><td style="display: table-cell;">  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__ExpiryDate" name="TblProdLotDtl[0].ExpiryDate" type="text" value=""> </td><td style="display: table-cell;">  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__MfgDate" name="TblProdLotDtl[0].MfgDate" type="text" value=""> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__SaleRate" name="TblProdLotDtl[0].SaleRate" type="text" value="10"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__SuggestedRate" name="TblProdLotDtl[0].SuggestedRate" type="text" value="10"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__TradeRate" name="TblProdLotDtl[0].TradeRate" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__DistributionRate" name="TblProdLotDtl[0].DistributionRate" type="text" value="0"> <input id="TblProdLotDtl_0__SNo" name="TblProdLotDtl[0].SNo" type="hidden" value="1" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__MrpsaleRateUnitText" name="TblProdLotDtl[0].MrpsaleRateUnitText" type="text" value="Packs"> <input id="TblProdLotDtl_0__MRPSaleRateUnit" name="TblProdLotDtl[0].MRPSaleRateUnit" type="hidden" value="1" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__PurchaseRate" name="TblProdLotDtl[0].PurchaseRate" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__CostRate" name="TblProdLotDtl[0].CostRate" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__PurchaseRateUnitText" name="TblProdLotDtl[0].PurchaseRateUnitText" type="text" value="Packs"> <input id="TblProdLotDtl_0__PurchaseRateUnit" name="TblProdLotDtl[0].PurchaseRateUnit" type="hidden" value="1" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__Barcode" name="TblProdLotDtl[0].Barcode" type="text" value=""> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__fgGroup" name="TblProdLotDtl[0].fgGroup" type="text" value="">  <input id="TblProdLotDtl_0__FkmfgGroupId" name="TblProdLotDtl[0].FkmfgGroupId" type="hidden" value="0" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__saleTax" name="TblProdLotDtl[0].saleTax" type="text" value="">  <input id="TblProdLotDtl_0__FKSaleTaxID" name="TblProdLotDtl[0].FKSaleTaxID" type="hidden" value="0" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__purchaseTax" name="TblProdLotDtl[0].purchaseTax" type="text" value="">  <input id="TblProdLotDtl_0__FKPurchaseTaxID" name="TblProdLotDtl[0].FKPurchaseTaxID" type="hidden" value="0" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__ProdConv1" name="TblProdLotDtl[0].ProdConv1" type="text" value="2.00"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__curQty" name="TblProdLotDtl[0].curQty" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__StockDate" name="TblProdLotDtl[0].StockDate" type="text" value=""> </td></tr>
+                        </tbody>
+                        </table> *@
+                    </div>
+                </div>
             </div>
         </div>
     </form>
@@ -406,8 +406,8 @@
                     }
                 })
 
-            } else { 
-                $("#FkCatId").append("<option value=''>-Select-</option>"); 
+            } else {
+                $("#FkCatId").append("<option value=''>-Select-</option>");
             }
         }
 

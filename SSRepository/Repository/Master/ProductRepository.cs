@@ -160,6 +160,7 @@ namespace SSRepository.Repository.Master
 
             ProductModel data = new ProductModel();
             data = (from cou in __dbContext.TblProductMas
+                    join cat in __dbContext.TblCategoryMas on cou.FKProdCatgId equals cat.PkCategoryId
                     where cou.PkProductId == PkProductId
                     select (new ProductModel
                     {
@@ -202,7 +203,8 @@ namespace SSRepository.Repository.Master
                         KeepStock = cou.KeepStock,
                         Genration = cou.Genration,
                         CodingScheme = cou.CodingScheme,
-                        FkUnitId = cou.FkUnitId
+                        FkUnitId = cou.FkUnitId,
+                       CategoryName = cat.CategoryName,
                     })).FirstOrDefault();
 
             return data;
