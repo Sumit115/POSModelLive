@@ -598,7 +598,7 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
                         Common.GetBarcodeSettingData(".barcodesetting", "", function (flag, _d) {
 
                             if (flag) {
-
+                                debugger;
                                 var _model = {};
                                 _model.BarcodePrintPreviewModel = _List;
                                 _model.SysDefaults = _d;

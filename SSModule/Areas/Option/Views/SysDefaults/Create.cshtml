@@ -1,0 +1,198 @@
+﻿@model SSRepository.Models.SysDefaults
+
+@{
+    ViewData["Title"] = "Create";
+    ViewData["bdClass"] = "page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="p-3">
+    <form asp-action="Create" class="g-3" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Company Name</label>
+                    <input asp-for="CompanyName" class="form-control" />
+                    <span asp-validation-for="CompanyName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+
+                    <label class="control-label">Company Contact Person</label>
+                    <input asp-for="CompanyContactPerson" class="form-control" />
+                    <span asp-validation-for="CompanyContactPerson" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Company Mobile</label>
+                    <input asp-for="CompanyMobile" class="form-control input-number" pattern="Mobile" maxlength="10" />
+                    <span asp-validation-for="CompanyMobile" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Company Email</label>
+                    <input asp-for="CompanyEmail" class="form-control" pattern="Email" />
+                    <span asp-validation-for="CompanyEmail" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="control-label">Company Address</label>
+                    <input asp-for="CompanyAddress" class="form-control" />
+                    <span asp-validation-for="CompanyAddress" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4" style="display:none">
+                <div class="form-group">
+                    <label class="control-label">Country</label>
+                    <input asp-for="CompanyCountry" class="form-control" value="India" />
+                    <span asp-validation-for="CompanyCountry" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">State</label>
+                    <select asp-for="CompanyState" asp-items="@(new SelectList(ViewBag.StateList,"Value","Text"))" class="form-control" onchange="BindCity()">
+                    </select>
+                    <span asp-validation-for="CompanyState" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Company City</label>
+                    <select asp-for="CompanyCityId" class="form-control">
+                        <option value="">-Select-</option>
+                    </select>
+                    <span asp-validation-for="CompanyCityId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Company Pin</label>
+                    <input asp-for="CompanyPin" class="form-control  input-number" maxlength="6" pattern="PinCode" />
+                    <span asp-validation-for="CompanyPin" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Image</label>
+                    <input type="file" class="form-control" asp-for="MyCompanyImage1" />
+                    <input type="hidden" asp-for="CompanyImage1" />
+                    <img src="@Model.CompanyImage1" style="height: 100px;width: 100px;" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Coding scheme </label>
+                    <select asp-for="CodingScheme" class="form-control">
+                        <option value="Unique">Unique</option>
+                        <option value="fixed">fixed</option>
+                        <option value="Lot">Lot</option>
+                    </select>
+                    <span asp-validation-for="CodingScheme" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-md-12">  <h5>Barcode Print</h5></div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Height</label>
+                    <input asp-for="BarcodePrint_Height" class="form-control" />
+                    <span asp-validation-for="BarcodePrint_Height" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">width</label>
+                    <input asp-for="BarcodePrint_width" class="form-control" />
+                    <span asp-validation-for="BarcodePrint_width" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-3"><div class="form-group"><label class="control-label">Margin Top</label><input asp-for="BarcodePrint_MarginTop" class="form-control" /><span asp-validation-for="BarcodePrint_MarginTop" class="text-danger"></span></div></div>
+            <div class="col-md-3"><div class="form-group"><label class="control-label">Margin Bottom</label><input asp-for="BarcodePrint_MarginBottom" class="form-control" /><span asp-validation-for="BarcodePrint_MarginBottom" class="text-danger"></span></div></div>
+            <div class="col-md-3"><div class="form-group"><label class="control-label">Margin Left</label><input asp-for="BarcodePrint_MarginLeft" class="form-control" /><span asp-validation-for="BarcodePrint_MarginLeft" class="text-danger"></span></div></div>
+            <div class="col-md-3"><div class="form-group"><label class="control-label">Margin Right</label><input asp-for="BarcodePrint_MarginRight" class="form-control" /><span asp-validation-for="BarcodePrint_MarginRight" class="text-danger"></span></div></div>
+            <div class="col-md-3"><div class="form-group"><label class="control-label">Barcode Height</label><input asp-for="BarcodePrint_BarcodeHeight" class="form-control" /><span asp-validation-for="BarcodePrint_BarcodeHeight" class="text-danger"></span></div></div>
+            <div class="col-md-3"><div class="form-group"><label class="control-label">Column In Per Row</label><input asp-for="BarcodePrint_ColumnInPerRow" class="form-control" /><span asp-validation-for="BarcodePrint_ColumnInPerRow" class="text-danger"></span></div></div>
+            <div class="col-md-3"><div class="form-group"><label class="control-label">Margin BetWeen Row Column</label><input asp-for="BarcodePrint_MarginBetWeenRowColumn" class="form-control" /><span asp-validation-for="BarcodePrint_MarginBetWeenRowColumn" class="text-danger"></span></div></div>
+
+        </div>
+    </form>
+</div>
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+
+        $(document).ready(function () {
+            $('#btnServerBack').hide();
+            if ('@ViewBag.Msg' != '') {
+                alert('@ViewBag.Msg');
+            }
+
+            Common.InputFormat();
+            BindCity(@Model.CompanyCityId);
+            $('#btnServerSave').click(function (e) {
+                e.preventDefault();
+                $("form").submit();
+            });
+        })
+        //UploadImage = (id) => {
+        //    var file = document.querySelector('input[id="file_' + id + '"]').files[0];
+        //    // $("#FileName").val(file.name);
+        //    var reader = new FileReader();
+        //    reader.readAsDataURL(file);
+        //    reader.onload = function () {
+        //        //console.log(reader.result);
+        //        $("#" + id).val(reader.result);
+        //        $("#dummyimage_" + id).attr("src", reader.result);
+        //        $("#dummyimage_" + id).show();
+        //        //   $("#myImage").hide();
+
+        //    };
+        //}
+
+    </script>
+    <script>
+        function BindCity(CityId) {
+
+            var StateName = $("#CompanyState").val();
+            $("#CompanyCityId").empty();
+            //
+
+            if (StateName != '') {
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Master/City/GetDrpCityByState',
+                    data: { State: StateName },
+                    datatype: "json",
+                    success: function (res) {
+                        console.log(res);
+                        $(res).each(function (i, v) {
+
+                            $("#CompanyCityId").append("<option value='" + v.PkCityId + "'>" + v.CityName + "</option>");
+                        });
+
+                        if (CityId > 0) {
+                            $("#CompanyCityId").val(CityId);
+                        }
+                    }
+                })
+
+            } else { $("#CompanyCityId").append("<option value=''>-Select-</option>"); }
+        }
+    </script>
+}

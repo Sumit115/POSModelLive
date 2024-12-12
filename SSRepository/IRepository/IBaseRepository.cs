@@ -15,9 +15,11 @@ namespace SSRepository.IRepository
     {
         string GetSysDefaultsByKey(string SysDefKey);
         List<SysDefaultsModel> GetSysDefaultsList(string search = "");
+        SysDefaults GetSysDefaults();
         void UpdateSysDefaults(object objmodel);
         void InsertUpdateSysDefaults(string SysDefKey, string SysDefValue);
-         List<BarcodePrintPreviewModel> BarcodePrintList(List<BarcodeDetails> model);
+        void InsertUpdateSysDefaults(object objmodel);
+        List<BarcodePrintPreviewModel> BarcodePrintList(List<BarcodeDetails> model);
         void UpdatePrintBarcode(object objmodel);
          public List<FormModel> GetFormList(long? FKMasterFormID = null);
         public int ExecNonQuery(string cmdText);

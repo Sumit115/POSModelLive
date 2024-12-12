@@ -492,7 +492,7 @@ namespace SSRepository.Repository
 
             return dataTable;
         }
-
+       
         //Sql Conn
         #region sql Connection
         public string conn
@@ -610,6 +610,43 @@ namespace SSRepository.Repository
                                         )).ToList();
             return data;
         }
+        public SysDefaults GetSysDefaults()
+        {
+
+            SysDefaults model = new SysDefaults();
+            DataSet ds = new DataSet();
+            using (SqlConnection con = new SqlConnection(conn))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("usp_GetSysDefaults", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                //cmd.Parameters.AddWithValue("@PkId", PkId);
+                //cmd.Parameters.AddWithValue("@FkSeriesId", FkSeriesId);
+                //cmd.Parameters.Add(new SqlParameter("@JsonData", SqlDbType.NVarChar, int.MaxValue, ParameterDirection.Output, false, 0, 10, "JsonData", DataRowVersion.Default, null));
+                //cmd.Parameters.Add(new SqlParameter("@ErrMsg", SqlDbType.NVarChar, int.MaxValue, ParameterDirection.Output, false, 0, 10, "ErrMsg", DataRowVersion.Default, null));
+                SqlDataAdapter adp = new SqlDataAdapter(cmd);
+                adp.Fill(ds);
+                con.Close();
+            }
+            if (ds.Tables.Count > 0)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    DataRow dr = ds.Tables[0].Rows[0];
+                    foreach (DataColumn column in dr.Table.Columns)
+                    {
+                        foreach (PropertyInfo pro in typeof(SysDefaults).GetProperties())
+                        {
+                            if (pro.Name == column.ColumnName)
+                                pro.SetValue(model, dr[column.ColumnName], null);
+                            else
+                                continue;
+                        }
+                    }
+                }
+            }
+            return model;
+        }
 
         public void UpdateSysDefaults(object objmodel)
         {
@@ -637,10 +674,56 @@ namespace SSRepository.Repository
             }
 
         }
+        public void InsertUpdateSysDefaults(object objmodel)
+        {
+            List<SysDefaultsModel> model = (List<SysDefaultsModel>)objmodel;
+            try
+            {
+                foreach (var item in model)
+                {
+                    var _entity = __dbContext.TblSysDefaults.Where(x => x.SysDefKey == item.SysDefKey).FirstOrDefault();
+                    if (_entity != null)
+                    {
+                        TblSysDefaults Tbl = new TblSysDefaults();
+                        Tbl = _entity;
+                        Tbl.SysDefValue = item.SysDefValue;
+                        UpdateData(Tbl, false);
+                        __dbContext.SaveChanges();
+                    }
+                    else
+                    {
+                        TblSysDefaults Tbl = new TblSysDefaults();
+                        var data = __dbContext.TblSysDefaults.OrderByDescending(u => u.PKSysDefID).FirstOrDefault();
+                        if (data != null)
+                        {
+                            Tbl.PKSysDefID = data.PKSysDefID + 1;
+                        }
+                        else
+                        {
+                            Tbl.PKSysDefID = 1;
+                        }
+                        Tbl.SysDefKey = item.SysDefKey;
+                        Tbl.SysDefValue = item.SysDefValue;
+                        Tbl.FKUserID = 1;
+                        Tbl.DATE_MODIFIED = DateTime.Now;
+                        AddData(Tbl, false);
+                        __dbContext.SaveChanges();
+
+                    }
+                }
+  
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+
         public void InsertUpdateSysDefaults(string SysDefKey, string SysDefValue)
         {
             try
-            { 
+            {
                 var _entity = __dbContext.TblSysDefaults.Where(x => x.SysDefKey == SysDefKey).FirstOrDefault();
                 if (_entity != null)
                 {
@@ -651,8 +734,18 @@ namespace SSRepository.Repository
                 }
                 else
                 {
+
+
                     TblSysDefaults Tbl = new TblSysDefaults();
-                    Tbl.PKSysDefID = 450;
+                    var data = __dbContext.TblSysDefaults.OrderByDescending(u => u.PKSysDefID).FirstOrDefault();
+                    if (data != null)
+                    {
+                        Tbl.PKSysDefID = data.PKSysDefID + 1;
+                    }
+                    else
+                    {
+                        Tbl.PKSysDefID = 1;
+                    }
                     Tbl.SysDefKey = SysDefKey;
                     Tbl.SysDefValue = SysDefValue;
                     Tbl.FKUserID = 1;
@@ -763,7 +856,7 @@ namespace SSRepository.Repository
 
         }
 
-        
+
 
         public void ExecuteQuery(string Qry, ref string ErrMsg)
         {
