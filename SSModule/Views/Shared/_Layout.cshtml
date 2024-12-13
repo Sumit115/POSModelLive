@@ -4,7 +4,10 @@
 {
     Context.Response.Redirect("/Validate");
 }
+@{
+    SSRepository.Models.SysDefaults _SysDefaults = ViewBag.SysDefaults;
 
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -88,14 +91,14 @@
                 </li>
                 <li class="nav-item dropdown user user-menu">
                     <a class="nav-link" data-toggle="dropdown" href="#" style="padding: 0px;">
-                        <img src="~/dist/img/img_avatar1.png" alt="Avatar Logo" style="width:40px;" class="rounded-pill">
+                        <img src="@_SysDefaults.CompanyImage1" alt="Avatar Logo" style="width:40px;" class="rounded-pill">
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header text-center">
-                            <img src="~/dist/img/img_avatar1.png" class="img-circle" style="width:100px;" alt="User Image" />
+                            <img src="@_SysDefaults.CompanyImage1" class="img-circle" style="width:100px;" alt="User Image" />
                             <p>
-                                UserName
+                                @_SysDefaults.CompanyName
                             </p>
                         </li>
                         <li class="user-footer">

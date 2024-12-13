@@ -70,13 +70,13 @@ namespace SSAdmin.Controllers
                             foreach (var item in _databaseFiles)
                             {
                                 try
-                                { 
+                                {
                                     var _sql = System.IO.File.ReadAllText(item.file);
                                     var aa = _repository.ExecNonQuery(_sql);
                                 }
                                 catch (Exception ex)
                                 {
-                                   // var _sql = System.IO.File.ReadAllText(item.file);
+                                    // var _sql = System.IO.File.ReadAllText(item.file);
 
                                     var logfilePath = Path.Combine("wwwroot", "Logs");
                                     if (!Directory.Exists(logfilePath))
@@ -148,10 +148,10 @@ namespace SSAdmin.Controllers
 
                     }
 
-                        //var jsondatas = System.IO.File.ReadAllText(files[1]);
-                        //var jsondata = System.IO.File.ReadAllText(files[2]);
+                    //var jsondatas = System.IO.File.ReadAllText(files[1]);
+                    //var jsondata = System.IO.File.ReadAllText(files[2]);
 
-                        string path = Path.Combine("wwwroot", "Data");
+                    string path = Path.Combine("wwwroot", "Data");
                     if (!Directory.Exists(path))
                         Directory.CreateDirectory(path);
 
@@ -172,6 +172,16 @@ namespace SSAdmin.Controllers
 
                     string json = JsonConvert.SerializeObject(entity.MenuList);
                     System.IO.File.WriteAllText(filePath, json);
+
+                    var modelSysDefaults = _repository.GetSysDefaults();
+                    string filePathSysDefaults = Path.Combine(path, "sysdefaults.json");
+
+                    FileInfo fileSysDefaults = new FileInfo(filePathSysDefaults);
+                    if (fileSysDefaults.Exists)
+                        fileSysDefaults.Delete();
+
+                    string jsonSysDefaults = JsonConvert.SerializeObject(modelSysDefaults);
+                    System.IO.File.WriteAllText(filePathSysDefaults, jsonSysDefaults);
 
                     Response.Redirect("/Dashboard");
                 }
@@ -204,7 +214,7 @@ namespace SSAdmin.Controllers
                         using (var command = new SqlCommand(script, connection))
                         {
                             command.ExecuteNonQuery();
-                            }
+                        }
                     }
                 }
                 catch (Exception ex)

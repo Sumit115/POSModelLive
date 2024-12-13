@@ -39,6 +39,14 @@ namespace SSAdmin.Areas
                 var _lst = JsonConvert.DeserializeObject<List<MenuModel>>(jsondata);
                 ViewBag.Menulist = _lst;
             }
+
+            string filePathSysDefaults = Path.Combine(path, "sysdefaults.json");
+            var jsondataSysDefaults = System.IO.File.ReadAllText(filePathSysDefaults);
+            if (!string.IsNullOrEmpty(jsondataSysDefaults))
+            {
+                var _lst = JsonConvert.DeserializeObject<SysDefaults>(jsondataSysDefaults);
+                ViewBag.SysDefaults = _lst;
+            }
         }
 
         public long FKFormID = 0;
