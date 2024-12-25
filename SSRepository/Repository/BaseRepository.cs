@@ -679,8 +679,9 @@ namespace SSRepository.Repository
             List<SysDefaultsModel> model = (List<SysDefaultsModel>)objmodel;
             try
             {
-                foreach (var item in model)
+                foreach (var item in model.ToList().Where(x=>!string.IsNullOrEmpty(x.SysDefValue)))
                 {
+
                     var _entity = __dbContext.TblSysDefaults.Where(x => x.SysDefKey == item.SysDefKey).FirstOrDefault();
                     if (_entity != null)
                     {
@@ -692,6 +693,7 @@ namespace SSRepository.Repository
                     }
                     else
                     {
+
                         TblSysDefaults Tbl = new TblSysDefaults();
                         var data = __dbContext.TblSysDefaults.OrderByDescending(u => u.PKSysDefID).FirstOrDefault();
                         if (data != null)

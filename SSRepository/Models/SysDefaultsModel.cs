@@ -31,7 +31,7 @@ namespace SSRepository.Models
         [Phone]
         public string? CompanyMobile { get; set; }
         public string? CompanyAddress { get; set; }
-        public long? CompanyCityId { get; set; }
+        public string? CompanyCityId { get; set; }
         public string? CompanyCity { get; set; }
         public string? CompanyState { get; set; }
         public string? CompanyPin { get; set; }
@@ -49,5 +49,6 @@ namespace SSRepository.Models
         public string? BarcodePrint_ColumnInPerRow { get; set; }
         public string? BarcodePrint_MarginBetWeenRowColumn { get; set; }
 
+        public string? FkHoldLocationId { get; set; }
     }
 }

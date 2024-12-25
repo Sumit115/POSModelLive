@@ -245,7 +245,7 @@ namespace SSAdmin.Areas
         [HttpPost]
         public object FkPartyId(int pageSize, int pageNo = 1, string search = "")
         {
-            return _repository.PartyList(pageSize, pageNo, search, TranType);
+            return _repository.PartyList(pageSize, pageNo, search, TranAlias);
         }
 
         [HttpPost]

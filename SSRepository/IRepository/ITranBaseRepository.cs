@@ -22,7 +22,7 @@ namespace SSRepository.IRepository
 
         List<ColumnStructure> ColumnList(string GridName = "");
 
-        List<PartyModel> PartyList(int pageSize, int pageNo = 1, string search = "", string TranType = "");
+        List<PartyModel> PartyList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "");
 
         object SetParty(TransactionModel model, long FkPartyId);
 

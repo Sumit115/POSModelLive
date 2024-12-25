@@ -14,19 +14,20 @@ namespace SSAdmin.Areas.Option.Controllers
     [Area("Option")]
     public class SysDefaultsController : BaseController
     {
-        private readonly IImportRepository _repository;
+        private readonly ILocationRepository _repositoryLocation;
 
-        public SysDefaultsController(IImportRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
+        public SysDefaultsController(ILocationRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
-            _repository = repository;
+            _repositoryLocation = repository;
 
         }
 
         public IActionResult Create()
         {
             var model = new SysDefaults();
-            model = _repository.GetSysDefaults();
+            model = _repositoryLocation.GetSysDefaults();
             ViewBag.StateList = Handler.GetDrpState();
+            ViewBag.LocationList = _repositoryLocation.GetDrpLocation(2000,1);
             return View(model);
         }
         [HttpPost]
@@ -74,8 +75,9 @@ namespace SSAdmin.Areas.Option.Controllers
                     _model.Add(new SysDefaultsModel() { SysDefKey = "BarcodePrint_BarcodeHeight", SysDefValue = model.BarcodePrint_BarcodeHeight });
                     _model.Add(new SysDefaultsModel() { SysDefKey = "BarcodePrint_ColumnInPerRow", SysDefValue = model.BarcodePrint_ColumnInPerRow });
                     _model.Add(new SysDefaultsModel() { SysDefKey = "BarcodePrint_MarginBetWeenRowColumn", SysDefValue = model.BarcodePrint_MarginBetWeenRowColumn });
+                    _model.Add(new SysDefaultsModel() { SysDefKey = "FkHoldLocationId", SysDefValue = Convert.ToString(model.FkHoldLocationId) });
 
-                    _repository.InsertUpdateSysDefaults(_model);
+                    _repositoryLocation.InsertUpdateSysDefaults(_model);
 
                 }
                 else
@@ -95,6 +97,7 @@ namespace SSAdmin.Areas.Option.Controllers
             }
             //BindViewBags(tblBankMas.PKID, tblBankMas);
             ViewBag.StateList = Handler.GetDrpState();
+            ViewBag.LocationList = _repositoryLocation.GetDrpLocation(2000, 1); 
             return View(model);
         }
     }

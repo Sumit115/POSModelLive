@@ -67,6 +67,10 @@ namespace SSAdmin
             WalkingSalesInvoice = 111,
             Voucher = 112,
             SalesInvoiceTouch = 113,
+            LocationTransferRequest = 114,
+            LocationTransferInvoice = 115,
+            LocationRequest = 116,
+            LocationReceive = 117,
 
             //200-report
             SalesStock = 200,
@@ -80,6 +84,8 @@ namespace SSAdmin
             //
             ImportStock = 300,
 
+            //350-Option
+            sysDefaults= 350,
 
 
         }

@@ -17,17 +17,17 @@ using ClosedXML.Excel;
 namespace SSAdmin.Areas.Transactions.Controllers
 {
     [Area("Transactions")]
-    public class SalesOrderController : BaseTranController<ISalesOrderRepository, IGridLayoutRepository, ICompositeViewEngine, IWebHostEnvironment>
+    public class LocationTransferRequestController : BaseTranController<ILocationTransferRequestRepository, IGridLayoutRepository, ICompositeViewEngine, IWebHostEnvironment>
     {
-        private readonly ISalesOrderRepository _repository;
+        private readonly ILocationTransferRequestRepository _repository;
        
-        public SalesOrderController(ISalesOrderRepository repository,  IGridLayoutRepository gridLayoutRepository, ICompositeViewEngine viewEngine, IWebHostEnvironment webHostEnvironment) : base(repository, gridLayoutRepository, viewEngine, webHostEnvironment)
+        public LocationTransferRequestController(ILocationTransferRequestRepository repository,  IGridLayoutRepository gridLayoutRepository, ICompositeViewEngine viewEngine, IWebHostEnvironment webHostEnvironment) : base(repository, gridLayoutRepository, viewEngine, webHostEnvironment)
         {
             _repository = repository;
             TranType = "S";
-            TranAlias = "SORD";
+            TranAlias = "LORD";
             StockFlag = "A";
-            FKFormID = (long)Handler.Form.SalesOrder;
+            FKFormID = (long)Handler.Form.LocationTransferRequest;
             PostInAc = false; 
         }
 
@@ -73,7 +73,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
 
         [HttpGet]
-        [Route("Transactions/SalesOrder/Create/{id?}/{FKSeriesID?}/{isPopup?}")]
+        [Route("Transactions/LocationTransferRequest/Create/{id?}/{FKSeriesID?}/{isPopup?}")]
         public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();

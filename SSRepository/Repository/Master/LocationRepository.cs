@@ -97,7 +97,7 @@ namespace SSRepository.Repository.Master
                         PKLocationID = cou.PkLocationID,
                         FKUserId = cou.FKUserID,
                         Location = cou.Location,
-                        PkLocationID = cou.PkLocationID,
+                       // PkLocationID = cou.PkLocationID,
                         Address = cou.Address,
                         Alias = cou.Alias,
                         IsBillingLocation = cou.IsBillingLocation,

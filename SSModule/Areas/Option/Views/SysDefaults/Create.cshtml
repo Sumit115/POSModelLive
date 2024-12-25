@@ -100,6 +100,15 @@
                     <span asp-validation-for="CodingScheme" class="text-danger"></span>
                 </div>
             </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Hold Location</label>
+                    <select asp-for="FkHoldLocationId" asp-items="@(new SelectList(ViewBag.LocationList,"PkLocationID","Location"))" class="form-control">
+                        <option value="">-Select-</option>
+                    </select>
+                     <span asp-validation-for="FkHoldLocationId" class="text-danger"></span>
+                </div>
+            </div>
         </div>
         <div class="row">
 

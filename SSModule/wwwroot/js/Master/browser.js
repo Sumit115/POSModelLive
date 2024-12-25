@@ -41,7 +41,7 @@ function View() {
     });
 };
 function bindGrid(GridId, data, IdProperty) {
-   
+
     Common.Grid(parseInt(FormId), GridName, function (s) {
         var cg = new coGrid("#" + GridId);
         UDI = cg;
@@ -150,12 +150,14 @@ function bindGrid(GridId, data, IdProperty) {
 
             }
             else if (command == "ConvertInvoice") {
-
-
                 console.log(Handler.rootPath());
                 //window.location.href = Handler.currentPath() + "ConvertInvoice/" + type + "/" + pk_Id;
                 window.location.href = Handler.rootPath() + "Transactions/SalesInvoice/ConvertInvoice/" + pk_Id + "/" + FkSeriesId;
-
+            }
+            else if (command == "ConvertLocationInvoice") {
+                console.log(Handler.rootPath());
+                //window.location.href = Handler.currentPath() + "ConvertInvoice/" + type + "/" + pk_Id;
+                window.location.href = Handler.rootPath() + "Transactions/LocationTransferInvoice/ConvertInvoice/" + pk_Id + "/" + FkSeriesId;
             }
             else if (command == "InvoiceBilty") {
                 var FormId = $("#hdFormId").val();
@@ -242,7 +244,7 @@ function bindGrid(GridId, data, IdProperty) {
                                             else { alert(res.msg); }
                                         }
                                     });
-                                   
+
                                 });
 
 

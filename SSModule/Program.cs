@@ -127,6 +127,10 @@ builder.Services.AddScoped<IImportRepository, ImportRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IUnitRepository, UnitRepository>();
+builder.Services.AddScoped<ILocationTransferRequestRepository, LocationTransferRequestRepository>();
+builder.Services.AddScoped<ILocationTransferInvoiceRepository, LocationTransferInvoiceRepository>();
+builder.Services.AddScoped<ILocationRequestRepository, LocationRequestRepository>();
+builder.Services.AddScoped<ILocationReceiveRepository, LocationReceiveRepository>();
 
 
 builder.Services.AddControllers().AddNewtonsoftJson();

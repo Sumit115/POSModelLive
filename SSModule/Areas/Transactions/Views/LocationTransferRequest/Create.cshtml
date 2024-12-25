@@ -1,0 +1,62 @@
+﻿@model SSRepository.Models.TransactionModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+
+</style>
+
+<input type="hidden" id="hdTranType" value="Sales" />
+
+<div class="row" style="margin-right:0px;margin-left: -4.5px;">
+    <div class="p-2" style="flex: 0 0 95%;max-width: 96%;">
+        <form class="row g-3 form" id="loginform1">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PkId" />
+            <input type="hidden" id="hdData" value="@ViewBag.Data" />
+            <input type="hidden" id="hdControllerName" value="LocationTransferRequest" />
+            <partial name="~/Views/Shared/Transactions/_tranHeader.cshtml" />
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Order Schedule Date</label>
+                            @*   @Html.TextBoxFor(m => m.EntryDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" })
+                            *@
+                            <input type="Date" asp-for="OrderScheduleDate" class="form-control trn" />
+                            <span asp-validation-for="OrderScheduleDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Concern Person Name </label>
+                            <input asp-for="ConcernPersonName" class="form-control trn" />
+                            <span asp-validation-for="ConcernPersonName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Concern Person Mobile </label>
+                            <input asp-for="ConcernPersonMobile" class="form-control input-number trn" maxlength="10" pattern="Mobile" />
+                            <span asp-validation-for="ConcernPersonMobile" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <partial name="~/Views/Shared/Transactions/_tranGrid.cshtml" />
+            <partial name="~/Views/Shared/Transactions/_tranFooter.cshtml" />
+        </form>
+    </div>
+    <partial name="~/Views/Shared/Transactions/_tranRight.cshtml" />
+</div>
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/js/transaction/transaction.js"></script>
+
+}

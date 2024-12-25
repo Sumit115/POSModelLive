@@ -91,7 +91,7 @@ namespace SSAdmin.Areas.Master.Controllers
                     {
                         Mode = "Edit";
                     }
-                    Int64 ID = model.PkLocationID;
+                    Int64 ID = model.PKLocationID;
                     string error = await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {

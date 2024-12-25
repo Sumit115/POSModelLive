@@ -740,7 +740,7 @@ namespace SSRepository.Repository.Transaction
                     detail.FkLotId = 0;
                 }
 
-                if (model.FkPartyId > 0 && model.ExtProperties.TranType == "S")
+                if (model.FkPartyId > 0 && model.ExtProperties.TranType == "S" && model.TranAlias!="LORD" && model.TranAlias != "LINV")
                 {
                     var _cust = new CustomerRepository(__dbContext).GetSingleRecord(model.FkPartyId);
                     detail.TradeDisc = _cust.Disc;
@@ -1368,9 +1368,28 @@ namespace SSRepository.Repository.Transaction
             return model;
         }
 
-        public List<PartyModel> PartyList(int pageSize, int pageNo = 1, string search = "", string TranType = "")
+        public List<PartyModel> PartyList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "")
         {
-            if (TranType == "P")
+            if (TranAlias == "LINV" || TranAlias == "LORD")
+            {
+                LocationRepository rep = new LocationRepository(__dbContext);
+                var lst= rep.GetList(pageSize, pageNo, search).ToList()
+                    .Select(cou => new PartyModel() {
+                        PkId = cou.PKLocationID, 
+                        Name = cou.Location,
+                        FKUserId = cou.FKUserId,
+                        FKCreatedByID = cou.FKCreatedByID, 
+                        Email = cou.Email,
+                        Mobile = cou.Phone1,  
+                        Address = cou.Address,
+                        StateName = cou.State,
+                        FkCityId = cou.FkCityId,
+                        //  City = city.CityName, 
+                        Pin = cou.Pincode,
+                    }).ToList();
+                return lst;
+            }
+            else if (TranAlias == "PINV" || TranAlias == "PORD")
             {
                 VendorRepository rep = new VendorRepository(__dbContext);
                 return rep.GetList(pageSize, pageNo, search);
@@ -1385,7 +1404,9 @@ namespace SSRepository.Repository.Transaction
         public object SetParty(TransactionModel model, long FkPartyId)
         {
             var vendor = new PartyModel();
-            if (model.ExtProperties.TranAlias == "PINV" || model.ExtProperties.TranAlias == "PORD")
+            if (model.ExtProperties.TranAlias == "LINV" || model.ExtProperties.TranAlias == "LORD")
+                vendor = GetLocation(FkPartyId); 
+            else if (model.ExtProperties.TranAlias == "PINV" || model.ExtProperties.TranAlias == "PORD")
                 vendor = GetVendor(FkPartyId);
             else
                 vendor = GetCustomer(FkPartyId);
@@ -1423,8 +1444,7 @@ namespace SSRepository.Repository.Transaction
                                 }
                                )).FirstOrDefault();
             return data;
-        }
-
+        } 
         public PartyModel? GetCustomer(long PkId)
         {
             PartyModel? data = (from cou in __dbContext.TblCustomerMas
@@ -1437,6 +1457,23 @@ namespace SSRepository.Repository.Transaction
                                     Address = cou.Address,
                                     Gstno = cou.Gstno,
                                     StateName = cou.StateName,
+                                    FkAccountID = cou.FkAccountID,
+                                }
+                               )).FirstOrDefault();
+            return data;
+        }
+        public PartyModel? GetLocation(long PkLocationID)
+        {
+            PartyModel? data = (from cou in __dbContext.TblLocationMas
+                                where cou.PkLocationID == PkLocationID
+                                select (new PartyModel
+                                {
+                                    PkId = cou.PkLocationID,
+                                    Name = cou.Location,
+                                    Mobile = cou.Phone1,
+                                    Address = cou.Address,
+                                    //Gstno = cou.gst,
+                                    StateName = cou.State,
                                     FkAccountID = cou.FkAccountID,
                                 }
                                )).FirstOrDefault();
