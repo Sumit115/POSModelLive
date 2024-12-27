@@ -76,7 +76,7 @@ namespace SSRepository.Repository.Transaction
                 //
                 setDefaultBeforeSave(objmodel);
 
-                if (objmodel.ExtProperties.TranType == "S" && objmodel.IsTranChange)
+                if (objmodel.ExtProperties.TranType == "S" && objmodel.IsTranChange && objmodel.TranAlias!="LINV" && objmodel.TranAlias != "LORD")
                     setPromotion(objmodel);
 
                 //CalculateExe(objmodel);
@@ -170,7 +170,7 @@ namespace SSRepository.Repository.Transaction
                 SetGridTotal(objmodel);
                 SetPaymentDetail(objmodel);
                 //set Promotion Invoice Value
-                if (objmodel.ExtProperties.TranType == "S" && objmodel.IsTranChange)
+                if (objmodel.ExtProperties.TranType == "S" && objmodel.IsTranChange && objmodel.TranAlias != "LINV" && objmodel.TranAlias != "LORD")
                     setPromotion_InvoiceValue(objmodel);
                 objmodel.IsTranChange = false;
 

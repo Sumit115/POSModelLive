@@ -5,7 +5,7 @@ var TranAlias = "";
 var ModeFormForEdit = 1;
 
 $(document).ready(function () {
-    debugger;
+    
     ModeFormForEdit = Handler.isNullOrEmpty($("#hdModeFormForEdit").val()) ? 1 : parseInt($("#hdModeFormForEdit").val());
     Common.InputFormat();
     Load();
@@ -96,7 +96,7 @@ $(document).ready(function () {
 });
 
 function Load() {
-    debugger;
+    
     var PkId = $("#PkId").val();
     tranModel = JSON.parse($("#hdData").val());
     if (PkId > 0 || tranModel.TranDetails.length > 0) {
@@ -104,7 +104,7 @@ function Load() {
         console.log(tranModel);
         $(tranModel.TranDetails).each(function (i, v) {
             //  v["Product"] = parseInt(v.FkProductId);
-            debugger;
+            
             v["ModeForm"] = ModeFormForEdit;
             if (ModeFormForEdit == 0) {
                 v["FKSeriesId"] = tranModel.FKSeriesId;
@@ -115,7 +115,7 @@ function Load() {
             }
             var CodingScheme = v["CodingScheme"];
             if (tranModel.ExtProperties.TranType == "P") {
-                if (CodingScheme == 'fixed')
+                if (CodingScheme == 'fixed' || tranModel.TranAlias == "PORD")
                     v["Barcode"] = "";
                 else
                     v["Barcode"] = "Barcode";
@@ -255,6 +255,7 @@ function BindGrid(GridId, data) {
         }
         /*---------------    ---------------   ---------------   ---------------*/
         cg.outGrid.onBeforeEditCell.subscribe(function (e, args) {
+            
             if (args.cell != undefined) {
 
                 var field = cg.columns[args.cell].field;
@@ -297,7 +298,7 @@ function BindGrid(GridId, data) {
                     else {
                         if (field == "Batch" || field == "Color" || field == "MRP") {
 
-                            if (tranModel.ExtProperties.StockFlag == "I" || TranAlias == "SORD" || TranAlias == "LORD") {
+                            if (tranModel.ExtProperties.StockFlag == "I" || (TranAlias == "SORD" || TranAlias == "LORD" || TranAlias == "PORD")) {
                                 if (args.item["ModeForm"] != "1" && TranAlias != "SORD" && TranAlias != "LORD") { args.item["FkLotId"] = 0; }
                                 var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
                                 //var Batch = args.item["Batch"];
@@ -335,7 +336,7 @@ function BindGrid(GridId, data) {
             if (args.cell != undefined) {
 
                 var field = cg.columns[args.cell].field;
-                //debugger;
+                //
                 //var LinkSrNo = args.item["LinkSrNo"];
                 //var _trandetail = tranModel.TranDetails;
                 //if (Handler.isNullOrEmpty(LinkSrNo) || LinkSrNo <= 0 ) {
@@ -458,11 +459,12 @@ function BindGrid(GridId, data) {
                 var FkLotId = args.grid.getDataItem(args.row)["FkLotId"];
                 var SrNo = args.grid.getDataItem(args.row)["SrNo"];
                 var ModeForm = args.grid.getDataItem(args.row)["ModeForm"];
+                var BarcodeText = args.grid.getDataItem(args.row)["Barcode"];
                 if (field == "Delete") {
                     ColumnChange(args, args.row, "Delete");
                 }
-                else if (field == "Barcode" && ModeForm != 2) {
-                    debugger;
+                else if (field == "Barcode" && ModeForm != 2 && BarcodeText != "") {
+                    
                     if (tranModel.ExtProperties.StockFlag == "I") {
 
                         if (FkProductId > 0) {
@@ -523,7 +525,7 @@ function BindGrid(GridId, data) {
 function BarcodePopupUniqId_CheckboxList(args, rowIndex) {
 
     tranModel.TranDetails = GetDataFromGrid();
-    debugger;
+    
     if (tranModel.TranDetails.length > 0) {
         $(".loader").show();
         $.ajax({
@@ -676,7 +678,7 @@ function Bind_cgGridUniqIdTextbox(args, rowIndex, _d) {
 
         if (args.cell != undefined) {
             var field = cgGridUniqIdTextbox.columns[args.cell].field;
-            debugger;
+            
             var SrNo = args.grid.getDataItem(args.row)["SrNo"];
             var Barcode = args.grid.getDataItem(args.row)["Barcode"];
             if (field == "Delete") {
@@ -902,7 +904,7 @@ function handleFileLoad(event) {
 function ColumnChange(args, rowIndex, fieldName) {
 
     tranModel.TranDetails = GetDataFromGrid();
-    debugger;
+    
     if (tranModel.TranDetails.length > 0) {
         // if (Handler.isNullOrEmpty(tranModel.TranDetails[rowIndex].LinkSrNo) || tranModel.TranDetails[rowIndex].LinkSrNo <= 0 || fieldName == 'Delete') {
         $(".loader").show();
@@ -912,7 +914,7 @@ function ColumnChange(args, rowIndex, fieldName) {
             data: { model: tranModel, rowIndex: rowIndex, fieldName: fieldName },
             datatype: "json",
             success: function (res) {
-                debugger;
+                
                 if (res.status == "success") {
                     tranModel = res.data;
                     setFooterData(tranModel);
@@ -1031,7 +1033,7 @@ function setPaymentDetail(data) {
 
 
 function setGridRowData(args, data, rowIndex, fieldName) {
-    debugger;
+    
     if (fieldName == 'Delete') {
         args.grid.getDataItem(args.row).ModeForm = 2
     }
@@ -1075,8 +1077,9 @@ function setGridRowData(args, data, rowIndex, fieldName) {
 
         var CodingScheme = data[rowIndex].CodingScheme;
         args.item["CodingScheme"] = CodingScheme;
+        debugger;
         if (tranModel.ExtProperties.TranType == "P") {
-            if (CodingScheme == 'fixed')
+            if (CodingScheme == 'fixed' || tranModel.TranAlias=="PORD")
                 args.item["Barcode"] = "";
             else
                 args.item["Barcode"] = "Barcode";
@@ -1133,7 +1136,7 @@ function GetDataFromGrid(ifForsave) {
 function GetAndCheckBarcodeQty(_d) {
     var _NotFound = []
     _d.filter(function (element) {
-        debugger;
+        
         let totalQty = (parseFloat(element.Qty) + parseFloat(element.FreeQty))
         var _srnoList = tranModel.UniqIdDetails.filter((u) => { return u.SrNo == element.SrNo });
         if (_srnoList.length != totalQty && element.ModeForm != 2 && element.CodingScheme == 'Unique')
@@ -1170,7 +1173,7 @@ function SaveRecord() {
                                 data: { model: tranModel },
                                 datatype: "json",
                                 success: function (res) {
-                                    debugger;
+                                    
                                     if (res.status == "success") {
                                         alert('Save Successfully..');
                                         if (ControllerName == 'SalesInvoiceTouch') {
@@ -1180,7 +1183,7 @@ function SaveRecord() {
                                         } 
                                     }
                                     else {
-                                        debugger;
+                                        
                                         alert(res.msg);
                                         tranModel = res.data;
                                         BindGrid('DDT', tranModel.TranDetails);
