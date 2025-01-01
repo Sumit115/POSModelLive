@@ -11,8 +11,9 @@
     string BarcodeHeight = @Model.SysDefaults.Where(x => x.SysDefKey == "BarcodePrint_BarcodeHeight").FirstOrDefault().SysDefValue;
     string _ColumnInPerRow = @Model.SysDefaults.Where(x => x.SysDefKey == "BarcodePrint_ColumnInPerRow").FirstOrDefault().SysDefValue;
     string MarginBetWeenRowColumn = @Model.SysDefaults.Where(x => x.SysDefKey == "BarcodePrint_MarginBetWeenRowColumn").FirstOrDefault().SysDefValue;
+    string fontsize = @Model.SysDefaults.Where(x => x.SysDefKey == "BarcodePrint_FontSize").FirstOrDefault().SysDefValue;
     int ColumnInPerRow = Convert.ToInt32(_ColumnInPerRow);
-    int fontsize = 18;
+    //int fontsize = 18;
 }
 
 <div>

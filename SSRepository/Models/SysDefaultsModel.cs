@@ -48,6 +48,7 @@ namespace SSRepository.Models
         public string? BarcodePrint_BarcodeHeight { get; set; }
         public string? BarcodePrint_ColumnInPerRow { get; set; }
         public string? BarcodePrint_MarginBetWeenRowColumn { get; set; }
+        public string? BarcodePrint_FontSize { get; set; }
 
         public string? FkHoldLocationId { get; set; }
     }

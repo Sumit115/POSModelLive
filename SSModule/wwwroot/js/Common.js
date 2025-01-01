@@ -617,8 +617,27 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
                                             var _c = parseInt($("#BarcodePrint_ColumnInPerRow").val()) ;
                                             var _rcm = parseInt($("#BarcodePrint_MarginBetWeenRowColumn").val());
 
-                                            var _w = (_c > 1 ? ((_w1 * _c) + _rcm):_w1) + 100;
-                                            Handler.popUp(res.html, { width: _w + "px", height: "500px", padding: "20px", overflow: "auto" }, function () {
+                                            var _w = (_c > 1 ? ((_w1 * _c) + _rcm) : _w1) + 100;
+                                            var _htm = '';
+                                            _htm += '<div class="modal fade show" id="exampleModalLive" style="display: block;background-color: rgba(0, 0, 0, 0.5);">';
+                                            _htm += '<style>html, body {margin: 0; height: 100%; overflow: hidden}</style>';
+                                            _htm += '<div class="modal-dialog" style="left: 0;width: 100%;">';
+                                            _htm += '<div class="modal-content" style="width: ' + _w +'px;height: 500px;top: 70px;left: -56px;overflow: hidden;overflow-y: auto;">';
+                                            //_htm += '<div class="modal-header">';
+                                            //_htm += '<h5 class="modal-title" id="exampleModalLiveLabel">Modal title</h5>';
+                                            //_htm += '<a type="button" href="javascript:void(0)" class="btn-close" id="btnCloseBarcodePrintPriview"  ><i class="fa fa-times-circle"></i></a>';
+                                            //_htm += '</div>';
+                                            _htm += '<div class="modal-body">';
+                                            _htm += '<a type="button" href="javascript:void(0)" class="btn-close" id="btnCloseBarcodePrintPriview" style="position: absolute;right: 0px;top: -5px;font-size: 25px;"><i class="fa fa-times-circle"></i></a>';
+                                            _htm += res.html
+                                            _htm += '</div>';
+                                            _htm += '</div>';
+                                            _htm += '</div>';
+                                            _htm += '</div>';
+                                            $('#div_BarcodePrintPriview').html(_htm);
+                                            $("#btnCloseBarcodePrintPriview").off("click").on("click", function () { $('#div_BarcodePrintPriview').html(''); });
+
+                                            //Handler.popUp(res.html, { width: _w + "px", height: "500px", padding: "20px", overflow: "auto" }, function () {
                                                 $("#btnPrintBarcode").off("click").on("click", function () {
                                                     var divToPrint = document.getElementById('printpage');
 
@@ -637,7 +656,7 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
                                                     }
 
                                                 });
-                                            });
+                                            /*});*/
                                             // $(".popup_d").hide();
                                         } else {
                                             alert(res.msg);
