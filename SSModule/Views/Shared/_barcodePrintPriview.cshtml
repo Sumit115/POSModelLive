@@ -12,6 +12,7 @@
     string _ColumnInPerRow = @Model.SysDefaults.Where(x => x.SysDefKey == "BarcodePrint_ColumnInPerRow").FirstOrDefault().SysDefValue;
     string MarginBetWeenRowColumn = @Model.SysDefaults.Where(x => x.SysDefKey == "BarcodePrint_MarginBetWeenRowColumn").FirstOrDefault().SysDefValue;
     int ColumnInPerRow = Convert.ToInt32(_ColumnInPerRow);
+    int fontsize = 18;
 }
 
 <div>
@@ -39,7 +40,7 @@
                         <td colspan="6" style="text-align: center;">
                             @*<img src="~/barcode/barcode.jpg" style="height:@(BarcodeHeight+"px");" />
                         *@
-                            <img src="@SSAdmin.Constant.Helper.StringToBarcode(item.Barcode)" style="width:100%;max-height:@(BarcodeHeight+"px");">
+                            <img src="@SSAdmin.Constant.Helper.StringToBarcode((item.Barcode))" style="width:100%;max-height:@(BarcodeHeight+"px");">
 
                             <h5 style="letter-spacing: 10px;"> @item.Barcode</h5>
 
@@ -47,33 +48,23 @@
                     </tr>
 
                     <tr>
-                        <td colspan="3">
-                            <h3 style="font-size:18px;margin: 0;padding: 0;margin-top: 4px;"> MRP</h3>
+                        <td colspan="2">
+                            <h3 style="font-size:@(fontsize+"px");margin: 0;padding: 0;margin-top: 4px;"> MRP</h3>
                         </td>
-                        <td colspan="3"> <h3 style="font-size:18px;margin: 0;padding: 0;margin-top: 4px;">: RS. @item.MRP/-</h3></td>
+                        <td colspan="4"> <h3 style="font-size:@(fontsize+"px");margin: 0;padding: 0;margin-top: 4px;">: RS. @item.MRP/-</h3></td>
                     </tr>
                     <tr>
-                        <td colspan="6" style="text-align: right;margin: 0;padding: 0;margin-top: 2px;"><h4>(Inclusive of All Taxes)</h4>   </td>
+                        <td colspan="2"><h3 style="font-size:@(fontsize+"px"); margin: 0;padding: 0;margin-top: 4px;">Size</h3>   </td>
+                        <td colspan="4"> <h3 style="font-size:@(fontsize+"px");margin: 0;padding: 0;margin-top: 4px;">: @item.Batch</h3></td>
                     </tr>
                     <tr>
-                        <td colspan="3"><h3 style="font-size:18px; margin: 0;padding: 0;margin-top: 4px;">Batch</h3>   </td>
-                        <td colspan="3"> <h3 style="font-size:18px;margin: 0;padding: 0;margin-top: 4px;">: @item.Batch</h3></td>
+                        <td colspan="2"><h3 style="font-size:@(fontsize+"px"); margin: 0;padding: 0;margin-top: 4px;">Artical</h3>   </td>
+                        <td colspan="4"> <h3 style="font-size:@(fontsize+"px");margin: 0;padding: 0;margin-top: 4px;">: @item.Product</h3></td>
                     </tr>
-                    <tr>
-                        <td colspan="3"><h3 style="font-size:18px; margin: 0;padding: 0;margin-top: 4px;">Artical No.</h3>   </td>
-                        <td colspan="3"> <h3 style="font-size:18px;margin: 0;padding: 0;margin-top: 4px;">: @item.Product</h3></td>
-                    </tr>
-
-                  @*  <tr>
-                        <td colspan="3"><h3 style="font-size:18px; margin: 0;padding: 0;margin-top: 4px;">PKD ON</h3>   </td>
-                        <td colspan="3"> <h3 style="font-size:18px;margin: 0;padding: 0;margin-top: 4px;">: @(item.StockDate != null ? (item.StockDate.Value.ToString("dd/MM/yyyy")) : "")</h3></td>
-                    </tr>*@
-
                     <tr>
                         <td colspan="6" style="text-align: justify;">
-                            <h3 style="font-size:18px;margin: 0;padding: 0;margin-top: 4px;margin-bottom: 5px;">@item.BranchName</h3>
-                    @*        <h4 style="font-size: 12px;margin: 0;padding: 0;margin-top: 4px;">@item.Address,@item.CityName-@item.Pin</h4>
-                    *@    </td>
+                            <h3 style="font-size:@(fontsize+"px");margin: 0;padding: 0;margin-top: 4px;margin-bottom: 5px;">@item.BranchName</h3>
+                       </td>
                     </tr>
                 </tbody>
             </table>

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System;
 using System.Drawing;
+using IronBarCode;
 
 namespace SSAdmin.Constant
 {
@@ -57,6 +58,39 @@ namespace SSAdmin.Constant
 
 
         public static string StringToBarcode(string str)
+        {
+            Image barcodeImage = GenerateBarcode(str);
+
+            var barcode = BarcodeWriter.CreateBarcode(str, BarcodeEncoding.Code39);
+
+            // Customize the barcode (optional)
+            barcode.SetMargins(0);
+            barcode.ResizeTo(900, 300);
+            //barcode.AddAnnotationTextBelowBarcode(str);
+            //barcode.CropWhiteSpace();
+            // Save the barcode to a memory stream
+            //var stream = new System.IO.MemoryStream();
+            //barcode.SaveAsPng(stream);
+            //stream.Seek(0, System.IO.SeekOrigin.Begin);
+
+            // Return the barcode as an image
+            //return File(stream, "image/png");
+            string path = "";
+            path = Path.Combine("wwwroot", "Barcode");
+
+            Random generator = new Random();
+            string rn = generator.Next(0, 9999).ToString("D6");
+            string FilePath = "";
+            string filename = str + ".png";
+
+            FilePath = Path.Combine(path, filename);
+            // if (!Directory.Exists(FilePath))
+            barcode.SaveAsPng(FilePath);
+
+            return "/Barcode/" + filename;
+        }
+
+        public static string StringToBarcodeold(string str)
         {
             Image barcodeImage = GenerateBarcode(str);
 
