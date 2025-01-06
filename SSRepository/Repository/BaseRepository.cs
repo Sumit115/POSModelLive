@@ -903,6 +903,35 @@ namespace SSRepository.Repository
             return data;
         }
 
+        public DashboardSummaryModel usp_DashboardSummary()
+        {
+            DashboardSummaryModel model = new DashboardSummaryModel();
+            DataSet ds = new DataSet();
+            string data = "";
+            using (SqlConnection con = new SqlConnection(conn))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("usp_DashboardSummary", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                //cmd.Parameters.AddWithValue("@PkUserId", UserId);
+                SqlDataAdapter adp = new SqlDataAdapter(cmd);
+                adp.Fill(ds);
+
+                data = Convert.ToString(ds.Tables[0].Rows[0]["JsonData"]);
+                con.Close();
+            }
+            if (data != null)
+            {
+                List<DashboardSummaryModel> aa = JsonConvert.DeserializeObject<List<DashboardSummaryModel>>(data);
+                if (aa != null)
+                {
+                    model = aa[0];
+                }
+            }
+            return model;
+        }
+
+     
     }
 
 }

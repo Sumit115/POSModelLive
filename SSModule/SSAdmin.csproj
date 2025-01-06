@@ -340,6 +340,8 @@
     <None Include="wwwroot\js\jquery.js" />
     <None Include="wwwroot\js\jquery.min.js" />
     <None Include="wwwroot\js\jquery.min.map" />
+    <None Include="wwwroot\morris\morris.js" />
+    <None Include="wwwroot\morris\raphael.js" />
     <None Include="wwwroot\SlickGrid\controls\slick.columnpicker.js" />
     <None Include="wwwroot\SlickGrid\controls\slick.pager.js" />
     <None Include="wwwroot\SlickGrid\index.js" />

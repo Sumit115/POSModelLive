@@ -23,5 +23,6 @@ namespace SSRepository.IRepository
         void UpdatePrintBarcode(object objmodel);
          public List<FormModel> GetFormList(long? FKMasterFormID = null);
         public int ExecNonQuery(string cmdText);
+        DashboardSummaryModel usp_DashboardSummary();
     }
 }

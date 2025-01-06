@@ -1,6 +1,181 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model SSRepository.Models.DashboardSummaryModel
 @{
     Layout = "_Layout";
+}
+
+<div class="col-md-12 pt-5 pr-1">
+    <div class="card-custom">
+        <div class="d-flex justify-content-between align-items-end top-content SalesSummaryF">
+            <div>
+                <h5 class="font-weight-bold">Summary</h5>
+            </div>
+        </div>
+        <div class="row mt-4 pl-3 pr-3 SalesSummary">
+            <div class="col-md-2 box">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                    <div class="p-2">
+                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ @Model.TotalAmount_PurchaseInvoice</h5>
+                        <p class="mb-0 pt-1 Name">Purchase</p>
+                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Purchase @Model.TotalCount_PurchaseInvoice</h6>
+                    </div>
+                    <div class="icon-wrapper mr-2 mt-2">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 box">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                    <div class="p-2">
+                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ @Model.TotalAmount_SalesOrder</h5>
+                        <p class="mb-0 pt-1 Name">Sales Order</p>
+                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Order @Model.TotalCount_SalesOrder</h6>
+                    </div>
+                    <div class="icon-wrapper mr-2 mt-2">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 box">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                    <div class="p-2">
+                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ @Model.TotalAmount_SalesInvoice</h5>
+                        <p class="mb-0 pt-1 Name">Sales</p>
+                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Sales @Model.TotalCount_SalesInvoice</h6>
+                    </div>
+                    <div class="icon-wrapper mr-2 mt-2">
+                        <i class="fas fa-box"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 box">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                    <div class="p-2">
+                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ @Model.TotalAmount_SalesChallan</h5>
+                        <p class="mb-0 pt-1 Name">Sales Challan</p>
+                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Challan @Model.TotalCount_SalesChallan</h6>
+                    </div>
+                    <div class="icon-wrapper mr-2 mt-2">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    input[type=checkbox] {
+        height: 25px;
+        width: 25px;
+    }
+</style>
+<div class="col-md-12">
+    <div class="card mb-4 h-100" style="height: 495px!important;">
+                 <div>
+                    <h5 class="font-weight-bold" id="span_graphHeading">Current Month</h5>
+                </div>
+              
+             <div class="faq__content border-top">
+                <div class="card-body">
+                    <ul class="list-inline d-flex" style="">
+                        <li>
+                        <h5 class="mr-3"><i class="fa fa-circle m-r-5" style="color:#4a23ad"></i>Purchase Amount <input type="checkbox" name="MorrisChartKey" value="PurchaseInvoiceAmount" data-label="Purchase Amount" data-linecolor="#4a23ad" onchange="Load_Morris_Area_Chart_Data()" checked /></h5>
+                        </li>
+                        <li>
+                        <h5 class="mr-3"><i class="fa fa-circle m-r-5" style="color:#00bbd9"></i>Purchase Count <input type="checkbox" name="MorrisChartKey" value="PurchaseInvoiceCount" data-label="Purchase Count" data-linecolor="#00bbd9" onchange="Load_Morris_Area_Chart_Data()" checked /></h5>
+                        </li>
+                        <li>
+                        <h5 class="mr-3"><i class="fa fa-circle m-r-5" style="color:#2ecc71"></i>Sales Amount <input type="checkbox" name="MorrisChartKey" value="SalesInvoiceAmount" data-label="Sales Amount" data-linecolor="#2ecc71" onchange="Load_Morris_Area_Chart_Data()" checked /></h5>
+                        </li>
+                        <li>
+                        <h5 class="mr-3"><i class="fa fa-circle m-r-5" style="color:#fd8a14"></i>Sales Count <input type="checkbox" name="MorrisChartKey" value="SalesInvoiceCount" data-label="Sales Count" data-linecolor="#fd8a14" onchange="Load_Morris_Area_Chart_Data()" checked /></h5>
+                        </li>
+
+                        <li>
+                            <h5></h5>
+                        </li>
+                    </ul>
+                    <div id="morris-area-chart"></div>
+
+                </div>
+            </div>
+        
+    </div>
+
+</div>
+<input type="hidden" id="hdCurrentMonthData_MorrisAreaChart" value="@Newtonsoft.Json.JsonConvert.SerializeObject(Model.CurrentMonthData)" />
+@section Scripts{
+    <link href="~/morris/morris.css" rel="stylesheet" />
+    <script src="~/morris/morris.js"></script>
+    <script src="~/morris/raphael.js"></script>
+    <script>
+        $(document).ready(function () { Load_Morris_Area_Chart_Data(); });
+        var display_date = function (d) {
+            var month = d.getMonth() + 1,
+                day = d.getDate(),
+                year = d.getFullYear();
+
+            var formattedDay = (day < 10 ? '0' + day : day) + '-' + (month < 10 ? '0' + month : month) + '-' + year;
+
+            return formattedDay; // Return "M-DD" format for date
+        }
+
+        function Load_Morris_Area_Chart_Data() {
+
+            $("#morris-area-chart").html('');
+            //  $("#span_graphHeading").text('Last_30_Days_Data');
+            var ItemList = JSON.parse($("#hdCurrentMonthData_MorrisAreaChart").val());
+            var xkey = 'Date';
+            //console.log(ItemList);
+            var ykeys = [];
+            var labels = [];
+            var pointStrokeColors = [];
+            var lineColors = [];
+
+            $('input[name=MorrisChartKey]').each(function () {
+                if (this.checked) {
+                    ykeys.push($(this).val());
+                    labels.push($(this).attr('data-label'));
+                    pointStrokeColors.push($(this).attr('data-linecolor'));
+                    lineColors.push($(this).attr('data-linecolor'));
+                }
+            });
+            //console.log(ykeys);
+
+
+            Morris.Area({
+                element: 'morris-area-chart',
+                data: ItemList,
+                //data: ItemList.map(o => ({ Date: moment(o.Date, 'YYYY-MM-DD').format('YYYY-DD-MM'), SalesInvoiceAmount: o.SalesInvoiceAmount })),
+
+                xkey: xkey,
+                ykeys: ykeys,
+                labels: labels,
+                xLabelFormat: function (x) { return display_date(x); },
+               // xKeyFormat: function (x) { return display_date(x); },
+                // xLabels: 'day',
+                //xLabels: function (d) {
+                //    return ("0" + d.getDate()).slice(-2) + '-' + ("0" + (d.getMonth() + 1)).slice(-2) + '-' + d.getFullYear();
+                //},
+                pointSize: 3,
+                fillOpacity: 0,
+                pointStrokeColors: pointStrokeColors,
+                behaveLikeLine: true,
+                gridLineColor: '#e0e0e0',
+                lineWidth: 1,
+                hideHover: 'auto',
+                lineColors: lineColors,
+                resize: true
+
+            });
+            //s = s.substring(0, s.indexOf('?'));
+            //$(".morris-hover-row-label").each(function () {
+            //
+            //    var s = $(this).text();
+            //    var aa = s.substring(0, s.indexOf('T'));
+            //    $(this).text(aa);
+            //});
+        }
+    </script>
 }

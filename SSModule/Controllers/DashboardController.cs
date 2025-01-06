@@ -10,6 +10,7 @@ using SSRepository.Repository;
 namespace SSAdmin.Controllers
 {
 
+   
     public class DashboardController : BaseController
     {
 
@@ -18,10 +19,11 @@ namespace SSAdmin.Controllers
 
         }
 
+        
         public IActionResult Index()
         {
-            
-            return View();
+            var model = _gridLayoutRepository.usp_DashboardSummary();
+            return View(model);
         }
     }
 }

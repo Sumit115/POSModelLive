@@ -819,6 +819,7 @@ namespace SSRepository.Repository.Transaction
             var detail = new TranDetails();
 
             model.TranDetails.Add(detail);
+            detail.FkProductId = PkProductId;
             TranDetailDefault(model, detail);
             GetSetProduct(model, detail, "", 0, model.FKOrderID, model.FKOrderSrID);
             CalculateExe(detail);
