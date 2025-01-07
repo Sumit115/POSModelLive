@@ -49,19 +49,19 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Batch</label> 
+                                    <label>Batch</label>
                                     @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "Batch_In" }, { "Class", "val-cus-drp" }, { "event", "" },
                                     { "value", 0 }, { "ExtraParam", "FkProductId_In" }, { "text", "" }, { "uri", "" } })
 
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <div class="form-group">
                                     <label>Color</label>
                                     <input type="text" id="Color_In" class="form-control" />
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <div class="form-group">
                                     <label>Qty</label>
                                     <input type="number" id="Qty_In" class="form-control" />
@@ -69,7 +69,7 @@
                             </div>
                             <div class="col-md-1">
                                 <div class="form-group">
-                                     <input type="button" class="btn btn-warning" value="Add" onclick="AddProduct_In()" autocomplete="off">
+                                    <input type="button" class="btn btn-warning" value="Add" onclick="AddProduct_In()" autocomplete="off">
                                 </div>
                             </div>
 
@@ -85,18 +85,102 @@
                                         </tr>
                                     </thead>
                                     <tbody class="md-height">
-                                      @*  @{
-                                            int AcNo = -1;
+                                        @*  @{
+                                        int AcNo = -1;
                                         }
                                         @if (Model.Recipe_dtl != null)
                                         {
-                                            for (int i = 0; i < Model.Recipe_dtl.Count; i++)
+                                        for (int i = 0; i < Model.Recipe_dtl.Count; i++)
+                                        {
+                                        AcNo++;
+                                        <tr index="0">
+
+                                        <td class="tabel-td-xs">
+                                        <input readonly="readonly" id="Recipe_dtl_@(i)__Product" name="Recipe_dtl[@i].Product" type="text" value="@Model.Recipe_dtl[i].Product" tabindex="-1">
+                                        </td>
+
+                                        <td class="tabel-td-xs">
+                                        <input id="Recipe_dtl_@(i)__Mode" name="Recipe_dtl[@i].Mode" type="hidden" value="1">
+                                        <input id="Recipe_dtl_@(i)__PkId" name="Recipe_dtl[@i].PkId" type="hidden" value="@Model.Recipe_dtl[i].FkRecipeId">
+                                        <span class="action-icon" onclick="UpdateProduct(this,@i,'del')">
+                                        <i class="fa fa-trash"></i>
+                                        </span>
+                                        </td>
+                                        </tr>
+
+                                        }
+
+                                        }*@
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="border p-2">
+                        <h5>Out</h5>
+                        <div class="row">
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Product</label>
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkProductId_Out" }, { "Class", "val-cus-drp" }, { "event", "" },
+                                    { "value", 0 }, { "ExtraParam", "" }, { "text", "" }, { "uri", "" } })
+
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Batch</label> 
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "Batch_Out" }, { "Class", "val-cus-drp" }, { "event", "" },
+                                    { "value", 0 }, { "ExtraParam", "FkProductId_Out" }, { "text", "" }, { "uri", "" } })
+
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label>Color</label>
+                                    <input type="text" id="Color_Out" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label>Qty</label>
+                                    <input type="number" id="Qty_Out" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                     <input type="button" class="btn btn-warning" value="Add" onclick="AddProduct_Out()" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <table id="tblProduct_Out" class="shelf-tblProduct table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Batch</th>
+                                            <th>Color</th>
+                                            <th>Qty</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="md-height">
+                                      @*  @{
+                                            Outt AcNo = -1;
+                                        }
+                                        @if (Model.Recipe_dtl != null)
+                                        {
+                                            for (Outt i = 0; i < Model.Recipe_dtl.Count; i++)
                                             {
                                                 AcNo++;
-                                                <tr index="0">
+                                                <tr Outdex="0">
 
                                                     <td class="tabel-td-xs">
-                                                        <input readonly="readonly" id="Recipe_dtl_@(i)__Product" name="Recipe_dtl[@i].Product" type="text" value="@Model.Recipe_dtl[i].Product" tabindex="-1">
+                                                        <input readonly="readonly" id="Recipe_dtl_@(i)__Product" name="Recipe_dtl[@i].Product" type="text" value="@Model.Recipe_dtl[i].Product" tabOutdex="-1">
                                                     </td>
 
                                                     <td class="tabel-td-xs">
@@ -118,7 +202,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                @*<div class="col-md-6">
                     <label>In</label>
 
                     <div id="DDTIn" class="DDT">
@@ -128,7 +212,7 @@
                     <label>Out</label>
                     <div id="DDTOut" class="DDT">
                     </div>
-                </div>
+                </div>*@
             </div>
         </div>
     </form>
