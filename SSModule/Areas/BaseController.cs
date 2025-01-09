@@ -33,6 +33,7 @@ namespace SSAdmin.Areas
                 Directory.CreateDirectory(path);
 
             string filePath = Path.Combine(path, "menulist.json");
+
             var jsondata = System.IO.File.ReadAllText(filePath);
             if (!string.IsNullOrEmpty(jsondata))
             {
