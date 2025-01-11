@@ -74,7 +74,7 @@
                             </div>
 
                             <div class="col-md-12">
-                                <table id="tblProduct_In" class="shelf-tblProduct table table-bordered">
+                                <table id="tblProduct_In" class="tblProduct shelf-tblProduct table table-bordered">
                                     <thead>
                                         <tr>
                                             <th>Product</th>
@@ -85,32 +85,34 @@
                                         </tr>
                                     </thead>
                                     <tbody class="md-height">
-                                        @*  @{
-                                        int AcNo = -1;
+                                      @{
+                                            int index = -1;
                                         }
                                         @if (Model.Recipe_dtl != null)
                                         {
-                                        for (int i = 0; i < Model.Recipe_dtl.Count; i++)
-                                        {
-                                        AcNo++;
-                                        <tr index="0">
+                                            var dtl = Model.Recipe_dtl.Where(x => x.TranType == "I").ToList();
+                                            for (int i = 0; i < dtl.Count; i++)
+                                            {
+                                                index++;
+                                                <tr index="@(index)">
+                                                    <td class="tabel-td-xs">  <input id="Recipe_dtl_@(index)__Product" name="Recipe_dtl[@(index)].Product" type="text" value="@dtl[i].Product" tabindex="-1"> </td>
+                                                    <td class="tabel-td-xs">  <input id="Recipe_dtl_@(index)__Batch" name="Recipe_dtl[@(index)].Batch" type="text" value="@dtl[i].Batch" tabindex="-1"> </td>
+                                                    <td class="tabel-td-xs">  <input id="Recipe_dtl_@(index)__Color" name="Recipe_dtl[@(index)].Color" type="text" value="@dtl[i].Color" tabindex="-1"> </td>
+                                                    <td class="tabel-td-xs">  <input id="Recipe_dtl_@(index)__Qty" name="Recipe_dtl[@(index)].Qty" type="text" value="@dtl[i].Qty" tabindex="-1"> </td>
+                                                    <td class="tabel-td-xs">
+                                                        <input id="Recipe_dtl_@(index)__TranType" name="Recipe_dtl[@(index)].TranType" type="hidden" value="@dtl[i].TranType">
+                                                        <input id="Recipe_dtl_@(index)__SrNo" name="Recipe_dtl[@(index)].SrNo" type="hidden" class="SrNo" value="@dtl[i].SrNo">
+                                                        <input id="Recipe_dtl_@(index)__FkProductId" name="Recipe_dtl[@(index)].FkProductId" type="hidden" value="@dtl[i].FkProductId">
+                                                        <input id="Recipe_dtl_@(index)__Mode" name="Recipe_dtl[@(index)].Mode" type="hidden" value="1">
+                                                        <input id="Recipe_dtl_@(index)__PkId" name="Recipe_dtl[@(index)].PkId" type="hidden" value="@dtl[i].PkId">
+                                                        <a href="Javascript:void(0)" class="action-icon" onclick="UpdateSize(this,@(index),'del')"><i class="fa fa-trash" ></i></a>
+                                                    </td>
 
-                                        <td class="tabel-td-xs">
-                                        <input readonly="readonly" id="Recipe_dtl_@(i)__Product" name="Recipe_dtl[@i].Product" type="text" value="@Model.Recipe_dtl[i].Product" tabindex="-1">
-                                        </td>
+                                                </tr>
 
-                                        <td class="tabel-td-xs">
-                                        <input id="Recipe_dtl_@(i)__Mode" name="Recipe_dtl[@i].Mode" type="hidden" value="1">
-                                        <input id="Recipe_dtl_@(i)__PkId" name="Recipe_dtl[@i].PkId" type="hidden" value="@Model.Recipe_dtl[i].FkRecipeId">
-                                        <span class="action-icon" onclick="UpdateProduct(this,@i,'del')">
-                                        <i class="fa fa-trash"></i>
-                                        </span>
-                                        </td>
-                                        </tr>
+                                            }
 
                                         }
-
-                                        }*@
                                     </tbody>
 
                                 </table>
@@ -133,7 +135,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Batch</label> 
+                                    <label>Batch</label>
                                     @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "Batch_Out" }, { "Class", "val-cus-drp" }, { "event", "" },
                                     { "value", 0 }, { "ExtraParam", "FkProductId_Out" }, { "text", "" }, { "uri", "" } })
 
@@ -153,12 +155,12 @@
                             </div>
                             <div class="col-md-1">
                                 <div class="form-group">
-                                     <input type="button" class="btn btn-warning" value="Add" onclick="AddProduct_Out()" autocomplete="off">
+                                    <input type="button" class="btn btn-warning" value="Add" onclick="AddProduct_Out()" autocomplete="off">
                                 </div>
                             </div>
 
                             <div class="col-md-12">
-                                <table id="tblProduct_Out" class="shelf-tblProduct table table-bordered">
+                                <table id="tblProduct_Out" class="tblProduct shelf-tblProduct table table-bordered">
                                     <thead>
                                         <tr>
                                             <th>Product</th>
@@ -169,32 +171,32 @@
                                         </tr>
                                     </thead>
                                     <tbody class="md-height">
-                                      @*  @{
-                                            Outt AcNo = -1;
-                                        }
+                                      
                                         @if (Model.Recipe_dtl != null)
                                         {
-                                            for (Outt i = 0; i < Model.Recipe_dtl.Count; i++)
+                                            var dtl = Model.Recipe_dtl.Where(x => x.TranType == "O").ToList();
+                                            for (int i = 0; i < dtl.Count; i++)
                                             {
-                                                AcNo++;
-                                                <tr Outdex="0">
-
+                                                index++;
+                                                <tr index="@(index)">
+                                                    <td class="tabel-td-xs">  <input id="Recipe_dtl_@(index)__Product" name="Recipe_dtl[@(index)].Product" type="text" value="@dtl[i].Product" tabindex="-1"> </td>
+                                                    <td class="tabel-td-xs">  <input id="Recipe_dtl_@(index)__Batch" name="Recipe_dtl[@(index)].Batch" type="text" value="@dtl[i].Batch" tabindex="-1"> </td>
+                                                    <td class="tabel-td-xs">  <input id="Recipe_dtl_@(index)__Color" name="Recipe_dtl[@(index)].Color" type="text" value="@dtl[i].Color" tabindex="-1"> </td>
+                                                    <td class="tabel-td-xs">  <input id="Recipe_dtl_@(index)__Qty" name="Recipe_dtl[@(index)].Qty" type="text" value="@dtl[i].Qty" tabindex="-1"> </td>
                                                     <td class="tabel-td-xs">
-                                                        <input readonly="readonly" id="Recipe_dtl_@(i)__Product" name="Recipe_dtl[@i].Product" type="text" value="@Model.Recipe_dtl[i].Product" tabOutdex="-1">
+                                                        <input id="Recipe_dtl_@(index)__TranType" name="Recipe_dtl[@(index)].TranType" type="hidden" value="@dtl[i].TranType">
+                                                        <input id="Recipe_dtl_@(index)__SrNo" name="Recipe_dtl[@(index)].SrNo" type="hidden" class="SrNo" value="@dtl[i].SrNo">
+                                                        <input id="Recipe_dtl_@(index)__FkProductId" name="Recipe_dtl[@(index)].FkProductId" type="hidden" value="@dtl[i].FkProductId">
+                                                         <input id="Recipe_dtl_@(index)__Mode" name="Recipe_dtl[@(index)].Mode" type="hidden" value="1">
+                                                        <input id="Recipe_dtl_@(index)__PkId" name="Recipe_dtl[@(index)].PkId" type="hidden" value="@dtl[i].PkId">
+                                                      <a href="Javascript:void(0)" class="action-icon" onclick="UpdateSize(this,@(index),'del')"><i class="fa fa-trash"></i></a>
                                                     </td>
 
-                                                    <td class="tabel-td-xs">
-                                                        <input id="Recipe_dtl_@(i)__Mode" name="Recipe_dtl[@i].Mode" type="hidden" value="1">
-                                                        <input id="Recipe_dtl_@(i)__PkId" name="Recipe_dtl[@i].PkId" type="hidden" value="@Model.Recipe_dtl[i].FkRecipeId">
-                                                        <span class="action-icon" onclick="UpdateProduct(this,@i,'del')">
-                                                            <i class="fa fa-trash"></i>
-                                                        </span>
-                                                    </td>
                                                 </tr>
 
                                             }
 
-                                        }*@
+                                        }
                                     </tbody>
 
                                 </table>
@@ -203,15 +205,15 @@
                     </div>
                 </div>
                 @*<div class="col-md-6">
-                    <label>In</label>
+                <label>In</label>
 
-                    <div id="DDTIn" class="DDT">
-                    </div>
+                <div id="DDTIn" class="DDT">
+                </div>
                 </div>
                 <div class="col-md-6">
-                    <label>Out</label>
-                    <div id="DDTOut" class="DDT">
-                    </div>
+                <label>Out</label>
+                <div id="DDTOut" class="DDT">
+                </div>
                 </div>*@
             </div>
         </div>

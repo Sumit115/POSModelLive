@@ -94,19 +94,25 @@ function bindColor_In() {
     $('#Color_In').autocomplete({
         // minLength: 3,
         source: function (request, response) {
+            debugger;
             var FkProductId = $("#FkProductId_In").val();
 
             var data = { name: "Color", pageNo: 1, pageSize: 1000, search: request.term, RowParam: FkProductId, ExtraParam: "" };
 
             $.ajax({
-                url: Handler.rootPath() + 'Transactions/PurchaseInvoice/trandtldropList', data: data, async: false, dataType: 'JSON', success: function (res) {
+                url: Handler.rootPath() + 'Transactions/PurchaseInvoice/trandtldropList',
+                data: data,
+                async: false,
+                dataType: 'JSON',
+                success: function (res) {
+                    debugger;
                     Handler.hide();
-                    if (res.length > 0)
+                    if (res.length > 0) {
                         response($.map(res, function (item) {
 
                             return { label: item.Color, value: item.Color }; //updated code
                         }));
-
+                    }
                 }, error: function (request, status, error) {
                     alert("Error");
                 }
@@ -135,8 +141,8 @@ function bindColor_In() {
 
 function AddProduct_In() {
     debugger;
-    var rowCount = $('#tblProduct_In tbody tr').length;
-    var allValues = $('#tblProduct_In tbody tr input[class="SrNo"]').map(function () { return +this.value; }).toArray();
+    var rowCount = $('#tblProduct_In tbody tr').length + $('#tblProduct_Out tbody tr').length;
+    var allValues = $('.tblProduct tbody tr input[class="SrNo"]').map(function () { return +this.value; }).toArray();
     var SrNo = Math.max.apply(Math, allValues);
     SrNo = SrNo > 0 ? SrNo + 1 : 1;
     var FkProductId = $("#FkProductId_In").val();
@@ -146,11 +152,14 @@ function AddProduct_In() {
         html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Product" name="Recipe_dtl[' + rowCount + '].Product" type="text" value="' + $("#drpFkProductId_In").val() + '" tabindex="-1"> </td>';
         html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Batch" name="Recipe_dtl[' + rowCount + '].Batch" type="text" value="' + $("#drpBatch_In").val() + '" tabindex="-1"> </td>';
         html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Color" name="Recipe_dtl[' + rowCount + '].Color" type="text" value="' + $("#Color_In").val() + '" tabindex="-1"> </td>';
+        html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Qty" name="Recipe_dtl[' + rowCount + '].Qty" type="text" value="' + $("#Qty_In").val() + '" tabindex="-1"> </td>';
         html += '<td class="tabel-td-xs">';
         html += '<input id="Recipe_dtl_' + rowCount + '__TranType" name="Recipe_dtl[' + rowCount + '].TranType" type="hidden"   value="I">';
         html += '<input id="Recipe_dtl_' + rowCount + '__SrNo" name="Recipe_dtl[' + rowCount + '].SrNo" type="hidden" class="SrNo" value="' + SrNo + '">';
         html += '<input id="Recipe_dtl_' + rowCount + '__FkProductId" name="Recipe_dtl[' + rowCount + '].FkProductId" type="hidden" value="' + $("#FkProductId_In").val() + '">';
-        html += '<span class="action-icon" onclick="UpdateSize(this,' + rowCount + ',\'del\')"><i class="fa fa-trash" /></span> </td>';
+        html += '<input id="Recipe_dtl_' + rowCount + '__Mode" name="Recipe_dtl[' + rowCount + '].Mode" type="hidden" value="0">';
+        html += '<input id="Recipe_dtl_' + rowCount + '__PkId" name="Recipe_dtl[' + rowCount + '].PkId" type="hidden" value="0">';
+           html += '<span class="action-icon" onclick="UpdateSize(this,' + rowCount + ',\'del\')"><i class="fa fa-trash" ></i></span> </td>';
 
         html += '</tr>';
 
@@ -265,8 +274,8 @@ function bindColor_Out() {
 
 function AddProduct_Out() {
     debugger;
-    var rowCount = $('#tblProduct_Out tbody tr').length;
-    var allValues = $('#tblProduct_Out tbody tr input[class="SrNo"]').map(function () { return +this.value; }).toArray();
+    var rowCount = $('#tblProduct_In tbody tr').length + $('#tblProduct_Out tbody tr').length;
+    var allValues = $('.tblProduct tbody tr input[class="SrNo"]').map(function () { return +this.value; }).toArray();
     var SrNo = Math.max.apply(Math, allValues);
     SrNo = SrNo > 0 ? SrNo + 1 : 1;
     var FkProductId = $("#FkProductId_Out").val();
@@ -276,11 +285,14 @@ function AddProduct_Out() {
         html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Product" name="Recipe_dtl[' + rowCount + '].Product" type="text" value="' + $("#drpFkProductId_Out").val() + '" tabindex="-1"> </td>';
         html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Batch" name="Recipe_dtl[' + rowCount + '].Batch" type="text" value="' + $("#drpBatch_Out").val() + '" tabindex="-1"> </td>';
         html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Color" name="Recipe_dtl[' + rowCount + '].Color" type="text" value="' + $("#Color_Out").val() + '" tabindex="-1"> </td>';
+        html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Qty" name="Recipe_dtl[' + rowCount + '].Qty" type="text" value="' + $("#Qty_Out").val() + '" tabindex="-1"> </td>';
         html += '<td class="tabel-td-xs">';
-        html += '<input id="Recipe_dtl_' + rowCount + '__TranType" name="Recipe_dtl[' + rowCount + '].TranType" type="hidden"   value="I">';
+        html += '<input id="Recipe_dtl_' + rowCount + '__TranType" name="Recipe_dtl[' + rowCount + '].TranType" type="hidden"   value="O">';
         html += '<input id="Recipe_dtl_' + rowCount + '__SrNo" name="Recipe_dtl[' + rowCount + '].SrNo" type="hidden" class="SrNo" value="' + SrNo + '">';
         html += '<input id="Recipe_dtl_' + rowCount + '__FkProductId" name="Recipe_dtl[' + rowCount + '].FkProductId" type="hidden" value="' + $("#FkProductId_Out").val() + '">';
-        html += '<span class="action-icon" onclick="UpdateSize(this,' + rowCount + ',\'del\')"><i class="fa fa-trash" /></span> </td>';
+        html += '<input id="Recipe_dtl_' + rowCount + '__Mode" name="Recipe_dtl[' + rowCount + '].Mode" type="hidden" value="0">';
+        html += '<input id="Recipe_dtl_' + rowCount + '__PkId" name="Recipe_dtl[' + rowCount + '].PkId" type="hidden" value="0">';
+        html += '<span class="action-icon" onclick="UpdateSize(this,' + rowCount + ',\'del\')"><i class="fa fa-trash" ></i></span> </td>';
 
         html += '</tr>';
 
@@ -296,6 +308,7 @@ function AddProduct_Out() {
     return false;
 }
 function UpdateSize(obj, index, action) {
+    debugger;
     //if (action === 'edit') {
     //    $("#hidSizeIndex").val(index);
     //    $("#FklocalityGridId").val($("#Recipe_dtl_lst_" + index + "__FKSizeID").val());
@@ -306,9 +319,10 @@ function UpdateSize(obj, index, action) {
     //} else
 
     if (action === 'del') {
-        $(obj).closest('tr').remove();
-        //$(obj).closest('tr').addClass('tbl-delete');
-        //$("#Recipe_dtl_lst_" + index + "__Mode").val('2');
+        debugger;
+        //$(obj).closest('tr').remove();
+         $(obj).closest('tr').addClass('tbl-delete');
+        $("#Recipe_dtl_" + index + "__Mode").val('2'); 
     }
 }
 
@@ -357,7 +371,7 @@ function UpdateSize(obj, index, action) {
 //                    //    cgIn.columns[kk]["KeyValue"] = "Color";
 //                    //    cgIn.columns[kk]["Keyfield"] = "Color";//,Batch,MRP,SaleRate,PurchaseRate";
 //                    //    cgIn.columns[kk]["RowValue"] = "FkProductId";
-//                    //    cgIn.columns[kk]["ExtraValue"] = ""; //tranModel.ExtProperties.TranAlias; 
+//                    //    cgIn.columns[kk]["ExtraValue"] = ""; //tranModel.ExtProperties.TranAlias;
 
 //                    //    break
 //                }
@@ -540,7 +554,7 @@ function UpdateSize(obj, index, action) {
 //                    //    cgOut.columns[kk]["KeyValue"] = "Color";
 //                    //    cgOut.columns[kk]["Keyfield"] = "Color";//,Batch,MRP,SaleRate,PurchaseRate";
 //                    //    cgOut.columns[kk]["RowValue"] = "FkProductId";
-//                    //    cgOut.columns[kk]["ExtraValue"] = ""; //tranModel.ExtProperties.TranAlias; 
+//                    //    cgOut.columns[kk]["ExtraValue"] = ""; //tranModel.ExtProperties.TranAlias;
 
 //                    //    break
 //                }

@@ -21,6 +21,7 @@ namespace SSRepository.Models
     }
     public partial class RecipeDtlModel : BaseModel
     {
+        public long PkId { get; set; }
         public long FkRecipeId { get; set; }
         public long SrNo { get; set; }
         public string TranType { get; set; }//=I=IN,O=OUT 
@@ -29,6 +30,7 @@ namespace SSRepository.Models
         public string? Color { get; set; } //Only Purchase
         public decimal Qty { get; set; }//txt
         public string? Product { get; set; }//txt
+        public int Mode { get; set; }//txt
     }
 
 }

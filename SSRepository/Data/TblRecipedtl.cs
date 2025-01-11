@@ -10,6 +10,7 @@ namespace SSRepository.Data
     public partial class TblRecipeDtl
     {
         [Key]
+        public long PkId { get; set; }
         public long FkRecipeId { get; set; }
         public long SrNo { get; set; }
         public string TranType { get; set; }//=I=IN,O=OUT 

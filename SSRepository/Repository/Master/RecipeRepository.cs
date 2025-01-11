@@ -61,6 +61,7 @@ namespace SSRepository.Repository.Master
                                       where (ad.FkRecipeId == cou.PkRecipeId)
                                       select (new RecipeDtlModel
                                       {
+                                          PkId = ad.PkId,
                                           FkRecipeId = ad.FkRecipeId,
                                           SrNo = ad.SrNo,
                                           TranType = ad.TranType,
@@ -68,6 +69,8 @@ namespace SSRepository.Repository.Master
                                           Batch = ad.Batch,
                                           Color = ad.Color,
                                           Qty = ad.Qty,
+                                          Product=prd.Product,
+                                          Mode=1,
                                       })).ToList(),
                     })).FirstOrDefault();
             return data;
@@ -168,13 +171,16 @@ namespace SSRepository.Repository.Master
             if (model.Recipe_dtl != null)
             {
                 List<TblRecipeDtl> lstAdd = new List<TblRecipeDtl>();
-                List<TblRecipeDtl> lstDel = (from x in __dbContext.TblRecipeDtl
-                                             where x.FkRecipeId == Tbl.PkRecipeId
-                                             select x).ToList();
+                List<TblRecipeDtl> lstEdit = new List<TblRecipeDtl>();
+                List<TblRecipeDtl> lstDel = new List<TblRecipeDtl>();
+                //List<TblRecipeDtl> lstDel = (from x in __dbContext.TblRecipeDtl
+                //                             where x.FkRecipeId == Tbl.PkRecipeId
+                //                             select x).ToList();
 
 
                 foreach (var item in model.Recipe_dtl)
                 {
+
                     TblRecipeDtl locObj = new TblRecipeDtl();
                     locObj.FkRecipeId = Tbl.PkRecipeId;
                     locObj.SrNo = item.SrNo;
@@ -183,13 +189,26 @@ namespace SSRepository.Repository.Master
                     locObj.Batch = item.Batch;
                     locObj.Color = item.Color;
                     locObj.Qty = item.Qty;
-                    lstAdd.Add(locObj);
+                    if (item.Mode == 0)
+                    {
+                        lstAdd.Add(locObj);
+                    }
+                    else if (item.Mode == 1 && item.PkId > 0)
+                    {
+                        locObj.PkId = item.PkId;
+                        lstEdit.Add(locObj);
+                    }
+                    else if (item.Mode == 2 && item.PkId>0)
+                    {
+                        locObj.PkId = item.PkId;
+                        lstDel.Add(locObj);
+                    }
                 }
 
                 if (lstDel.Count() > 0)
                     DeleteData(lstDel, true);
-                //if (lstEdit.Count() > 0)
-                //    UpdateData(lstEdit, true); 
+                if (lstEdit.Count() > 0)
+                    UpdateData(lstEdit, true);
                 if (lstAdd.Count() > 0)
                     AddData(lstAdd, true);
             }
@@ -214,8 +233,8 @@ namespace SSRepository.Repository.Master
             {
                 list = new List<ColumnStructure>
                 {
-                 new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="#", Fields="sno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Date", Fields="Entrydt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                 //new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="#", Fields="sno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                 //new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Date", Fields="Entrydt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Name", Fields="Name",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                
             };
