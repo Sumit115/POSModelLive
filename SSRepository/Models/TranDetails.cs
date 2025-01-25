@@ -91,6 +91,6 @@ namespace SSRepository.Models
         public string? SubCategoryName { get; set; }
         public long LinkSrNo { get; set; }
         public string PromotionType { get; set; } =string.Empty;
-
+        public string? TranType { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace SSRepository.IRepository
 
         object ApplyRateDiscount(TransactionModel model, string type, decimal discount);
 
-        object ColumnChange(TransactionModel model, int rowIndex, string fieldName);
+        object ColumnChange(TransactionModel model, int rowIndex, string fieldName,bool IsReturn);
         List<ProdLotDtlModel> Get_ProductLotDtlList(int PKProductId, string Batch, string Color);
 
         List<ColumnStructure> ColumnList(string GridName = "");

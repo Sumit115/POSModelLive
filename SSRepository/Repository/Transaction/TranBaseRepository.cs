@@ -76,7 +76,7 @@ namespace SSRepository.Repository.Transaction
                 //
                 setDefaultBeforeSave(objmodel);
 
-                if (objmodel.ExtProperties.TranType == "S" && objmodel.IsTranChange && objmodel.TranAlias!="LINV" && objmodel.TranAlias != "LORD")
+                if (objmodel.ExtProperties.TranType == "S" && objmodel.IsTranChange && objmodel.TranAlias != "LINV" && objmodel.TranAlias != "LORD")
                     setPromotion(objmodel);
 
                 //CalculateExe(objmodel);
@@ -119,12 +119,12 @@ namespace SSRepository.Repository.Transaction
                                 if (objmodel.UniqIdDetails != null)
                                 {
                                     var _bQty = objmodel.UniqIdDetails.Where(x => x.SrNo == item.SrNo).ToList();
-                                    if (_bQty.Count > (item.Qty+ item.FreeQty)) { throw new Exception("Product (" + item.Product + ") Qty & Barcode Qty Not Match"); }
+                                    if (_bQty.Count > (item.Qty + item.FreeQty)) { throw new Exception("Product (" + item.Product + ") Qty & Barcode Qty Not Match"); }
                                 }
                             }
                         }
 
-                        if (objmodel.UniqIdDetails != null && objmodel.ExtProperties.TranType == "S")
+                        if (objmodel.UniqIdDetails != null && objmodel.ExtProperties.StockFlag == "O")
                         {
                             var _bQty = objmodel.UniqIdDetails.Where(x => x.SrNo == item.SrNo).ToList();
                             if (item.CodingScheme == "Unique")
@@ -565,33 +565,38 @@ namespace SSRepository.Repository.Transaction
         }
 
 
-        public object ColumnChange(TransactionModel model, int rowIndex, string fieldName)
+        public object ColumnChange(TransactionModel model, int rowIndex, string fieldName, bool IsReturn)
         {
             try
             {
-                if (model.TranDetails.Count <= rowIndex)
+                if ((IsReturn ? model.TranReturnDetails.Count : model.TranDetails.Count) <= rowIndex)
                     throw new Exception("Invalid");
 
 
                 switch (fieldName)
                 {
-                    case "Product":
-                        if (model.TranDetails[rowIndex].FkId == 0)
+                    case "Product": 
+                        if ((IsReturn? model.TranReturnDetails[rowIndex].FkId : model.TranDetails[rowIndex].FkId) == 0)
                         {
-                            TranDetailDefault(model, model.TranDetails[rowIndex]);
-                            GetSetProduct(model, model.TranDetails[rowIndex], "", 0, model.FKOrderID, model.FKOrderSrID);
+                            TranDetailDefault(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
+                            GetSetProduct(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]), "", 0, model.FKOrderID, model.FKOrderSrID);
                         }
+
                         break;
                     case "Batch":
                     case "Color":
-                        setBatch(model, model.TranDetails[rowIndex]);
+                        setBatch(model, (IsReturn ? model.TranReturnDetails[rowIndex]: model.TranDetails[rowIndex]));
                         break;
                     case "TradeDisc":
                         model.TranDetails[rowIndex].TradeDiscAmt = 0;
                         break;
                     case "Delete":
-                        model.TranDetails[rowIndex].ModeForm = 2;
-                        model.UniqIdDetails = model.UniqIdDetails.Where(x => x.SrNo != model.TranDetails[rowIndex].SrNo).ToList();
+                        if (IsReturn) { model.TranReturnDetails[rowIndex].ModeForm = 2; }
+                        else
+                        {
+                            model.TranDetails[rowIndex].ModeForm = 2;
+                            model.UniqIdDetails = model.UniqIdDetails.Where(x => x.SrNo != model.TranDetails[rowIndex].SrNo).ToList();
+                        }
                         break;
                     case "ProductReturn":
                         setReturnProduct(model, model.TranDetails[rowIndex]);
@@ -605,7 +610,7 @@ namespace SSRepository.Repository.Transaction
                         break;
                 }
 
-                CalculateExe(model.TranDetails[rowIndex]);
+                CalculateExe((IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
                 SetGridTotal(model);
                 SetPaymentDetail(model);
                 model.IsTranChange = true;
@@ -740,7 +745,7 @@ namespace SSRepository.Repository.Transaction
                     detail.FkLotId = 0;
                 }
 
-                if (model.FkPartyId > 0 && model.ExtProperties.TranType == "S" && model.TranAlias!="LORD" && model.TranAlias != "LINV")
+                if (model.FkPartyId > 0 && model.ExtProperties.TranType == "S" && model.TranAlias != "LORD" && model.TranAlias != "LINV")
                 {
                     var _cust = new CustomerRepository(__dbContext).GetSingleRecord(model.FkPartyId);
                     detail.TradeDisc = _cust.Disc;
@@ -1213,8 +1218,8 @@ namespace SSRepository.Repository.Transaction
 
         public void SetGridTotal(TransactionModel model)
         {
-            model.GrossAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TaxableAmt), 2);
-            model.TaxAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.GstAmt), 2);
+            model.GrossAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TaxableAmt), 2)+ Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.TaxableAmt), 2);
+            model.TaxAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.GstAmt), 2)+ Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.GstAmt), 2);
             model.CashDiscountAmt = 0;
             if (model.CashDiscType == "R" && model.CashDiscount > 0 && model.CashDiscount <= model.GrossAmt)
             {
@@ -1228,9 +1233,9 @@ namespace SSRepository.Repository.Transaction
             {
                 model.CashDiscount = 0;
             }
-            model.TradeDiscAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2);
+            model.TradeDiscAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2)+ Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2);
             model.TotalDiscount = model.CashDiscountAmt + model.TradeDiscAmt;
-            decimal NetAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);
+            decimal NetAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2)+ Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);
             model.NetAmt = Math.Round((NetAmt - model.CashDiscountAmt) + model.Shipping + model.OtherCharge - model.RoundOfDiff, 2);
 
         }
@@ -1374,14 +1379,15 @@ namespace SSRepository.Repository.Transaction
             if (TranAlias == "LINV" || TranAlias == "LORD")
             {
                 LocationRepository rep = new LocationRepository(__dbContext);
-                var lst= rep.GetList(pageSize, pageNo, search).ToList()
-                    .Select(cou => new PartyModel() {
-                        PkId = cou.PKLocationID, 
+                var lst = rep.GetList(pageSize, pageNo, search).ToList()
+                    .Select(cou => new PartyModel()
+                    {
+                        PkId = cou.PKLocationID,
                         Name = cou.Location,
                         FKUserId = cou.FKUserId,
-                        FKCreatedByID = cou.FKCreatedByID, 
+                        FKCreatedByID = cou.FKCreatedByID,
                         Email = cou.Email,
-                        Mobile = cou.Phone1,  
+                        Mobile = cou.Phone1,
                         Address = cou.Address,
                         StateName = cou.State,
                         FkCityId = cou.FkCityId,
@@ -1390,7 +1396,7 @@ namespace SSRepository.Repository.Transaction
                     }).ToList();
                 return lst;
             }
-            else if (TranAlias == "PINV" || TranAlias == "PORD")
+            else if (TranAlias == "PINV" || TranAlias == "PORD" || TranAlias == "PJ_O")
             {
                 VendorRepository rep = new VendorRepository(__dbContext);
                 return rep.GetList(pageSize, pageNo, search);
@@ -1406,8 +1412,8 @@ namespace SSRepository.Repository.Transaction
         {
             var vendor = new PartyModel();
             if (model.ExtProperties.TranAlias == "LINV" || model.ExtProperties.TranAlias == "LORD")
-                vendor = GetLocation(FkPartyId); 
-            else if (model.ExtProperties.TranAlias == "PINV" || model.ExtProperties.TranAlias == "PORD")
+                vendor = GetLocation(FkPartyId);
+            else if (model.ExtProperties.TranAlias == "PINV" || model.ExtProperties.TranAlias == "PORD" || model.ExtProperties.TranAlias == "PJ_O")
                 vendor = GetVendor(FkPartyId);
             else
                 vendor = GetCustomer(FkPartyId);
@@ -1445,7 +1451,7 @@ namespace SSRepository.Repository.Transaction
                                 }
                                )).FirstOrDefault();
             return data;
-        } 
+        }
         public PartyModel? GetCustomer(long PkId)
         {
             PartyModel? data = (from cou in __dbContext.TblCustomerMas
@@ -2097,7 +2103,7 @@ namespace SSRepository.Repository.Transaction
             var FormatName = repSeries.GetSingleRecord(model.FKSeriesId).FormatName;
             FormatName = string.IsNullOrEmpty(FormatName) ? "Wholesale" : FormatName;
 
-            return new { model= model, FormatName= FormatName };
+            return new { model = model, FormatName = FormatName };
         }
     }
 

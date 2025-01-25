@@ -320,6 +320,7 @@
     <None Include="wwwroot\js\Master\ProductMas.js" />
     <None Include="wwwroot\js\Report\Report.js" />
     <None Include="wwwroot\js\site.js" />
+    <None Include="wwwroot\js\Transaction\JobWork.js" />
     <None Include="wwwroot\js\Transaction\Transaction.js" />
     <None Include="wwwroot\css\bootstrap.css.map" />
     <None Include="wwwroot\css\bootstrap.min.css.map" />

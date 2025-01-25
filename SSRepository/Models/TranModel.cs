@@ -16,6 +16,7 @@ namespace SSRepository.Models
         public TransactionModel()
         {
             TranDetails = new List<TranDetails>();
+            TranReturnDetails = new List<TranDetails>();
             VoucherDetails = new List<VoucherDetails>();
             ExtProperties = new ExtPropertie();
             BranchDetails = new List<BranchModel>();
@@ -111,6 +112,7 @@ namespace SSRepository.Models
         public ExtPropertie ExtProperties { get; set; }
 
         public List<TranDetails> TranDetails { get; set; }
+        public List<TranDetails> TranReturnDetails { get; set; }
         public List<VoucherDetails> VoucherDetails { get; set; }
         public List<BranchModel> BranchDetails { get; set; }
         public BranchModel Branch { get; set; }

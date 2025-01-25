@@ -74,12 +74,12 @@ namespace SSAdmin.Areas
         }
 
         [RequestFormLimits(ValueCountLimit = int.MaxValue)]
-        public JsonResult ColumnChange(TransactionModel model, int rowIndex, string fieldName)
+        public JsonResult ColumnChange(TransactionModel model, int rowIndex, string fieldName,bool IsReturn)
         {
             return Json(new
             {
                 status = "success",
-                data = _repository.ColumnChange(model, rowIndex, fieldName)
+                data = _repository.ColumnChange(model, rowIndex, fieldName, IsReturn)
             });
 
         }

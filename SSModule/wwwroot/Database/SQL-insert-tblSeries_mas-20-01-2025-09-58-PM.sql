@@ -1,0 +1,2 @@
+IF Not EXISTS(Select * from tblSeries_mas where TranAlias  ='PJ_O')
+	INSERT [dbo].[tblSeries_mas] ( [Series], [SeriesNo], [FkBranchId], [BillingRate], [TranAlias], [FormatName], [ResetNoFor], [AllowWalkIn], [AutoApplyPromo], [RoundOff], [DefaultQty], [AllowZeroRate], [AllowFreeQty], [FKLocationID], [FKUserID], [ModifiedDate], [FKCreatedByID], [CreationDate], [DocumentType]) VALUES ( N'A', 0, 1, N'MRP', N'PJ_O', NULL, NULL, 1, 1, 1, 1, 1, 1, (Select top 1 PKLocationID from tblLocation_mas), 1, Getdate(), 1, Getdate(), N'B')

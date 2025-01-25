@@ -71,6 +71,7 @@ namespace SSAdmin
             LocationTransferInvoice = 115,
             LocationRequest = 116,
             LocationReceive = 117,
+            JobWork = 118,
 
             //200-report
             SalesStock = 200,

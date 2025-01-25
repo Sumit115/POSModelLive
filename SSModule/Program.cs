@@ -131,7 +131,7 @@ builder.Services.AddScoped<ILocationTransferRequestRepository, LocationTransferR
 builder.Services.AddScoped<ILocationTransferInvoiceRepository, LocationTransferInvoiceRepository>();
 builder.Services.AddScoped<ILocationRequestRepository, LocationRequestRepository>();
 builder.Services.AddScoped<ILocationReceiveRepository, LocationReceiveRepository>();
-
+builder.Services.AddScoped<IJobWorkRepository, JobWorkRepository>();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();
