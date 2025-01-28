@@ -14,7 +14,7 @@ $(document).ready(function () {
 
     ModeFormForEdit = Handler.isNullOrEmpty($("#hdModeFormForEdit").val()) ? 1 : parseInt($("#hdModeFormForEdit").val());
     Common.InputFormat();
- Load();
+    Load();
     tranModel.TrnStatus = Handler.isNullOrEmpty(tranModel.TrnStatus) ? "P" : tranModel.TrnStatus.replace('\u0000', '');
     TranAlias = tranModel.ExtProperties.TranAlias;
     $("#hdFormId").val(tranModel.ExtProperties.FKFormID);
@@ -22,15 +22,22 @@ $(document).ready(function () {
 
 });
 function Load() {
-  
+
     var PkId = $("#PkId").val();
     tranModel = JSON.parse($("#hdData").val());
     if (PkId > 0) {
-        var arrayIn = tranModel.TranDetails.filter(x => x.TranType == "I");
-        var arrayOut = tranModel.TranDetails.filter(x => x.TranType == "O"); 
-
-        BindGridIn('DDTIn', JSON.parse($("#hdGridIn").val()), arrayIn);
-        BindGridOut('DDTOut', JSON.parse($("#hdGridOut").val()), arrayOut);
+        //var arrayIn = tranModel.TranDetails.filter(x => x.TranType == "I");
+        //var arrayOut = tranModel.TranReturnDetails.filter(x => x.TranType == "O"); 
+        $(tranModel.TranDetails).each(function (i, v) {
+            v["ModeForm"] = ModeFormForEdit;
+            v["Delete"] = 'Delete';
+        });
+        $(tranModel.TranReturnDetails).each(function (i, v) {
+            v["ModeForm"] = ModeFormForEdit;
+            v["Delete"] = 'Delete';
+        });
+        BindGridIn('DDTIn', JSON.parse($("#hdGridIn").val()), tranModel.TranDetails);
+        BindGridOut('DDTOut', JSON.parse($("#hdGridOut").val()), tranModel.TranReturnDetails);
     }
 
     else {
@@ -122,7 +129,7 @@ function BindGridIn(GridId, GridStructerJson, data) {
                 }
                 else {
                     if (field == "Batch" || field == "Color" || field == "Qty") {
-                        
+
                         var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
                         if (field == "Batch") {
                             Common.ajax(Handler.rootPath() + 'Transactions/PurchaseInvoice/CategorySizeListByProduct?FkProductId=' + FkProductId, {}, "Please Wait...", function (res) {
@@ -187,11 +194,7 @@ function BindGridIn(GridId, GridStructerJson, data) {
                 var FkProductId = args.grid.getDataItem(args.row)["FkProductId"];
                 var SrNo = args.grid.getDataItem(args.row)["SrNo"];
                 if (field == "Delete") {
-                    var data = $.grep(cgIn.getData(), function (e) {
-                        return e.SrNo != SrNo;
-                    });
-                    // console.log(data);
-                    BindGridIn('DDTIn', JSON.parse($("#hdGridIn").val()), data);
+                    ColumnChange(args, args.row, "Delete", false);
 
                 }
 
@@ -203,20 +206,20 @@ function BindGridIn(GridId, GridStructerJson, data) {
 
             e.preventDefault();
             var j = cgIn.outGrid.getCellFromEvent(e);
-            $("#contextMenu")
+            $("#contextMenuIn")
                 .data("row", j.row)
                 .css("top", e.pageY - 90)
                 .css("left", e.pageX - 60)
                 .show();
             $("body").one("click", function () {
-                $("#contextMenu").hide();
+                $("#contextMenuIn").hide();
             });
         });
-        $("#contextMenu").click(function (e) {
+        $("#contextMenuIn").click(function (e) {
             if (!$(e.target).is("li")) {
                 return;
             }
-            if (!UDI.outGrid.getEditorLock().commitCurrentEdit()) {
+            if (!cgIn.outGrid.getEditorLock().commitCurrentEdit()) {
                 return;
             }
 
@@ -224,8 +227,12 @@ function BindGridIn(GridId, GridStructerJson, data) {
             var command = $(e.target).attr("data");
             if (command == "EditColumn") {
                 Common.GridColSetup(tranModel.ExtProperties.FKFormID, "dtl", function () {
-                    var _dtl = GetDataFromGrid(false);
-                    //  BindGrid('DDT', _dtl);
+                    //  var _dtl = GetDataFromGrid(false);
+                    Common.GridStrucher(tranModel.ExtProperties.FKFormID, "dtl", function (s) {
+                        //  BindGridIn('DDTIn', JSON.parse($("#hdGridIn").val()), tranModel.TranDetails);
+                        $("#hdGridIn").val(JSON.stringify(s));
+                       BindGridIn('DDTIn', s, tranModel.TranDetails);
+                    });
                 });
             }
 
@@ -364,11 +371,7 @@ function BindGridOut(GridId, GridStructerJson, data) {
                 var FkProductId = args.grid.getDataItem(args.row)["FkProductId"];
                 var SrNo = args.grid.getDataItem(args.row)["SrNo"];
                 if (field == "Delete") {
-                    var data = $.grep(cgOut.getData(), function (e) {
-                        return e.SrNo != SrNo;
-                    });
-                    // console.log(data);
-                    BindGridIn('DDTIn', JSON.parse($("#hdGridIn").val()), data);
+                    ColumnChange(args, args.row, "Delete",true);
 
                 }
 
@@ -380,29 +383,34 @@ function BindGridOut(GridId, GridStructerJson, data) {
 
             e.preventDefault();
             var j = cgOut.outGrid.getCellFromEvent(e);
-            $("#contextMenu")
+            $("#contextMenuOut")
                 .data("row", j.row)
                 .css("top", e.pageY - 90)
                 .css("left", e.pageX - 60)
                 .show();
             $("body").one("click", function () {
-                $("#contextMenu").hide();
+                $("#contextMenuOut").hide();
             });
         });
-        $("#contextMenu").click(function (e) {
+        $("#contextMenuOut").click(function (e) {
             if (!$(e.target).is("li")) {
                 return;
             }
-            if (!UDI.outGrid.getEditorLock().commitCurrentEdit()) {
+            if (!cgOut.outGrid.getEditorLock().commitCurrentEdit()) {
                 return;
             }
 
             var row = $(this).data("row");
             var command = $(e.target).attr("data");
             if (command == "EditColumn") {
-                Common.GridColSetup(tranModel.ExtProperties.FKFormID, "dtl", function () {
-                    var _dtl = GetDataFromGrid(false);
-                    //  BindGrid('DDT', _dtl);
+                
+                Common.GridColSetup(tranModel.ExtProperties.FKFormID, "rtn", function () {
+                    //  var _dtl = GetDataFromGrid(false);
+                    Common.GridStrucher(tranModel.ExtProperties.FKFormID, "rtn", function (s) {
+                        //  BindGridIn('DDTIn', JSON.parse($("#hdGridIn").val()), tranModel.TranDetails);
+                        $("#hdGridOut").val(JSON.stringify(s));
+                        BindGridOut('DDTOut', s, tranModel.TranReturnDetails);
+                    });
                 });
             }
 
@@ -425,7 +433,7 @@ function cg_ClearRow(grid, args) {
     grid.updateRefreshDataRow(args.row);
 }
 function trandtldropList(data) {
- 
+
     var output = []
     $.ajax({
         url: Handler.rootPath() + 'Transactions/PurchaseInvoice/trandtldropList', data: data, async: false, dataType: 'JSON', success: function (result) {
@@ -456,11 +464,9 @@ function setParty() {
                 $('#PartyAddress').val(tranModel.PartyAddress);
                 $('#PartyCredit').val(tranModel.PartyCredit);
 
-                if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
-                    tranModel.TranDetails = [];
-                    BindGrid('DDT', tranModel.TranDetails);
+                BindGridIn('DDTIn', JSON.parse($("#hdGridIn").val()), tranModel.TranDetails);
+                BindGridOut('DDTOut', JSON.parse($("#hdGridOut").val()), tranModel.TranReturnDetails);
 
-                }
             }
             else
                 alert(res.msg);
@@ -515,17 +521,13 @@ function SaveRecord() {
 
                                 if (res.status == "success") {
                                     alert('Save Successfully..');
-                                    if (ControllerName == 'SalesInvoiceTouch') {
-                                        location.reload();
-                                    } else {
-                                        window.location = Handler.currentPath() + 'List';
-                                    }
+                                    window.location = Handler.currentPath() + 'List';
                                 }
                                 else {
-
                                     alert(res.msg);
                                     tranModel = res.data;
-                                    BindGrid('DDT', tranModel.TranDetails);
+                                    BindGridIn('DDTIn', JSON.parse($("#hdGridIn").val()), tranModel.TranDetails);
+                                    BindGridOut('DDTOut', JSON.parse($("#hdGridOut").val()), tranModel.TranReturnDetails);
                                 }
                             }
                         });
@@ -546,11 +548,11 @@ function SaveRecord() {
 }
 
 function ColumnChange(args, rowIndex, fieldName, IsReturn) {
-     
+
     tranModel.TranDetails = GetDataFromGrid(false, false);
     tranModel.TranReturnDetails = GetDataFromGrid(false, true);
 
-    if ((IsReturn ? tranModel.TranReturnDetails.length :tranModel.TranDetails.length) > 0) {
+    if ((IsReturn ? tranModel.TranReturnDetails.length : tranModel.TranDetails.length) > 0) {
         // if (Handler.isNullOrEmpty(tranModel.TranDetails[rowIndex].LinkSrNo) || tranModel.TranDetails[rowIndex].LinkSrNo <= 0 || fieldName == 'Delete') {
         $(".loader").show();
         $.ajax({
@@ -581,7 +583,7 @@ function ColumnChange(args, rowIndex, fieldName, IsReturn) {
     }
 }
 function setGridRowData(args, data, rowIndex, fieldName, IsReturn) {
-    debugger;
+
     if (fieldName == 'Delete') {
         args.grid.getDataItem(args.row).ModeForm = 2
     }
@@ -649,7 +651,7 @@ function GetDataFromGrid(ifForsave, IsReturn) {
         let SrNoOut = numberOut > 0 ? numberOut : 1000;
 
         cgOut.getData().filter(function (element) {
-            
+
             if (ifForsave) {
                 if (!Handler.isNullOrEmpty(element.Product) && !Handler.isNullOrEmpty(element.Qty)) {
 
@@ -705,8 +707,7 @@ function GetDataFromGrid(ifForsave, IsReturn) {
             }
         });
     }
-  
+
     return _d
 }
 
- 

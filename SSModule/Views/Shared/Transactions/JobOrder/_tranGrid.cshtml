@@ -23,7 +23,30 @@
     <div id="DDTOut" class="DDT">
     </div>
 </div>
+<style>
+    .contextMenu {
+        background: #e1efc7;
+        border: 1px solid gray;
+        padding: 2px;
+        display: none;
+        min-width: 100px;
+        -moz-box-shadow: 2px 2px 2px silver;
+        -webkit-box-shadow: 2px 2px 2px silver;
+        z-index: 99999;
+    }
 
-@*<ul id="contextMenu" style="display:none;position:absolute">
+        .contextMenu li {
+            padding: 4px 4px 4px 14px;
+            list-style: none;
+            cursor: pointer;
+            background: url(../images/arrow_right_peppermint.png) no-repeat center left;
+        }
+
+    *,
+</style>
+<ul id="contextMenuIn" class="contextMenu" style="display:none;position:absolute">
     <li id="contextEditColumn" data="EditColumn">Edit Column</li>
-</ul>*@
+</ul>
+<ul id="contextMenuOut" class="contextMenu" style="display:none;position:absolute">
+    <li id="contextEditColumn" data="EditColumn">Edit Column</li>
+</ul>

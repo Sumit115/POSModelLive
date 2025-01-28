@@ -1077,7 +1077,7 @@ function setGridRowData(args, data, rowIndex, fieldName) {
 
         var CodingScheme = data[rowIndex].CodingScheme;
         args.item["CodingScheme"] = CodingScheme;
-        debugger;
+        
         if (tranModel.ExtProperties.TranType == "P") {
             if (CodingScheme == 'fixed' || tranModel.TranAlias=="PORD")
                 args.item["Barcode"] = "";

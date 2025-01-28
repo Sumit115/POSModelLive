@@ -94,7 +94,7 @@ function bindColor_In() {
     $('#Color_In').autocomplete({
         // minLength: 3,
         source: function (request, response) {
-            debugger;
+            
             var FkProductId = $("#FkProductId_In").val();
 
             var data = { name: "Color", pageNo: 1, pageSize: 1000, search: request.term, RowParam: FkProductId, ExtraParam: "" };
@@ -105,7 +105,7 @@ function bindColor_In() {
                 async: false,
                 dataType: 'JSON',
                 success: function (res) {
-                    debugger;
+                    
                     Handler.hide();
                     if (res.length > 0) {
                         response($.map(res, function (item) {
@@ -140,7 +140,7 @@ function bindColor_In() {
 }
 
 function AddProduct_In() {
-    debugger;
+    
     var rowCount = $('#tblProduct_In tbody tr').length + $('#tblProduct_Out tbody tr').length;
     var allValues = $('.tblProduct tbody tr input[class="SrNo"]').map(function () { return +this.value; }).toArray();
     var SrNo = Math.max.apply(Math, allValues);
@@ -273,7 +273,7 @@ function bindColor_Out() {
 }
 
 function AddProduct_Out() {
-    debugger;
+    
     var rowCount = $('#tblProduct_In tbody tr').length + $('#tblProduct_Out tbody tr').length;
     var allValues = $('.tblProduct tbody tr input[class="SrNo"]').map(function () { return +this.value; }).toArray();
     var SrNo = Math.max.apply(Math, allValues);
@@ -308,7 +308,7 @@ function AddProduct_Out() {
     return false;
 }
 function UpdateSize(obj, index, action) {
-    debugger;
+    
     //if (action === 'edit') {
     //    $("#hidSizeIndex").val(index);
     //    $("#FklocalityGridId").val($("#Recipe_dtl_lst_" + index + "__FKSizeID").val());
@@ -319,7 +319,7 @@ function UpdateSize(obj, index, action) {
     //} else
 
     if (action === 'del') {
-        debugger;
+        
         //$(obj).closest('tr').remove();
          $(obj).closest('tr').addClass('tbl-delete');
         $("#Recipe_dtl_" + index + "__Mode").val('2'); 

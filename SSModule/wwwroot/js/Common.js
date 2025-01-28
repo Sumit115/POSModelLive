@@ -598,7 +598,7 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
                         Common.GetBarcodeSettingData(".barcodesetting", "", function (flag, _d) {
 
                             if (flag) {
-                                debugger;
+                                
                                 var _model = {};
                                 _model.BarcodePrintPreviewModel = _List;
                                 _model.SysDefaults = _d;
@@ -614,7 +614,7 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
                                         console.log(res);
                                         if (res.status == "success") {
                                             var _w1 = parseInt($("#BarcodePrint_width").val());
-                                            var _c = parseInt($("#BarcodePrint_ColumnInPerRow").val()) ;
+                                            var _c = parseInt($("#BarcodePrint_ColumnInPerRow").val());
                                             var _rcm = parseInt($("#BarcodePrint_MarginBetWeenRowColumn").val());
 
                                             var _w = (_c > 1 ? ((_w1 * _c) + _rcm) : _w1) + 100;
@@ -622,7 +622,7 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
                                             _htm += '<div class="modal fade show" id="exampleModalLive" style="display: block;background-color: rgba(0, 0, 0, 0.5);">';
                                             _htm += '<style>html, body {margin: 0; height: 100%; overflow: hidden}</style>';
                                             _htm += '<div class="modal-dialog" style="left: 0;width: 100%;">';
-                                            _htm += '<div class="modal-content" style="width: ' + _w +'px;height: 500px;top: 70px;left: -56px;overflow: hidden;overflow-y: auto;">';
+                                            _htm += '<div class="modal-content" style="width: ' + _w + 'px;height: 500px;top: 70px;left: -56px;overflow: hidden;overflow-y: auto;">';
                                             //_htm += '<div class="modal-header">';
                                             //_htm += '<h5 class="modal-title" id="exampleModalLiveLabel">Modal title</h5>';
                                             //_htm += '<a type="button" href="javascript:void(0)" class="btn-close" id="btnCloseBarcodePrintPriview"  ><i class="fa fa-times-circle"></i></a>';
@@ -638,24 +638,24 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
                                             $("#btnCloseBarcodePrintPriview").off("click").on("click", function () { $('#div_BarcodePrintPriview').html(''); });
 
                                             //Handler.popUp(res.html, { width: _w + "px", height: "500px", padding: "20px", overflow: "auto" }, function () {
-                                                $("#btnPrintBarcode").off("click").on("click", function () {
-                                                    var divToPrint = document.getElementById('printpage');
+                                            $("#btnPrintBarcode").off("click").on("click", function () {
+                                                var divToPrint = document.getElementById('printpage');
 
-                                                    var newWin = window.open('Share Certificate #001', '', 'Print-Window');
+                                                var newWin = window.open('Share Certificate #001', '', 'Print-Window');
 
-                                                    newWin.document.open();
+                                                newWin.document.open();
 
-                                                    newWin.document.write('<html><head><style> .watermarked {  color:  #c1bdbd !important; }</style></hea><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
+                                                newWin.document.write('<html><head><style> .watermarked {  color:  #c1bdbd !important; }</style></hea><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
 
-                                                    newWin.document.close();
-                                                    // setTimeout(function () { newWin.close(); }, 50);
-                                                    newWin.onload = function () {
-                                                        newWin.focus();
-                                                        newWin.print();
-                                                        newWin.close();
-                                                    }
+                                                newWin.document.close();
+                                                // setTimeout(function () { newWin.close(); }, 50);
+                                                newWin.onload = function () {
+                                                    newWin.focus();
+                                                    newWin.print();
+                                                    newWin.close();
+                                                }
 
-                                                });
+                                            });
                                             /*});*/
                                             // $(".popup_d").hide();
                                         } else {
@@ -1221,6 +1221,26 @@ function C_Upload(pg, $ctrl, C) {
     });
 }
 
+function C_GridStrucher(n, n2, f) {
+
+    //JSON.stringify({ FormId1: n})
+    var url = "GridStrucher?FormId=" + n;
+    if (n2 != '' && n2 != undefined && n2 != null) {
+        url += "&GridName=" + n2;
+
+    }
+    Common.ajax(Handler.currentPath() + url, {}, "Please Wait...", function (res) {
+        Handler.hide();
+
+        if (res.PkGridId > 0) { 
+            var j = JSON.parse(res.JsonData); 
+            f(j);
+        }
+        else
+            alert(res.msg);
+    });
+}
+
 function C_Grid(n, n2, f) {
 
     //JSON.stringify({ FormId1: n})
@@ -1340,17 +1360,19 @@ function C_GridColSetup(n, n2, f) {
     var url = "GridStrucher?FormId=" + n;
     if (n2 != '' && n2 != undefined && n2 != null) {
         url += "&GridName=" + n2;
-
+        $("#hdGridName").val(n2); 
     }
-    Common.ajax(Handler.currentPath() + url, {}, "Please Wait...", function (res) {
+     Common.ajax(Handler.currentPath() + url, {}, "Please Wait...", function (res) {
         Handler.hide();
         if (res.PkGridId > 0) {
             var d = JSON.parse(res.JsonData);
+            
+
             var htm = '<style>input[type="checkbox"] {height: 20px;width: 20px;margin-right: 10px;}</style>';
             htm += '<div class="mb-4 card"><div class="card-body">';
             htm += '<div class="card-title">Fields</div><hr />';
             htm += '<input type="hidden" name="hdPkGridId" id="hdPkGridId"  value="' + n + '"  />';
-            htm += '<div class="row"><div class="col-md-12 mb-2"  style="max-height:300px;overflow: auto;">';
+             htm += '<div class="row"><div class="col-md-12 mb-2"  style="max-height:300px;overflow: auto;">';
             htm += '<table class="table table-striped table-bordered table-hover table-full-width">';
             htm += '<thead><tr><th>Column Name</th><th>Width</th><th>IsVisiable</th></thead>';
             htm += '<tbody >';
@@ -1416,7 +1438,7 @@ function C_GridColSetup(n, n2, f) {
                     //    }
                     //})
                     var jsonData = JSON.stringify(ColList);
-
+                    
                     var _d = {
                         PkGridId: $('#hdPkGridId').val(),
                         JsonData: jsonData,
@@ -1465,6 +1487,7 @@ var Common = {
     AlertEnum: C_AlertEnum,
     showAlert: C_showAlert,
     Grid: C_Grid,
+    GridStrucher: C_GridStrucher,
     GridColSetup: C_GridColSetup,
     GridFromJson: C_GridFrom_Json,
 
