@@ -1366,19 +1366,26 @@ function C_GridColSetup(n, n2, f) {
         Handler.hide();
         if (res.PkGridId > 0) {
             var d = JSON.parse(res.JsonData);
-            
-
-            var htm = '<style>input[type="checkbox"] {height: 20px;width: 20px;margin-right: 10px;}</style>';
-            htm += '<div class="mb-4 card"><div class="card-body">';
-            htm += '<div class="card-title">Fields</div><hr />';
+            var htm = '';
+            htm += '<div class="card card-outline card-primary">';
+            htm += '<div class="card-header">';
+            htm += '<h3 class="card-title">Set Grid Layout</h3>';
+            htm += '<div class="card-tools">';
+            htm += '<button type="button" id="btnSaveGridColSetup" class="btn btn-outline-secondary" >';
+            htm += '<i class="bi bi-floppy"></i> Save</button></div></div>';
+            htm += '<div class="card-body">';
             htm += '<input type="hidden" name="hdPkGridId" id="hdPkGridId"  value="' + n + '"  />';
-             htm += '<div class="row"><div class="col-md-12 mb-2"  style="max-height:300px;overflow: auto;">';
-            htm += '<table class="table table-striped table-bordered table-hover table-full-width">';
-            htm += '<thead><tr><th>Column Name</th><th>Width</th><th>IsVisiable</th></thead>';
-            htm += '<tbody >';
+            htm += '<div style="height:62vh;overflow: auto;border: solid 1px #efeff6;">';
+            htm += '<table class="table">';
+            htm += '<thead><tr><th>COLUMN</th><th>VISIBLE</th><th>WIDTH</th></thead>';
+             htm += '<tbody >';
             $(d).each(function (i, v) {
                 htm += '<tr class="trGridColumnw"><td>' + v.Heading + '</td>';
-                htm += ' <td> ';
+                htm += ' <td>';
+                htm += '<div class="form-check form-switch">';
+                htm += '<input class="form-check-input" type="checkbox" role="switch" name="chkGridColumnField" ' + (v.IsActive == 1 ? "checked" : "") + ' value="' + v.pk_Id + '" >';
+                htm += '</div>';
+                htm += '</td><td> ';
                 htm += '<input type="hidden" name="txtGridColumnHeading"  value="' + v.Heading + '"  /> ';
                 htm += '<input type="hidden" name="txtGridColumnFields"  value="' + v.Fields + '"  /> ';
                 htm += '<input type="hidden" name="txtGridColumnSearchType"  value="' + v.SearchType + '"  /> ';
@@ -1386,17 +1393,11 @@ function C_GridColSetup(n, n2, f) {
                 htm += '<input type="hidden" name="txtGridColumnCtrlType"  value="' + v.CtrlType + '"  /> ';
                 htm += '<input type="hidden" name="txtGridColumnTotalOn"  value="' + v.TotalOn + '"  /> ';
                 htm += '<input type="hidden" name="txtGridColumnOrderby"  value="' + v.Orderby + '"  /> ';
-                htm += '<input type="text" name="txtGridColumnWidth"  value="' + v.Width + '"  /> ';
-                htm += '</td><td>';
-                htm += '<input type="checkbox" name="chkGridColumnField" ' + (v.IsActive == 1 ? "checked" : "") + ' value="' + v.pk_Id + '"  /> ';
+                htm += '<input type="text" name="txtGridColumnWidth" class="form-control p-1" value="' + v.Width + '"  /> ';
                 htm += '</td></tr>';
             });
             htm += ' </tbody></table>';
-            htm += '</div></div> ';
-            htm += '<div class="row"><div class="col-md-12">';
-            htm += '<input type="button" id="btnSaveGridColSetup" value="Apply" class="btn btn-success"/>';
-            htm += '</div></div> ';
-            htm += '   </div></div>';
+            htm += '</div></div></div>';
             Handler.popUp(htm, { width: "550px", height: "400px" }, function () {
                 $("#btnSaveGridColSetup").click(function () {
                     var ColList = [];
@@ -1412,31 +1413,7 @@ function C_GridColSetup(n, n2, f) {
                         var odrby = $(this).find("[name='txtGridColumnOrderby']");
                         var totalon = $(this).find("[name='txtGridColumnTotalOn']");
                         ColList.push({ pk_Id: chk.val(), Width: wid.val(), Heading: hding.val(), Fields: flds.val(), SearchType: styp.val(), Sortable: sotyp.val(), CtrlType: ctyp.val(), Orderby: odrby.val(), IsActive: (chk.prop("checked") ? 1 : 0), TotalOn: totalon.val() });
-                    });
-                    console.log(ColList);
-
-                    //Common.ajax("/Master/Customer/ActiveGridColumn", JSON.stringify({ data: ColList }), "Please Wait...", function (res) {
-                    //    if (res.status == "success") {
-                    //        $(".popup_d").hide();
-                    //        f();
-                    //    }
-                    //    else
-                    //        alert(res.msg);
-                    //});
-
-                    //$.ajax({
-                    //    type: 'POST',
-                    //    url: "/Master/Customer/ActiveGridColumn",
-                    //    data: JSON.stringify({ md: "abc" }),
-                    //    contentType: "application/json; charset=utf-8",
-                    //    processData: false,
-                    //    success: function (res) {
-                    //        alert();
-                    //    },
-                    //    error: function (err) {
-                    //        console.log(err)
-                    //    }
-                    //})
+                    });                    
                     var jsonData = JSON.stringify(ColList);
                     
                     var _d = {

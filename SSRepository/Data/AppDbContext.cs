@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.SqlServer.Server;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -114,43 +115,32 @@ namespace SSRepository.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //foreach (var mutableEntityType in modelBuilder.Model.GetEntityTypes())
-            //{
-            //    // check if current entity type is child of BaseModel
-            //    if (mutableEntityType.ClrType.IsAssignableTo(typeof(DbContext)))
-            //    {
-            //        mutableEntityType.SetTableName($"tbl_{mutableEntityType.ClrType.Name}");
-            //    }
-            //}
-
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<TblFormMas>(entity =>
+            {
+                // Table name and primary key
+                entity.ToTable("tblForm_Mas");
+                entity.HasKey(e => e.PKFormID);
 
-            //base.OnModelCreating(modelBuilder);
-            //modelBuilder.Ignore<TblBranchMas>();
-            //modelBuilder.Ignore<TblCompany>();
-            //modelBuilder.Ignore<TblEmployeeMas>();
-            //modelBuilder.Ignore<TblUserMas>();
-            //modelBuilder.Ignore<TblCustomerMas>();
-            //modelBuilder.Ignore<TblVendorMas>();
-            //modelBuilder.Ignore<TblFormMas>();
-            //modelBuilder.Ignore<TblGridStructer>();
-            //modelBuilder.Ignore<TblCategoryMas>();
-            //modelBuilder.Ignore<TblProductMas>();
-            //modelBuilder.Ignore<TblBankMas>();
-            //modelBuilder.Ignore<TblSeriesMas>();
-            //modelBuilder.Ignore<TblErrorLog>();
-            //modelBuilder.Ignore<TblSalesOrdertrn>();
-            //modelBuilder.Ignore<TblSalesOrderdtl>();
-            //modelBuilder.Ignore<TblSalesInvoicetrn>();
-            //modelBuilder.Ignore<TblSalesInvoicedtl>();
-            //modelBuilder.Ignore<TblPurchaseOrdertrn>();
-            //modelBuilder.Ignore<TblPurchaseOrderdtl>();
-            //modelBuilder.Ignore<TblPurchaseInvoicetrn>();
-            //modelBuilder.Ignore<TblPurchaseInvoicedtl>();
-            //modelBuilder.Ignore<TblSalesChallantrn>();
-            //modelBuilder.Ignore<TblSalesChallandtl>();
-            //modelBuilder.Ignore<TblProdLotDtl>();
-            //modelBuilder.Ignore<TblProdStockDtl>();
+                // Columns
+                entity.Property(e => e.PKFormID).IsRequired();
+                entity.Property(e => e.FKMasterFormID);
+                entity.Property(e => e.SeqNo).HasDefaultValue(0);
+                entity.Property(e => e.FormName).HasMaxLength(200);
+                entity.Property(e => e.ShortName).HasMaxLength(100);
+                entity.Property(e => e.ShortCut).HasMaxLength(100);
+                entity.Property(e => e.ToolTip).HasMaxLength(500);
+                entity.Property(e => e.Image).HasMaxLength(200);
+                entity.Property(e => e.FormType).HasMaxLength(1).IsFixedLength();
+                entity.Property(e => e.WebURL).HasMaxLength(200);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+
+                // Self-referencing foreign key
+                entity.HasOne(e => e.ParentForm)
+                      .WithMany(e => e.ChildForms)
+                      .HasForeignKey(e => e.FKMasterFormID)
+                      .OnDelete(DeleteBehavior.NoAction); 
+            });
 
         }
     }

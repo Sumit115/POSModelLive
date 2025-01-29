@@ -1,367 +1,363 @@
 ﻿@model SSRepository.Models.ProductModel
 
 @{
-    ViewData["Title"] = "Article Create";
+    ViewData["Title"] = "Article";
     ViewData["bdClass"] = "page";
 }
-<div class="p-3">
-    <form asp-action="Create" class="g-3" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkProductId" />
+<div class="ps-3">
+    <div class="card">
+        <!-- /.card-header -->
+        <div class="card-body">
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="PkProductId" />
 
-        <div class="row">
-            <div class="col-md-8">
                 <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Section <span asp-validation-for="FKProdCatgId" class="text-danger"></span></label>
-                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKProdCatgId" }, { "Class", "form-control" }, { "event", "" },
-                            { "value", Model.FKProdCatgId }, { "text", Model.CategoryName }, { "uri", "" }})
+                    <div class="col-md-8">
+                        <div class="form-group row">
+                            <label class="col-sm-2">Section</label>
+                            <div class="col-md-6">
+                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKProdCatgId" }, { "Class", "form-control" }, { "event", "" },
+                                { "value", Model.FKProdCatgId }, { "text", Model.CategoryName }, { "uri", "" }})
+                                <span asp-validation-for="FKProdCatgId" class="text-danger"></span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Name <span asp-validation-for="Product" class="text-danger"></span></label>
-                            <input asp-for="Product" class="form-control" />
+                        <div class="form-group row">
+                            <label class="col-sm-2">Name</label>
+                            <div class="col-md-6">
+                                <input asp-for="Product" class="form-control" />
+                                <span asp-validation-for="Product" class="text-danger"></span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Brand <span asp-validation-for="FkBrandId" class="text-danger"></span></label>
-                            <select asp-for="FkBrandId" asp-items="@(new SelectList(ViewBag.BrandList,"PkBrandId","BrandName"))" class="form-control" id="BrandId">
-                                <option>Select</option>
-                            </select>
+                        <div class="form-group row">
+                            <label class="col-sm-2">Brand</label>
+                            <div class="col-md-6">
+                                <select asp-for="FkBrandId" asp-items="@(new SelectList(ViewBag.BrandList,"PkBrandId","BrandName"))" class="form-select" id="BrandId">
+                                    <option>Select</option>
+                                </select>
+                                <span asp-validation-for="FkBrandId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2">Alias</label>
+                            <div class="col-md-6">
+                                <input asp-for="Alias" id="txtalias" class="form-control" aria-describedby="basic-addon2" />
+                                <span asp-validation-for="Alias" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" onclick="GenerateAlias()" class="btn btn-warning">
+                                    <i class="bi bi-gear-fill" style="color: black;"></i>
+                                    &nbsp;&nbsp;Auto Generate
 
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Alias <span asp-validation-for="Alias" class="text-danger"></span></label>
-                            <input asp-for="Alias" id="txtalias" class="form-control" aria-describedby="basic-addon2" />
-                            @* <span class="input-group-text" id="basic-addon2">Auto Generate</span> *@
+                        <div class="form-group row">
+                            <label class="col-sm-2">Unit</label>
+                            <div class="col-md-6">
+                                <select asp-for="FkUnitId" asp-items="@(new SelectList(ViewBag.UnitList,"PkUnitId","UnitName"))" class="form-select" id="UnitId">
+                                    <option>Select</option>
+                                </select>
+                                <span asp-validation-for="FkUnitId" class="text-danger"></span>
+                            </div>
                         </div>
-                        <div>
-                            <input type="button" onclick="GenerateAlias()" value="Generate" class="btn btn-primary" />
+                        <div class="form-group row">
+                            <label class="col-sm-2">Strength</label>
+                            <div class="col-md-6">
+                                <input asp-for="Strength" class="form-control" />
+                                <span asp-validation-for="Strength" class="text-danger"></span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Unit <span asp-validation-for="FkUnitId" class="text-danger"></span></label>
-                            <select asp-for="FkUnitId" asp-items="@(new SelectList(ViewBag.UnitList,"PkUnitId","UnitName"))" class="form-control" id="UnitId">
-                                <option>Select</option>
-                            </select>
-                        </div>
-                    </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2">Barcode</label>
+                            <div class="col-md-6">
+                                <input asp-for="Barcode" id="txtBarcode" class="form-control" />
+                                <span asp-validation-for="Barcode" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" onclick="GetBarCode()" class="btn btn-warning">
+                                    <i class="bi bi-gear-fill" style="color: black;"></i>
+                                    &nbsp;&nbsp;Auto Generate
 
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Strength <span asp-validation-for="Strength" class="text-danger"></span></label>
-                            <input asp-for="Strength" class="form-control" />
-
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">
-                                Barcode <span asp-validation-for="Barcode" class="text-danger"></span>
-                            </label>
-                            <input asp-for="Barcode" id="txtBarcode" class="form-control" />
-                        </div>
-                        <div>
-                            <input type="button" onclick="GetBarCode()" value="Auto Generate" class="btn btn-primary" />
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Status <span asp-validation-for="Status" class="text-danger"></span></label>
-                            <div class="d-flex">
-                                <div class="radio-class mr-3">
-                                    <input asp-for="Status" class="radios__input" name="Status" id="StatusActive" type="radio" value="A" checked>
-                                    <label class="label" for="StatusActive">Active</label>
+                        <div class="form-group row">
+                            <label class="col-sm-2">Status</label>
+                            <div class="col-md-2">
+                                <div class="form-switch d-flex form-switch form-check">
+                                    <input asp-for="Status" class="form-check-input" name="Status" id="StatusActive" type="radio" value="A" checked>
+                                    <label class="ms-1">Continue</label>
                                 </div>
-                                <div class="radios__item mr-3">
-                                    <input asp-for="Status" class="radios__input" name="Status" id="StatusDeActive" type="radio" value="D">
-                                    <label class="label" for="StatusDeActive">Deactive</label>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-switch d-flex form-switch form-check">
+                                    <input asp-for="Status" class="form-check-input" name="Status" id="StatusDeActive" type="radio" value="D">
+                                    <label class="ms-1">Deactive</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2">HSN</label>
+                            <div class="col-md-6">
+                                <input asp-for="HSNCode" class="form-control" />
+                                <span asp-validation-for="HSNCode" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2">Coding scheme</label>
+                            <div class="col-md-6">
+                                <select asp-for="CodingScheme" class="form-select">
+                                    <option value="Unique">Unique</option>
+                                    <option value="fixed">fixed</option>
+                                    <option value="Lot">Lot</option>
+                                </select>
+                                <span asp-validation-for="CodingScheme" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2">Genration</label>
+                            <div class="col-md-6">
+                                <select asp-for="Genration" class="form-select">
+                                    <option value="Manual">Manual</option>
+                                    <option value="Automatic">Automatic</option>
+                                    <option value="Semi Automatic">Semi Automatic</option>
+                                </select>
+                                <span asp-validation-for="Genration" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2">Min / Max Stock</label>
+                            <div class="col-md-3">
+                                <input asp-for="MinStock" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <input asp-for="MaxStock" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2">Min / Max Days</label>
+                            <div class="col-md-3">
+                                <input asp-for="MinDays" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <input asp-for="MaxDays" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2">MRP</label>
+                            <div class="col-md-2">
+                                <input asp-for="MRP" class="form-control" />
+                                <span asp-validation-for="MRP" class="text-danger"></span>
+                            </div>
+                            <label class="col-sm-2">Sale Rate</label>
+                            <div class="col-md-2">
+                                <input asp-for="SaleRate" class="form-control" />
+                                <span asp-validation-for="SaleRate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2">Trade Rate</label>
+                            <div class="col-md-2">
+                                <input asp-for="TradeRate" class="form-control" />
+                                <span asp-validation-for="TradeRate" class="text-danger"></span>
+                            </div>
+                            <label class="col-sm-2">Distribution Rate</label>
+                            <div class="col-md-2">
+                                <input asp-for="DistributionRate" class="form-control" />
+                                <span asp-validation-for="DistributionRate" class="text-danger"></span>
+                            </div>
+                            <label class="col-sm-2">Purchase Rate</label>
+                            <div class="col-md-2">
+                                <input asp-for="PurchaseRate" class="form-control" />
+                                <span asp-validation-for="PurchaseRate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2">Image</label>
+                            <div class="col-md-6">
+                                <input type="file" id="file_Image" onchange="return UploadImage('Image')" accept="image/*" class="form-control" />
+                                <input asp-for="Image" type="hidden" />
+                                <span asp-validation-for="Image" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-1">
+                                <img id="dummyimage_Image" class="" style="height: 50px;width: 50px;" src="@Model.Image" />
+
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2">Description</label>
+                            <div class="col-md-6">
+                                <textarea asp-for="Description" class="form-control"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+
+                    <div class="col-md-12" style="display:none;">
+                        <h4>Apply on Article</h4>
+
+                        <div class="row">
+                            <div class="col-sm-12 pb-2">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="IsBatchApplied" checked="">
+                                    <label for="IsBatchApplied" class="form-check-label">Name</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="IsColorApplied" checked="">
+                                    <label for="IsColorApplied" class="form-check-label">Color</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="IsStyleApplied" checked="">
+                                    <label for="IsStyleApplied" class="form-check-label">Style</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="IsMfgDateApplied" checked="">
+                                    <label for="IsMfgDateApplied" class="form-check-label">Mfg. Date </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="IsExpiryApplied" checked="">
+                                    <label for="IsExpiryApplied" class="form-check-label">Expiry Date </label>
+
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="IsUniqueId" checked="">
+                                    <label for="IsUniqueId" class="form-check-label">Unique Id </label>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row" style="border:solid 1px #ccc;">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Article No.</label>
+                                    <input type="text" id="txtLotNo" readonly="readonly" class="form-control" tabindex="-1">
+                                </div>
+                            </div>
+                            <div class="col-md-2 dIsBatchApplied" style="display: block;">
+                                <div class="form-group">
+                                    <label class="control-label">Name</label>
+                                    <input type="text" id="txtBatch" class="form-control" fdprocessedid="m66p7g">
+                                </div>
+                            </div>
+                            <div class="col-md-2 dIsColorApplied" style="display: block;">
+                                <div class="form-group">
+                                    <label class="control-label">Color</label>
+                                    <select class="form-select" id="Color" name="Color" fdprocessedid="c3u2lv">
+                                        <option value=""></option>
+                                        <option value="black">black</option>
+                                        <option value="Blue">Blue</option>
+                                        <option value="erfvwgbet5r4fecdw">erfvwgbet5r4fecdw</option>
+                                        <option value="Orange">Orange</option>
+                                        <option value="RED">RED</option>
+                                        <option value="Red 1">Red 1</option>
+                                        <option value="Yellow">Yellow</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">MRP</label>
+                                    <input type="text" id="txtmrp" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-2 dIsExpiryApplied" style="display: block;">
+                                <div class="form-group">
+                                    <label class="control-label"> Expiry Date</label>
+                                    <input type="text" id="txtexpdate" class=" jsdate form-control hasDatepicker" fdprocessedid="txblew">
+                                </div>
+                            </div>
+                            <div class="col-md-2 dIsMfgDateApplied" style="display: block;">
+                                <div class="form-group">
+                                    <label class="control-label">Mfg. date</label>
+                                    <input type="text" id="txtmfgdate" class=" jsdate form-control hasDatepicker" fdprocessedid="3nqqed">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Sale Rate</label>
+                                    <input type="text" id="txtsalerate" class=" form-control decimal defzero" fdprocessedid="sdcnfu">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Trade Rate</label>
+                                    <input type="text" id="txttraderate" class=" form-control decimal defzero" fdprocessedid="1tp0e">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Distribution Rate</label>
+                                    <input type="text" id="txtdistrate" class=" form-control decimal defzero" fdprocessedid="vet1o">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Purcahse Rate</label>
+                                    <input type="text" id="txtpurchase" class=" form-control decimal defzero" fdprocessedid="zkqywc">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Barcode</label>
+                                    <input type="text" id="txtbarcode" class=" form-control" readonly="readonly" fdprocessedid="ang4b">
                                 </div>
                             </div>
 
 
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">HSNCode <span asp-validation-for="HSNCode" class="text-danger"></span></label>
-                            <input asp-for="HSNCode" class="form-control" />
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input type="hidden" id="hidProdLot1Index" value="">
 
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Coding scheme <span asp-validation-for="CodingScheme" class="text-danger"></span></label>
-                            <select asp-for="CodingScheme" class="form-control">
-                                <option value="Unique">Unique</option>
-                                <option value="fixed">fixed</option>
-                                <option value="Lot">Lot</option>
-                            </select>
-
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Genration <span asp-validation-for="Genration" class="text-danger"></span></label>
-                            <select asp-for="Genration" class="form-control">
-                                <option value="Manual">Manual</option>
-                                <option value="Automatic">Automatic</option>
-                                <option value="Semi Automatic">Semi Automatic</option>
-                            </select>
-
+                                    <input class="btn btn-warning default-margine-top" type="button" value="Add" onclick="addLot1()" id="btnLot" fdprocessedid="qab5d">
+                                </div>
+                            </div>
+                            <div class="fixed-clo-grid comn-grid default-height-grid tabpanel product-grid" style="border:solid 1px #ccc;" tabindex="-1">
+                                @* <table id="tblLot1" cellspacing="0" cellpadding="0">
+                                <thead>
+                                <tr>
+                                <th class="tabel-td-drp"> Lot No. </th>
+                                <th class="IsBatchApplied" style="display: table-cell;"> Batch</th>
+                                <th class="IsColorApplied" style="display: table-cell;"> Color</th>
+                                <th><label id="OpQty2">Op. Qty (Packs)</label></th>
+                                <th> MRP</th>
+                                <th class="IsExpiryApplied" style="display: table-cell;"> Expiry Date</th>
+                                <th class="IsMfgDateApplied" style="display: table-cell;"> Mfg. date</th>
+                                <th> Sale Rate</th>
+                                <th> Suggested Rate</th>
+                                <th> Trade Rate</th>
+                                <th> Distribution Rate</th>
+                                <th> Sale Rate Unit</th>
+                                <th> Purcahse Rate</th>
+                                <th> Cost Rate</th>
+                                <th> Purchase Rate Unit</th>
+                                <th> Barcode</th>
+                                <th> Manufacturer</th>
+                                <th> STax Code</th>
+                                <th> PTax Code</th>
+                                <th><label id="lblContain2">Packs Contains PCSs</label></th>
+                                <th><label id="CurQty2">Curr. Qty (Packs)</label></th>
+                                <th> Stock Date </th>
+                                </tr>
+                                </thead>
+                                <tbody class="fixed-clo-grid-scroll">
+                                <tr index="0"><td class="tabel-td-drp">  <div class="col-sm-5 col-xs-5"><input tabindex="-1" readonly="true" id="TblProdLotDtl_0__PklotNo" name="TblProdLotDtl[0].PklotNo" type="text" value=""></div> <div class="col-sm-7 col-xs-7 text-center">  <input tabindex="-1" id="TblProdLotDtl_0__ModeForm" name="TblProdLotDtl[0].ModeForm" type="hidden" value="0"> <span id="ltEdit" class="action-icon" onclick="UpdateLot1(this,0,'edit')"><i class="fa fa-pencil"></i></span>  &nbsp; | &nbsp; <span class="action-icon" onclick="UpdateLot1(this,0,'del')"><i class="fa fa-trash"></i></span> &nbsp; | &nbsp; <span class="action-icon" onclick="setAddLocValue(this,0,'AddLoc')"><span style="margin:7px 0px;" class="btn btn-warning">Add Loc</span></span> </div></td><td style="display: table-cell;">  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__Batch" name="TblProdLotDtl[0].Batch" type="text" value=""> </td><td style="display: table-cell;">  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__Color" name="TblProdLotDtl[0].Color" type="text" value=""> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__OpQty" name="TblProdLotDtl[0].OpQty" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__MRP" name="TblProdLotDtl[0].MRP" type="text" value="100"> </td><td style="display: table-cell;">  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__ExpiryDate" name="TblProdLotDtl[0].ExpiryDate" type="text" value=""> </td><td style="display: table-cell;">  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__MfgDate" name="TblProdLotDtl[0].MfgDate" type="text" value=""> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__SaleRate" name="TblProdLotDtl[0].SaleRate" type="text" value="10"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__SuggestedRate" name="TblProdLotDtl[0].SuggestedRate" type="text" value="10"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__TradeRate" name="TblProdLotDtl[0].TradeRate" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__DistributionRate" name="TblProdLotDtl[0].DistributionRate" type="text" value="0"> <input id="TblProdLotDtl_0__SNo" name="TblProdLotDtl[0].SNo" type="hidden" value="1" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__MrpsaleRateUnitText" name="TblProdLotDtl[0].MrpsaleRateUnitText" type="text" value="Packs"> <input id="TblProdLotDtl_0__MRPSaleRateUnit" name="TblProdLotDtl[0].MRPSaleRateUnit" type="hidden" value="1" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__PurchaseRate" name="TblProdLotDtl[0].PurchaseRate" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__CostRate" name="TblProdLotDtl[0].CostRate" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__PurchaseRateUnitText" name="TblProdLotDtl[0].PurchaseRateUnitText" type="text" value="Packs"> <input id="TblProdLotDtl_0__PurchaseRateUnit" name="TblProdLotDtl[0].PurchaseRateUnit" type="hidden" value="1" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__Barcode" name="TblProdLotDtl[0].Barcode" type="text" value=""> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__fgGroup" name="TblProdLotDtl[0].fgGroup" type="text" value="">  <input id="TblProdLotDtl_0__FkmfgGroupId" name="TblProdLotDtl[0].FkmfgGroupId" type="hidden" value="0" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__saleTax" name="TblProdLotDtl[0].saleTax" type="text" value="">  <input id="TblProdLotDtl_0__FKSaleTaxID" name="TblProdLotDtl[0].FKSaleTaxID" type="hidden" value="0" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__purchaseTax" name="TblProdLotDtl[0].purchaseTax" type="text" value="">  <input id="TblProdLotDtl_0__FKPurchaseTaxID" name="TblProdLotDtl[0].FKPurchaseTaxID" type="hidden" value="0" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__ProdConv1" name="TblProdLotDtl[0].ProdConv1" type="text" value="2.00"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__curQty" name="TblProdLotDtl[0].curQty" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__StockDate" name="TblProdLotDtl[0].StockDate" type="text" value=""> </td></tr>
+                                </tbody>
+                                </table> *@
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Min Stock <span asp-validation-for="MinStock" class="text-danger"></span></label>
-                            <input asp-for="MinStock" class="form-control" />
-
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Max Stock <span asp-validation-for="MaxStock" class="text-danger"></span></label>
-                            <input asp-for="MaxStock" class="form-control" />
-
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Min Days <span asp-validation-for="MinDays" class="text-danger"></span></label>
-                            <input asp-for="MinDays" class="form-control" />
-
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Max Days <span asp-validation-for="MaxDays" class="text-danger"></span></label>
-                            <input asp-for="MaxDays" class="form-control" />
-
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">MRP <span asp-validation-for="MRP" class="text-danger"></span></label>
-                            <input asp-for="MRP" class="form-control" />
-
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Sale Rate <span asp-validation-for="SaleRate" class="text-danger"></span></label>
-                            <input asp-for="SaleRate" class="form-control" />
-
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Trade Rate <span asp-validation-for="TradeRate" class="text-danger"></span></label>
-                            <input asp-for="TradeRate" class="form-control" />
-
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Distribution Rate <span asp-validation-for="DistributionRate" class="text-danger"></span></label>
-                            <input asp-for="DistributionRate" class="form-control" />
-
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Purchase Rate <span asp-validation-for="PurchaseRate" class="text-danger"></span></label>
-                            <input asp-for="PurchaseRate" class="form-control" />
-
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Image <span asp-validation-for="Image" class="text-danger"></span></label>
-                    <input type="file" id="file_Image" onchange="return UploadImage('Image')" accept="image/*" class="requied d-block" />
-
-                    <input asp-for="Image" type="hidden" />
-                    <img id="dummyimage_Image" class="img-md img-avatar" style="height: 50px;width: 50px;" src="@Model.Image" />
-
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label class="control-label">Description <span asp-validation-for="Description" class="text-danger"></span></label>
-                    <textarea asp-for="Description" class="form-control"></textarea>
-
-                </div>
-            </div>
-
-            <div class="col-md-12" style="display:none;">
-                <h4>Apply on Article</h4>
-
-                <div class="row">
-                    <div class="col-sm-12 pb-2">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="IsBatchApplied" checked="">
-                            <label for="IsBatchApplied" class="form-check-label">Name</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="IsColorApplied" checked="">
-                            <label for="IsColorApplied" class="form-check-label">Color</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="IsStyleApplied" checked="">
-                            <label for="IsStyleApplied" class="form-check-label">Style</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="IsMfgDateApplied" checked="">
-                            <label for="IsMfgDateApplied" class="form-check-label">Mfg. Date </label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="IsExpiryApplied" checked="">
-                            <label for="IsExpiryApplied" class="form-check-label">Expiry Date </label>
-
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="IsUniqueId" checked="">
-                            <label for="IsUniqueId" class="form-check-label">Unique Id </label>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="row" style="border:solid 1px #ccc;">
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="control-label">Article No.</label>
-                            <input type="text" id="txtLotNo" readonly="readonly" class="form-control" tabindex="-1">
-                        </div>
-                    </div>
-                    <div class="col-md-2 dIsBatchApplied" style="display: block;">
-                        <div class="form-group">
-                            <label class="control-label">Name</label>
-                            <input type="text" id="txtBatch" class="form-control" fdprocessedid="m66p7g">
-                        </div>
-                    </div>
-                    <div class="col-md-2 dIsColorApplied" style="display: block;">
-                        <div class="form-group">
-                            <label class="control-label">Color</label>
-                            <select class="form-control" id="Color" name="Color" fdprocessedid="c3u2lv">
-                                <option value=""></option>
-                                <option value="black">black</option>
-                                <option value="Blue">Blue</option>
-                                <option value="erfvwgbet5r4fecdw">erfvwgbet5r4fecdw</option>
-                                <option value="Orange">Orange</option>
-                                <option value="RED">RED</option>
-                                <option value="Red 1">Red 1</option>
-                                <option value="Yellow">Yellow</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="control-label">MRP</label>
-                            <input type="text" id="txtmrp" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-2 dIsExpiryApplied" style="display: block;">
-                        <div class="form-group">
-                            <label class="control-label"> Expiry Date</label>
-                            <input type="text" id="txtexpdate" class=" jsdate form-control hasDatepicker" fdprocessedid="txblew">
-                        </div>
-                    </div>
-                    <div class="col-md-2 dIsMfgDateApplied" style="display: block;">
-                        <div class="form-group">
-                            <label class="control-label">Mfg. date</label>
-                            <input type="text" id="txtmfgdate" class=" jsdate form-control hasDatepicker" fdprocessedid="3nqqed">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="control-label">Sale Rate</label>
-                            <input type="text" id="txtsalerate" class=" form-control decimal defzero" fdprocessedid="sdcnfu">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="control-label">Trade Rate</label>
-                            <input type="text" id="txttraderate" class=" form-control decimal defzero" fdprocessedid="1tp0e">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="control-label">Distribution Rate</label>
-                            <input type="text" id="txtdistrate" class=" form-control decimal defzero" fdprocessedid="vet1o">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="control-label">Purcahse Rate</label>
-                            <input type="text" id="txtpurchase" class=" form-control decimal defzero" fdprocessedid="zkqywc">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="control-label">Barcode</label>
-                            <input type="text" id="txtbarcode" class=" form-control" readonly="readonly" fdprocessedid="ang4b">
-                        </div>
-                    </div>
-
-
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <input type="hidden" id="hidProdLot1Index" value="">
-
-                            <input class="btn btn-warning default-margine-top" type="button" value="Add" onclick="addLot1()" id="btnLot" fdprocessedid="qab5d">
-                        </div>
-                    </div>
-                    <div class="fixed-clo-grid comn-grid default-height-grid tabpanel product-grid" style="border:solid 1px #ccc;" tabindex="-1">
-                        @* <table id="tblLot1" cellspacing="0" cellpadding="0">
-                        <thead>
-                        <tr>
-                        <th class="tabel-td-drp"> Lot No. </th>
-                        <th class="IsBatchApplied" style="display: table-cell;"> Batch</th>
-                        <th class="IsColorApplied" style="display: table-cell;"> Color</th>
-                        <th><label id="OpQty2">Op. Qty (Packs)</label></th>
-                        <th> MRP</th>
-                        <th class="IsExpiryApplied" style="display: table-cell;"> Expiry Date</th>
-                        <th class="IsMfgDateApplied" style="display: table-cell;"> Mfg. date</th>
-                        <th> Sale Rate</th>
-                        <th> Suggested Rate</th>
-                        <th> Trade Rate</th>
-                        <th> Distribution Rate</th>
-                        <th> Sale Rate Unit</th>
-                        <th> Purcahse Rate</th>
-                        <th> Cost Rate</th>
-                        <th> Purchase Rate Unit</th>
-                        <th> Barcode</th>
-                        <th> Manufacturer</th>
-                        <th> STax Code</th>
-                        <th> PTax Code</th>
-                        <th><label id="lblContain2">Packs Contains PCSs</label></th>
-                        <th><label id="CurQty2">Curr. Qty (Packs)</label></th>
-                        <th> Stock Date </th>
-                        </tr>
-                        </thead>
-                        <tbody class="fixed-clo-grid-scroll">
-                        <tr index="0"><td class="tabel-td-drp">  <div class="col-sm-5 col-xs-5"><input tabindex="-1" readonly="true" id="TblProdLotDtl_0__PklotNo" name="TblProdLotDtl[0].PklotNo" type="text" value=""></div> <div class="col-sm-7 col-xs-7 text-center">  <input tabindex="-1" id="TblProdLotDtl_0__ModeForm" name="TblProdLotDtl[0].ModeForm" type="hidden" value="0"> <span id="ltEdit" class="action-icon" onclick="UpdateLot1(this,0,'edit')"><i class="fa fa-pencil"></i></span>  &nbsp; | &nbsp; <span class="action-icon" onclick="UpdateLot1(this,0,'del')"><i class="fa fa-trash"></i></span> &nbsp; | &nbsp; <span class="action-icon" onclick="setAddLocValue(this,0,'AddLoc')"><span style="margin:7px 0px;" class="btn btn-warning">Add Loc</span></span> </div></td><td style="display: table-cell;">  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__Batch" name="TblProdLotDtl[0].Batch" type="text" value=""> </td><td style="display: table-cell;">  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__Color" name="TblProdLotDtl[0].Color" type="text" value=""> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__OpQty" name="TblProdLotDtl[0].OpQty" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__MRP" name="TblProdLotDtl[0].MRP" type="text" value="100"> </td><td style="display: table-cell;">  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__ExpiryDate" name="TblProdLotDtl[0].ExpiryDate" type="text" value=""> </td><td style="display: table-cell;">  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__MfgDate" name="TblProdLotDtl[0].MfgDate" type="text" value=""> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__SaleRate" name="TblProdLotDtl[0].SaleRate" type="text" value="10"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__SuggestedRate" name="TblProdLotDtl[0].SuggestedRate" type="text" value="10"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__TradeRate" name="TblProdLotDtl[0].TradeRate" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__DistributionRate" name="TblProdLotDtl[0].DistributionRate" type="text" value="0"> <input id="TblProdLotDtl_0__SNo" name="TblProdLotDtl[0].SNo" type="hidden" value="1" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__MrpsaleRateUnitText" name="TblProdLotDtl[0].MrpsaleRateUnitText" type="text" value="Packs"> <input id="TblProdLotDtl_0__MRPSaleRateUnit" name="TblProdLotDtl[0].MRPSaleRateUnit" type="hidden" value="1" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__PurchaseRate" name="TblProdLotDtl[0].PurchaseRate" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__CostRate" name="TblProdLotDtl[0].CostRate" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__PurchaseRateUnitText" name="TblProdLotDtl[0].PurchaseRateUnitText" type="text" value="Packs"> <input id="TblProdLotDtl_0__PurchaseRateUnit" name="TblProdLotDtl[0].PurchaseRateUnit" type="hidden" value="1" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__Barcode" name="TblProdLotDtl[0].Barcode" type="text" value=""> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__fgGroup" name="TblProdLotDtl[0].fgGroup" type="text" value="">  <input id="TblProdLotDtl_0__FkmfgGroupId" name="TblProdLotDtl[0].FkmfgGroupId" type="hidden" value="0" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__saleTax" name="TblProdLotDtl[0].saleTax" type="text" value="">  <input id="TblProdLotDtl_0__FKSaleTaxID" name="TblProdLotDtl[0].FKSaleTaxID" type="hidden" value="0" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__purchaseTax" name="TblProdLotDtl[0].purchaseTax" type="text" value="">  <input id="TblProdLotDtl_0__FKPurchaseTaxID" name="TblProdLotDtl[0].FKPurchaseTaxID" type="hidden" value="0" style="display: inline-block;"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__ProdConv1" name="TblProdLotDtl[0].ProdConv1" type="text" value="2.00"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__curQty" name="TblProdLotDtl[0].curQty" type="text" value="0"> </td><td>  <input tabindex="-1" readonly="true" id="TblProdLotDtl_0__StockDate" name="TblProdLotDtl[0].StockDate" type="text" value=""> </td></tr>
-                        </tbody>
-                        </table> *@
-                    </div>
-                </div>
-            </div>
+            </form>
         </div>
-    </form>
+        <!-- /.card-body -->
+    </div>
 </div>
 
 @section Scripts {

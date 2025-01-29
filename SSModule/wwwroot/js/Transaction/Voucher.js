@@ -67,7 +67,7 @@ function BindGrid(GridId, data) {
         cg.setColumnWidthPer(s.ColumnWidthPer, 1200);
         cg.setColumnFields(s.ColumnFields);
         cg.setAlign(s.Align);
-        cg.defaultHeight = "300px";
+        cg.defaultHeight = "67vh";
         cg._MinRows = MinRows;
         cg.setIdProperty("SrNo");
         cg.setCtrlType(s.setCtrlType);

@@ -1,33 +1,26 @@
 ﻿@{
-    ViewData["Title"] = "Sales Return List";
+    ViewData["Title"] = "Sales Return";
     ViewData["bdClass"] = "browser";
 }
 
-
-<div class="row">
-    <div class="col-12">
-        <div class="row p-2 filter">
-            <div class="col-md-2">
-                <input name="FDate" type="date" id="FDate" class="form-control" maxlength="10" placeholder="From Date*" required="" title="From Date*">
-                <span class="field-validation-valid text-danger" data-valmsg-for="FDate"></span>
-            </div>
-            <div class="col-md-2">
-                <input name="TDate" type="date" id="TDate" class="form-control" maxlength="10" placeholder="To Date*" required="" title="To Date*">
-                <span class="field-validation-valid text-danger" data-valmsg-for="TDate"></span>
-            </div>
-            <div class="col-md-1">
-                <input type="button" value="Search" class="btn btn-success" onclick="View()">
-            </div>
-            <div class="col-md-7 text-right">
-                <button class="btn btn-info" onclick="ShowFilter('Location')"><i class="fa fa-filter"></i></button>
-            </div>
+<div class="p-1">
+    <div class="form-group row filter m-0 p-2 border-bottom">
+        <div class="col-md-2">
+            <input name="FDate" type="date" id="FDate" class="form-control" maxlength="10" placeholder="From Date*" required="" title="From Date*">
+            <span class="field-validation-valid text-danger" data-valmsg-for="FDate"></span>
+        </div>
+        <div class="col-md-2">
+            <input name="TDate" type="date" id="TDate" class="form-control" maxlength="10" placeholder="To Date*" required="" title="To Date*">
+            <span class="field-validation-valid text-danger" data-valmsg-for="TDate"></span>
+        </div>
+        <div class="col-md-8 text-right">
+            <button class="btn btn-outline-info" onclick="ShowFilter('Location')"><i class="bi bi-funnel"></i></button>
+            <button class="btn btn-info" onclick="View()"><i class="bi bi-send"></i> &nbsp;View</button>
         </div>
     </div>
+
+    <partial name="~/Views/Shared/partial/_Grid.cshtml" />
 </div>
-<hr style="margin: 1px 0px;" />
-
-<partial name="~/Views/Shared/partial/_Grid.cshtml" />
-
 @section Scripts {
     <script src="~/js/report/report.js"></script>
     <script src="~/js/master/browser.js"></script>

@@ -1,24 +1,22 @@
 ﻿@{
-    ViewData["Title"] = "Rate End Stock Report";
+    ViewData["Title"] = "Rate & Stock Report";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 
-<div class="row p-2 filter">
-
-    <div class="col-md-9">
+<div class="p-1">
+    <div class="form-group row filter m-0 p-2 border-bottom">
+        <div class="col-md-9">
+        </div>
+        <div class="col-md-3 text-right">
+            <button class="btn btn-outline-info" onclick="ShowFilter('Product')"><i class="bi bi-funnel"></i></button>
+            <button class="btn btn-outline-info" onclick="Render('excel')" title="View"><i class="bi bi-download"></i></button>
+            <button class="btn btn-info" onclick="Render('')" title="View"><i class="bi bi-send"></i> &nbsp;View</button>
+        </div>
     </div>
-    <div class="col-md-3 text-right">
-        <button class="btn btn-info" onclick="ShowFilter('Product')"><i class="fa fa-filter"></i></button>
-        <input type="button" value="View" class="btn btn-success" onclick="Render('')">
-        <button class="btn btn-dark" onclick="Render('excel')"><i class="fa fa-file-export"></i></button>
-    </div>
-</div>
-
-<hr style="margin: 1px 0px;" />
-
-<div class="row">
-    <div id="WUCHM" class="col-12">
+    <div class="row">
+        <div id="WUCHM" class="col-12">
+        </div>
     </div>
 </div>
 <ul id="contextMenu" style="display:none;position:absolute">
@@ -30,12 +28,12 @@
     <script>
 
         $(document).ready(function () {
-           RPTOption.IdProperty = IdProperty = "sno";
-           RPTOption.GridHeight = GridHeight = "85vh";
+            RPTOption.IdProperty = IdProperty = "sno";
+            RPTOption.GridHeight = GridHeight = "85vh";
             RPTOption.Controller = Controller = 'RateEndStock';
             RPTOption.GroupByColumn = 'CategoryName,NameToDisplay,Location,Batch,MRP,StockDays,Barcode';
 
-           
+
 
         });
 
@@ -43,7 +41,7 @@
             Common.Get(".filter", "", function (flag, _d) {
                 if (flag) {
                     _d["ProductFilter"] = RPTFilter.Product.Filter;
-                    ViewData(_d, Export); 
+                    ViewData(_d, Export);
                 }
             });
         }
