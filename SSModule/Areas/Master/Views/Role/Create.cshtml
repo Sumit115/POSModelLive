@@ -2,7 +2,7 @@
 @model RoleModel
 
 @{
-    ViewData["Title"] = "Role Create";
+    ViewData["Title"] = "Role";
     ViewData["bdClass"] = "page";
 
     List<FormModel> FormList = ViewBag.FormList;
@@ -59,32 +59,32 @@
                     @foreach (var mstrMenu in FormList.Where(x => x.FKMasterFormID == null || x.FKMasterFormID == 0).ToList())
                     {
                         <div class="card">
-                            <div class="card-header p-0" id="heading@(mstrMenu.PKFormID)">
+                            <div class="card-header p-0" id="heading@(mstrMenu.PKID)">
                                 <h5 class="mb-0">
-                                    <a class="btn btn-link w-100 text-left p-3" data-toggle="collapse" data-target="#collapse@(mstrMenu.PKFormID)" aria-expanded="true" aria-controls="collapse@(mstrMenu.PKFormID)">
+                                    <a class="btn btn-link w-100 text-left p-3" data-toggle="collapse" data-target="#collapse@(mstrMenu.PKID)" aria-expanded="true" aria-controls="collapse@(mstrMenu.PKID)">
                                         @mstrMenu.FormName
                                     </a>
                                 </h5>
                             </div>
 
-                            <div id="collapse@(mstrMenu.PKFormID)" class="collapse" aria-labelledby="heading@(mstrMenu.PKFormID)" data-parent="#accordion">
+                            <div id="collapse@(mstrMenu.PKID)" class="collapse" aria-labelledby="heading@(mstrMenu.PKID)" data-parent="#accordion">
                                 <div class="card-body">
                                     @{
-                                        var _menuWithChield = FormList.Where(x => x.FKMasterFormID == mstrMenu.PKFormID && FormList.Any(y => y.FKMasterFormID == x.PKFormID)).ToList();
-                                        var _menuNoChield = FormList.Where(x => x.FKMasterFormID == mstrMenu.PKFormID && !FormList.Any(y => y.FKMasterFormID == x.PKFormID)).ToList();
+                                        var _menuWithChield = FormList.Where(x => x.FKMasterFormID == mstrMenu.PKID && FormList.Any(y => y.FKMasterFormID == x.PKID)).ToList();
+                                        var _menuNoChield = FormList.Where(x => x.FKMasterFormID == mstrMenu.PKID && !FormList.Any(y => y.FKMasterFormID == x.PKID)).ToList();
                                     }
                                     @foreach (var menu in _menuWithChield.ToList())
                                     {
-                                        var _subMenu = FormList.Where(x => x.FKMasterFormID == menu.PKFormID).ToList();
+                                        var _subMenu = FormList.Where(x => x.FKMasterFormID == menu.PKID).ToList();
                                         if (_subMenu.Count > 0)
                                         {
                                             <div class="card">
                                                 <p class="card-header p-0">
-                                                    <a class="btn btn-link w-100 text-left p-3" data-toggle="collapse" href="#collapse@(menu.PKFormID)" role="button" aria-expanded="false" aria-controls="collapse@(menu.PKFormID)">
+                                                    <a class="btn btn-link w-100 text-left p-3" data-toggle="collapse" href="#collapse@(menu.PKID)" role="button" aria-expanded="false" aria-controls="collapse@(menu.PKID)">
                                                         @menu.FormName
                                                     </a>
                                                 </p>
-                                                <div class="collapse card-body" id="collapse@(menu.PKFormID)">
+                                                <div class="collapse card-body" id="collapse@(menu.PKID)">
                                                     <table class="table table-bordered table-responsive-lg">
 
                                                         <tbody>
@@ -99,10 +99,10 @@
                                                             </tr>
                                                             @foreach (var _m in _subMenu)
                                                             {
-                                                                <tr id="tr_@(_m.PKFormID)" data-id="@_m.PKFormID">
+                                                                <tr id="tr_@(_m.PKID)" data-id="@_m.PKID">
                                                                     <td class="text-left w-25">@_m.FormName</td>
                                                                     <td>
-                                                                        <input id="RoleDtl_lst_@(i)__FKFormID" name="RoleDtl_lst[@i].FKFormID" type="hidden" value="@_m.PKFormID">
+                                                                        <input id="RoleDtl_lst_@(i)__FKFormID" name="RoleDtl_lst[@i].FKFormID" type="hidden" value="@_m.PKID">
                                                                         <input class="PkRoleDtlId" id="RoleDtl_lst_@(i)__PkRoleDtlId" name="RoleDtl_lst[@i].PkRoleDtlId" type="hidden" value="0">
                                                                         <input class="IsAccess" id="RoleDtl_lst_@(i)__IsAccess" name="RoleDtl_lst[@i].IsAccess" type="checkbox" value="true">
                                                                     </td>
@@ -145,10 +145,10 @@
                                                 </tr>
                                                 @foreach (var menu in _menuNoChield.ToList())
                                                 {
-                                                    <tr id="tr_@(menu.PKFormID)" data-id="@menu.PKFormID">
+                                                    <tr id="tr_@(menu.PKID)" data-id="@menu.PKID">
                                                         <td class="text-left w-25">@menu.FormName</td>
                                                         <td>
-                                                            <input id="RoleDtl_lst_@(i)__FKFormID" name="RoleDtl_lst[@i].FKFormID" type="hidden" value="@menu.PKFormID">
+                                                            <input id="RoleDtl_lst_@(i)__FKFormID" name="RoleDtl_lst[@i].FKFormID" type="hidden" value="@menu.PKID">
                                                             <input class="PkRoleDtlId" id="RoleDtl_lst_@(i)__PkRoleDtlId" name="RoleDtl_lst[@i].PkRoleDtlId" type="hidden" value="0">
                                                             <input class="IsAccess" id="RoleDtl_lst_@(i)__IsAccess" name="RoleDtl_lst[@i].IsAccess" type="checkbox" value="true">
                                                         </td>

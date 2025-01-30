@@ -1,25 +1,23 @@
 ﻿@model SSRepository.Models.BrandModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Brand";
     ViewData["bdClass"] = "page";
 }
-<div class="p-3">
-    <form asp-action="Create" class="g-3" enctype="multipart/form-data">
+<div class="p-4">
+    <form asp-action="Create" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="PkBrandId" />
-        <div class="row">
-            <div class="col-md-8">
-                <div class="form-group">
-                    <label class="control-label">Brand Name</label>
-                    <input asp-for="BrandName" class="form-control" />
-                    <span asp-validation-for="BrandName" class="text-danger"></span>
-                </div>
+        <div class="form-group row">
+            <label class="col-sm-1">Name</label>
+            <div class="col-md-3">
+                <input asp-for="BrandName" class="form-control" />
+                <span asp-validation-for="BrandName" class="text-danger"></span>
             </div>
         </div>
+
     </form>
 </div>
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

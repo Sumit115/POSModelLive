@@ -37,14 +37,10 @@
                 <div class="row gx-lg-5 align-items-center">
                     <div class="col-lg-6 mb-5 mb-lg-0 d-none d-md-block">
                         <h1 class="my-5 display-3 fw-bold ls-tight">
-                            The best offer <br />
+                            User friendly <br />
                             <span class="text-primary">for your business</span>
                         </h1>
                         <p style="color: hsl(217, 10%, 50.8%)">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                            Eveniet, itaque accusantium odio, soluta, corrupti aliquam
-                            quibusdam tempora at cupiditate quis eum maiores libero
-                            veritatis? Dicta facilis sint aliquid ipsum atque?
                         </p>
                     </div>
 
@@ -53,20 +49,19 @@
                             <div class="card-body py-5 px-md-5">
                                 <form asp-action="Index">
                                     <div class="d-flex align-items-center mb-3 pb-1">
-                                        <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
-                                        <span class="h1 fw-bold mb-0">Logo</span>
+                                        <img src="/logo.png" />
                                     </div>
 
                                     <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
 
                                     <!-- 2 column grid layout with text inputs for the first and last names -->
-                                    <div class="form-outline mb-4">
-                                        <label asp-for="UserID" class="control-label"></label>
+                                    <div class="form-outline mb-4 text-left">
+                                        <label asp-for="UserID" class="control-label "></label>
                                         <input asp-for="UserID" class="form-control" required />
 
                                     </div>
-                                    <div class="form-outline mb-4">
-                                        <label asp-for="Password" class="control-label"></label>
+                                    <div class="form-outline mb-4 text-left">
+                                        <label asp-for="Password" class="control-label text-left"></label>
                                         <input type="password" asp-for="Password" class="form-control" value="@Model.Password" required />
                                     </div>
 

@@ -19,7 +19,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <div class="form-group">
-                        <label class="d-block pb-1">Party</label>
+                        <label>Party</label>
                         @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkPartyId" }, { "Class", "val-cus-drp" }, { "event", "setParty()" },
                         { "value", Model.FkPartyId }, { "ExtraParam", "ExtProperties_TranAlias" }, { "text", Model.PartyName }, { "uri", "" } })
                     </div>

@@ -3,45 +3,53 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="row p-2 filter">
-    <div class="col-md-2">
-        <input name="FromDate" type="date" id="FromDate" class="form-control" maxlength="10" placeholder="From Date*" required="" title="From Date*">
-        <span class="field-validation-valid text-danger" data-valmsg-for="FromDate"></span>
-    </div>
-    <div class="col-md-2">
-        <input name="ToDate" type="date" id="ToDate" class="form-control" maxlength="10" placeholder="To Date*" required="" title="To Date*">
-        <span class="field-validation-valid text-danger" data-valmsg-for="ToDate"></span>
-    </div>
-    <div class="col-md-1">
-        <select id="ReportType" class="form-control" onchange="Render();">
-            <option value="S">Summary</option>
-            <option value="M">Month Wise</option>
-            <option value="D">Day Wise</option>
-            @*    <option value="W">Monthly</option>
-            <option value="Q">Quarterly</option>
-            <option value="C">Cumulative</option>*@
-        </select>
-    </div>
-    <div class="col-md-1">
-        <select id="TranAlias" class="form-control" onchange="Render();">
-            <option value="SINV">Sales</option>
-            <option value="SORD">Sales Order</option>
-            <option value="SPSL">Sales Challan</option>
-        </select>
-    </div>
+<div class="p-1">
+    <div class="form-group row filter m-0 p-2 border-bottom">
+        <div class="col-md-2">
+            <input name="FromDate" type="date" id="FromDate" class="form-control" maxlength="10" placeholder="From Date*" required="" title="From Date*">
+            <span class="field-validation-valid text-danger" data-valmsg-for="FromDate"></span>
+        </div>
+        <div class="col-md-2">
+            <input name="ToDate" type="date" id="ToDate" class="form-control" maxlength="10" placeholder="To Date*" required="" title="To Date*">
+            <span class="field-validation-valid text-danger" data-valmsg-for="ToDate"></span>
+        </div>
+        <div class="col-md-2">
+            <select id="ReportType" class="form-select" onchange="Render();">
+                <option value="S">Summary</option>
+                <option value="M">Month Wise</option>
+                <option value="D">Day Wise</option>
+                @*    <option value="W">Monthly</option>
+                <option value="Q">Quarterly</option>
+                <option value="C">Cumulative</option>*@
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select id="TranAlias" class="form-select" onchange="Render();">
+                <option value="SINV">Sales</option>
+                <option value="SORD">Sales Order</option>
+                <option value="SPSL">Sales Challan</option>
+            </select>
+        </div>
 
-    <div class="col-md-6 text-right">
-        <button class="btn btn-info" onclick="ShowFilter('Product')" title="Product"><i class="fa fa-filter"></i></button>
-        <button class="btn btn-info" onclick="ShowFilter('Customer')" title="Customer"><i class="fa fa-filter"></i></button>
-        <input type="button" value="View" class="btn btn-success" onclick="Render('')" title="View">
-        <button class="btn btn-dark" onclick="Render('excel')" title="View"><i class="fa fa-file-export"></i></button>
+        <div class="col-md-4 text-right">
+            <div class="btn-group">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-funnel"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end p-0" role="menu">
+                        <a href="#" class="dropdown-item" onclick="ShowFilter('Product')" title="Product"><i class="bi bi-funnel"></i> Product</a>
+                        <a href="#" class="dropdown-item" onclick="ShowFilter('Customer')" title="Customer"><i class="bi bi-funnel"></i> Customer</a>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-outline-info" onclick="Render('excel')" title="View"><i class="bi bi-download"></i></button>
+            <button class="btn btn-info" onclick="Render('')" title="View"><i class="bi bi-send"></i> &nbsp;View</button>
+        </div>
     </div>
-</div>
-
-<hr style="margin: 1px 0px;" />
-
-<div class="row">
-    <div id="WUCHM" class="col-12">
+    <div class="row">
+        <div id="WUCHM" class="col-12">
+        </div>
     </div>
 </div>
 @section Scripts {

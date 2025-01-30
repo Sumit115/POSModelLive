@@ -2,65 +2,40 @@
 
 @{
     Layout = null;
+    bool flag = false;
 }
 
 
-<div class="sidebar-dark-primary" style="min-height: calc(100vh - 67px);flex: 0 0 4%;max-width: 4%;">
+<div class="right-header-bar">
+    <button class="icon-button" type="button" id="btnAboutSupport" tooltip="About" flow="left" fdprocessedid="sv5v8o">
+        <i class="bi bi-info-circle-fill"></i>
+    </button>
+    <partial name="~/Views/Shared/Transactions/_image.cshtml" />
 
-    <ul class="nav nav-pills nav-sidebar flex-column">
-        <li class="nav-item">
-            <partial name="~/Views/Shared/Transactions/_image.cshtml" />
-        </li>
-        <li class="nav-item">
+    <partial name="~/Views/Shared/Transactions/_Remark.cshtml" />
 
-            <partial name="~/Views/Shared/Transactions/_Remark.cshtml" />
-        </li>
-        <li class="nav-item">
-            <a href="javascript:void(0)" class="nav-link" style="padding: 7px 0px 0px 7px;">
-                <i class="fas fa-question fa-fw" aria-hidden="true" style="font-size:30px;"></i>
-            </a>
-        </li>
-        @if (Model.ExtProperties.PostInAc)
-        {
-            <li class="nav-item">
-                <a href="javascript:void(0)" class="nav-link" onclick="VoucherDetail()" style="padding: 7px 0px 0px 7px;">
-                    <i class="fas fa-receipt fa-fw" aria-hidden="true" style="font-size:30px;"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <partial name="~/Views/Shared/Transactions/_PaymentInfo.cshtml" />
-            </li>
 
-            <li class="nav-item">
-                <a href="javascript:void(0)" onclick="showpopupPrintOption()" class="nav-link" style="padding: 7px 0px 0px 7px;">
-                    <i class="fas fa-barcode fa-fw" aria-hidden="true" style="font-size:30px;"></i>
-                </a>
-            </li>
-          
-        }
-        @if (Model.ExtProperties.TranAlias == "SORD" || Model.ExtProperties.TranAlias == "LORD")
-        {
-            <li class="nav-item">
-                <a href="/excelfile/format/demo_csv_artical.csv" target="_blank" title="CSV Format Download" class="nav-link" style="padding: 7px 0px 0px 7px;">
-                    <i class="fas fa-download fa-fw" aria-hidden="true" style="font-size:30px;"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <style>
-                .hide {
-                    display: none;
-                }
-            </style>
+    @if (Model.ExtProperties.PostInAc || flag == true)
+    {
+        <button class="icon-button" type="button" onclick="VoucherDetail()" tooltip="receipt" flow="left" fdprocessedid="sv5v8o">
+            <i class="fas fa-receipt"></i>
+        </button>
+        <partial name="~/Views/Shared/Transactions/_PaymentInfo.cshtml" />
+        <button class="icon-button" type="button" onclick="showpopupPrintOption()" tooltip="print barcode" flow="left" fdprocessedid="sv5v8o">
+            <i class="fas fa-barcode"></i>
+        </button>
 
-            <div class="clip-upload">
-                    <label for="ExcelFile" class="nav-link" style="padding: 7px 0px 0px 7px;" title="Upload CSV File">
-                    <i class="fa-paperclip fas fa-fw" aria-hidden="true" style="font-size:30px;"></i>
-                </label>
-                 
-                <input type="file" name="ExcelFile" id="ExcelFile" onchange="UploadFile()" accept=".csv" class="file-input hide">
-            </div>
-        </li>
-        }
-    </ul>
+    }
+    @if (Model.ExtProperties.TranAlias == "SORD" || Model.ExtProperties.TranAlias == "LORD" || flag == true)
+    {
+        <a href="/excelfile/format/demo_csv_artical.csv" target="_blank" title="CSV Format Download" class="icon-button">
+            <i class="bi bi-upload"></i>
+        </a>
+        <button class="icon-button" type="button" onclick="$('#ExcelFile').click()" tooltip="Upload CSV File" flow="left" fdprocessedid="sv5v8o">
+            <i class="bi bi-download"></i>
+        </button>
+
+        <input type="file" name="ExcelFile" id="ExcelFile" onchange="UploadFile()" accept=".csv" class="file-input d-none">
+
     }
 </div>

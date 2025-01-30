@@ -887,7 +887,7 @@ namespace SSRepository.Repository
                                     cou.FKMasterFormID == (FKMasterFormID > 0 ? FKMasterFormID : cou.FKMasterFormID)
                                     select (new FormModel
                                     {
-                                        PKFormID = cou.PKFormID,
+                                        PKID = cou.PKFormID,
                                         FKMasterFormID = cou.FKMasterFormID,
                                         SeqNo = cou.SeqNo,
                                         FormName = cou.FormName,

@@ -149,13 +149,13 @@ function ShowFilter(type) {
 
     }
     function showpopupWithData() {
-        Handler.popUp(fn_GetPopuphtml(type, RPTFilter[type].Data), { width: "800px", height: "500px" }, function () {
+        Handler.popUp(fn_GetPopuphtml(type, RPTFilter[type].Data), { width: "544px", height: "600px" }, function () {
             var cg = new coGrid("#WUCFilter");
-            cg.setColumnHeading("Select~NameToDisplay");
-            cg.setColumnWidthPer("10~60", 800);
+            cg.setColumnHeading("Select~Name");
+            cg.setColumnWidthPer("10~60", 700);
             cg.setColumnFields("tick~" + RPTFilter[type].Field);
             cg.setAlign("C~L");
-            cg.defaultHeight = "400px";
+            cg.defaultHeight = "500px";
             cg.setSearchType("0~1");
             cg.setSearchableColumns(RPTFilter[type].Field);
             cg.setSortableColumns(RPTFilter[type].Field);
@@ -188,18 +188,17 @@ function ShowFilter(type) {
     }
     function fn_GetPopuphtml(type, _data) {
         var htm = '';
-        htm += '<div class="mb-4 card"><div class="card-body">';
-        htm += '<div class="row mb-3">';
-        htm += '<div class="col-md-6">';
-        htm += '<div class="card-title"> ' + type + ' Filter</div>';
-        htm += '</div>';
-        htm += '<div class="col-md-6 text-center">';
-        htm += '<input type="button" id="btnSaveFilter" value="Done" class="btn btn-success"/>';
-        htm += '</div>';
-        htm += '</div> ';
+        htm += '<div class="card card-outline card-primary">';
+        htm += '<div class="card-header">';
+        htm += '<h3 class="card-title">' + type + ' Filter</h3>';
+        htm += '<div class="card-tools">';
+        htm += '<button type="button" id="btnSaveFilter" class="btn btn-outline-secondary" >';
+        htm += '<i class="bi bi-send"></i> Done</button></div></div>';
+        htm += '<div class="card-body">';
+       
         htm += '<div class="row">';
-        htm += '<div id="WUCFilter" class="col-12">  ';
-        htm += '</div></div> ';
+        htm += '<div id="WUCFilter" class="col-12"></div>';
+        htm += '</div> ';
         htm += '</div></div>';
 
         return htm;

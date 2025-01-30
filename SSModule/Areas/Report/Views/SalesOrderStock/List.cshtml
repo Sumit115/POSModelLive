@@ -3,21 +3,31 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="row p-2 filter">
 
-    <div class="col-md-9">
-    </div>
-    <div class="col-md-3 text-right">
-        <button class="btn btn-dark" onclick="ShowFilter('TrnStatus')"><i class="fa fa-filter"></i></button>
-        <button class="btn btn-info" onclick="ShowFilter('State')"><i class="fa fa-filter"></i></button>
-        <input type="button" value="View" class="btn btn-success" onclick="Render('')">
-        <button class="btn btn-dark" onclick="Render('excel')"><i class="fa fa-file-export"></i></button>
-    </div>
-</div>
-<hr style="margin: 1px 0px;" />
+<div class="p-1">
+    <div class="form-group row filter m-0 p-2 border-bottom">
+        <div class="col-md-9">
+        </div>
+        <div class="col-md-3 text-right">
+            <div class="btn-group">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-funnel"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end p-0" role="menu">
 
-<div class="row">
-    <div id="WUCHM" class="col-12">
+                        <a href="#" class="dropdown-item" onclick="ShowFilter('TrnStatus')" title="Series"><i class="bi bi-funnel"></i> Status</a>
+                        <a href="#" class="dropdown-item" onclick="ShowFilter('State')" title="State"><i class="bi bi-funnel"></i> State</a>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-outline-info" onclick="Render('excel')" title="View"><i class="bi bi-download"></i></button>
+            <button class="btn btn-info" onclick="Render('')" title="View"><i class="bi bi-send"></i> &nbsp;View</button>
+        </div>
+    </div>
+    <div class="row">
+        <div id="WUCHM" class="col-12">
+        </div>
     </div>
 </div>
 <ul id="contextMenu" style="display:none;position:absolute">
@@ -31,8 +41,8 @@
             RPTOption.IdProperty = IdProperty = "sno";
             RPTOption.GridHeight = GridHeight = "85vh";
             RPTOption.Controller = Controller = 'SalesOrderStock';
-            RPTOption.GroupByColumn = 'PartyName,CategoryGroupName,CategoryName,Product,Batch'; 
- 
+            RPTOption.GroupByColumn = 'PartyName,CategoryGroupName,CategoryName,Product,Batch';
+
             Render();
         });
         function Render(Export) {
@@ -40,7 +50,7 @@
                 if (flag) {
                     _d["pageNo"] = RPTOption.pageNo;
                     _d["pageSize"] = RPTOption.pageSize;
-                     _d["StateFilter"] = RPTFilter.State.Filter;
+                    _d["StateFilter"] = RPTFilter.State.Filter;
                     _d["TrnStatusFilter"] = RPTFilter.TrnStatus.Filter;
                     //_d["CustomerFilter"] = RPTFilter.Customer.Filter;
                     ViewData(_d, Export)
