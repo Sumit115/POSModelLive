@@ -27,6 +27,8 @@ namespace SSRepository.Models
         public long? FKTaxID { get; set; }//=0
         public string? HSNCode { get; set; }//txt
         public long? FkBrandId { get; set; }
+
+        [Required]
         public long? FkUnitId { get; set; }//txt
         public string? ShelfID { get; set; }//=''
         public decimal TradeDisc { get; set; }

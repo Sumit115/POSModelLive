@@ -140,6 +140,8 @@ namespace SSAdmin.Areas.Master.Controllers
                 model.KeepStock = true;
                 //if (ModelState.IsValid)
                 //{
+                if (model.FkUnitId > 0)
+                {
                     string Mode = "Create";
                     if (model.PkProductId > 0)
                     {
@@ -155,6 +157,8 @@ namespace SSAdmin.Areas.Master.Controllers
                     {
                         return RedirectToAction(nameof(List));
                     }
+                }
+                else { ModelState.AddModelError("FkUnitId", "Unit Required"); }
                 //}
                 //else
                 //{
