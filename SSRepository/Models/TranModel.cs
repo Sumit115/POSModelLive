@@ -133,6 +133,8 @@ namespace SSRepository.Models
         public bool IsTranChange { get; set; }
         public decimal FreePoint { get; set; }
 
+        public char TaxType { get; set; } = 'I';
+
     }
 
     public class ExtPropertie

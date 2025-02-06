@@ -82,7 +82,7 @@
                     <a id="btnServerBack" asp-action="List" class="btn btn-outline-danger btn-key-65">Cancel</a>
                 </li>
                 <li class="nav-item f-list" style="display:none">
-                    <button class="btn btn-info" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+                    <button class="btn btn-info d-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
                         <i class="bi bi-plus-lg"></i> &nbsp;New
                     </button>
 
@@ -241,19 +241,15 @@
         </div>
     </div>
     <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
+    <div class="content-wrapper" >
         <!-- Main content -->
-        <div class="content p-0 pt-1">
-            <div class="container-fluid" style="background-color: #fff;height: calc(100vh - 49px);padding-right: 0px;padding-left: 0px;overflow-y: auto;">
-
-                @RenderBody()
-            </div>
+        <div class="container-fluid ms-2 ps-0" style="background-color: #fff;height: calc(100vh - 49px);overflow:auto;  ">
+            @RenderBody()
         </div>
     </div>
-
     <div class="offcanvas offcanvas-end master-offcanvas" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
 
-        <form class="form-horizontal g-3" enctype="multipart/form-data">
+        @* <form class="form-horizontal g-3" enctype="multipart/form-data">*@
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Offcanvas with body scrolling</h5>
                 <div class="canvas-header-right text-right">
@@ -271,7 +267,7 @@
                 </div>
 
             </div>
-        </form>
+        @* </form> *@
     </div>
     <partial name="~/Views/Shared/partial/gridlayout.cshtml" />
     <ul id="contextMenu">

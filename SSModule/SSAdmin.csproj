@@ -114,6 +114,7 @@
     <None Include="Views\Shared\partial\_Grid.cshtml" />
     <None Include="Views\Shared\Transactions\_tranFooter.cshtml" />
     <None Include="Views\Shared\Transactions\_tranGrid.cshtml" />
+    <None Include="Views\Shared\Transactions\_tranInfo.cshtml" />
     <None Include="Views\Shared\Transactions\_tranHeader.cshtml" />
     <None Include="Views\Shared\Voucher\_tranFooter.cshtml" />
     <None Include="Views\Shared\Voucher\_tranGrid.cshtml" />

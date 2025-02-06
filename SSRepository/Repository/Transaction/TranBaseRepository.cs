@@ -1187,13 +1187,13 @@ namespace SSRepository.Repository.Transaction
             {
                 item.FKLocationID = model.FKLocationID;
 
-                CalculateExe(item);
+                CalculateExe(model, item);
             }
 
             // model.TranDetails = model.TranDetails.Where(x => x.FkProductId > 0).ToList();
         }
 
-        public void CalculateExe(TranDetails item)
+        public void CalculateExe(TransactionModel model,TranDetails item)
         {
 
             decimal GrossAmt = item.Rate * item.Qty;
@@ -1206,12 +1206,16 @@ namespace SSRepository.Repository.Transaction
                 item.TradeDisc = Math.Round((item.TradeDiscAmt / GrossAmt) * 100, 2);
             }
 
-
             item.GrossAmt = Math.Round((GrossAmt - item.TradeDiscAmt), 2);
-            item.GstRate = (item.GrossAmt / 2) < 1000 ? 5 : 18;
-            item.TaxableAmt = Math.Round(((item.GrossAmt * 100) / (100 + item.GstRate)), 2);
-
-            // item.GstAmt = Math.Round((item.TaxableAmt * 100) / item.GstRate, 2);
+            item.GstRate = (item.GrossAmt / item.Qty) < 1000 ? 5 : 12 ;
+            if (model.TaxType == 'E')
+            {
+                item.TaxableAmt = item.GrossAmt;
+            }
+            else
+            {
+                item.TaxableAmt = Math.Round(((item.GrossAmt * 100) / (100 + item.GstRate)), 2);
+            }
             item.GstAmt = Math.Round((item.TaxableAmt * item.GstRate) / 100, 2);
             item.NetAmt = Math.Round(item.TaxableAmt + item.GstAmt, 2);
         }
@@ -1497,6 +1501,8 @@ namespace SSRepository.Repository.Transaction
                 model.FKSeriesId = FKSeriesId;
                 model.BillingRate = obj.BillingRate;
                 model.BranchStateName = obj.BranchStateName;
+                model.TaxType = obj.TaxType;
+                
             }
             model.IsTranChange = true;
 
@@ -1514,7 +1520,9 @@ namespace SSRepository.Repository.Transaction
                                      Series = cou.Series,
                                      FkBranchId = cou.FkBranchId,
                                      BillingRate = cou.BillingRate,
+                                     TaxType = cou.TaxType,
                                      BranchStateName = branch.State,
+                                     
                                  }
                                 )).FirstOrDefault();
             return data;

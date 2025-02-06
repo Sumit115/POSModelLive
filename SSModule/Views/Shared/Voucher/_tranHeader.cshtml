@@ -3,59 +3,57 @@
 @{
     Layout = null;
 }
-<style>
-    .f-ctrl {
-        display: block !important;
-    }
-
-    .form-group {
-        margin-bottom: 0.2rem !important;
-    }
-</style>
 <input asp-for="ExtProperties.TranAlias" type="hidden" />
-<div class="col-md-12">
-            <div class="row">
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label class="control-label">Series </label>
+<div class="row trn-header">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label class="control-label">Series </label>
 
-                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKSeriesId" }, { "Class", "val-cus-drp" }, { "event", "setSeries()" },
-                        { "value", Model.FKSeriesId }, { "text", Model.SeriesName }, { "uri", "" }})
+                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKSeriesId" }, { "Class", "val-cus-drp" }, { "event", "setSeries()" },
+                    { "value", Model.FKSeriesId }, { "text", Model.SeriesName }, { "uri", "" }})
 
-                    </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label class="control-label">*Invoice No</label>
-                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "EntryNo" }, { "Class", "val-cus-drp" }, { "event", "setParty()" },
-                        { "value", Model.EntryNo }, { "text", Model.EntryNo }, { "uri", "" } })
-                        <span asp-validation-for="EntryNo" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label class="control-label">Entry Date</label>
-                        <input type="Date" asp-for="EntryDate" class="form-control trn" />
-                        <span asp-validation-for="EntryDate" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label class="control-label">Ref.No </label>
-                        <input asp-for="GRNo" class="form-control trn" />
-                        <span asp-validation-for="GRNo" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label class="control-label">Ref. Date</label>
-                        <input type="Date" asp-for="GRDate" class="form-control trn" />
-                        @* @Html.TextBoxFor(m => m.GRDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" }) *@
-                        <span asp-validation-for="GRDate" class="text-danger"></span>
-                    </div>
-                </div>
-
-
             </div>
-       
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label class="control-label">*Invoice No</label>
+                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "EntryNo" }, { "Class", "val-cus-drp" }, { "event", "setParty()" },
+                    { "value", Model.EntryNo }, { "text", Model.EntryNo }, { "uri", "" } })
+                    <span asp-validation-for="EntryNo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="control-label">Entry Date</label>
+                    <input type="Date" asp-for="EntryDate" class="form-control trn" />
+                    <span asp-validation-for="EntryDate" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="control-label">Ref.No </label>
+                    <input asp-for="GRNo" class="form-control trn" />
+                    <span asp-validation-for="GRNo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="control-label">Ref. Date</label>
+                    <input type="Date" asp-for="GRDate" class="form-control trn" />
+                    @* @Html.TextBoxFor(m => m.GRDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" }) *@
+                    <span asp-validation-for="GRDate" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+            <label class="control-label">Narration </label>
+            <textarea asp-for="Remark" class="form-control"></textarea>
+            <span asp-validation-for="Remark" class="text-danger"></span>
+        </div>
+    </div>
 </div>
+

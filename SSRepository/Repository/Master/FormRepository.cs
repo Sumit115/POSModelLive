@@ -31,7 +31,7 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<FormModel> data = (from l in __dbContext.TblFormMas
-                                        //where (EF.Functions.Like(cou.FormName.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                    where (EF.Functions.Like(l.FormName.Trim().ToLower(), Convert.ToString(search) + "%"))
                                     orderby l.PKFormID
                                     select (new FormModel
                                     {

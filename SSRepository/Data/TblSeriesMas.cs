@@ -8,10 +8,10 @@ namespace SSRepository.Data
     {
         [Key]
         public long PkSeriesId { get; set; }
-        public string? Series { get; set; }
+        public string Series { get; set; }
         public long SeriesNo { get; set; }
         public long FkBranchId { get; set; }
-        public string? BillingRate { get; set; }
+        public string BillingRate { get; set; }
         public string? TranAlias { get; set; }
         public string? FormatName { get; set; }
         public string? ResetNoFor { get; set; }
@@ -21,6 +21,7 @@ namespace SSRepository.Data
         public bool DefaultQty { get; set; }
         public bool AllowZeroRate { get; set; }
         public bool AllowFreeQty { get; set; }
+        public char TaxType { get; set; } = 'I';
         public Nullable<long> FKLocationID { get; set; }
  
         public string? DocumentType { get; set; }

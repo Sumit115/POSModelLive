@@ -4,152 +4,117 @@
     ViewData["Title"] = "Series";
     ViewData["bdClass"] = "page";
 }
-<style>
-    .radios__input {
-        height: 20px;
-        width: 25px;
-    }</style>
 
-<div class="p-3">
+<div class="master-page-ui">
     <form asp-action="Create" class=" g-3" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="PkSeriesId" />
-
         <div class="row">
+            <div class="col-md-7">
+                <div class="form-group row">
+                    <label class="col-sm-2">Transaction <span class="required">*</span></label>
+                    <div class="col-md-6">
+                        <select asp-for="TranAlias" asp-items="@(new SelectList(ViewBag.TranAliasList,"Value","Text"))" class="form-select" required>
+                        </select>
+                        <span asp-validation-for="TranAlias" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Series Name <span class="required">*</span></label>
+                    <div class="col-md-6">
+                        <input asp-for="Series" class="form-control" required />
+                        <span asp-validation-for="Series" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Series No</label>
+                    <div class="col-md-6">
+                        <input asp-for="SeriesNo" class="form-control" />
+                        <span asp-validation-for="SeriesNo" class="text-danger" min="0"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Print Format</label>
+                    <div class="col-md-6">
+                        <select asp-for="FormatName" class="form-select">
+                            <option value="Wholesale">Wholesale</option>
+                            <option value="Walking">Walking</option>
+                            <option value="short">short</option>
+                        </select>
+                        <span asp-validation-for="FormatName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Billing Rate</label>
+                    <div class="col-md-6">
+                        <select asp-for="BillingRate" class="form-control">
+                            <option value="">Select</option>
+                            <option value="MRP">MRP</option>
+                            <option value="SaleRate">SaleRate</option>
+                            <option value="TradeRate">TradeRate</option>
+                            <option value="DistributionRate">DistributionRate</option>
+                            <option value="PurchaseRate">PurchaseRate</option>
+                        </select>
+                        <span asp-validation-for="BillingRate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Billing Location</label>
+                    <div class="col-md-6">
+                        <select asp-for="FKLocationID" asp-items="@(new SelectList(ViewBag.LocationList,"PkLocationID","Location"))" class="form-select">
+                        </select>
+                        <span asp-validation-for="FKLocationID" class="text-danger"></span>
+                    </div>
+                </div>
 
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Series Name</label>
-                    <input asp-for="Series" class="form-control" />
-                    <span asp-validation-for="Series" class="text-danger"></span>
+            </div>
+            <div class="col-sm-5 show-checkbox-ui-sl-page">
+                <div class="col-sm-5">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center form-check form-switch">
+                            <label class="form-check-label" for="AllowWalkIn">Allow Walk In</label>
+                            <span>
+                                <input asp-for="AllowWalkIn" type="checkbox" class="form-check-input" role="switch" />
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center form-check form-switch">
+                            <label class="form-check-label" for="RoundOff">Round Off</label>
+                            <span>
+                                <input asp-for="RoundOff" type="checkbox" class="form-check-input" role="switch" />
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center form-check form-switch">
+                            <label class="form-check-label" for="AutoApplyPromo"> Auto Apply Promo</label>
+                            <span>
+                                <input asp-for="AutoApplyPromo" type="checkbox" class="form-check-input" role="switch" />
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center form-check form-switch">
+                            <label class="form-check-label" for="DefaultQty">Default Qty</label>
+                            <span>
+                                <input asp-for="DefaultQty" type="checkbox" class="form-check-input" role="switch" />
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center form-check form-switch">
+                            <label class="form-check-label" for="AllowZeroRate">Allow Zero Rate</label>
+                            <span>
+                                <input asp-for="AllowZeroRate" type="checkbox" class="form-check-input" role="switch" />
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center form-check form-switch">
+                            <label class="form-check-label" for="AllowZeroRate">Allow Free Qty</label>
+                            <span>
+                                <input asp-for="AllowFreeQty" type="checkbox" class="form-check-input" role="switch" />
+                            </span>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Series No</label>
-                    <input asp-for="SeriesNo" class="form-control" />
-                    <span asp-validation-for="SeriesNo" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Format</label>
-                    <select asp-for="FormatName" class="form-control">
-                        <option value="Wholesale">Wholesale</option>
-                        <option value="Walking">Walking</option>
-                        <option value="short">short</option>
-                    </select>
-                    <span asp-validation-for="FormatName" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Tran Alias</label>
-                    <select asp-for="TranAlias" asp-items="@(new SelectList(ViewBag.TranAliasList,"Value","Text"))" class="form-control">
-                    </select>
-                    <span asp-validation-for="TranAlias" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Billing Rate</label>
-                    <select asp-for="BillingRate" class="form-control">
-                        <option value="">Select</option>
-                        <option value="MRP">MRP</option>
-                        <option value="SaleRate">SaleRate</option>
-                        <option value="TradeRate">TradeRate</option>
-                        <option value="DistributionRate">DistributionRate</option>
-                        <option value="PurchaseRate">PurchaseRate</option>
-                    </select>
-                    <span asp-validation-for="BillingRate" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="control-label">Location</label>
-                    <select asp-for="FKLocationID" asp-items="@(new SelectList(ViewBag.LocationList,"PkLocationID","Location"))" class="form-control">
-                    </select>
-                    <span asp-validation-for="FKLocationID" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label class="control-label">
-                        Allow Walk In   <input asp-for="AllowWalkIn" class="radios__input" type="checkbox">
-                    </label>
-
-                    <span asp-validation-for="AllowWalkIn" class="text-danger"></span>
-
-                </div>
-            </div>
-
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label class="control-label">
-                        Auto Apply Promo
-                        <input asp-for="AutoApplyPromo" class="radios__input" type="checkbox">
-
-                    </label>
-
-                    <span asp-validation-for="AutoApplyPromo" class="text-danger"></span>
-
-                </div>
-            </div>
-
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label class="control-label">
-                        Round Off
-                        <input asp-for="RoundOff" class="radios__input" type="checkbox">
-
-                    </label>
-
-                    <span asp-validation-for="RoundOff" class="text-danger"></span>
-
-                </div>
-            </div>
-
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label class="control-label">
-                        Default Qty    <input asp-for="DefaultQty" class="radios__input" type="checkbox">
-                    </label>
-                    <span asp-validation-for="DefaultQty" class="text-danger"></span>
-
-                </div>
-            </div>
-
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label class="control-label">
-                        Allow Zero Rate
-                        <input asp-for="AllowZeroRate" class="radios__input" type="checkbox">
-
-                    </label>
-
-                    <span asp-validation-for="AllowZeroRate" class="text-danger"></span>
-
-                </div>
-            </div>
-
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label class="control-label">Allow Free Qty
-                        <input asp-for="AllowFreeQty" class="radios__input"  type="checkbox" >
-
-                    </label>
-                     
-                    <span asp-validation-for="AllowFreeQty" class="text-danger"></span>
-
-                </div>
-            </div>
-
         </div>
-
     </form>
 </div>
 
-@section Scripts{
+@section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
@@ -175,4 +140,4 @@
             };
         }
     </script>
-                }
+}

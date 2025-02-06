@@ -1,0 +1,14 @@
+﻿@model SSRepository.Models.TransactionModel
+
+@{
+    Layout = null;
+}
+<input type="hidden" asp-for="PkId" />
+<input type="hidden" id="hdData" value="@ViewBag.Data" />
+<input asp-for="ExtProperties.TranAlias" type="hidden" />
+
+<input type="hidden" id="hdProductList" value="@ViewBag.ProductList" />
+<input type="hidden" id="hdInvoiceList" value="[]" />
+<ul id="contextMenu" style="display:none;position:absolute">
+    <li id="contextEditColumn" data="EditColumn">Edit Column</li>
+</ul>
