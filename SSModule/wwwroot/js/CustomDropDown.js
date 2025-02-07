@@ -5,266 +5,409 @@
  *  Last Updated: Sumit Yadav, Mar 02 2024
  **/
 
+var arrHideColumns = ['DateCreated', 'DATE_CREATED', 'DATE_MODIFIED', 'DateModified', 'UserName', 'FKUserId', 'src'];
+var DateColumns = [];
 
-var arrCusDrpHideColumn = ['DateCreated', 'DATE_CREATED', 'DATE_MODIFIED', 'DateModified', 'UserName', 'FKUserId','src'];
-
-var typingTimer;
-var custypingTimer;
-var doneTypingInterval = 1000;
-var doneTypingInterval1 = 500;
-var _Custdropdown = {};
-var AltDown = false, CtrlDown = false, ShiftDown = false, AltPresed = false; var isClicked = false;
-AltlKey = 18, cmdKey = 91, CtrlKey = 17, WKey = 87, cKey = 67, keyNew = 78, keySave = 83, keyCancel = 65; keyTab = 9; ShiftKey = 16;
-var keyA = 65, keyB = 66, keyC = 67, keyD = 68, keyE = 69, keyF = 70, keyG = 71, keyH = 72, keyI = 73, keyJ = 74, keyK = 75, keyL = 76,
-    keyM = 77, keyN = 78, keyO = 79, keyP = 80, keyQ = 81, keyR = 82, keyS = 83, keyT = 84, keyU = 85, keyV = 86, keyW = 87, keyX = 88,
-    keyY = 89, keyZ = 90;
-//             A   B C  D  E  F  G  H  I  J  K  L  M   N  O  P  Q  R  S  T  U  V  W  X  Y  Z
-var arrKeys = [38, 40, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90];
-var IsMobile = false;
+let $dropdown = $("#dvCommonCusDropV2List");
+let _Custdropdown = [];
 $(document).ready(function () {
 
-    $(".cusdropdown").each(function () {
-        var hid = $(this).attr("hid");
-        var spn = $(this).find('span');
-        if (_Custdropdown[hid] == undefined)
-            _Custdropdown[hid] = new CustomDDL(hid, spn);
-    });
-
-    $(document).mouseup(function (e) {
-        var container = $(".auto-drp");
-        if (!container.is(e.target) && container.has(e.target).length === 0) {
-            $(".form-row-cl").find(".auto-drp").each(function (index) {
-                if ($(this).find(".panel-collapse").css("display") === "block") {
-                    $(this).find(".panel-collapse").css("display", "none");
-                }
-            });
-        }
-    });
+    GlobleDropDownBind();
     $("body").click(function (event) {
-        if (event.target.id != "dvCommonCusDropList") {
-            if ($("#dvCommonCusDropList").length > 0) {
-                $("#dvCommonCusDropList").hide();
-                $('#dvMenu').addClass('open').removeClass('menu-open-left');
+        if (event.target.id != "dvCommonCusDropV2List") {
+            if ($dropdown.length > 0) {
+                $dropdown.hide().html('');
             }
-            if ($(".cusdropdown.open").length > 0) {
-                $(".cusdropdown.open").removeClass('open')
-            }
-            $(".custom-dropdown-inner-deta").hide().html('');
         }
     });
 });
 
-function CustomDDL(ctrlId, spn) {
-    
-    var _data = {};
-
-    var $drpCtrltxt = $("#drp" + ctrlId);
-    var $drpCtrlVal = $("#" + ctrlId);
-    var $drpCtrldPageNo = $("#hidPageNo" + ctrlId);
-    var $drpCtrlsearch = $("#search" + ctrlId);
-    var $drpCtrlList = $("#drpList" + ctrlId);
-    var $drpCtrUl = $("#ul" + ctrlId);
-    var drpCtrdvList = "#dvCommonCusDropList";
-    var $drpCtrlExtra = $("#hidExtra" + ctrlId);
-    var $uri = $("#uri" + ctrlId);
-
-
-
-    var cbLoad = null;
-    var cbSelect = null;
-
-    this.onLoad = {
-        call: function (cb) {
-            if (typeof (cb) == "function")
-                cbLoad = cb;
-        }
+function GlobleDropDownBind(Container) {
+    $dropdown = $("#dvCommonCusDropV2List");
+    if (Container) {
+        $(Container + " .ui-custom-DropDown").each(function () {
+            var hid = $(this).attr("id").replace("drpList", "");
+            _Custdropdown[hid] = new fnCustomDropDown(hid);
+        });
     }
-    this.onSelect = {
-        call: function (cb) {
-            if (typeof (cb) == "function")
-                cbSelect = cb;
-        }
+    else {
+        $(".ui-custom-DropDown").each(function () {
+            var hid = $(this).attr("id").replace("drpList", "");
+            if (_Custdropdown[hid] == undefined)
+                _Custdropdown[hid] = new fnCustomDropDown(hid);
+        });
     }
 
+}
 
-    var ListLoad = function (param, evnt) {
-        var ExtraParam = '';
-        var PageNo = $drpCtrldPageNo.val();
-        if (PageNo === '' || evnt === '') {
-            PageNo = 1;
-            $drpCtrldPageNo.val(1);
+function DropDownReset(ids) {
+    $("#" + ids).val("");
+    $("#drp" + ids).val("");
+}
+
+function DropDownSet(ids, text, value) {
+    $("#" + ids).val(value);
+    $("#" + ids).attr({ "oldvalue": value, "oldtext": text });
+
+    if (value === null || value === undefined || value.toString().trim() === "") {
+        $("#" + ids).val("");
+        $("#drp" + ids).val(text);
+    }
+    else {
+        $("#drp" + ids).val(text);
+    }
+}
+
+
+function fnCustomDropDown(hid) {
+    let $Scope = this;
+    let FieldName = hid;
+    let Container = "drpList" + hid;
+    let $Container = $("#drpList" + hid);
+    let $input = $Container.find('input[type="text"]');
+    let $span = $Container.find('span');
+    let PageNo = 1;
+    var stopScrollLoading = false; // Flag to stop further data loading
+    let Keyval = "";
+    let KeyText = "";
+    let columns = [];
+    this.onload = null;
+    this.onSelect = null;
+
+    var Init = () => {
+        bindEvents();
+    }
+
+
+    let debounceTimer;
+    var bindEvents = () => {
+        $input.off("keyup").on("keyup", function (e) {
+            const key = e.keyCode || e.which;
+
+            if (key === 40) {
+                if ($dropdown.is(":visible")) {
+                    // Down arrow key
+                    const firstRow = $dropdown.find("table tbody tr:first");
+                    if (firstRow.length) {
+                        firstRow.focus();
+                        firstRow.addClass("focused-row"); // Add styling for focus (optional)
+                    }
+                }
+                else {
+                    // User types something
+                    Showdrop();
+                }
+            }
+            else if (key === 38) { // Up key
+                if ($dropdown.is(":visible")) {
+                    Hidedrop();
+                }
+            }
+            else if (key === 9) { // Tab key
+                Hidedrop();
+            }
+            else if (key != 13 && key != 27) { // Enter key 
+                // User types something
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    Showdrop();
+                }, 300);
+            }
+        });
+
+        $input.off("keydown").on("keydown", function (e) {
+
+            const key = e.keyCode || e.which;
+            if (key === 9) { // Tab key
+                Hidedrop();
+            }
+        });
+
+        $input.off("focusout").on("focusout", function () {
+
+            var item = $(this);
+            if (!item.hasClass('drpEditable')) {
+                if ($('#' + FieldName).val() === '') {
+                    item.val('');
+                }
+            }
+        });
+
+        $input.off("focusin").on("focusin", function () {
+
+            if ($(this).val() !== '') {
+                $(this).select();
+            }
+        });
+
+        $span.off("click").on("click", function (e) {
+            if ($input.is(":disabled")) return;
+            // Toggle the visibility of #dvCommonCusDropV2List
+            $dropdown.toggle();
+
+            // If #dvCommonCusDropV2List is visible, fetch data
+            if ($dropdown.is(":visible")) {
+                Showdrop();
+            } else {
+                // Optionally, you can hide the dropdown contents when not visible
+                $dropdown.html('');
+            }
+            $input.focus();
+
+            e.stopPropagation();
+        });
+
+
+    }
+
+    var Showdrop = () => {
+        if ($input.is(":disabled")) return;
+        PageNo = 1; // Reset PageNo
+        stopScrollLoading = false;
+        get(); // Fetch search results
+    }
+    var Hidedrop = () => {
+        // Hide the dropdown
+        // Prevent scrolling
+        $dropdown.hide().html('');
+    }
+    var get = function () {
+        if (PageNo == 1) {
+            calculateDropdownPosition();
         }
-
-        var data = {
+        let data = {
+            name: FieldName,
             pageno: PageNo,
             pagesize: 20,
-            search: $drpCtrltxt.val(),
-            hidExtra: "",
+            search: $input.val().trim(),
             param: ''
-        }
-        var hidExtra = $drpCtrlExtra.val();
+        };
+        let hidExtra = $Container.attr("ExtraParam");
         if (hidExtra !== '') {
-            
-            if (hidExtra.indexOf(',') !== -1) {
-                var arrExtra = hidExtra.split(',');
-                $(arrExtra).each(function (extraIndex, extraItem) {
-                    ExtraParam += $('#' + extraItem).val() + '~';
-                });
-            } else {
-                ExtraParam = hidExtra; //$('#' + hidExtra).val(); by suresh (discuss with sumit sir)
-            }
-            data["ExtraParam"] = ExtraParam;
+            let ExtraParam = '';
+            var arrExtra = hidExtra.split(',');
+            $(arrExtra).each(function (index, item) {
+                ExtraParam += $('#' + item).val() + '~';
+            });
+
+            data["ExtraParam"] = ExtraParam.slice(0, -1);
+        }
+
+
+        let hiParent = $Container.attr("Parent");
+        if (hiParent) {
+            var arrParentId = hiParent.split(',');
+            $(arrParentId).each(function (index, item) {
+                if (item !== "" && item.length > 3) {
+                    data[item] = $("#" + item).val();
+                }
+            });
         }
 
         var result = "";
-        
-        if (typeof (cbLoad) == "function") {
-            var result = cbLoad(data)
-            BindList(result, evnt, param, PageNo);
+        if (typeof ($Scope.onload) == "function") {
+            result = $Scope.onload(data);
         }
         else {
-            
-            var url = Handler.currentPath() + ctrlId;
-            if ($uri.val() != "")
-                url = $uri.val();
-            
-            $.ajax({
-                url: url,
-                data: data,
-                method: 'POST',
-                dataType: 'JSON',
-                async: false,
-                success: function (res) {
-                    BindList(res, evnt, param, PageNo);
-                }
-                , error: function (jqXHR, exception) {
-                }
-            });
+            result = fetchDropdownData(data);
         }
+        renderDropdown(result)
+
     }
 
-    var BindList = function (result, evnt, param, PageNo) {
-        if (result == "" || result == null) {
-            if (evnt !== 'scroll') {
-                $(drpCtrdvList).html("<span class='drp-not-found'> Data Not Found </span>");
+    var fetchDropdownData = function (data) {
+        var result = "";
+        var url = Handler.currentUrl + '/' + FieldName;
+
+        $.ajax({
+            url: url,
+            data: data,
+            method: 'POST',
+            dataType: 'JSON',
+            async: false,
+            success: function (res) {
+                result = res;
+            },
+            error: function () {
+                $dropdown.html("<span class='NoRecord'>Failed to load data. Please try again.</span>");
             }
-            return false;
+        });
+        return result;
+    };
+
+    var calculateDropdownPosition = () => {
+        const inputOffset = $input.offset();
+        const inputHeight = $input.outerHeight();
+        const dropdownHeight = 200; // Set max height for the dropdown
+        const viewportHeight = $(window).height(); // Get the height of the visible part of the window
+        const scrollTop = $(window).scrollTop(); // Get the current scroll position
+        const spaceBelow = viewportHeight - (inputOffset.top - scrollTop + inputHeight); // Space below the input
+        const spaceAbove = inputOffset.top - scrollTop; // Space above the input
+
+        // Determine dropdown position: below or above
+        let dropdownTop;
+        if (spaceBelow >= dropdownHeight || spaceBelow >= spaceAbove) {
+            // Enough space below, show dropdown below input
+            dropdownTop = inputOffset.top + inputHeight;
+        } else {
+            // Not enough space below, show dropdown above input
+            dropdownTop = inputOffset.top - dropdownHeight;
         }
-        else {
-            var html = '';
-            var res = JSON.stringify(result);
-            if (res.indexOf('Response":"Error:') !== -1) {
-                alert(result.Response.replace('Error:', ''));
-                hideList();
-                return false;
+        const dropdownWidth = $input.outerWidth() > 350 ? $input.outerWidth() : 350;
+
+        // Set dropdown position
+        $dropdown.css({
+            top: dropdownTop,
+            left: inputOffset.left,
+            width: dropdownWidth,
+            position: "absolute",
+            display: "block",
+            height: `${dropdownHeight}px`,
+            overflowY: "auto",
+            zIndex: 1000 // Ensure it's above other elements
+        });
+
+        $dropdown.off("scroll").on("scroll", function () {
+
+            if (stopScrollLoading) return; // Stop further data fetching if no more data
+
+            let scrollTop = $(this).scrollTop();
+            let scrollHeight = $(this)[0].scrollHeight;
+            let clientHeight = $(this)[0].clientHeight;
+
+            // Check if scrolled to the bottom
+            if (scrollTop + clientHeight >= scrollHeight - 100) {
+                PageNo++;
+                get(); // Fetch data for the next page
             }
+        });
+    }
 
-            if (result.length > 0) {
-                var cols = GetHeaders(result);
-                var KeyID = '';
-                var KeyValue = '';
-                $.each(cols, function (index, item) {
-                    if (index === 0)
-                        KeyID = item;
-                    else if (index === 1)
-                        KeyValue = item;
-                });
+    var renderDropdown = function (data) {
+        // Check if the data is empty or null
+        if (!data || data.length === 0) {
+            if (PageNo === 1) {
+                $dropdown.html("<span class='NoRecord'>Data Not Found</span>");
+            }
+            stopScrollLoading = true; // Stop further scroll-based data fetching
+            return;
+        }
 
+        let html = "";
 
-                if (PageNo === 1) {
-                    html = "<li index='-1'><a href='javascript: void(0)'> <table> <thead> <tr>";
-                    $.each(cols, function (index, item) {
-                        if (index > 0 && arrCusDrpHideColumn.indexOf(item) === -1 && !Handler.startWith(item, 'FK'))
-                            html += "<th>" + Handler.convertToSpace(item) + "</th>";
-                    });
-                    html += "</tr> </thead></table></a> </li>";
+        // If PageNo is 1, create table headers and a new table
+        if (PageNo === 1) {
+            html += "<table class='custom-dropdown-table' ><thead><tr>";
+            columns = Object.keys(data[0]);
+
+            // Add table headers, excluding hidden columns
+            columns.forEach((col, index) => {
+                if (index == 0)
+                    Keyval = col;
+                if (index > 0 && arrHideColumns.indexOf(col) === -1 && !col.toLowerCase().startsWith("fk")) {
+                    let style = index === 1 && col.length <= 2 ? "style='max-width:300px;'" : "";
+                    var colhead = col.replace(/([a-z])([A-Z])/g, '$1 $2');
+                    html += `<th ${style}>${colhead}</th>`;
                 }
+            });
+            html += "</tr></thead><tbody>";
+        }
 
-                $.each(result, function (index, item) {
-                    var clsDelete = '';
+        // Generate table rows
+        data.forEach((item) => {
+            html += "<tr tabindex='-1' hid='" + item[Keyval] + "' >";
+            let columns = Object.keys(item);
 
-                    if (item[KeyValue] === null) {
-                        html += "<li index='" + index + "'  hid='" + item[KeyID].toString().replace("'", "^") + "' hidname='" + "" + "' ><a href='javascript: void(0)' calss='dropdown-item' >  <table><tr class='" + clsDelete + "'>";
+            columns.forEach((col, index) => {
+                if (index > 0 && arrHideColumns.indexOf(col) === -1 && !col.toLowerCase().startsWith("fk")) {
+                    let cellData = item[col] !== null ? item[col] : "&nbsp;";
+                    if (DateColumns.indexOf(col.toLowerCase()) != -1) {
+                        cellData = Handler.formatServerDate(item[col]) == null ? "&nbsp;" : Handler.formatServerDate(item[col]);
                     }
-                    else {
-                        html += "<li index='" + index + "'  hid='" + item[KeyID].toString().replace("'", "^") + "' hidname='" + item[KeyValue].toString().replace("'", "^") + "' ><a href='javascript: void(0)' class='dropdown-item' >  <table><tr class='" + clsDelete + "'>";
-                    }
+                    let style = index === 1 && col.length <= 2 ? "style='max-width:300px;'" : "";
+                    html += `<td ${style}>${cellData}</td>`;
+                }
+            });
 
-                    $.each(cols, function (innerIndex, innerItem) {
-                        if (innerIndex > 0 && arrCusDrpHideColumn.indexOf(innerItem) === -1 && !Handler.startWith(innerItem, 'FK')) {
-                            if (item[innerItem] === null)
-                                html += "<td class=clsdrp" + innerItem + ">&nbsp;</td>";
-                            else
-                                html += "<td class=clsdrp" + innerItem + ">" + item[innerItem] + "</td>";
-                        }
-                    });
-                    html += "</tr> </table> </li>";
-                });
-            }
-            else {
-                if (evnt !== 'scroll')
-                    html = "<span class='drp-not-found'> Data Not Found </span>";
-            }
+            html += "</tr>";
+        });
 
-            if (evnt === 'scroll')
-                $(drpCtrdvList).children("ul").append(html);
-            else {
-                $(drpCtrdvList).html('<ul style="height:200px; overflow-y:scroll;">' + html  + '</ul>');
-            }
-            $(drpCtrdvList).show();
-            if (param === 'auto') {
-                $('#dvCommonCusDropList > ul > li').eq(1).find('a').focus();
-            }
-            $("#dvCommonCusDropList ul li").on("keyup", function (e) {
-                if ($(this).attr('index') === "-1" && e.which === 38) {
-                    $("#drp" + ctrlId).focus();
-                } else if (e.which === 9) {
-                    hideList();
+        // Show the dropdown
+        $dropdown.show();
+        // If PageNo is 1, close the table HTML
+        if (PageNo === 1) {
+            html += "</tbody></table>";
+            $dropdown.html(html); // Bind the new table for Page 1   
+
+        } else {
+            // Append rows to the existing table for subsequent pages
+            $("#dvCommonCusDropV2List table tbody").append(html);
+        }
+
+        $dropdown.off("click", "table tbody tr").on("click", "table tbody tr", function (e) {
+            const $currentRow = $(this);
+            // Hide the dropdown
+            Hidedrop();
+
+            setData($currentRow);
+        });
+        $dropdown.off("keydown", "table tbody tr").on("keydown", "table tbody tr", function (e) {
+            e.preventDefault();
+            const key = e.keyCode || e.which;
+            const $currentRow = $(this);
+
+            if (key === 40) { // Down arrow key
+                const $nextRow = $currentRow.next("tr");
+                if ($nextRow.length) {
+                    $currentRow.removeClass("focused-row");
+                    $nextRow.addClass("focused-row").focus();
+                }
+                e.preventDefault(); // Prevent scrolling
+            } else if (key === 38) { // Up arrow key
+                const $prevRow = $currentRow.prev("tr");
+                if ($prevRow.length) {
+                    $currentRow.removeClass("focused-row");
+                    $prevRow.addClass("focused-row").focus();
                 } else {
-                    if (e.which === 13) {
-                        $drpCtrlList.removeClass('open');
-                        if ($("#hidEvent" + ctrlId).val() !== '') {
-                            eval($("#hidEvent" + ctrlId).val());
-                        }
-                    }
+                    // Focus back on $input if it's the first row
+                    $currentRow.removeClass("focused-row");
+                    $input.focus();
                 }
-            });
-            $("#dvCommonCusDropList ul li").unbind("click");
-            $("#dvCommonCusDropList ul li").on("click", function () {
-                SelectList(this);
-            });
-            $drpCtrUl.scroll(function () {
-                var pno = $("#hidPageNo" + ctrlId).val();
-                $("#dvCommonCusDropList ul li:first-child").css("top", +$(this).scrollTop());
-                if (pno === '')
-                    pno = 1;
-                if ($(this).scrollTop() > (500 * pno)) {
-                    pno = parseInt(pno) + 1;
+                e.preventDefault(); // Prevent scrolling
+            } else if (key === 27) { // Up arrow key
+                Hidedrop();
+                $input.focus();
+                e.preventDefault(); // Prevent scrolling
+            }
+            else if (key === 13) { // Enter key
+                setData($currentRow);
+                Hidedrop();
+            }
 
-                    $("#hidPageNo" + ctrlId).val(pno);
-                    ListLoad("", "scroll");
-                }
-            });
-        }
-    }
+        });
 
-    var SelectList = function (S) {
+        // Add tabindex to each row so they are focusable
+        $dropdown.off("mouseenter", "table tbody tr").on("mouseenter", "table tbody tr", function () {
+            $(this).attr("tabindex", "-1"); // Ensure rows are focusable
+        });
+
+
+    };
+    //===============================================
+
+    var setData = function ($currentRow) {
         _data = {};
-        var drpValue = $(S).attr("hid");
-        var drpText = $(S).attr("hidname").trim();
-        $drpCtrltxt.val(drpText);
-        $drpCtrlVal.val(drpValue);
-        $(S).find("tr").children("td").each(function () {
-            var field = $(this).attr("class").replace("clsdrp", "");
-            var fieldValue = $(this).text();
-            _data[field] = fieldValue;
+        var drpValue = $currentRow.attr("hid");
+        var drpText = $currentRow.find("td").eq(0).text();
+        $input.val(drpText);
+        $("#" + FieldName).val(drpValue);
+        $currentRow.children("td").each(function (index) {
+            _data[columns[index + 1]] = $(this).text();
         })
 
-        if ($(S).find(".clsdrpBarcode").hasClass(".clsdrpBarcode"))
-            $("#Barcode").val($(S).find(".clsdrpBarcode").text());
-
-        if ($("#hidEvent" + ctrlId).val() !== '') {
-            eval($("#hidEvent" + ctrlId).val());
+        let event = $Container.attr("event");
+        if (event !== '') {
+            eval(event);
         }
         else {
             var arg = {
@@ -272,179 +415,15 @@ function CustomDDL(ctrlId, spn) {
                 text: drpText,
                 data: _data
             }
-            if (typeof (cbSelect) == "function")
-                cbSelect(arg);
+            if (typeof ($Scope.onSelect) == "function")
+                $Scope.onSelect(arg);
         }
 
-        hideList();
-        $drpCtrltxt.focus();
+        $dropdown.html('').hide();
+        $input.focus();
 
-    };
-    this.Reset = function () {
-        $drpCtrlVal.val("");
-        $drpCtrltxt.val("");
-        $drpCtrldPageNo.val("1");
-        $drpCtrlsearch.val("");
-    }
-    this.Set = function (text, value) {
-
-        $drpCtrlVal.val(value);
-        $drpCtrlVal.attr({ "oldvalue": value, "oldtext": text });
-
-        if (value === null || value === undefined || value.toString().trim() === "") {
-            $drpCtrlVal.val("");
-            $drpCtrltxt.val(text);
-        }
-        else {
-            $drpCtrltxt.val(text);
-        }
-        $drpCtrldPageNo.val("1");
-        $drpCtrlsearch.val(text);
     }
 
-    this.GEt = function () {
-        return { "value": $drpCtrlVal.val(), "text": $drpCtrltxt.val() };
-    }
-
-    $drpCtrltxt.keydown(function (e) {
-        if ($(this).attr('readonly') !== 'readonly') {
-            if ($(this).hasClass('drp-num')) {
-                if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 8 || e.keyCode === 9 ||
-                    e.keyCode === 37 || e.keyCode === 39 || e.keyCode === 46 || e.keyCode === 190 || e.keyCode === 110) {
-
-                } else {
-                    e.preventDefault();
-                }
-            }
-            if (e.which === 9) {                
-                hideList();                
-            }
-            
-        }
-    }).keyup(function (e) {
-        if ($(this).attr('readonly') !== 'readonly') {
-            var tempDrpValue = $(this).val();
-            if (AltDown !== true && CtrlKey !== true) {
-                if (e.which === 38 || e.which === 40) {
-                    if ($("#dvCommonCusDropList ul li").length > 1) {
-                        $("#dvCommonCusDropList ul li:nth-child(2)").find("a").focus();
-                    }
-                    $("#dvCommonCusDropList ul").scrollTop(0);
-                    
-                }
-
-                else if ((e.which < 46 || e.which > 57) && (e.which < 65 || e.which > 90) && (e.which < 96 || e.which > 105) && (e.which !== 8) && (e.which !== 229) && (e.which !== 32) && (e.which !== 115)) {
-                    hideList();
-                    e.preventDefault(e);
-                }
-                else {
-                    $drpCtrlVal.val('');
-                    if (!$drpCtrltxt.hasClass('drpEditable') || e.which == 115) {
-                            ShowList('', '');
-                    }
-                }
-                // for manage dropdown value on  up/down key
-                $(this).val(tempDrpValue);
-            }
-        }
-    }).focusout(function (e) {
-        var item = $(this);
-        if (!item.hasClass('drpEditable')) {
-            var ids = item.attr('id').replace('drp', '');
-            if ($('#' + ids).val() === '') {
-                item.val('');
-            }
-        }
-    }).focusin(function () {
-
-        if ($(this).val() !== '') {
-            $(this).select();
-        }
-    });
-
-    $(spn).off("click").on("click", function (e) {
-
-        $(drpCtrdvList).offset();
-        if ($drpCtrltxt.attr("disabled") !== 'disabled') {
-            $(".cusdropdown.open").each(function () {
-                var droId = $(this).attr("id");
-                    $(this).removeClass('open');
-            });
-
-            if ($drpCtrlList.hasClass("open")) {
-                hideList();
-            }
-            else {
-
-                ShowList('auto', '');
-            }
-            isAutoOpenBatchClicked = true;
-            setTimeout(function () {
-                isAutoOpenBatchClicked = false;
-            }, 3000);
-            $drpCtrltxt.focus();
-
-        }
-        e.stopPropagation();
-    });
-
-    //hideCustomDropdown
-    var hideList = function () {
-        $drpCtrlList.removeClass("open");
-        $(drpCtrdvList).empty();
-        $(drpCtrdvList).hide();
-    }
-
-    //callCustomDropDown
-    var ShowList = function (drpid, param) {
-        if (AltDown === false) {
-            SetListPosition(function () {
-                ListLoad(drpid, param);
-            });
-        }
-    }
-
-    var SetListPosition = function (callback) {
-        if ($(drpCtrdvList).length === 0) {
-            var htm = '<div id="dvCommonCusDropList" class="grid-dropdown" style="display: none;">'+
-                '</div>';
-            $("body").append(htm);
-        }
-        $(drpCtrdvList).empty();
-        var ctrlOffset = $drpCtrltxt.offset();
-        var DivWidth = '600px';
-        var ElementWidth = $(drpCtrdvList).width();
-        var LeftPosition = ctrlOffset.left;
-        var TopPosition = ctrlOffset.top ;
-
-        if ((window.innerHeight - TopPosition) < 200) {
-            TopPosition = TopPosition - (200 + $drpCtrltxt.outerHeight());
-        }
-        else {
-            TopPosition = TopPosition + $drpCtrltxt.outerHeight();
-        }
-
-        $(drpCtrdvList).css({
-            "left": LeftPosition,
-            "top": TopPosition,
-            "display": "block",
-            "width": DivWidth + "!important"
-        });
-
-        callback();
-    }
-    
-    function GetHeaders(obj) {
-        if (obj.length > 0) {
-            var names = Object.keys(obj[0]);
-            return names;
-        } else
-            return [];
-    }
-    function onChange(drpid) {
-        eval($("#hidEvent" + ctrlId).val());
-    }
-
-
-
+    Init();
 }
+

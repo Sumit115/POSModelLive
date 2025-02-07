@@ -7,6 +7,8 @@
 
 ///////////////// /////////////// showWait function :- Loader With msg /////////////// ///////////////
 $(document).ready(function () {
+    Handler.nvc = Handler_NameValueCollection();
+    Handler.currentUrl = Handler.ajaxURL();
     $('form,input').attr('autocomplete', 'off');
 });
 function Handler_showWait(msg) {
@@ -696,6 +698,8 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
 /////////////// /////////////// Common use functions/Variables /////////////// ///////////////
 var Handler = {
     CU: "",
+    currentUrl: "",
+    nvc: { },
     loader: Handler_showWait,
     hide: Handler_hideWait,
     ajax: Handler_AjaxMethod,
@@ -729,6 +733,23 @@ var Handler = {
             return location.href.substring(0, location.href.indexOf("List"));
         else
             return location.href.substring(0, location.href.lastIndexOf("/") + 1);
+    },
+    ajaxURL: function () {
+        var U = location.href.replace("#", "").toLowerCase();
+        U = U.split("?")[0];
+        U = U.split("/index")[0];
+        U = U.split("/create")[0];
+        if (U.indexOf("master/customermas/") != -1) {
+            U = U.split("master/customermas/")[0] + "master/customermas";
+        } else if (U.indexOf("master/promotion/") != -1) {
+            U = U.split("master/promotion/")[0] + "master/promotion";
+        } else if (U.indexOf("master/discount/") != -1) {
+            U = U.split("master/discount/")[0] + "master/discount";
+        } else if (U.indexOf("master/referby/") != -1) {
+            U = U.split("master/referby/")[0] + "master/referby";
+        }
+        U = U.endsWith("/") ? U.slice(0, -1) : U;
+        return U.trim();
     },
     isDebugMode: function () {
         var l = location.href.toLowerCase();

@@ -159,7 +159,7 @@ namespace SSRepository.Repository.Transaction
                         {
                             throw new Exception("Size Required on Product " + item.Product);
                         }
-                        CalculateExe(item);
+                        CalculateExe(objmodel, item);
                     }
 
                 }
@@ -637,7 +637,7 @@ namespace SSRepository.Repository.Transaction
                         break;
                 }
 
-                CalculateExe((IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
+                CalculateExe(model, ( IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
                 SetGridTotal(model);
                 SetPaymentDetail(model);
                 model.IsTranChange = true;
@@ -816,7 +816,7 @@ namespace SSRepository.Repository.Transaction
 
 
                 model.TranDetails[rowIndex].Qty += 1;
-                CalculateExe(model.TranDetails[rowIndex]);
+                CalculateExe(model,     model.TranDetails[rowIndex]);
                 // Check Product UNique/Lot/PRoduct
                 var _check = model.UniqIdDetails.ToList().Where(x => x.Barcode == Barcode).FirstOrDefault();
                 if (_check == null)
@@ -832,7 +832,7 @@ namespace SSRepository.Repository.Transaction
                 detail.Barcode = "Barcode";
                 detail.BarcodeTest = Barcode;
 
-                CalculateExe(detail);
+                CalculateExe(model, detail);
                 model.TranDetails.Add(detail);
 
                 // Check Product UNique/Lot/PRoduct
@@ -854,7 +854,7 @@ namespace SSRepository.Repository.Transaction
             detail.FkProductId = PkProductId;
             TranDetailDefault(model, detail);
             GetSetProduct(model, detail, "", 0, model.FKOrderID, model.FKOrderSrID);
-            CalculateExe(detail);
+            CalculateExe(model, detail);
             SetGridTotal(model);
             SetPaymentDetail(model);
             return model;
@@ -958,7 +958,7 @@ namespace SSRepository.Repository.Transaction
                                             detail.LinkSrNo = item.SrNo;
                                             detail.Qty = 0;
                                             detail.FreeQty = qty;
-                                            CalculateExe(detail);
+                                            CalculateExe(model, detail);
                                             model.TranDetails.Add(detail);
 
                                             if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PFPT"; }
@@ -982,7 +982,7 @@ namespace SSRepository.Repository.Transaction
                                     {
                                         item.TradeDisc = (decimal)itemPromo.PromotionAmt;
                                         item.TradeDiscAmt = 0;
-                                        CalculateExe(item);
+                                        CalculateExe(model, item);
                                         if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PTDT"; }
                                         else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CTDT"; }
                                         else if (itemPromo.PromotionApplyOn == "Brand") { item.PromotionType = "BTDT"; }
@@ -1021,7 +1021,7 @@ namespace SSRepository.Repository.Transaction
                                         _ap.TradeDisc = disc;
                                         _ap.TradeDiscAmt = 0;
                                         _ap.PromotionType = "XOXT";
-                                        CalculateExe((TranDetails)_ap);
+                                        CalculateExe(model, (TranDetails)_ap);
                                     }
                                 }
                             }
@@ -1087,7 +1087,7 @@ namespace SSRepository.Repository.Transaction
                                 detail.FreeQty = qty;
                                 detail.Barcode = "Barcode";
                                 detail.PromotionType = "IVFP";
-                                CalculateExe(detail);
+                                CalculateExe(model, detail);
                                 model.TranDetails.Add(detail);
 
                                 //break;
@@ -1200,7 +1200,7 @@ namespace SSRepository.Repository.Transaction
                 //}
 
 
-                CalculateExe(detail);
+                CalculateExe(model, detail);
                 SetGridTotal(model);
                 SetPaymentDetail(model);
             }
@@ -1214,13 +1214,13 @@ namespace SSRepository.Repository.Transaction
             {
                 item.FKLocationID = model.FKLocationID;
 
-                CalculateExe(item);
+                CalculateExe(model, item);
             }
 
             // model.TranDetails = model.TranDetails.Where(x => x.FkProductId > 0).ToList();
         }
 
-        public void CalculateExe(TranDetails item)
+        public void CalculateExe(TransactionModel model,TranDetails item)
         {
 
             decimal GrossAmt = item.Rate * item.Qty;
@@ -1233,12 +1233,16 @@ namespace SSRepository.Repository.Transaction
                 item.TradeDisc = Math.Round((item.TradeDiscAmt / GrossAmt) * 100, 2);
             }
 
-
             item.GrossAmt = Math.Round((GrossAmt - item.TradeDiscAmt), 2);
-            item.GstRate = (item.GrossAmt / 2) < 1000 ? 5 : 18;
-            item.TaxableAmt = Math.Round(((item.GrossAmt * 100) / (100 + item.GstRate)), 2);
-
-            // item.GstAmt = Math.Round((item.TaxableAmt * 100) / item.GstRate, 2);
+            item.GstRate = (item.GrossAmt / item.Qty) < 1000 ? 5 : 12 ;
+            if (model.TaxType == 'E')
+            {
+                item.TaxableAmt = item.GrossAmt;
+            }
+            else
+            {
+                item.TaxableAmt = Math.Round(((item.GrossAmt * 100) / (100 + item.GstRate)), 2);
+            }
             item.GstAmt = Math.Round((item.TaxableAmt * item.GstRate) / 100, 2);
             item.NetAmt = Math.Round(item.TaxableAmt + item.GstAmt, 2);
         }
@@ -1524,6 +1528,8 @@ namespace SSRepository.Repository.Transaction
                 model.FKSeriesId = FKSeriesId;
                 model.BillingRate = obj.BillingRate;
                 model.BranchStateName = obj.BranchStateName;
+                model.TaxType = obj.TaxType;
+                
             }
             model.IsTranChange = true;
 
@@ -1541,7 +1547,9 @@ namespace SSRepository.Repository.Transaction
                                      Series = cou.Series,
                                      FkBranchId = cou.FkBranchId,
                                      BillingRate = cou.BillingRate,
+                                     TaxType = cou.TaxType,
                                      BranchStateName = branch.State,
+                                     
                                  }
                                 )).FirstOrDefault();
             return data;

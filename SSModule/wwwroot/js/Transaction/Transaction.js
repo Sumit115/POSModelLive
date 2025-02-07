@@ -42,7 +42,7 @@ $(document).ready(function () {
     });
     $('#btnServerSave').click(function (e) {
 
-        if ($("#loginform1").valid()) {
+        if ($("#TranForm").valid()) {
             SaveRecord();
         }
         return false;

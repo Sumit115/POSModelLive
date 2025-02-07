@@ -16,6 +16,13 @@
             </div>
         </div>
         <div class="form-group row">
+            <label class="col-sm-1">Seq No</label>
+            <div class="col-md-3">
+                <input asp-for="SeqNo" class="form-control" />
+                <span asp-validation-for="SeqNo" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row">
             <label class="col-sm-1">Master Form</label>
             <div class="col-md-3">
                 @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKMasterFormID" }, { "Class", "val-cus-drp" }, { "event", "" },

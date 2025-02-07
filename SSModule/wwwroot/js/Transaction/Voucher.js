@@ -10,7 +10,7 @@ $(document).ready(function () {
     if (ControllerName == "Voucher") { GridName = "viewdtl"; $("#hdGridName").val('viewdtl'); }
     Common.InputFormat();
     $('#btnServerSave').click(function (e) {
-        if ($("#loginform1").valid()) {
+        if ($("#TranForm").valid()) {
             SaveRecord();
         }
         return false;

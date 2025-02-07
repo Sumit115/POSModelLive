@@ -6,7 +6,7 @@ $(document).ready(function () {
 
     Common.InputFormat();
     //$('#btnServerSave').click(function (e) {
-    //    if ($("#loginform1").valid()) {
+    //    if ($("#TranForm").valid()) {
     //        SaveRecord();
     //    }
     //    return false;

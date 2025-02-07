@@ -1,45 +1,22 @@
 ﻿@using Microsoft.AspNetCore.Http
 @{
 
-    var ID = ViewData["ID"].ToString();
-    var isGrid = Convert.ToString(ViewData["isGrid"]);
-    var GridID = "hidIsGrid" + ID;
-    var pgno = "hidPageNo" + ID;
+    var ID = Convert.ToString(ViewData["ID"]);
     var drp = "drp" + ID;
     var drpList = "drpList" + ID;
-    var cls = "collapsed " + ViewData["Class"].ToString();
     var text = Convert.ToString(ViewData["text"]) == "" ? "" : Convert.ToString(ViewData["text"]);
     var val = Convert.ToString(ViewData["value"]);
-    var hidid = "hidEvent" + ID;
-    var hidPageNo = "hidPageNo" + ID;
     var eventname = Convert.ToString(ViewData["event"]);
-    var ulclass = "ul" + ID;
-    var index = Convert.ToString(ViewData["TabIndex"]);
     var ParentValue = Convert.ToString(ViewData["parentid"]);
-    var uri = Convert.ToString(ViewData["uri"]);
-    var uriId = "uri" + ID;
-    var tindex = "";
-    var ParentID = "hidParent" + ID;
-    if (index != "")
-    {
-        tindex = "TabIndex=" + index;
-    }
-    var ExtraParam = "hidExtra" + ID;
+    var uri = Convert.ToString(ViewData["uri"]);    
     var ExtraValue = Convert.ToString(ViewData["ExtraParam"]);
-    var ColumnName = Convert.ToString(ViewData["ColumnName"]);
     
 
 }
-<div id="@drpList" class="btn-group cusdropdown" hid="@ID">
-    <input id="@ID" name="@ID" type="hidden" value="@val" />
-    <input type="hidden" id=@hidid value="@eventname" />
-    <input type="hidden" id=@GridID value="@isGrid" />
-    <input type="hidden" id="@ParentID" value="@ParentValue" />
-    <input type="hidden" id="@uriId" value="@uri" />
-    
-    <input id="@hidPageNo" type="hidden" />
-    <input id=@drp class="@cls form-control" @tindex type="text" value="@text" column-name="@ColumnName" />
-    <input id="@ExtraParam" name="@ExtraParam" type="hidden" value="@ExtraValue" />
-    <span class="cusdropdown-icon"><i class="fas fa-caret-down"></i></span>
+<div id="@drpList" class="ui-custom-DropDown  val-cus-drp" extraparam="@ExtraValue" event="@eventname" parent="@ParentValue" uri="@uri">
+    <input id="@ID" name="@ID" type="hidden" value="@val">
+    <input id="@drp" class="form-control ui-custom-DropDown-input" autocomplete="off" type="text" value="@text">
+    <span class="down"><i class="fas fa-caret-down"></i></span>
 </div>
+
 

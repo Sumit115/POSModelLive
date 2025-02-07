@@ -4,7 +4,7 @@
 }
 <div style="background-color:#fafbfe;overflow: auto;">
     <div class="row mt-4 pl-3 pr-3 SalesSummary">
-        <div class="col-md-2 box">
+        <div class="col-md-2 box ps-0">
             <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
                 <div class="p-2">
                     <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ @Model.TotalAmount_PurchaseInvoice</h5>
@@ -56,38 +56,50 @@
     </div>
 
 
-    <div class="row">
+    <div class="row mt-4 pl-3 pr-3">
         <div class="col-md-12">
-            <div class="card mb-4 h-100" style="height: 495px!important;">
-                <div>
-                    <h5 class="font-weight-bold" id="span_graphHeading">Current Month</h5>
+            <div class="card" style="height: 495px!important;">
+                <div class="card-header">
+                   Current Month
                 </div>
-
-                <div class="faq__content border-top">
                     <div class="card-body">
-                        <ul class="list-inline d-flex" style="">
-                            <li>
-                                <h5 class="mr-3"><i class="fa fa-circle m-r-5" style="color:#4a23ad"></i>Purchase Amount <input type="checkbox" name="MorrisChartKey" value="PurchaseInvoiceAmount" data-label="Purchase Amount" data-linecolor="#4a23ad" onchange="Load_Morris_Area_Chart_Data()" checked /></h5>
-                            </li>
-                            <li>
-                                <h5 class="mr-3"><i class="fa fa-circle m-r-5" style="color:#00bbd9"></i>Purchase Count <input type="checkbox" name="MorrisChartKey" value="PurchaseInvoiceCount" data-label="Purchase Count" data-linecolor="#00bbd9" onchange="Load_Morris_Area_Chart_Data()" checked /></h5>
-                            </li>
-                            <li>
-                                <h5 class="mr-3"><i class="fa fa-circle m-r-5" style="color:#2ecc71"></i>Sales Amount <input type="checkbox" name="MorrisChartKey" value="SalesInvoiceAmount" data-label="Sales Amount" data-linecolor="#2ecc71" onchange="Load_Morris_Area_Chart_Data()" checked /></h5>
-                            </li>
-                            <li>
-                                <h5 class="mr-3"><i class="fa fa-circle m-r-5" style="color:#fd8a14"></i>Sales Count <input type="checkbox" name="MorrisChartKey" value="SalesInvoiceCount" data-label="Sales Count" data-linecolor="#fd8a14" onchange="Load_Morris_Area_Chart_Data()" checked /></h5>
-                            </li>
-
-                            <li>
-                                <h5></h5>
-                            </li>
-                        </ul>
+                       
                         <div id="morris-area-chart"></div>
 
                     </div>
-                </div>
 
+                <div class="card-footer bg-transparent">
+                    <div class="row">
+
+                        <div class="col-3">
+                            <span class="mr-3">
+                                <i class="fa fa-circle m-r-5" style="color:#4a23ad"></i> &nbsp;&nbsp;Purchase Amount&nbsp;&nbsp;
+                                <input type="checkbox" name="MorrisChartKey" value="PurchaseInvoiceAmount" data-label="Purchase Amount" data-linecolor="#4a23ad" onchange="Load_Morris_Area_Chart_Data()" checked />
+                            </span>
+                        </div>
+                        <div class="col-3">
+                            <span class="mr-3">
+                                <i class="fa fa-circle m-r-5" style="color:#00bbd9"></i>
+                                &nbsp;&nbsp;Purchase Count &nbsp;&nbsp;
+                                <input type="checkbox" name="MorrisChartKey" value="PurchaseInvoiceCount" data-label="Purchase Count" data-linecolor="#00bbd9" onchange="Load_Morris_Area_Chart_Data()" checked />
+                            </span>
+                        </div>
+                        <div class="col-3">
+                            <span class="mr-3">
+                                <i class="fa fa-circle m-r-5" style="color:#2ecc71"></i> &nbsp;&nbsp;
+                                Sales Amount&nbsp;&nbsp;
+                                <input type="checkbox" name="MorrisChartKey" value="SalesInvoiceAmount" data-label="Sales Amount" data-linecolor="#2ecc71" onchange="Load_Morris_Area_Chart_Data()" checked />
+                            </span>
+                        </div>
+                        <div class="col-3">
+                            <span class="mr-3">
+                                <i class="fa fa-circle m-r-5" style="color:#fd8a14"></i>
+                                &nbsp;&nbsp;Sales Count&nbsp;&nbsp;
+                                <input type="checkbox" name="MorrisChartKey" value="SalesInvoiceCount" data-label="Sales Count" data-linecolor="#fd8a14" onchange="Load_Morris_Area_Chart_Data()" checked />
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -114,6 +126,7 @@
 
             $("#morris-area-chart").html('');
             //  $("#span_graphHeading").text('Last_30_Days_Data');
+            debugger;
             var ItemList = JSON.parse($("#hdCurrentMonthData_MorrisAreaChart").val());
             var xkey = 'Date';
             //console.log(ItemList);

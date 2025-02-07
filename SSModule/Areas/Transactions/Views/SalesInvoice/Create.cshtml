@@ -1,19 +1,15 @@
 ﻿@model SSRepository.Models.TransactionModel
 
 @{
+
     ViewData["Title"] = "Sales Invoice";
+    ViewData["bdClass"] = "Salepage Tran";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<input type="hidden" id="hdTranType" value="Sales" />
-
 <div style="display: flex;justify-content: space-between;overflow: hidden;">
-    <div class="Tran-page-ui p-2">
-        <form class="row g-3 form" id="loginform1">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="PkId" />
-            <input type="hidden" id="hdData" value="@ViewBag.Data" />
-            <input type="hidden" id="hdControllerName" value="SalesInvoice" />
+    <div class="Tran-page-ui">
+        <form id="TranForm" class="form">
             <partial name="~/Views/Shared/Transactions/_tranHeader.cshtml" />
             <partial name="~/Views/Shared/Transactions/_tranGrid.cshtml" />
             <partial name="~/Views/Shared/Transactions/_tranFooter.cshtml" />
@@ -21,10 +17,10 @@
     </div>
     <partial name="~/Views/Shared/Transactions/_tranRight.cshtml" />
 </div>
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
 
+
+<input type="hidden" id="hdControllerName" value="SalesInvoice" />
+<partial name="~/Views/Shared/Transactions/_tranInfo.cshtml" />
+@section Scripts {
     <script src="~/js/transaction/transaction.js"></script>
 }

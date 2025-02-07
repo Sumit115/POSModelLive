@@ -3,34 +3,22 @@
 @{
     Layout = null;
 }
-<style>
-    .trn-barcode, .trn-barcode input[type="text"] {
-        background-color: lightgoldenrodyellow;
-        box-shadow: none;
-    }
 
-</style>
-<input type="hidden" id="hdProductList" value="@ViewBag.ProductList" />
-<input type="hidden" id="hdInvoiceList" value="[]" />
-<div class="col-md-12 mt-2 trn-barcode">
-    <div class="row">
-        <div class="col-md-6">
-            <input type="text" id="txtSearchBarcode" class="form-control" placeholder="Barcode Search....">
-        </div>
-        <div class="col-md-2">
-            <input id="Barcodefile" type="file"  accept=".txt" />
-        </div>
-        <div class="col-md-2">
-            <a  href="javascript:void(0)" class="btn btn-success" onclick="ImportBarcode()" id="btnImportBarcode">Import Barcode</a>
+<div class="row trn-body">
+    <div class="col-md-12 trn-barcode">
+        <div class="form-group row mb-0">
+            <div class="col-md-12 input-group ">
+                <input type="text" id="txtSearchBarcode" class="form-control " placeholder="Barcode Search....">
+                <input id="Barcodefile" class="form-control" type="file" accept=".txt" onchange="ImportBarcode()" style="display:none;" />
+                <button type="button" class="btn btn-secondary" onclick="$('#Barcodefile').click()">
+                    <i class="bi bi-download"></i>
+                    &nbsp; Import Barcode
+                    </button>
+            </div>
         </div>
     </div>
-
-</div>
-<div class="col-md-12 mb-2">
-    <div id="DDT" class="DDT">
+    <div class="col-md-12">
+        <div id="DDT" class="DDT">
+        </div>
     </div>
 </div>
-
-<ul id="contextMenu" style="display:none;position:absolute">
-    <li id="contextEditColumn" data="EditColumn">Edit Column</li>
-</ul>
