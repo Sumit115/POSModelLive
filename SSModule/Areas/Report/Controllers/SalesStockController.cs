@@ -1,21 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using SSAdmin.Areas.Master.Controllers;
-using SSRepository.IRepository.Transaction;
-using SSRepository.IRepository;
-using SSRepository.Models;
-using SSRepository.IRepository.Master;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Data;
-using Microsoft.AspNetCore.Http;
-using SSRepository.Repository;
+using SSRepository.IRepository;
 using SSRepository.IRepository.Report;
-using Microsoft.SqlServer.Server;
-using System.Reflection;
-using System.IO;
-using ClosedXML.Excel;
-using Newtonsoft.Json.Linq;
-using DocumentFormat.OpenXml.Spreadsheet;
+using SSRepository.Models;
+using System.Data;
 
 namespace SSAdmin.Areas.Report.Controllers
 {

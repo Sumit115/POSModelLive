@@ -205,7 +205,7 @@ namespace SSRepository.Repository.Transaction
                             }
                             detail.TradeRate = detail.DistributionRate = detail.SaleRate;
 
-                            CalculateExe(detail);
+                            CalculateExe(model, detail);
                             model.TranDetails.Add(detail);
                         }
                         else
@@ -213,7 +213,7 @@ namespace SSRepository.Repository.Transaction
                             int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == detail.FkProductId && a.Batch == Size);
                             model.TranDetails[rowIndex].Qty += 1;
 
-                            CalculateExe(model.TranDetails[rowIndex]);
+                            CalculateExe(model, model.TranDetails[rowIndex]);
                         }
 
 

@@ -623,5 +623,104 @@ hr {
 
 .modal-backdrop.show {
     opacity: .1;
-    /*z-index:98;*/
+    z-index:98!important;
+}
+
+.ui-custom-DropDown {
+    position: relative;
+}
+/* Default row style */
+.ui-custom-DropDown span.down {
+    position: absolute;
+    right: 2px;
+    top: 1px;
+    font-size: 18px;
+    height: 28px;
+    width: 30px;
+    text-align: center;
+    padding: 0px;
+    line-height: 30px;
+    font-size: 14px;
+    background: #fff;
+}
+
+.ui-custom-DropDown-list {
+    width: 600px;
+    position: absolute;
+    margin: 0px;
+    z-index: 9999;
+    background-color: #fff;
+    color: #000000;
+    box-shadow: 0px 0px 9px 0px rgb(0 0 0 / 12%);
+    padding-top: 0px;
+    border: var(--bs-dropdown-border-width) solid var(--bs-dropdown-border-color);
+    border-radius: var(--bs-dropdown-border-radius);
+    
+    .custom-dropdown-table
+    {
+        width: 100%;
+    }
+
+.custom-dropdown-table tbody tr {
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.custom-dropdown-table tr {
+    padding: 0px 5px;
+    border-bottom: solid 1px #efeff6;
+    min-width: 100%;
+    /*  width: auto;
+    float: left;*/
+}
+
+/* Highlight for focused row */
+.custom-dropdown-table tbody tr.focused-row {
+    background-color: #007bff; /* Bootstrap primary blue */
+    color: #ffffff; /* White text */
+    outline: none; /* Remove focus outline */
+}
+
+/* Optional: Hover effect for rows */
+.custom-dropdown-table tbody tr:hover {
+    background-color: #f1f1f1; /* Light gray on hover */
+    color: #000000; /* Black text */
+}
+
+.custom-dropdown-table th, .custom-dropdown-table thead {
+    font-weight: 500;
+    position: sticky;
+    font-size: 12px;
+    top: 0px;
+    z-index: 1;
+    background: #fff
+}
+
+.custom-dropdown-table td {
+    font-weight: 400;
+    font-size: 13px;
+}
+
+.custom-dropdown-table td, .custom-dropdown-table th {
+    min-width: 160px;
+    max-width: 160px;
+    padding: 3px 0px 3px 15px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+
+    .ui-custom-DropDown-list .NoRecord {
+        text-align: center;
+        display: block;
+        line-height: 184px;
+        font-size: 18px;
+        color: red;
+    }
+
+    .custom-dropdown-table td:first-child, .custom-dropdown-table th:first-child {
+        max-width: 300px;
+        min-width: 89px;
+    }
+
 }
