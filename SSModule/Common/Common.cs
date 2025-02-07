@@ -73,6 +73,8 @@ namespace SSAdmin
             LocationRequest = 116,
             LocationReceive = 117,
             JobWork = 118,
+            JobWorkIssue = 119,
+            JobWorkReceive = 120,
 
             //200-report
             SalesStock = 200,

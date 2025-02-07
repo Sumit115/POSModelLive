@@ -1361,6 +1361,7 @@
         BindList = function (evnt) {
             $dvList.show();
             var data = { name: args.column.field, pageno: PageNo, pagesize: 20, search: $input.val(), param: '' };
+            var ExtraParam = '';
 
             if (ExtraValue !== '') {
                 if (ExtraValue.indexOf(',') !== -1) {

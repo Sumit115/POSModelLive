@@ -74,7 +74,7 @@ namespace SSAdmin.Areas
         }
 
         [RequestFormLimits(ValueCountLimit = int.MaxValue)]
-        public JsonResult ColumnChange(TransactionModel model, int rowIndex, string fieldName,bool IsReturn)
+        public JsonResult ColumnChange(TransactionModel model, int rowIndex, string fieldName, bool IsReturn)
         {
             return Json(new
             {
@@ -358,6 +358,13 @@ namespace SSAdmin.Areas
 
                 //or path = Path.Combine(contentRootPath , "wwwroot" ,"CSS" );
                 var htmlString = "";
+                if (model.TranDetails != null)
+                {
+                    if(model.TranAlias == "SORD")
+                        model.TranDetails=model.TranDetails.ToList().OrderBy(x => x.Product).ToList();
+                    else
+                        model.TranDetails.ToList().OrderBy(x => x.SrNo).ToList();
+                }
 
                 ViewData.Model = model;
 
@@ -436,12 +443,12 @@ namespace SSAdmin.Areas
         }
 
 
-        public JsonResult BarcodeList(TransactionModel model, int rowIndex)
+        public JsonResult BarcodeList(TransactionModel model, int rowIndex, bool IsReturn)
         {
             return Json(new
             {
                 status = "success",
-                data = _repository.BarcodeList(model, rowIndex)
+                data = _repository.BarcodeList(model, rowIndex, IsReturn)
             });
 
         }

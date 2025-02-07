@@ -15,9 +15,9 @@ using System.Runtime.ConstrainedExecution;
 
 namespace SSRepository.Repository.Transaction
 {
-    public class JobWorkRepository : TranBaseRepository, IJobWorkRepository
+    public class JobWorkIssueRepository : TranBaseRepository, IJobWorkIssueRepository
     {
-        public JobWorkRepository(AppDbContext dbContext) : base(dbContext)
+        public JobWorkIssueRepository(AppDbContext dbContext) : base(dbContext)
         {
             SPAddUpd = "usp_JobWorkAddUpd";
             SPList = "usp_JobWorkList";

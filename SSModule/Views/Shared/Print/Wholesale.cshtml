@@ -263,10 +263,14 @@
             @if (Model.TranDetails != null)
             {
                 <tbody>
-                    @foreach (var item in Model.TranDetails.OrderBy(x=>x.SrNo))
+                    @{
+                        int SrNo = 0;
+                    }
+                    @foreach (var item in Model.TranDetails)
                     {
+                        SrNo++;
                         <tr>
-                            <td>@item.SrNo</td>
+                            <td>@SrNo</td>
                             <td colspan="2">@item.Product</td>
                           @*  <td>@item.BrandName</td>
                             <td>@item.HSNCode</td>*@

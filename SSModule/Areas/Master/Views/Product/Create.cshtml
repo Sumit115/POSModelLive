@@ -32,7 +32,7 @@
                         <div class="form-group row">
                             <label class="col-sm-2">Brand</label>
                             <div class="col-md-6">
-                                <select asp-for="FkBrandId" asp-items="@(new SelectList(ViewBag.BrandList,"PkBrandId","BrandName"))" class="form-select" id="BrandId">
+                                <select asp-for="FkBrandId" asp-items="@(new SelectList(ViewBag.BrandList,"PkBrandId","BrandName"))" class="form-select"  >
                                     <option>Select</option>
                                 </select>
                                 <span asp-validation-for="FkBrandId" class="text-danger"></span>
@@ -55,7 +55,7 @@
                         <div class="form-group row">
                             <label class="col-sm-2">Unit</label>
                             <div class="col-md-6">
-                                <select asp-for="FkUnitId" asp-items="@(new SelectList(ViewBag.UnitList,"PkUnitId","UnitName"))" class="form-select" id="UnitId">
+                                <select asp-for="FkUnitId" asp-items="@(new SelectList(ViewBag.UnitList,"PkUnitId","UnitName"))" class="form-select" >
                                     <option>Select</option>
                                 </select>
                                 <span asp-validation-for="FkUnitId" class="text-danger"></span>

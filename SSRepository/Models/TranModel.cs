@@ -21,6 +21,7 @@ namespace SSRepository.Models
             ExtProperties = new ExtPropertie();
             BranchDetails = new List<BranchModel>();
             UniqIdDetails = new List<BarcodeUniqVM>();
+            UniqIdReturnDetails = new List<BarcodeUniqVM>();
             Branch = new BranchModel();
             EntryDate = DateTime.Now;
             GRDate = DateTime.Now;
@@ -128,7 +129,8 @@ namespace SSRepository.Models
         public string? ConcernPersonMobile { get; set; }
 
         public List<BarcodeUniqVM> UniqIdDetails { get; set; }
-        
+        public List<BarcodeUniqVM> UniqIdReturnDetails { get; set; }
+
         //For Promotion / Save 
         public bool IsTranChange { get; set; }
         public decimal FreePoint { get; set; }

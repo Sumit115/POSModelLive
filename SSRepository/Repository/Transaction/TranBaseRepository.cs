@@ -91,9 +91,9 @@ namespace SSRepository.Repository.Transaction
                         //    throw new Exception("Color Required on Product " + item.Product);
                         //}
 
-                        if (objmodel.TranAlias == "PINV")
+                        if (objmodel.TranAlias == "PINV" || objmodel.TranAlias == "PJ_R")
                         {
-                            if (item.ModeForm != 0)
+                            if (item.ModeForm != 0 && (objmodel.TranAlias == "PINV" || objmodel.TranAlias == "PJ_R"))
                             {
                                 var _check = __dbContext.TblSalesInvoicedtl.Where(x => x.FkLotId == item.FkLotId && x.FkProductId == item.FkProductId).FirstOrDefault();
                                 if (_check != null) { throw new Exception("Product Not Update After Sale :" + item.Product); }
@@ -124,9 +124,32 @@ namespace SSRepository.Repository.Transaction
                             }
                         }
 
-                        if (objmodel.UniqIdDetails != null && objmodel.ExtProperties.StockFlag == "O")
+                        if (objmodel.UniqIdDetails != null && (objmodel.ExtProperties.StockFlag == "O"))
                         {
                             var _bQty = objmodel.UniqIdDetails.Where(x => x.SrNo == item.SrNo).ToList();
+                            if (item.CodingScheme == "Unique")
+                            {
+                                if (_bQty.Count != (item.Qty + item.FreeQty)) { throw new Exception("Product (" + item.Product + ") Qty & Barcode Qty Not Match"); }
+                            }
+                        }
+                         
+                        if (string.IsNullOrEmpty(item.Batch))
+                        {
+                            throw new Exception("Size Required on Product " + item.Product);
+                        }
+                        CalculateExe(item);
+                    }
+
+                }
+
+                if (objmodel.TranReturnDetails != null)
+                {
+                    foreach (var item in objmodel.TranReturnDetails.Where(x => x.FkProductId > 0 && x.ModeForm != 2))
+                    {  
+                        //For JobWork
+                        if (objmodel.TranAlias == "PJ_I" && objmodel.UniqIdReturnDetails != null)
+                        {
+                            var _bQty = objmodel.UniqIdReturnDetails.Where(x => x.SrNo == item.SrNo).ToList();
                             if (item.CodingScheme == "Unique")
                             {
                                 if (_bQty.Count != (item.Qty + item.FreeQty)) { throw new Exception("Product (" + item.Product + ") Qty & Barcode Qty Not Match"); }
@@ -575,8 +598,8 @@ namespace SSRepository.Repository.Transaction
 
                 switch (fieldName)
                 {
-                    case "Product": 
-                        if ((IsReturn? model.TranReturnDetails[rowIndex].FkId : model.TranDetails[rowIndex].FkId) == 0)
+                    case "Product":
+                        if ((IsReturn ? model.TranReturnDetails[rowIndex].FkId : model.TranDetails[rowIndex].FkId) == 0)
                         {
                             TranDetailDefault(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
                             GetSetProduct(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]), "", 0, model.FKOrderID, model.FKOrderSrID);
@@ -585,13 +608,17 @@ namespace SSRepository.Repository.Transaction
                         break;
                     case "Batch":
                     case "Color":
-                        setBatch(model, (IsReturn ? model.TranReturnDetails[rowIndex]: model.TranDetails[rowIndex]));
+                        setBatch(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
                         break;
                     case "TradeDisc":
                         model.TranDetails[rowIndex].TradeDiscAmt = 0;
                         break;
                     case "Delete":
-                        if (IsReturn) { model.TranReturnDetails[rowIndex].ModeForm = 2; }
+                        if (IsReturn)
+                        {
+                            model.TranReturnDetails[rowIndex].ModeForm = 2;
+                            model.UniqIdReturnDetails = model.UniqIdReturnDetails.Where(x => x.SrNo != model.TranReturnDetails[rowIndex].SrNo).ToList();
+                        }
                         else
                         {
                             model.TranDetails[rowIndex].ModeForm = 2;
@@ -740,7 +767,7 @@ namespace SSRepository.Repository.Transaction
                 detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
                 detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
                 detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
-                if (model.TranAlias == "PORD" || model.TranAlias == "PINV")
+                if (model.TranAlias == "PORD" || model.TranAlias == "PINV" || (model.TranAlias == "PJ_R" && detail.TranType=="I"))
                 {
                     detail.FkLotId = 0;
                 }
@@ -1218,8 +1245,8 @@ namespace SSRepository.Repository.Transaction
 
         public void SetGridTotal(TransactionModel model)
         {
-            model.GrossAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TaxableAmt), 2)+ Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.TaxableAmt), 2);
-            model.TaxAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.GstAmt), 2)+ Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.GstAmt), 2);
+            model.GrossAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TaxableAmt), 2) + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.TaxableAmt), 2);
+            model.TaxAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.GstAmt), 2) + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.GstAmt), 2);
             model.CashDiscountAmt = 0;
             if (model.CashDiscType == "R" && model.CashDiscount > 0 && model.CashDiscount <= model.GrossAmt)
             {
@@ -1233,9 +1260,9 @@ namespace SSRepository.Repository.Transaction
             {
                 model.CashDiscount = 0;
             }
-            model.TradeDiscAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2)+ Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2);
+            model.TradeDiscAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2) + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2);
             model.TotalDiscount = model.CashDiscountAmt + model.TradeDiscAmt;
-            decimal NetAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2)+ Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);
+            decimal NetAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2) + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);
             model.NetAmt = Math.Round((NetAmt - model.CashDiscountAmt) + model.Shipping + model.OtherCharge - model.RoundOfDiff, 2);
 
         }
@@ -1396,7 +1423,7 @@ namespace SSRepository.Repository.Transaction
                     }).ToList();
                 return lst;
             }
-            else if (TranAlias == "PINV" || TranAlias == "PORD" || TranAlias == "PJ_O")
+            else if (TranAlias == "PINV" || TranAlias == "PORD" || TranAlias == "PJ_O" || TranAlias == "PJ_R" || TranAlias == "PJ_I")
             {
                 VendorRepository rep = new VendorRepository(__dbContext);
                 return rep.GetList(pageSize, pageNo, search);
@@ -1413,7 +1440,7 @@ namespace SSRepository.Repository.Transaction
             var vendor = new PartyModel();
             if (model.ExtProperties.TranAlias == "LINV" || model.ExtProperties.TranAlias == "LORD")
                 vendor = GetLocation(FkPartyId);
-            else if (model.ExtProperties.TranAlias == "PINV" || model.ExtProperties.TranAlias == "PORD" || model.ExtProperties.TranAlias == "PJ_O")
+            else if (model.ExtProperties.TranAlias == "PINV" || model.ExtProperties.TranAlias == "PORD" || model.ExtProperties.TranAlias == "PJ_O" || model.ExtProperties.TranAlias == "PJ_R" || model.ExtProperties.TranAlias == "PJ_I")
                 vendor = GetVendor(FkPartyId);
             else
                 vendor = GetCustomer(FkPartyId);
@@ -1884,39 +1911,67 @@ namespace SSRepository.Repository.Transaction
             return data;
         }
 
-        public object BarcodeList(TransactionModel model, int rowIndex)
+        public object BarcodeList(TransactionModel model, int rowIndex, bool IsReturn)
         {
-            model.UniqIdDetails = model.UniqIdDetails == null ? new List<BarcodeUniqVM>() : model.UniqIdDetails;// JsonConvert.DeserializeObject<List<BarcodeVM>>(dd);
-
             ProductRepository rep = new ProductRepository(__dbContext);
-
-
-            var lst = (from cou in __dbContext.TblProductQTYBarcode
-                       where cou.FkLotID == model.TranDetails[rowIndex].FkLotId && cou.FkProductId == model.TranDetails[rowIndex].FkProductId
-                       && ((cou.TranOutId == model.PkId || cou.TranOutId == null)
-                       && (cou.TranOutSeriesId == model.FKSeriesId || cou.TranOutSeriesId == null)
-                       && (cou.TranOutSrNo == model.TranDetails[rowIndex].SrNo || cou.TranOutSrNo == null)
-                       )
-                       select new
-                       {
-                           Barcode = cou.Barcode,
-                           // IsPrint = model.UniqIdDetails.Find(u => u.Barcode == cou.Barcode)?.Name = "CBA";,
-                           IsPrint = false,// (model.UniqIdDetails.ToList().Where(x => x.Barcode == cou.Barcode && x.SrNo == 1).ToList().Count>0) ? true : false,
-                       }).ToList();
-            var data = new List<object>();
-            foreach (var d in lst)
+            if (!IsReturn)
             {
+                model.UniqIdDetails = model.UniqIdDetails == null ? new List<BarcodeUniqVM>() : model.UniqIdDetails;// JsonConvert.DeserializeObject<List<BarcodeVM>>(dd);
 
-                bool IsPrint = (model.UniqIdDetails.ToList().Where(x => x.Barcode == d.Barcode && x.SrNo == model.TranDetails[rowIndex].SrNo).ToList().Count > 0) ? true : false;
-                data.Add(new
+                var lst = (from cou in __dbContext.TblProductQTYBarcode
+                           where cou.FkLotID == model.TranDetails[rowIndex].FkLotId && cou.FkProductId == model.TranDetails[rowIndex].FkProductId
+                           && ((cou.TranOutId == model.PkId || cou.TranOutId == null)
+                           && (cou.TranOutSeriesId == model.FKSeriesId || cou.TranOutSeriesId == null)
+                           && (cou.TranOutSrNo == model.TranDetails[rowIndex].SrNo || cou.TranOutSrNo == null)
+                           )
+                           select new
+                           {
+                               Barcode = cou.Barcode,
+                               // IsPrint = model.UniqIdDetails.Find(u => u.Barcode == cou.Barcode)?.Name = "CBA";,
+                               IsPrint = false,// (model.UniqIdDetails.ToList().Where(x => x.Barcode == cou.Barcode && x.SrNo == 1).ToList().Count>0) ? true : false,
+                           }).ToList();
+                var data = new List<object>();
+                foreach (var d in lst)
                 {
-                    Barcode = d.Barcode,
-                    IsPrint = IsPrint,
-                    SrNo = model.TranDetails[rowIndex].SrNo,
-                });
+                    bool IsPrint = (model.UniqIdDetails.ToList().Where(x => x.Barcode == d.Barcode && x.SrNo == model.TranDetails[rowIndex].SrNo).ToList().Count > 0) ? true : false;
+                    data.Add(new
+                    {
+                        Barcode = d.Barcode,
+                        IsPrint = IsPrint,
+                        SrNo = model.TranDetails[rowIndex].SrNo,
+                    });
+                }
+                return data;
             }
+            else
+            {
+                model.UniqIdReturnDetails = model.UniqIdReturnDetails == null ? new List<BarcodeUniqVM>() : model.UniqIdReturnDetails;// JsonConvert.DeserializeObject<List<BarcodeVM>>(dd);
 
-            return data;
+                var lst = (from cou in __dbContext.TblProductQTYBarcode
+                           where cou.FkLotID == model.TranReturnDetails[rowIndex].FkLotId && cou.FkProductId == model.TranReturnDetails[rowIndex].FkProductId
+                           && ((cou.TranOutId == model.PkId || cou.TranOutId == null)
+                           && (cou.TranOutSeriesId == model.FKSeriesId || cou.TranOutSeriesId == null)
+                           && (cou.TranOutSrNo == model.TranReturnDetails[rowIndex].SrNo || cou.TranOutSrNo == null)
+                           )
+                           select new
+                           {
+                               Barcode = cou.Barcode,
+                               // IsPrint = model.UniqIdReturnDetails.Find(u => u.Barcode == cou.Barcode)?.Name = "CBA";,
+                               IsPrint = false,// (model.UniqIdReturnDetails.ToList().Where(x => x.Barcode == cou.Barcode && x.SrNo == 1).ToList().Count>0) ? true : false,
+                           }).ToList();
+                var data = new List<object>();
+                foreach (var d in lst)
+                {
+                    bool IsPrint = (model.UniqIdReturnDetails.ToList().Where(x => x.Barcode == d.Barcode && x.SrNo == model.TranReturnDetails[rowIndex].SrNo).ToList().Count > 0) ? true : false;
+                    data.Add(new
+                    {
+                        Barcode = d.Barcode,
+                        IsPrint = IsPrint,
+                        SrNo = model.TranReturnDetails[rowIndex].SrNo,
+                    });
+                }
+                return data;
+            }
         }
 
         public List<ColumnStructure> TrandtlColumnList(string TranType)

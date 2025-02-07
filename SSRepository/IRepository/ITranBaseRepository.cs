@@ -49,7 +49,7 @@ namespace SSRepository.IRepository
         WalkingCustomerModel GeWalkingCustomer_byMobile(string Mobile);
 
         long GetIdbyEntryNo(long EntryNo, long FKSeriesId);
-        object BarcodeList(TransactionModel model, int rowIndex);
+        object BarcodeList(TransactionModel model, int rowIndex, bool IsReturn);
         string SaveInvoiceBilty(long FkUserId,long FkID, long FKSeriesId, long FkFormId, string BiltyNo, string Image);
         object GetInvoiceBilty(long FkID, long FKSeriesId, long FkFormId);
 
