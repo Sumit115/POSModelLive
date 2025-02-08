@@ -4,6 +4,8 @@
  * @namespace Slick
  */
 
+var custypingTimer = null;
+var arrCusDrpHideColumn = [];
 (function ($) {
     // register namespace
     $.extend(true, window, {
