@@ -81,43 +81,14 @@ function ViewData(_d, Export) {
                     cg.bind(data);
                     cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
 
-                    cg.outGrid.onContextMenu.subscribe(function (e, args) {
-                        e.preventDefault();
-                        var j = cg.outGrid.getCellFromEvent(e);
-                        $("#contextMenu")
-                            .data("row", j.row)
-                            .css("top", e.pageY)
-                            .css("left", e.pageX)
-                            .show();
-
-                        $("body").one("click", function () {
-                            $("#contextMenu").hide();
-                        });
-                    });
-
-                    $("#contextMenu").off('click').on('click', function (e) {
-                        
-                        if (!$(e.target).is("li")) {
-                            return;
-                        }
-                        if (!UDI.outGrid.getEditorLock().commitCurrentEdit()) {
-                            return;
-                        }
-                        var row = $(this).data("row");
-                        var command = $(e.target).attr("data");
-                        if (command == "EditColumn") {
-                            Common.GridColSetup(parseInt(RPTOption.FormId), $("#ReportType").val(), function () {
-                                Render();
-                            });
-                        }
-                       
-                    });
+                   
                 });
                 $(".loader").hide();
             }
         });
     }
 };
+
 
 var filterGrid = null;
 function ShowFilter(type) {

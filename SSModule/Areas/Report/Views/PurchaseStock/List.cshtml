@@ -37,20 +37,32 @@
                     <button type="button" class="btn btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-funnel"></i>
                     </button>
-                    <div class="dropdown-menu dropdown-menu-end p-0" role="menu">
+                    <div class="dropdown-menu dropdown-menu-end" role="menu">
 
                         <a href="#" class="dropdown-item" onclick="ShowFilter('Product')" title="Product"><i class="bi bi-funnel"></i> Product</a>
                         <a href="#" class="dropdown-item" onclick="ShowFilter('Vendor')" title="Vendor"><i class="bi bi-funnel"></i> Vendor</a>
                     </div>
                 </div>
             </div>
-            <button class="btn btn-outline-info" onclick="Render('excel')" title="View"><i class="bi bi-download"></i></button>
             <button class="btn btn-info" onclick="Render('')" title="View"><i class="bi bi-send"></i> &nbsp;View</button>
+
+            <div class="btn-group">
+                <div class="dropdown page-context">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" fdprocessedid="etakpo">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end" role="menu">
+                        <a class="dropdown-item" onclick="Render('excel')"><i class="bi bi-download"></i>Export To Excel</a>
+                        <a class="dropdown-item" onclick="ShowGridColumn()"><i class="bi bi-ui-checks-grid"></i>Set Grid Layout</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="row m-0">
-        <div id="WUCHM" class="col-12">
+        <div id="WUCHM" class="col-12 slick-grid">
+
         </div>
     </div>
 </div>
@@ -80,4 +92,4 @@
         }
     </script>
 
-                }
+}

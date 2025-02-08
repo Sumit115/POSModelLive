@@ -93,7 +93,7 @@
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" fdprocessedid="etakpo">
                             <i class="bi bi-three-dots-vertical"></i>
                         </button>
-                        <div class="dropdown-menu dropdown-menu-end p-0" role="menu">
+                        <div class="dropdown-menu dropdown-menu-end" role="menu">
 
                             <a class="dropdown-item" id="btnExportToExcel" onclick="ExportToExcel()"><i class="bi bi-download"></i>Export To Excel</a>
                             <a class="dropdown-item" id="btnGridColumn" onclick="ShowGridColumn()"><i class="bi bi-ui-checks-grid"></i>Set Grid Layout</a>
@@ -183,10 +183,7 @@
                                                                     <li class="nav-item">
                                                                         <a href="@_m.WebURL" class="nav-link">
                                                                             @Html.Raw(_m.Image)
-                                                                            <p>
-                                                                                @_m.FormName
-                                                                                <i class="right fas fa-external-link-alt tablink"></i>
-                                                                            </p>
+                                                                            <p>@_m.FormName</p>
                                                                         </a>
                                                                     </li>
                                                                 }
@@ -198,10 +195,7 @@
                                                         <li class="nav-item">
                                                             <a href="@menu.WebURL" class="nav-link">
                                                                 @Html.Raw(menu.Image)
-                                                                <p>
-                                                                    @menu.FormName
-                                                                    <i class="right fas fa-external-link-alt tablink"></i>
-                                                                </p>
+                                                                <p> @menu.FormName </p>
                                                             </a>
                                                         </li>
 
@@ -243,7 +237,7 @@
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper" >
         <!-- Main content -->
-        <div class="container-fluid ms-2 ps-0" style="background-color: #fff;height: calc(100vh - 49px);overflow:auto;  ">
+        <div class="container-fluid ms-2 ps-0" style="background-color: #fff;height: calc(100vh - 45px);overflow:auto;  ">
             @RenderBody()
         </div>
     </div>

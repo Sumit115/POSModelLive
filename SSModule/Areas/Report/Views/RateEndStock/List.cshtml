@@ -6,16 +6,26 @@
 
 <div class="p-1">
     <div class="form-group row filter m-0 p-2 border-bottom">
-        <div class="col-md-9">
+        <div class="col-md-6">
         </div>
-        <div class="col-md-3 text-right">
+        <div class="col-md-6 text-right">
             <button class="btn btn-outline-info" onclick="ShowFilter('Product')"><i class="bi bi-funnel"></i></button>
-            <button class="btn btn-outline-info" onclick="Render('excel')" title="View"><i class="bi bi-download"></i></button>
             <button class="btn btn-info" onclick="Render('')" title="View"><i class="bi bi-send"></i> &nbsp;View</button>
+            <div class="btn-group">
+                <div class="dropdown page-context">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" fdprocessedid="etakpo">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end" role="menu">
+                        <a class="dropdown-item" onclick="Render('excel')"><i class="bi bi-download"></i>Export To Excel</a>
+                        <a class="dropdown-item" onclick="ShowGridColumn()"><i class="bi bi-ui-checks-grid"></i>Set Grid Layout</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div id="WUCHM" class="col-12">
+    <div class="row m-0">
+        <div id="WUCHM" class="col-12 slick-grid">
         </div>
     </div>
 </div>
