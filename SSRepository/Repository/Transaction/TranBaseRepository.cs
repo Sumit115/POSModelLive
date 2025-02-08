@@ -137,7 +137,7 @@ namespace SSRepository.Repository.Transaction
                         {
                             throw new Exception("Size Required on Product " + item.Product);
                         }
-                        CalculateExe(item);
+                        CalculateExe(objmodel,item);
                     }
 
                 }
@@ -1524,7 +1524,7 @@ namespace SSRepository.Repository.Transaction
             if (obj != null)
             {
                 model.SeriesName = obj.Series == null ? "" : obj.Series.ToString();
-                model.FKLocationID = obj.FkBranchId;
+                model.FKLocationID = (long)obj.FKLocationID;
                 model.FKSeriesId = FKSeriesId;
                 model.BillingRate = obj.BillingRate;
                 model.BranchStateName = obj.BranchStateName;
@@ -1539,13 +1539,14 @@ namespace SSRepository.Repository.Transaction
         public SeriesModel? GetSeries(long FKSeriesId)
         {
             SeriesModel? data = (from cou in __dbContext.TblSeriesMas
-                                 join branch in __dbContext.TblBranchMas on cou.FkBranchId equals branch.PkBranchId
+                                 join location in __dbContext.TblLocationMas on cou.FKLocationID equals location.PkLocationID
+                                 join branch in __dbContext.TblBranchMas on location.FkBranchID equals branch.PkBranchId
                                  where cou.PkSeriesId == FKSeriesId
                                  select (new SeriesModel
                                  {
                                      PkSeriesId = cou.PkSeriesId,
                                      Series = cou.Series,
-                                     FkBranchId = cou.FkBranchId,
+                                     FKLocationID = cou.FKLocationID,
                                      BillingRate = cou.BillingRate,
                                      TaxType = cou.TaxType,
                                      BranchStateName = branch.State,

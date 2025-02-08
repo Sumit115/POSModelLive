@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace SSRepository.Models
 {
-     public class SeriesModel : BaseModel
+    public class SeriesModel : BaseModel
     {
         public long PkSeriesId { get; set; }
         public string Series { get; set; } //=A
         public long SeriesNo { get; set; }// =0  autocalculation
-        public long FkBranchId { get; set; }//=ddl
+                                          // public long FkBranchId { get; set; }//=ddl
         public string BillingRate { get; set; }//=MRP/SaleRate/TradeRate/DistributionRate/PurchaseRate
         public string TranAlias { get; set; }//=SORD  ddl
         public string? FormatName { get; set; }//=''
@@ -27,8 +27,9 @@ namespace SSRepository.Models
         public char TaxType { get; set; } = 'I';
         public string? BranchName { get; set; }//=true
         public string? BranchStateName { get; set; }//=true
-        public string? DocumentType { get; set; }
+        public string DocumentType { get; set; }
         public string? TranAliasName { get; set; }//=SORD  ddl
-        public  long? FKLocationID { get; set; }
+        public long? FKLocationID { get; set; }
+        public string? Location { get; set; }
     }
 }

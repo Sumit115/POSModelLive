@@ -39,8 +39,8 @@ namespace SSRepository.Repository.Transaction
         {
             var obj = (from cou in __dbContext.TblJobWorktrn
                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
-                       join branch in __dbContext.TblBranchMas on ser.FkBranchId equals branch.PkBranchId
                        join location in __dbContext.TblLocationMas on ser.FKLocationID equals location.PkLocationID
+                       join branch in __dbContext.TblBranchMas on location.FkBranchID equals branch.PkBranchId
                        where cou.FKUserID == UserId && ser.TranAlias == TranAlias
                        && ser.DocumentType == DocumentType
                        orderby cou.PkId descending
@@ -65,8 +65,8 @@ namespace SSRepository.Repository.Transaction
             if (model.FKSeriesId == 0)
             {
                 var _entity = (from cou in __dbContext.TblSeriesMas
-                               join branch in __dbContext.TblBranchMas on cou.FkBranchId equals branch.PkBranchId
                                join location in __dbContext.TblLocationMas on cou.FKLocationID equals location.PkLocationID
+                               join branch in __dbContext.TblBranchMas on location.FkBranchID equals branch.PkBranchId
                                where cou.TranAlias == TranAlias
                                 && cou.DocumentType == DocumentType
                                select new

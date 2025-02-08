@@ -41,8 +41,7 @@ namespace SSRepository.Models
         public long FKLocationID { get; set; }//=bind From Js on Series Selection(Fk_BranchId)
         public string? BranchStateName { get; set; }
         //=true
-        //nEw End
-
+        //nEw End 
         public long FkPartyId { get; set; }
 
         public string PartyName { get; set; }

@@ -148,7 +148,12 @@ namespace SSAdmin
                    new ddl { Text = "Contra Voucher", Value = "V_CT",Value2="" },
                    new ddl { Text = "Journal Voucher", Value = "V_JR",Value2="" },
                    new ddl { Text = "Payment Voucher", Value = "V_PY",Value2="" },
-                   new ddl { Text = "Receipt Voucher", Value = "V_RC",Value2="" },
+                   new ddl { Text = "Receipt Voucher", Value = "V_RC",Value2="" },                
+                   new ddl { Text = "Location Request", Value = "LORD",Value2="" },
+                   new ddl { Text = "Location Invoice", Value = "LINV",Value2="" },
+                   new ddl { Text = "Job Order", Value = "PJ_O",Value2="" },
+                   new ddl { Text = "Job Issue", Value = "PJ_I",Value2="" },
+                   new ddl { Text = "Job Receive", Value = "PJ_R",Value2="" },
             };
         }
         public static string GetTranAliasName(string TranAlias)

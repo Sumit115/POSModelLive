@@ -7,6 +7,7 @@ using SSRepository.Models;
 using Microsoft.VisualBasic;
 using System.Runtime.ConstrainedExecution;
 using System.Reflection.Metadata;
+using Microsoft.IdentityModel.Tokens;
 
 namespace SSRepository.Repository.Master
 {
@@ -70,7 +71,7 @@ namespace SSRepository.Repository.Master
                             CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                             Series = cou.Series,
                             SeriesNo = cou.SeriesNo,
-                            FkBranchId = cou.FkBranchId,
+                            //FkBranchId = cou.FkBranchId,
                             BillingRate = cou.BillingRate,
                             TranAlias = cou.TranAlias,
                             FormatName = cou.FormatName,
@@ -83,6 +84,7 @@ namespace SSRepository.Repository.Master
                             AllowFreeQty = cou.AllowFreeQty,
                             DocumentType = cou.DocumentType,
                             FKLocationID = cou.FKLocationID,
+                            TaxType = cou.TaxType,
                             //TranAliasName= GetTranAliasName(cou.TranAlias),
                         }
                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
@@ -101,7 +103,8 @@ namespace SSRepository.Repository.Master
 
             SeriesModel data = new SeriesModel();
             data = (from cou in __dbContext.TblSeriesMas
-                    join branch in __dbContext.TblBranchMas on cou.FkBranchId equals branch.PkBranchId
+                    join location in __dbContext.TblLocationMas on cou.FKLocationID equals location.PkLocationID
+                    join branch in __dbContext.TblBranchMas on location.FkBranchID equals branch.PkBranchId
                     where cou.PkSeriesId == PkSeriesId
                     select (new SeriesModel
                     {
@@ -112,7 +115,7 @@ namespace SSRepository.Repository.Master
                         CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         Series = cou.Series,
                         SeriesNo = cou.SeriesNo,
-                        FkBranchId = cou.FkBranchId,
+                       // FkBranchId = cou.FkBranchId,
                         BillingRate = cou.BillingRate,
                         TranAlias = cou.TranAlias,
                         FormatName = cou.FormatName,
@@ -125,6 +128,10 @@ namespace SSRepository.Repository.Master
                         AllowFreeQty = cou.AllowFreeQty,
                         BranchName = branch.BranchName,
                         FKLocationID = cou.FKLocationID,
+                        Location = location.Location,
+                        TaxType = cou.TaxType,
+                        DocumentType = cou.DocumentType,
+
                     })).FirstOrDefault();
             return data;
         }
@@ -200,6 +207,8 @@ namespace SSRepository.Repository.Master
             Tbl.DefaultQty = model.DefaultQty;
             Tbl.AllowZeroRate = model.AllowZeroRate;
             Tbl.AllowFreeQty = model.AllowFreeQty;
+            Tbl.TaxType = model.TaxType;
+            Tbl.DocumentType = string.IsNullOrEmpty(model.DocumentType) ? "B" : model.DocumentType;
             Tbl.FKLocationID = model.FKLocationID == 0 ? 11 : model.FKLocationID;
             Tbl.ModifiedDate = DateTime.Now;
             if (Mode == "Create")

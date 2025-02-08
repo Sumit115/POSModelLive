@@ -66,7 +66,26 @@
                         <span asp-validation-for="FKLocationID" class="text-danger"></span>
                     </div>
                 </div>
-
+                <div class="form-group row">
+                    <label class="col-sm-2">Tax Type</label>
+                    <div class="col-md-6">
+                        <select asp-for="TaxType" class="form-control"> 
+                            <option value="I">Inclusive </option>
+                            <option value="E">Exclusive</option>
+                        </select>
+                        <span asp-validation-for="TaxType" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row" id="div_DocumentType" style="@(Model.TranAlias=="SINV"?"":"display:none")">
+                    <label class="col-sm-2">Doc Type</label>
+                    <div class="col-md-6">
+                        <select asp-for="DocumentType" class="form-control">
+                            <option value="B">B </option>
+                            <option value="C">C</option>
+                        </select>
+                        <span asp-validation-for="DocumentType" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
             <div class="col-sm-5 show-checkbox-ui-sl-page">
                 <div class="col-sm-5">
@@ -124,6 +143,13 @@
                 e.preventDefault();
                 $("form").submit();
             });
+            $("#TranAlias").on("change",function(){
+                if ($(this).val() == 'SINV') { $("#div_DocumentType").show(); }
+                else {
+                    $("#DocumentType").val("B");
+                   $("#div_DocumentType").hide();
+                }
+            })
         })
         UploadImage = (id) => {
             var file = document.querySelector('input[id="file_' + id + '"]').files[0];
