@@ -82,9 +82,7 @@
                     <a id="btnServerBack" asp-action="List" class="btn btn-outline-danger btn-key-65">Cancel</a>
                 </li>
                 <li class="nav-item f-list" style="display:none">
-                   @* <button class="btn btn-info" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
-                        <i class="bi bi-plus-lg"></i> &nbsp;New
-                    </button>
+
                     <a class="btn btn-primary" tabindex="3" id="create_new" href='@Url.Action("Create")'><i class="bi bi-plus-lg"></i> &nbsp;New </a>
                 </li>
                 <li class="nav-item f-list" style="display:none">
@@ -240,28 +238,7 @@
             @RenderBody()
         </div>
     </div>
-@*    <div class="offcanvas offcanvas-end master-offcanvas" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
 
-        @* <form class="form-horizontal g-3" enctype="multipart/form-data">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Offcanvas with body scrolling</h5>
-                <div class="canvas-header-right text-right">
-                    <button type="submit" class="btn btn-primary" fdprocessedid="h5hsbg"><i class="bi bi-floppy"></i> &nbsp; Save</button>
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="offcanvas" aria-label="Close" fdprocessedid="628x87"> Close</button>
-                </div>
-            </div>
-            <div class="offcanvas-body p-3 pt-0">
-                <hr class="mt-0">
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Name</label>
-                    <div class="col-md-6">
-                        <input id="BrandName" class="form-control" />
-                    </div>
-                </div>
-
-            </div>
-        </form>
-    </div>*@
     <partial name="~/Views/Shared/partial/gridlayout.cshtml" />
     <ul id="contextMenu">
         <li id="contextEdit" data="Edit">Edit</li>
