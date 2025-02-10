@@ -17,7 +17,7 @@ namespace SSRepository.Repository.Transaction
 {
     public class SalesInvoiceRepository : TranBaseRepository, ISalesInvoiceRepository
     {
-        public SalesInvoiceRepository(AppDbContext dbContext) : base(dbContext)
+        public SalesInvoiceRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
             SPAddUpd = "usp_SalesInvoiceAddUpd";
             SPList = "usp_SalesInvoiceList";

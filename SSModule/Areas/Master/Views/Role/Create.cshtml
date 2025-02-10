@@ -1,181 +1,188 @@
-﻿@using SSRepository.Models;
-@model RoleModel
+﻿@model SSRepository.Models.RoleModel
 
 @{
     ViewData["Title"] = "Role";
     ViewData["bdClass"] = "page";
-
-    List<FormModel> FormList = ViewBag.FormList;
 }
 <style>
-    tr.tbl-delete, tr.tbl-delete input {
-        background: red;
+    .table thead th {
+        background: #dee2e6;
     }
 
-    .shelf-tblCatSize input {
-        border: none;
+    .main td:first-child {
+        background: #f4f7fd;
     }
 
-    input[type=checkbox] {
-        height: 25px;
-        width: 25px;
+    .main-sub, .main-edit {
+        display: none;
     }
 
-    table tr th, table tr td {
-        text-align: center;
-    }
+        .main-sub td:first-child {
+            background: #f4f7fd61;
+            padding-left: 20px;
+        }
 
+        .main-edit td:first-child {
+            padding-left: 40px;
+        }
 </style>
-<div class="p-3">
+<div class="master-page-ui">
     <form asp-action="Create" class="g-3" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="PkRoleId" />
-
         <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Role Name</label>
-                    <input asp-for="RoleName" class="form-control" />
-                    <span asp-validation-for="RoleName" class="text-danger"></span>
+            <div class="col-md-8">
+                <div class="form-group row">
+                    <label class="col-sm-2">Role Name</label>
+                    <div class="col-md-6">
+                        <input asp-for="RoleName" class="form-control" required />
+                        <span asp-validation-for="RoleName" class="text-danger"></span>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-12">
-                <div id="accordion">
-                    @{
-                        int i = 0;
-                    }
-                    <table class="table table-bordered table-responsive-lg">
-                        <thead class="table-dark">
-                            <tr>
-                                <th class="text-left">Description</th>
-                                <th>Access</th>
-                                <th>Create</th>
-                                <th>Edit</th>
-                                <th>Print</th>
-                                <th>Browse</th>
-                            </tr>
-                        </thead>
-                    </table>
-                    @foreach (var mstrMenu in FormList.Where(x => x.FKMasterFormID == null || x.FKMasterFormID == 0).ToList())
-                    {
-                        <div class="card">
-                            <div class="card-header p-0" id="heading@(mstrMenu.PKID)">
-                                <h5 class="mb-0">
-                                    <a class="btn btn-link w-100 text-left p-3" data-toggle="collapse" data-target="#collapse@(mstrMenu.PKID)" aria-expanded="true" aria-controls="collapse@(mstrMenu.PKID)">
-                                        @mstrMenu.FormName
-                                    </a>
-                                </h5>
-                            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 form-check form-switch p-0">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="col-5">Description</th>
+                            <th class="col-1">Access</th>
+                            <th class="col-1">Create</th>
+                            <th class="col-1">Edit</th>
+                            <th class="col-1">Print</th>
+                            <th class="col-1">Browse</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.RoleDtls.Any())
+                        {
+                            @for (int i = 0; i < Model.RoleDtls.Count; i++)
+                            {
+                                if (Model.RoleDtls[i].SubMenu.Any())
+                                {
+                                    <tr class="main">
+                                        <td colspan="6">
 
-                            <div id="collapse@(mstrMenu.PKID)" class="collapse" aria-labelledby="heading@(mstrMenu.PKID)" data-parent="#accordion">
-                                <div class="card-body">
-                                    @{
-                                        var _menuWithChield = FormList.Where(x => x.FKMasterFormID == mstrMenu.PKID && FormList.Any(y => y.FKMasterFormID == x.PKID)).ToList();
-                                        var _menuNoChield = FormList.Where(x => x.FKMasterFormID == mstrMenu.PKID && !FormList.Any(y => y.FKMasterFormID == x.PKID)).ToList();
-                                    }
-                                    @foreach (var menu in _menuWithChield.ToList())
+                                            <span class="btncolaps" style="padding: 9px;cursor: pointer;" onclick="Menucolaps(this,@Model.RoleDtls[i].FKFormID)">
+                                                <i class="right fas fa-angle-right"></i>
+                                            </span>
+                                            <span>
+                                                @Model.RoleDtls[i].FormName
+                                            </span>
+                                            @Html.HiddenFor(m => m.RoleDtls[i].FormName)
+                                            @Html.HiddenFor(m => m.RoleDtls[i].PkRoleDtlId)
+                                            @Html.HiddenFor(m => m.RoleDtls[i].FKFormID)
+                                            @Html.HiddenFor(m => m.RoleDtls[i].FkRoleID)
+                                        </td>
+                                    </tr>
+                                    @for (int j = 0; j < Model.RoleDtls[i].SubMenu.Count; j++)
                                     {
-                                        var _subMenu = FormList.Where(x => x.FKMasterFormID == menu.PKID).ToList();
-                                        if (_subMenu.Count > 0)
+                                        if (Model.RoleDtls[i].SubMenu[j].SubMenu.Any())
                                         {
-                                            <div class="card">
-                                                <p class="card-header p-0">
-                                                    <a class="btn btn-link w-100 text-left p-3" data-toggle="collapse" href="#collapse@(menu.PKID)" role="button" aria-expanded="false" aria-controls="collapse@(menu.PKID)">
-                                                        @menu.FormName
-                                                    </a>
-                                                </p>
-                                                <div class="collapse card-body" id="collapse@(menu.PKID)">
-                                                    <table class="table table-bordered table-responsive-lg">
+                                            <tr key="@Model.RoleDtls[i].FKFormID" class="main-sub" parent="@Model.RoleDtls[i].SubMenu[j].FKFormID">
+                                                <td colspan="6">
 
-                                                        <tbody>
-                                                            <tr>
-                                                                <th class="text-left w-25">Description</th>
-                                                                <th> <a href="javascript:void(0)" style="font-size: 20px;" onclick="RevarseCheckbox(this,1)"><i class="fa fa-retweet"></i></a></th>
-                                                                <th> <a href="javascript:void(0)" style="font-size: 20px;" onclick="RevarseCheckbox(this,2)"><i class="fa fa-retweet"></i></a></th>
-                                                                <th> <a href="javascript:void(0)" style="font-size: 20px;" onclick="RevarseCheckbox(this,3)"><i class="fa fa-retweet"></i></a></th>
-                                                                <th> <a href="javascript:void(0)" style="font-size: 20px;" onclick="RevarseCheckbox(this,4)"><i class="fa fa-retweet"></i></a></th>
-                                                                <th> <a href="javascript:void(0)" style="font-size: 20px;" onclick="RevarseCheckbox(this,5)"><i class="fa fa-retweet"></i></a></th>
 
-                                                            </tr>
-                                                            @foreach (var _m in _subMenu)
-                                                            {
-                                                                <tr id="tr_@(_m.PKID)" data-id="@_m.PKID">
-                                                                    <td class="text-left w-25">@_m.FormName</td>
-                                                                    <td>
-                                                                        <input id="RoleDtl_lst_@(i)__FKFormID" name="RoleDtl_lst[@i].FKFormID" type="hidden" value="@_m.PKID">
-                                                                        <input class="PkRoleDtlId" id="RoleDtl_lst_@(i)__PkRoleDtlId" name="RoleDtl_lst[@i].PkRoleDtlId" type="hidden" value="0">
-                                                                        <input class="IsAccess" id="RoleDtl_lst_@(i)__IsAccess" name="RoleDtl_lst[@i].IsAccess" type="checkbox" value="true">
-                                                                    </td>
-                                                                    <td>
-                                                                        <input class="IsCreate" id="RoleDtl_lst_@(i)__IsCreate" name="RoleDtl_lst[@i].IsCreate" type="checkbox" value="true">
-                                                                    </td>
-                                                                    <td>
-                                                                        <input class="IsEdit" id="RoleDtl_lst_@(i)__IsEdit" name="RoleDtl_lst[@i].IsEdit" type="checkbox" value="true">
-                                                                    </td>
-                                                                    <td>
-                                                                        <input class="IsPrint" id="RoleDtl_lst_@(i)__IsPrint" name="RoleDtl_lst[@i].IsPrint" type="checkbox" value="true">
-                                                                    </td>
-                                                                    <td>
-                                                                        <input class="IsBrowse" id="RoleDtl_lst_@(i)__IsBrowse" name="RoleDtl_lst[@i].IsBrowse" type="checkbox" value="true">
-                                                                    </td>
-                                                                </tr>
-
-                                                                i++;
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        }
-
-                                    }
-                                    @if (_menuNoChield.Count > 0)
-                                    {
-                                        <table class="table table-bordered table-responsive-lg">
-
-                                            <tbody>
-                                                <tr>
-                                                    <th class="text-left w-25">Description</th>
-                                                    <th> <a href="javascript:void(0)" style="font-size: 20px;" onclick="RevarseCheckbox(this,1)"><i class="fa fa-retweet"></i></a></th>
-                                                    <th> <a href="javascript:void(0)" style="font-size: 20px;" onclick="RevarseCheckbox(this,2)"><i class="fa fa-retweet"></i></a></th>
-                                                    <th> <a href="javascript:void(0)" style="font-size: 20px;" onclick="RevarseCheckbox(this,3)"><i class="fa fa-retweet"></i></a></th>
-                                                    <th> <a href="javascript:void(0)" style="font-size: 20px;" onclick="RevarseCheckbox(this,4)"><i class="fa fa-retweet"></i></a></th>
-                                                    <th> <a href="javascript:void(0)" style="font-size: 20px;" onclick="RevarseCheckbox(this,5)"><i class="fa fa-retweet"></i></a></th>
-
+                                                    <span class="btncolaps" style="padding: 9px;cursor: pointer;" onclick="Menucolaps(this,@Model.RoleDtls[i].SubMenu[j].FKFormID)">
+                                                        <i class="right fas fa-angle-right"></i>
+                                                    </span>
+                                                    <span>
+                                                        @Model.RoleDtls[i].SubMenu[j].FormName
+                                                    </span>
+                                                    @Html.HiddenFor(m => m.RoleDtls[i].FormName)
+                                                    @Html.HiddenFor(m => m.RoleDtls[i].SubMenu[j].PkRoleDtlId)
+                                                    @Html.HiddenFor(m => m.RoleDtls[i].SubMenu[j].FKFormID)
+                                                    @Html.HiddenFor(m => m.RoleDtls[i].SubMenu[j].FkRoleID)
+                                                </td>
+                                            </tr>
+                                            @for (int k = 0; k < Model.RoleDtls[i].SubMenu[j].SubMenu.Count; k++)
+                                            {
+                                                <tr key="@Model.RoleDtls[i].SubMenu[j].FKFormID" class="main-edit">
+                                                    <td class="col-5">
+                                                        @Html.TextBoxFor(m => m.RoleDtls[i].SubMenu[j].SubMenu[k].FormName, new { @readonly = true, @tabindex = "-1" })
+                                                        @Html.HiddenFor(m => m.RoleDtls[i].SubMenu[j].SubMenu[k].PkRoleDtlId)
+                                                        @Html.HiddenFor(m => m.RoleDtls[i].SubMenu[j].SubMenu[k].FKFormID)
+                                                        @Html.HiddenFor(m => m.RoleDtls[i].SubMenu[j].SubMenu[k].FkRoleID)
+                                                    </td>
+                                                    <td class="col-1">
+                                                        @Html.CheckBoxFor(m => m.RoleDtls[i].SubMenu[j].SubMenu[k].IsAccess, new { @class = "form-check-input" })
+                                                    </td>
+                                                    <td class="col-1">
+                                                        @Html.CheckBoxFor(m => m.RoleDtls[i].SubMenu[j].SubMenu[k].IsCreate, new { @class = "form-check-input" })
+                                                    </td>
+                                                    <td class="col-1">
+                                                        @Html.CheckBoxFor(m => m.RoleDtls[i].SubMenu[j].SubMenu[k].IsEdit, new { @class = "form-check-input" })
+                                                    </td>
+                                                    <td class="col-1">
+                                                        @Html.CheckBoxFor(m => m.RoleDtls[i].SubMenu[j].SubMenu[k].IsPrint, new { @class = "form-check-input" })
+                                                    </td>
+                                                    <td class="col-1">
+                                                        @Html.CheckBoxFor(m => m.RoleDtls[i].SubMenu[j].SubMenu[k].IsBrowse, new { @class = "form-check-input" })
+                                                    </td>
                                                 </tr>
-                                                @foreach (var menu in _menuNoChield.ToList())
-                                                {
-                                                    <tr id="tr_@(menu.PKID)" data-id="@menu.PKID">
-                                                        <td class="text-left w-25">@menu.FormName</td>
-                                                        <td>
-                                                            <input id="RoleDtl_lst_@(i)__FKFormID" name="RoleDtl_lst[@i].FKFormID" type="hidden" value="@menu.PKID">
-                                                            <input class="PkRoleDtlId" id="RoleDtl_lst_@(i)__PkRoleDtlId" name="RoleDtl_lst[@i].PkRoleDtlId" type="hidden" value="0">
-                                                            <input class="IsAccess" id="RoleDtl_lst_@(i)__IsAccess" name="RoleDtl_lst[@i].IsAccess" type="checkbox" value="true">
-                                                        </td>
-                                                        <td>
-                                                            <input class="IsCreate" id="RoleDtl_lst_@(i)__IsCreate" name="RoleDtl_lst[@i].IsCreate" type="checkbox" value="true">
-                                                        </td>
-                                                        <td>
-                                                            <input class="IsEdit" id="RoleDtl_lst_@(i)__IsEdit" name="RoleDtl_lst[@i].IsEdit" type="checkbox" value="true">
-                                                        </td>
-                                                        <td>
-                                                            <input class="IsPrint" id="RoleDtl_lst_@(i)__IsPrint" name="RoleDtl_lst[@i].IsPrint" type="checkbox" value="true">
-                                                        </td>
-                                                        <td>
-                                                            <input class="IsBrowse" id="RoleDtl_lst_@(i)__IsBrowse" name="RoleDtl_lst[@i].IsBrowse" type="checkbox" value="true">
-                                                        </td>
-                                                    </tr>
+                                            }
+                                        }
+                                        else
+                                        {
 
-                                                    i++;
-                                                }
-                                            </tbody>
-                                        </table>
+                                            <tr class="main-edit" key="@Model.RoleDtls[i].FKFormID">
+                                                <td class="col-5">
+                                                    @Html.TextBoxFor(m => m.RoleDtls[i].SubMenu[j].FormName, new { @readonly = true, @tabindex = "-1" })
+                                                    @Html.HiddenFor(m => m.RoleDtls[i].SubMenu[j].PkRoleDtlId)
+                                                    @Html.HiddenFor(m => m.RoleDtls[i].SubMenu[j].FKFormID)
+                                                    @Html.HiddenFor(m => m.RoleDtls[i].SubMenu[j].FkRoleID)
+                                                </td>
+                                                <td class="col-1">
+                                                    @Html.CheckBoxFor(m => m.RoleDtls[i].SubMenu[j].IsAccess, new { @class = "form-check-input" })
+                                                </td>
+                                                <td class="col-1">
+                                                    @Html.CheckBoxFor(m => m.RoleDtls[i].SubMenu[j].IsCreate, new { @class = "form-check-input" })
+                                                </td>
+                                                <td class="col-1">
+                                                    @Html.CheckBoxFor(m => m.RoleDtls[i].SubMenu[j].IsEdit, new { @class = "form-check-input" })
+                                                </td>
+                                                <td class="col-1">
+                                                    @Html.CheckBoxFor(m => m.RoleDtls[i].SubMenu[j].IsPrint, new { @class = "form-check-input" })
+                                                </td>
+                                                <td class="col-1">
+                                                    @Html.CheckBoxFor(m => m.RoleDtls[i].SubMenu[j].IsBrowse, new { @class = "form-check-input" })
+                                                </td>
+                                            </tr>
+                                        }
                                     }
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
+                                }
+                                else
+                                {
+
+                                    <tr class="main-edit">
+                                        <td class="col-5">
+                                            @Html.TextBoxFor(m => m.RoleDtls[i].FormName, new { @readonly = true, @tabindex = "-1" })
+                                            @Html.HiddenFor(m => m.RoleDtls[i].PkRoleDtlId)
+                                            @Html.HiddenFor(m => m.RoleDtls[i].FKFormID)
+                                            @Html.HiddenFor(m => m.RoleDtls[i].FkRoleID)
+                                        </td>
+                                        <td class="col-1">
+                                            @Html.CheckBoxFor(m => m.RoleDtls[i].IsAccess, new { @class = "form-check-input" })
+                                        </td>
+                                        <td class="col-1">
+                                            @Html.CheckBoxFor(m => m.RoleDtls[i].IsCreate, new { @class = "form-check-input" })
+                                        </td>
+                                        <td class="col-1">
+                                            @Html.CheckBoxFor(m => m.RoleDtls[i].IsEdit, new { @class = "form-check-input" })
+                                        </td>
+                                        <td class="col-1">
+                                            @Html.CheckBoxFor(m => m.RoleDtls[i].IsPrint, new { @class = "form-check-input" })
+                                        </td>
+                                        <td class="col-1">
+                                            @Html.CheckBoxFor(m => m.RoleDtls[i].IsBrowse, new { @class = "form-check-input" })
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     </form>
@@ -193,95 +200,31 @@
                 e.preventDefault();
                 $("form").submit();
             });
-            debugger;
-            var _d = JSON.parse($("#hdData").val());
-            if (_d.RoleDtl_lst.length > 0) {
-                $(_d.RoleDtl_lst).each(function (i, v) {
-                    var tr = $('#tr_' + v.FKFormID);
-                    $(tr).find('.PkRoleDtlId').val(v.PkRoleDtlId);
-                    $(tr).find('.IsAccess').prop("checked", v.IsAccess);
-                    $(tr).find('.IsEdit').prop("checked", v.IsEdit);
-                    $(tr).find('.IsCreate').prop("checked", v.IsCreate);
-                    $(tr).find('.IsPrint').prop("checked", v.IsPrint);
-                    $(tr).find('.IsBrowse').prop("checked", v.IsBrowse);
 
-                });
-            }
         })
 
-
-    </script>
-
-    <script>
-        function RevarseCheckbox($cntrl, index) {
-            var parent = $($cntrl).parent().parent().parent();
-            $(parent).find('tr').each(function () {
-                var chk = $(this).find("td:eq(" + index + ") input[type=checkbox]");
-                if (chk.length > 0) {
-                    var CurrentValue = $(chk).is(':checked');
-                    $(chk).prop("checked", !CurrentValue);
-                }
-            });
-        }
-        function addSizes() {
-
-            var rowCount = $('#tblSize tbody tr').length;
-
-
-            var index = $("#hidSizeIndex").val();
-            var Exists = false;
-
-            var Size = $("#txtSize").val();
-            if (Size != '') {
-                $('#tblSize tr').each(function (ind) {
-                    if ($("#RoleDtl_lst_" + ind + "__Size").val() === Size && index !== ind.toString() && $("#RoleDtl_lst_" + ind + "__Mode").val() != '2') {
-                        alert("Already Exists");
-                        Exists = true;
-                    }
+        function Menucolaps(ctrl, id) {
+            var flag = $(ctrl).children("i").hasClass("fa-angle-right");
+            if (flag) {
+                $(ctrl).html('<i class="right fas fa-angle-down"> </i>');
+                $('[key="' + id + '"]').show();
+            }
+            else {
+                $('[key="' + id + '"]').hide();
+                
+                $('[key="' + id + '"].main-sub').each(function () {
+                    var chId = $(this).attr("parent");
+                    debugger;
+                    $(this).find("i").attr('class',"right fas fa-angle-right");
+                    $('[key="' + chId + '"]').hide();
                 });
-                if (!Exists) {
-
-
-                    if (index === "") {
-                        var html = '<tr index="' + rowCount + '">';
-                        html += '<td class="tabel-td-xs">  <input  id="RoleDtl_lst_' + rowCount + '__Size" name="RoleDtl_lst[' + rowCount + '].Size" type="text" value="' + $("#txtSize").val() + '" tabindex="-1"> </td>';
-                        html += '<td class="tabel-td-xs">';
-                        html += '<input id="RoleDtl_lst_' + rowCount + '__Mode" name="RoleDtl_lst[' + rowCount + '].Mode" type="hidden" value="0">';
-                        html += '<input id="RoleDtl_lst_' + rowCount + '__PkId" name="RoleDtl_lst[' + rowCount + '].PkId" type="hidden" value="0">';
-                        html += '<span class="action-icon" onclick="UpdateSize(this,' + rowCount + ',\'del\')"><i class="fa fa-trash" /></span> </td>';
-
-                        html += '</tr>';
-
-                        $("#tblSize tbody").append(html);
-                    } else {
-                        // $("#RoleDtl_lst_" + index + "__Size").val($("#txtSize").val());
-                        //  $("#RoleDtl_lst_" + index + "__Mode").val('1');
-
-                    }
-                    $("#txtSize").val('');
-                    //$("#FklocalityGridId").prop('selectedIndex', 0);
-                    //DropDownReset('FklocalityGridId');
-                }
+                $(ctrl).html('<i class="right fas fa-angle-right"> </i>');
             }
-            else { alert("Insert Size"); }
-            // }
-            return false;
+            
         }
 
-        function UpdateSize(obj, index, action) {
-            //if (action === 'edit') {
-            //    $("#hidSizeIndex").val(index);
-            //    $("#FklocalityGridId").val($("#RoleDtl_lst_" + index + "__FKSizeID").val());
-            //    // $("#drpFklocalityGridId").val($("#RoleDtl_lst_" + index + "__Size").val());
-            //    $("#OpeningBalance").val($("#RoleDtl_lst_" + index + "__Size").val());
-            //    $('#thDrCr').find("input[value='" + $("#RoleDtl_lst_" + index + "__type").val() + "']").prop('checked', true);
-            //    $(obj).closest('tr').removeClass('tbl-delete');
-            //} else
 
-            if (action === 'del') {
-                $(obj).closest('tr').addClass('tbl-delete');
-                $("#RoleDtl_lst_" + index + "__Mode").val('2');
-            }
-        }
     </script>
+
+
 }

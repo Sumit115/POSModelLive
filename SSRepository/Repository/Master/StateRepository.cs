@@ -10,7 +10,7 @@ namespace SSRepository.Repository.Master
 {
     public class StateRepository : Repository<TblStateMas>, IStateRepository
     {
-        public StateRepository(AppDbContext dbContext) : base(dbContext)
+        public StateRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

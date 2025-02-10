@@ -10,7 +10,7 @@ namespace SSRepository.Repository.Master
 {
     public class BranchRepository : Repository<TblBranchMas>, IBranchRepository
     {
-        public BranchRepository(AppDbContext dbContext) : base(dbContext)
+        public BranchRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {;
         }
 

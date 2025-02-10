@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using SSRepository.Data;
 using SSRepository.IRepository;
 using SSRepository.IRepository.Master;
@@ -13,7 +14,7 @@ namespace SSRepository.Repository
 {
     public class GridLayoutRepository : Repository<TblGridStructer>, IGridLayoutRepository
     {
-        public GridLayoutRepository(AppDbContext dbContext) : base(dbContext)
+        public GridLayoutRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
             
         }

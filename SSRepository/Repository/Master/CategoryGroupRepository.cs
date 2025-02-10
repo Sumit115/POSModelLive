@@ -11,7 +11,7 @@ namespace SSRepository.Repository.Master
 {
     public class CategoryGroupRepository : Repository<TblCategoryGroupMas>, ICategoryGroupRepository
     {
-        public CategoryGroupRepository(AppDbContext dbContext) : base(dbContext)
+        public CategoryGroupRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

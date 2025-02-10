@@ -24,41 +24,40 @@
                         </div>
                     </div>
 
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Address</label>
-                        <textarea asp-for="PartyAddress" class="form-control" rows="2" disabled></textarea>
-                        <span asp-validation-for="PartyAddress" class="text-danger"></span>
+                    <div class="col-md-12">
+                        <div class="form-group row mb-2">
+                            <label class="col-sm-1">Address</label>
+                            <div class="col-md-11">
+                                <textarea asp-for="PartyAddress" class="form-control" rows="2" disabled></textarea>
+                                <span asp-validation-for="PartyAddress" class="text-danger"></span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>GSTIN</label>
-                        <input asp-for="PartyGSTN" class="form-control" disabled />
-                        <span asp-validation-for="PartyGSTN" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Credit</label>
-                        <input asp-for="PartyCredit" class="form-control" value="0" disabled />
-                        <span asp-validation-for="PartyCredit" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Balance</label>
-                        <input name="PartyBalance" type="text" id="PartyBalance" class="form-control" value="0" disabled />
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                                <label>GSTIN</label>
+                                <input asp-for="PartyGSTN" class="form-control" disabled />
+                                <span asp-validation-for="PartyGSTN" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Credit</label>
+                                <input asp-for="PartyCredit" class="form-control" value="0" disabled />
+                                <span asp-validation-for="PartyCredit" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Balance</label>
+                                <input name="PartyBalance" type="text" id="PartyBalance" class="form-control" value="0" disabled />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-5">
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label class="control-label">Series </label>
+            <div class="col-md-5">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Series </label>
 
                             @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKSeriesId" }, { "Class", "val-cus-drp" }, { "event", "setSeries()" },
                             { "value", Model.FKSeriesId }, { "text", Model.SeriesName }, { "uri", "" }})

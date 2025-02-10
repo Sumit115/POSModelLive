@@ -10,7 +10,7 @@ namespace SSRepository.Repository.Master
 {
     public class ZoneRepository : Repository<TblZoneMas>, IZoneRepository
     {
-        public ZoneRepository(AppDbContext dbContext) : base(dbContext)
+        public ZoneRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

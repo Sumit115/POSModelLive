@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using SSRepository.Data;
 using SSRepository.IRepository.Transaction;
 using SSRepository.Models;
@@ -10,7 +11,7 @@ namespace SSRepository.Repository.Transaction
 {
     public class LocationReceiveRepository : SalesInvoiceRepository, ILocationReceiveRepository
     {
-        public LocationReceiveRepository(AppDbContext dbContext) : base(dbContext)
+        public LocationReceiveRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
             //SPAddUpd = "usp_LocationReceiveAddUpd";
             //SPList = "usp_LocationReceiveList";

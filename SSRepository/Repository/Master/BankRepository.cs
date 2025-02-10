@@ -10,7 +10,7 @@ namespace SSRepository.Repository.Master
 {
     public class BankRepository : Repository<TblBankMas>, IBankRepository
     {
-        public BankRepository(AppDbContext dbContext) : base(dbContext)
+        public BankRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

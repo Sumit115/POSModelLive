@@ -17,7 +17,7 @@ namespace SSRepository.Repository.Transaction
 {
     public class JobWorkIssueRepository : TranBaseRepository, IJobWorkIssueRepository
     {
-        public JobWorkIssueRepository(AppDbContext dbContext) : base(dbContext)
+        public JobWorkIssueRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
             SPAddUpd = "usp_JobWorkAddUpd";
             SPList = "usp_JobWorkList";

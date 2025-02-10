@@ -10,7 +10,7 @@ namespace SSRepository.Repository.Master
 {
     public class DistrictRepository : Repository<TblDistrictMas>, IDistrictRepository
     {
-        public DistrictRepository(AppDbContext dbContext) : base(dbContext)
+        public DistrictRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

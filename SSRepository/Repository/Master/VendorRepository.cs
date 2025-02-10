@@ -14,7 +14,7 @@ namespace SSRepository.Repository.Master
 {
     public class VendorRepository : Repository<TblVendorMas>, IVendorRepository
     {
-        public VendorRepository(AppDbContext dbContext) : base(dbContext)
+        public VendorRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
        
@@ -367,7 +367,7 @@ namespace SSRepository.Repository.Master
             long ID = 0;
             try
             {
-                new AccountMasRepository(__dbContext).SaveBaseData(ref md, "Create", ref ID);
+                new AccountMasRepository(__dbContext, _contextAccessor).SaveBaseData(ref md, "Create", ref ID);
 
             }
             catch (Exception ex) { }

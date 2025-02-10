@@ -16,7 +16,7 @@ namespace SSRepository.Repository.Transaction
 {
     public class SalesCrNoteRepository : TranBaseRepository, ISalesCrNoteRepository
     {
-        public SalesCrNoteRepository(AppDbContext dbContext) : base(dbContext)
+        public SalesCrNoteRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
             SPAddUpd = "usp_SalesCrNoteAddUpd";
             SPList = "usp_SalesCrNoteList";

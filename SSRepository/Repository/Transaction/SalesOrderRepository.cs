@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using SSRepository.Data;
 using SSRepository.IRepository.Transaction;
 using SSRepository.Models;
@@ -10,7 +11,7 @@ namespace SSRepository.Repository.Transaction
 {
     public class SalesOrderRepository : TranBaseRepository, ISalesOrderRepository
     {
-        public SalesOrderRepository(AppDbContext dbContext) : base(dbContext)
+        public SalesOrderRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
             SPAddUpd = "usp_SalesOrderAddUpd";
             SPList = "usp_SalesOrderList";
@@ -199,7 +200,7 @@ namespace SSRepository.Repository.Transaction
 
                             if (model.FkPartyId > 0 && (model.TranAlias == "SORD" || model.TranAlias == "SINV"))
                             {
-                                var _cust = new CustomerRepository(__dbContext).GetSingleRecord(model.FkPartyId);
+                                var _cust = new CustomerRepository(__dbContext, _contextAccessor).GetSingleRecord(model.FkPartyId);
                                 detail.TradeDisc = _cust.Disc;
 
                             }

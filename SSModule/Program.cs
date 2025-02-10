@@ -84,6 +84,7 @@ builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(80);//You can set Time  
 });
+//builder.Services.AddScoped<MenuService>();
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IGridLayoutRepository, GridLayoutRepository>();

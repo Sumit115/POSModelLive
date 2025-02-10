@@ -10,7 +10,7 @@ namespace SSRepository.Repository.Master
 {
     public class AreaRepository : Repository<TblAreaMas>, IAreaRepository
     {
-        public AreaRepository(AppDbContext dbContext) : base(dbContext)
+        public AreaRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using SSRepository.Data;
 using SSRepository.IRepository.Transaction;
 using SSRepository.Models;
@@ -7,7 +8,7 @@ namespace SSRepository.Repository.Transaction
 {
     public class VoucherRepository : TranBaseRepository, IVoucherRepository
     {
-        public VoucherRepository(AppDbContext dbContext) : base(dbContext)
+        public VoucherRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
             SPAddUpd = "usp_VoucherAddUpd";
             SPList = "usp_VoucherList";

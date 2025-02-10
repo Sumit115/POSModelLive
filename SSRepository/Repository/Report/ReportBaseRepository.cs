@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
 using SSRepository.Data;
@@ -18,7 +19,7 @@ namespace SSRepository.Repository.Report
     public class ReportBaseRepository : BaseRepository
     {
         public string GetSP = "";
-        public ReportBaseRepository(AppDbContext dbContext) : base(dbContext)
+        public ReportBaseRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
 
         }

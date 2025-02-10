@@ -12,7 +12,7 @@ namespace SSRepository.Repository.Master
 {
     public class FormRepository : Repository<TblFormMas>, IFormRepository
     {
-        public FormRepository(AppDbContext dbContext) : base(dbContext)
+        public FormRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

@@ -13,7 +13,7 @@ namespace SSRepository.Repository.Master
 {
     public class AccountMasRepository : Repository<TblAccountMas>, IAccountMasRepository
     {
-        public AccountMasRepository(AppDbContext dbContext) : base(dbContext)
+        public AccountMasRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

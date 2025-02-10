@@ -1,4 +1,5 @@
 ﻿using Azure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -12,7 +13,7 @@ namespace SSRepository.Repository
 {
     public class Repository<T> : BaseRepository, IRepository<T> where T : class, IEntity
     {
-        public Repository(AppDbContext dbContext) : base(dbContext)
+        public Repository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
         public async Task<string> CreateAsync(object tblmas, string Mode, Int64 ID, string dbType = "")
@@ -21,11 +22,7 @@ namespace SSRepository.Repository
             if (ErrorMsg == "")
             {
                 SaveBaseData(ref tblmas, Mode, ref ID);
-                ErrorMsg = SaveClientData();
-                //if (dbType == "client")
-                //    ErrorMsg = SaveClientData();
-                //else
-                //    ErrorMsg = await SaveDataAsync();
+                ErrorMsg = SaveClientData();                
             }
 
             return ErrorMsg;
@@ -175,17 +172,30 @@ namespace SSRepository.Repository
     public class BaseRepository //: IBaseRepository
     {
         protected readonly AppDbContext __dbContext;
-
+        protected readonly IHttpContextAccessor _contextAccessor;
         protected readonly int __MaxPageSize = 1000;
         protected readonly int __PageSize = 30;
 
 
-        public BaseRepository(AppDbContext dbContext)
+        public BaseRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor)
         {
             __dbContext = dbContext;
+            _contextAccessor = contextAccessor;
         }
 
+        public long GetUserID()
+        {
+            return Convert.ToInt64(_contextAccessor.HttpContext.Session.GetString("UserID"));
+        }
 
+        public long GetRoleID()
+        {
+            return Convert.ToInt64(_contextAccessor.HttpContext.Session.GetString("RoleId"));
+        }
+        public long IsAdmin()
+        {
+            return Convert.ToInt64(_contextAccessor.HttpContext.Session.GetString("IsAdmin"));
+        }
 
 
 

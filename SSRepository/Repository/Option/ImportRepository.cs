@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using SSRepository.Data;
 using SSRepository.IRepository.Option;
@@ -14,7 +15,7 @@ namespace SSRepository.Repository.Option
 {
     public class ImportRepository : BaseRepository, IImportRepository
     {
-        public ImportRepository(AppDbContext dbContext) : base(dbContext)
+        public ImportRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
 
         }

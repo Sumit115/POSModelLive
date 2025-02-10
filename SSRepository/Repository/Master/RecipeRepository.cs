@@ -10,7 +10,7 @@ namespace SSRepository.Repository.Master
 {
     public class RecipeRepository : Repository<TblRecipeMas>, IRecipeRepository
     {
-        public RecipeRepository(AppDbContext dbContext) : base(dbContext)
+        public RecipeRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

@@ -1,24 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using SSRepository.Data;
-using SSRepository.IRepository.Master;
-using SSRepository.IRepository;
-using SSRepository.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Azure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using SSRepository.Repository.Master;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Drawing.Printing;
-using ClosedXML.Excel;
+using Newtonsoft.Json;
+using SSRepository.IRepository;
+using SSRepository.IRepository.Master;
+using SSRepository.Models;
 using System.Data;
-using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace SSAdmin.Areas.Master.Controllers
 {
@@ -40,7 +27,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         public async Task<JsonResult> List(int pageNo, int pageSize)
-        {
+        {            
             return Json(new
             {
                 status = "success",
@@ -75,7 +62,7 @@ namespace SSAdmin.Areas.Master.Controllers
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
             RoleModel Model = new RoleModel();
-            Model.RoleDtl_lst = new List<RoleDtlModel>();
+            Model.RoleDtls = new List<RoleDtlModel>();
             try
             {
 
@@ -92,16 +79,17 @@ namespace SSAdmin.Areas.Master.Controllers
                 else
                 {
                     ViewBag.PageType = "Create";
+                    long roleId = Convert.ToInt64(HttpContext.Session.GetString("RoleId") ?? "0");
+                    Model = _repository.GetSingleRecord(roleId,true);
+                    Model.PkRoleId = 0;
+                    Model.RoleName = "";
 
                 }
             }
             catch (Exception ex)
             {
-                //CommonCore.WriteLog(ex, "Create Get ", ControllerName, GetErrorLogParam());
                 ModelState.AddModelError("", ex.Message);
             }
-            ViewBag.FormList = _repository.GetFormList();
-            ViewBag.Data = JsonConvert.SerializeObject(Model);
 
             return View(Model);
         }
@@ -114,7 +102,6 @@ namespace SSAdmin.Areas.Master.Controllers
             {
                 model.FKUserId = 1;
                 model.FKCreatedByID = 1;
-
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
@@ -132,24 +119,12 @@ namespace SSAdmin.Areas.Master.Controllers
                     {
                         return RedirectToAction(nameof(List));
                     }
-                }
-                else
-                {
-                    foreach (ModelStateEntry modelState in ModelState.Values)
-                    {
-                        foreach (ModelError error in modelState.Errors)
-                        {
-                            var sdfs = error.ErrorMessage;
-                        }
-                    }
-                }
+                }                
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
             }
-            ViewBag.FormList = _repository.GetFormList();
-            ViewBag.Data = JsonConvert.SerializeObject(model);
             return View(model);
         }
 

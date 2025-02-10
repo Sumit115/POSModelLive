@@ -14,7 +14,7 @@ namespace SSRepository.Repository.Transaction
 {
     public class SalesReturnRepository : SalesCrNoteRepository, ISalesReturnRepository
     {
-        public SalesReturnRepository(AppDbContext dbContext) : base(dbContext)
+        public SalesReturnRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

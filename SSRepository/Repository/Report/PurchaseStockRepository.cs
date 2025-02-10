@@ -1,4 +1,5 @@
-﻿using SSRepository.Data;
+﻿using Microsoft.AspNetCore.Http;
+using SSRepository.Data;
 using SSRepository.IRepository.Report;
 using SSRepository.IRepository.Transaction;
 using SSRepository.Models;
@@ -14,7 +15,7 @@ namespace SSRepository.Repository.Report
 {
     public class PurchaseStockRepository : ReportBaseRepository, IPurchaseStockRepository
     {
-        public PurchaseStockRepository(AppDbContext dbContext) : base(dbContext)
+        public PurchaseStockRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
             GetSP = "usp_PurchaseStock";
         }

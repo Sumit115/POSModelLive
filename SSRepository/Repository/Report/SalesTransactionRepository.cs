@@ -1,4 +1,5 @@
-﻿using SSRepository.Data;
+﻿using Microsoft.AspNetCore.Http;
+using SSRepository.Data;
 using SSRepository.IRepository.Report;
 using SSRepository.IRepository.Transaction;
 using SSRepository.Models;
@@ -14,7 +15,7 @@ namespace SSRepository.Repository.Report
 {
     public class SalesTransactionRepository : ReportBaseRepository, ISalesTransactionRepository
     {
-        public SalesTransactionRepository(AppDbContext dbContext) : base(dbContext)
+        public SalesTransactionRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
             GetSP = "usp_SalesTransaction";
         }

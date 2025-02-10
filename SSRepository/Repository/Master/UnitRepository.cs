@@ -10,7 +10,7 @@ namespace SSRepository.Repository.Master
 {
     public class UnitRepository : Repository<TblUnitMas>, IUnitRepository
     {
-        public UnitRepository(AppDbContext dbContext) : base(dbContext)
+        public UnitRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
        

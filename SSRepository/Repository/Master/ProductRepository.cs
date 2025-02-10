@@ -13,7 +13,7 @@ namespace SSRepository.Repository.Master
 {
     public class ProductRepository : Repository<TblProductMas>, IProductRepository
     {
-        public ProductRepository(AppDbContext dbContext) : base(dbContext)
+        public ProductRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 
@@ -375,7 +375,7 @@ namespace SSRepository.Repository.Master
 
         public List<CategoryModel> prodCatgList(int pageSize, int pageNo = 1, string search = "")
         {
-            CategoryRepository rep = new CategoryRepository(__dbContext);
+            CategoryRepository rep = new CategoryRepository(__dbContext, _contextAccessor);
             return rep.GetList(pageSize, pageNo, search);
         }
 

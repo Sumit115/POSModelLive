@@ -6,12 +6,15 @@ using Microsoft.AspNetCore.Http;
 using SSRepository.Models;
 using Microsoft.VisualBasic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using static System.Net.Mime.MediaTypeNames;
+using System.Collections.Generic;
 
 namespace SSRepository.Repository.Master
 {
     public class RoleRepository : Repository<TblRoleMas>, IRoleRepository
     {
-        public RoleRepository(AppDbContext dbContext) : base(dbContext)
+        public RoleRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 
@@ -31,12 +34,17 @@ namespace SSRepository.Repository.Master
             return error;
         }
 
-        public List<RoleModel> GetList(int pageSize, int pageNo = 1, string search = "", long RoleGroupId = 0)
+        public List<RoleModel> GetList(int pageSize, int pageNo = 1, string search = "", long FKUserID = 0)
         {
+            if (FKUserID !=0 && IsAdmin() != 1)
+            {
+                FKUserID = GetUserID();
+            }
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<RoleModel> data = (from cou in __dbContext.TblRoleMas
                                     where (EF.Functions.Like(cou.RoleName.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                    && (FKUserID ==0 || cou.FKUserID == FKUserID)
                                     orderby cou.PkRoleId
                                     select (new RoleModel
                                     {
@@ -66,43 +74,86 @@ namespace SSRepository.Repository.Master
                     }).ToList(); ;
         }
 
-        public RoleModel GetSingleRecord(long PkRoleId)
+        public RoleModel GetSingleRecord(long PkRoleId, bool IsAccess = false)
         {
+            RoleModel data = (from cou in __dbContext.TblRoleMas
+                              where cou.PkRoleId == PkRoleId
+                              select (new RoleModel
+                              {
+                                  PkRoleId = cou.PkRoleId,
+                                  FKUserId = cou.FKUserID,
+                                  FKCreatedByID = cou.FKCreatedByID,
+                                  ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                  CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
+                                  RoleName = cou.RoleName
+                              })).FirstOrDefault();
 
-            RoleModel data = new RoleModel();
-            data = (from cou in __dbContext.TblRoleMas
-                    where cou.PkRoleId == PkRoleId
-                    select (new RoleModel
-                    {
-                        PkRoleId = cou.PkRoleId,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
-                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
-                        RoleName = cou.RoleName,
-                        RoleDtl_lst = (from ad in __dbContext.TblRoleDtl
-                                           //  join loc in __dbContext.TblBranchMas on ad.FKLocationID equals loc.PkBranchId
-                                       where (ad.FkRoleID == cou.PkRoleId)
-                                       select (new RoleDtlModel
-                                       {
-                                           PkRoleDtlId = ad.PkRoleDtlId,
-                                           FKFormID = ad.FKFormID,
-                                           IsAccess = ad.IsAccess,
-                                           IsEdit = ad.IsEdit,
-                                           IsCreate = ad.IsCreate,
-                                           IsPrint = ad.IsPrint,
-                                           IsBrowse = ad.IsBrowse,
-                                           //FKUserId = ad.FKUserID,
-                                           //ModifiDate = ad.ModifiedDate.ToString("dd-MMM-yyyy"),
-                                           //FKCreatedByID = ad.FKCreatedByID,
-                                           //CreateDate = ad.CreationDate.ToString("dd-MMM-yyyy"),
-                                           FkRoleID = ad.FkRoleID,
-                                       })).ToList(),
-                    })).FirstOrDefault();
+            if (data != null)
+            {
+                data.RoleDtls = (from r in __dbContext.TblRoleDtl
+                                 join f in __dbContext.TblFormMas on r.FKFormID equals f.PKFormID
+                                 where r.FkRoleID == data.PkRoleId && (IsAccess == false || r.IsAccess == IsAccess)
+                                 orderby f.SeqNo
+                                 select (new RoleDtlModel
+                                 {
+                                     PkRoleDtlId = r.PkRoleDtlId,
+                                     FkRoleID = r.FkRoleID,
+                                     FKFormID = r.FKFormID,
+                                     FKMasterFormID = f.FKMasterFormID,
+                                     SeqNo = f.SeqNo,
+                                     FormName = f.FormName,
+                                     ShortName = f.FormName,
+                                     ShortCut = f.ShortCut,
+                                     ToolTip = f.ToolTip,
+                                     Image = f.Image,
+                                     WebURL = f.WebURL,
+                                     IsAccess = r.IsAccess,
+                                     IsEdit = r.IsEdit,
+                                     IsCreate = r.IsCreate,
+                                     IsPrint = r.IsPrint,
+                                     IsBrowse = r.IsBrowse
+                                 })).ToList();
 
-            
+                data.RoleDtls = BuildMenuTree(data.RoleDtls, null);
+            }
             return data;
         }
+
+
+        private List<RoleDtlModel> BuildMenuTree(List<RoleDtlModel>? allMenuItems, long? parentId)
+        {
+            if (allMenuItems != null)
+            {
+                return allMenuItems
+               .Where(m => m.FKMasterFormID == parentId)
+               .Select(m => new RoleDtlModel
+               {
+                   PkRoleDtlId = m.PkRoleDtlId,
+                   FkRoleID = m.FkRoleID,
+                   FKFormID = m.FKFormID,
+                   FKMasterFormID = m.FKMasterFormID,
+                   SeqNo = m.SeqNo,
+                   FormName = m.FormName,
+                   ShortName = m.FormName,
+                   ShortCut = m.ShortCut,
+                   ToolTip = m.ToolTip,
+                   Image = m.Image,
+                   WebURL = m.WebURL,
+                   IsAccess = m.IsAccess,
+                   IsEdit = m.IsEdit,
+                   IsCreate = m.IsCreate,
+                   IsPrint = m.IsPrint,
+                   IsBrowse = m.IsBrowse,
+                   SubMenu = BuildMenuTree(allMenuItems, m.FKFormID) // Recursive call for nested menus
+               })
+               .ToList();
+            }
+            else
+            {
+                return new List<RoleDtlModel>();
+            }
+        }
+
 
         public string DeleteRecord(long PkRoleId)
         {
@@ -141,6 +192,7 @@ namespace SSRepository.Repository.Master
 
             return Error;
         }
+
         public override string ValidateData(object objmodel, string Mode)
         {
 
@@ -182,67 +234,50 @@ namespace SSRepository.Repository.Master
             }
 
 
-            if (model.RoleDtl_lst != null)
+            if (model.RoleDtls != null)
             {
-                List<TblRoleDtl> lstAdd = new List<TblRoleDtl>();
-                List<TblRoleDtl> lstEdit = new List<TblRoleDtl>();
-                List<TblRoleDtl> lstDel = new List<TblRoleDtl>();
-                foreach (var item in model.RoleDtl_lst)
-                {
-                    TblRoleDtl locObj = new TblRoleDtl();
-                    locObj.FKFormID = item.FKFormID;
-                    locObj.IsAccess = item.IsAccess;
-                    locObj.IsEdit = item.IsEdit;
-                    locObj.IsCreate = item.IsCreate;
-                    locObj.IsPrint = item.IsPrint;
-                    locObj.IsBrowse = item.IsBrowse;
-                    locObj.FKUserID = Tbl.FKUserID;
-                    locObj.ModifiedDate = Tbl.ModifiedDate;
-                    locObj.FKCreatedByID = Tbl.FKCreatedByID;
-                    locObj.CreationDate = Tbl.CreationDate;
-                    locObj.FkRoleID = Tbl.PkRoleId;
-
-
-
-                    //   lstAdd.Add(locObj);
-                    if (item.PkRoleDtlId >0)
-                    {
-                        locObj.PkRoleDtlId = item.PkRoleDtlId;
-                        locObj.ModifiedDate = DateTime.Now;
-                        lstEdit.Add(locObj);
-                    }
-                    else if (item.PkRoleDtlId == 0)
-                    {
-                        //  locObj.PKAccountDtlId = getIdOfSeriesByEntity("PKAccountDtlId", null, Tbl, "TblAccountDtl");
-                        locObj.FKCreatedByID = Tbl.FKCreatedByID;
-                        locObj.FKUserID = Tbl.FKUserID;
-                        locObj.CreationDate = DateTime.Now;
-                        locObj.ModifiedDate = DateTime.Now;
-                        lstAdd.Add(locObj);
-                    }
-                    else
-                    {
-                        var res1 = (from x in __dbContext.TblRoleDtl
-                                    where x.FkRoleID == Tbl.PkRoleId
-                                    && x.PkRoleDtlId != item.PkRoleDtlId
-                                    select x).Count();
-                        if (res1 > 0)
-                        {
-                            lstDel.Add(locObj);
-                        }
-                    }
-
-                }
-
-                if (lstDel.Count() > 0)
-                    DeleteData(lstDel, true);
-                if (lstEdit.Count() > 0)
-                    UpdateData(lstEdit, true);
-                if (lstAdd.Count() > 0)
-                    AddData(lstAdd, true);
+                MenuAdd(model.RoleDtls, Tbl.PkRoleId);
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKRoleID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
+
+        private bool MenuAdd(List<RoleDtlModel> RoleDtls, long PkRoleId)
+        {
+            bool flag = false;
+            foreach (var item in RoleDtls)
+            {
+                TblRoleDtl tbl = new TblRoleDtl();
+                tbl.PkRoleDtlId = item.PkRoleDtlId;
+                tbl.FkRoleID = PkRoleId;
+                tbl.FKFormID = item.FKFormID;
+                tbl.IsEdit = item.IsEdit;
+                tbl.IsCreate = item.IsCreate;
+                tbl.IsPrint = item.IsPrint;
+                tbl.IsBrowse = item.IsBrowse;
+                if (item.SubMenu != null && item.SubMenu.Any())
+                {
+                    tbl.IsAccess = MenuAdd(item.SubMenu, PkRoleId);
+                }
+                else
+                {
+                    tbl.IsAccess = item.IsAccess;
+                }
+                if (tbl.IsAccess)
+                {
+                    flag = true;
+                }
+                if(tbl.PkRoleDtlId > 0)
+                    UpdateData(tbl, false);
+                else
+                    AddData(tbl, false);
+
+            }
+
+            return flag;
+
+        }
+
+
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>

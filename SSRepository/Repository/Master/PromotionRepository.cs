@@ -10,7 +10,7 @@ namespace SSRepository.Repository.Master
 {
     public class PromotionRepository : Repository<TblPromotionMas>, IPromotionRepository
     {
-        public PromotionRepository(AppDbContext dbContext) : base(dbContext)
+        public PromotionRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

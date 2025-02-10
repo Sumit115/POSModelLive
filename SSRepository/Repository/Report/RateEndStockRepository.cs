@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
@@ -21,13 +22,13 @@ namespace SSRepository.Repository.Report
 {
     public class RateEndStockRepository : ReportBaseRepository, IRateEndStockRepository
     {
-        public RateEndStockRepository(AppDbContext dbContext) : base(dbContext)
+        public RateEndStockRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
             GetSP = "usp_RateStock";
         }
         public string GroupByColumn(long FormId, string GridName = "")
         {
-            var data = new GridLayoutRepository(__dbContext).GetSingleRecord(1, FormId, GridName, ColumnList(GridName));
+            var data = new GridLayoutRepository(__dbContext, _contextAccessor).GetSingleRecord(1, FormId, GridName, ColumnList(GridName));
             List<ColumnStructure> _cs = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData);
             string clm = "CategoryName,NameToDisplay,Location,Batch,MRP,StockDays,Barcode";
             List<string> columnlist = clm.Split(',').ToList().Where(x => _cs.Where(y => y.Fields == x && y.IsActive == 1).ToList().Count > 0).ToList();

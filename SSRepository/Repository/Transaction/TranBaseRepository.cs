@@ -1,30 +1,11 @@
-﻿using Azure;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Identity.Client;
 using Newtonsoft.Json;
 using SSRepository.Data;
-using SSRepository.IRepository;
-using SSRepository.IRepository.Master;
 using SSRepository.Models;
 using SSRepository.Repository.Master;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SSRepository.Repository.Transaction
 {
@@ -38,7 +19,7 @@ namespace SSRepository.Repository.Transaction
         public string SPList = "";
         public string SPById = "";
 
-        public TranBaseRepository(AppDbContext dbContext) : base(dbContext)
+        public TranBaseRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
 
         }
@@ -774,7 +755,7 @@ namespace SSRepository.Repository.Transaction
 
                 if (model.FkPartyId > 0 && model.ExtProperties.TranType == "S" && model.TranAlias != "LORD" && model.TranAlias != "LINV")
                 {
-                    var _cust = new CustomerRepository(__dbContext).GetSingleRecord(model.FkPartyId);
+                    var _cust = new CustomerRepository(__dbContext, _contextAccessor).GetSingleRecord(model.FkPartyId);
                     detail.TradeDisc = _cust.Disc;
                 }
 
@@ -1409,7 +1390,7 @@ namespace SSRepository.Repository.Transaction
         {
             if (TranAlias == "LINV" || TranAlias == "LORD")
             {
-                LocationRepository rep = new LocationRepository(__dbContext);
+                LocationRepository rep = new LocationRepository(__dbContext, _contextAccessor);
                 var lst = rep.GetList(pageSize, pageNo, search).ToList()
                     .Select(cou => new PartyModel()
                     {
@@ -1429,12 +1410,12 @@ namespace SSRepository.Repository.Transaction
             }
             else if (TranAlias == "PINV" || TranAlias == "PORD" || TranAlias == "PJ_O" || TranAlias == "PJ_R" || TranAlias == "PJ_I")
             {
-                VendorRepository rep = new VendorRepository(__dbContext);
+                VendorRepository rep = new VendorRepository(__dbContext, _contextAccessor);
                 return rep.GetList(pageSize, pageNo, search);
             }
             else
             {
-                CustomerRepository rep = new CustomerRepository(__dbContext);
+                CustomerRepository rep = new CustomerRepository(__dbContext, _contextAccessor);
                 return rep.GetList(pageSize, pageNo, search);
             }
         }
@@ -1642,7 +1623,7 @@ namespace SSRepository.Repository.Transaction
 
         public List<ProductModel> ProductList(int pageSize, int pageNo = 1, string search = "", long FkPartyId = 0, long FkInvoiceId = 0, DateTime? InvoiceDate = null)
         {
-            ProductRepository rep = new ProductRepository(__dbContext);
+            ProductRepository rep = new ProductRepository(__dbContext, _contextAccessor);
             if (!string.IsNullOrWhiteSpace(search) && search.Length > 3)
             {
                 if (FkPartyId > 0 || FkInvoiceId > 0)
@@ -1755,26 +1736,26 @@ namespace SSRepository.Repository.Transaction
         }
         public object InvoiceList(long FkPartyId, DateTime? InvoiceDate = null)
         {
-            SalesInvoiceRepository rep = new SalesInvoiceRepository(__dbContext);
+            SalesInvoiceRepository rep = new SalesInvoiceRepository(__dbContext, _contextAccessor);
             return rep.InvoiceListByPartyId_Date(FkPartyId, InvoiceDate);
 
         }
         public List<BankModel> BankList()
         {
-            BankRepository rep = new BankRepository(__dbContext);
+            BankRepository rep = new BankRepository(__dbContext, _contextAccessor);
             return rep.GetList(1000, 1);
         }
 
         public List<SeriesModel> SeriesList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
         {
-            SeriesRepository rep = new SeriesRepository(__dbContext);
+            SeriesRepository rep = new SeriesRepository(__dbContext, _contextAccessor);
             return rep.GetList(pageSize, pageNo, search, TranAlias, DocumentType);
         }
 
 
         public List<AccountMasModel> AccountList()
         {
-            AccountMasRepository rep = new AccountMasRepository(__dbContext);
+            AccountMasRepository rep = new AccountMasRepository(__dbContext, _contextAccessor);
             return rep.GetList(1000, 1);
         }
 
@@ -1812,10 +1793,10 @@ namespace SSRepository.Repository.Transaction
         {
             if (detail != null)
             {
-                var account = new AccountMasRepository(__dbContext).GetSingleRecord(detail.FkAccountId);
+                var account = new AccountMasRepository(__dbContext, _contextAccessor).GetSingleRecord(detail.FkAccountId);
                 if (account != null)
                 {
-                    var series = new SeriesRepository(__dbContext).GetSingleRecord(model.FKSeriesId);
+                    var series = new SeriesRepository(__dbContext, _contextAccessor).GetSingleRecord(model.FKSeriesId);
                     decimal Balance = 0;
                     var _chek = model.VoucherDetails.ToList().Where(x => x.FkAccountId == detail.FkAccountId && x.SrNo > 0 && x.ModeForm != 2).ToList();
                     if (_chek.Count > 1)
@@ -1853,7 +1834,7 @@ namespace SSRepository.Repository.Transaction
 
         public object Get_CategorySizeList_ByProduct(long PKProductId, string search = "")
         {
-            ProductRepository rep = new ProductRepository(__dbContext);
+            ProductRepository rep = new ProductRepository(__dbContext, _contextAccessor);
             var data = new object();
             if (PKProductId > 0)
             {
@@ -1922,7 +1903,7 @@ namespace SSRepository.Repository.Transaction
 
         public object BarcodeList(TransactionModel model, int rowIndex, bool IsReturn)
         {
-            ProductRepository rep = new ProductRepository(__dbContext);
+            ProductRepository rep = new ProductRepository(__dbContext, _contextAccessor);
             if (!IsReturn)
             {
                 model.UniqIdDetails = model.UniqIdDetails == null ? new List<BarcodeUniqVM>() : model.UniqIdDetails;// JsonConvert.DeserializeObject<List<BarcodeVM>>(dd);
@@ -2163,7 +2144,7 @@ namespace SSRepository.Repository.Transaction
         public object GetPrintData(long PkId, long FkSeriesId)
         {
             var model = GetSingleRecord(PkId, FkSeriesId);
-            SeriesRepository repSeries = new SeriesRepository(__dbContext);
+            SeriesRepository repSeries = new SeriesRepository(__dbContext, _contextAccessor);
             var FormatName = repSeries.GetSingleRecord(model.FKSeriesId).FormatName;
             FormatName = string.IsNullOrEmpty(FormatName) ? "Wholesale" : FormatName;
 

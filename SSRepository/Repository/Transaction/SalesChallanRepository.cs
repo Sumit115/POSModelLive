@@ -14,7 +14,7 @@ namespace SSRepository.Repository.Transaction
 {
     public class SalesChallanRepository : SalesInvoiceRepository, ISalesChallanRepository
     {
-        public SalesChallanRepository(AppDbContext dbContext) : base(dbContext)
+        public SalesChallanRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

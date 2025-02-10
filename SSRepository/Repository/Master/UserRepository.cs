@@ -9,7 +9,7 @@ namespace SSRepository.Repository.Master
 {
     public class UserRepository : Repository<TblUserMas>, IUserRepository
     {
-        public UserRepository(AppDbContext dbContext) : base(dbContext)
+        public UserRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
        

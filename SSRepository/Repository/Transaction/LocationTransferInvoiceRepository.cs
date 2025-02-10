@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using SSRepository.Data;
 using SSRepository.IRepository.Transaction;
 using SSRepository.Models;
@@ -10,7 +11,7 @@ namespace SSRepository.Repository.Transaction
 {
     public class LocationTransferInvoiceRepository : SalesInvoiceRepository, ILocationTransferInvoiceRepository
     {
-        public LocationTransferInvoiceRepository(AppDbContext dbContext) : base(dbContext)
+        public LocationTransferInvoiceRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
             //SPAddUpd = "usp_LocationTransferInvoiceAddUpd";
             //SPList = "usp_LocationTransferInvoiceList";
