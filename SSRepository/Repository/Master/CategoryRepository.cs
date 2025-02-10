@@ -10,7 +10,7 @@ namespace SSRepository.Repository.Master
 {
     public class CategoryRepository : Repository<TblCategoryMas>, ICategoryRepository
     {
-        public CategoryRepository(AppDbContext dbContext) : base(dbContext)
+        public CategoryRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

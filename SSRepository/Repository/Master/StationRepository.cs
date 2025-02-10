@@ -10,7 +10,7 @@ namespace SSRepository.Repository.Master
 {
     public class StationRepository : Repository<TblStationMas>, IStationRepository
     {
-        public StationRepository(AppDbContext dbContext) : base(dbContext)
+        public StationRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

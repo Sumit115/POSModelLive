@@ -11,7 +11,7 @@ namespace SSRepository.Repository.Master
 {
     public class CityRepository : Repository<TblCityMas>, ICityRepository
     {
-        public CityRepository(AppDbContext dbContext) : base(dbContext)
+        public CityRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor   )
         {
         }
 

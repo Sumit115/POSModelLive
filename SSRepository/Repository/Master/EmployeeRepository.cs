@@ -10,7 +10,7 @@ namespace SSRepository.Repository.Master
 {
     public class EmployeeRepository : Repository<TblEmployeeMas>, IEmployeeRepository
     {
-        public EmployeeRepository(AppDbContext dbContext) : base(dbContext)
+        public EmployeeRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
          

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace SSRepository.Data
 {
     [Table("tblRole_Dtl", Schema = "dbo")]
-    public partial class TblRoleDtl : TblBase, IEntity
+    public partial class TblRoleDtl : IEntity
     {
         [Key]
         public long PkRoleDtlId { get; set; }

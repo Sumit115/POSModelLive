@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using SSRepository.Data;
 using SSRepository.IRepository.Report;
@@ -17,13 +18,13 @@ namespace SSRepository.Repository.Report
 {
     public class SalesOrderStockRepository : ReportBaseRepository, ISalesOrderStockRepository
     {
-        public SalesOrderStockRepository(AppDbContext dbContext) : base(dbContext)
+        public SalesOrderStockRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
             GetSP = "usp_SalesOrderStock";
         }
         public string GroupByColumn(long FormId, string GridName = "")
         {
-            var data = new GridLayoutRepository(__dbContext).GetSingleRecord(1, FormId, GridName, ColumnList(GridName));
+            var data = new GridLayoutRepository(__dbContext,_contextAccessor).GetSingleRecord(1, FormId, GridName, ColumnList(GridName));
             List<ColumnStructure> _cs = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData);
             string clm = "PartyName,CategoryGroupName,CategoryName,Product,Batch,Batch";
             List<string> columnlist = clm.Split(',').ToList().Where(x => _cs.Where(y => y.Fields == x && y.IsActive == 1).ToList().Count > 0).ToList();

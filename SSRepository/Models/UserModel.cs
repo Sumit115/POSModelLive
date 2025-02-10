@@ -88,5 +88,6 @@ namespace SSRepository.Models
         public bool IsCreate { get; set; }
         public bool IsPrint { get; set; }
         public bool IsBrowse { get; set; }
+        public List<MenuModel>? SubMenu { get; set; }
     }
 }

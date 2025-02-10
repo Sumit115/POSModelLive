@@ -1,12 +1,5 @@
-﻿@using Microsoft.AspNetCore.Http
-
-@if (Context.Session.GetString("UserID") == null || Context.Session.GetString("UserID") == "")
-{
-    Context.Response.Redirect("/Validate");
-}
-@{
+﻿@{
     SSRepository.Models.SysDefaults _SysDefaults = ViewBag.SysDefaults;
-
 }
 
 <!DOCTYPE html>
@@ -25,27 +18,7 @@
     <link href="~/dist/css/adminlte.min.css" rel="stylesheet" />
     <link href="~/SlickGrid/slick.grid.css" rel="stylesheet" />
     <link href="~/css/root.css" rel="stylesheet" />
-    <style>
-        /* width */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        /* Track */
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        /* Handle */
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-        }
-
-            /* Handle on hover */
-            ::-webkit-scrollbar-thumb:hover {
-                background: #555;
-            }
-    </style>
+   
 </head>
 <body class="sidebar-mini sidebar-collapse @ViewData["bdClass"] ">
     <input type="hidden" id="hdFormId" value="@ViewBag.FormId" />
@@ -148,19 +121,14 @@
                             </a>
                         </li>
                         @{
-                            List<SSRepository.Models.MenuModel> _menuList = ViewBag.Menulist;
+
+                            List<SSRepository.Models.MenuModel> _menuList = ViewBag.Menulist;                            
                             if (_menuList != null)
                             {
-                                if (_menuList.Count > 0)
+                                foreach (var mstrMenu in _menuList)
                                 {
-                                    //var request = Context.Request;
-                                    //var path = Convert.ToString(request.Path);
-                                    //if (path == "/Home/Index" || path == "/Home" || _menuList.Any(x => x.WebURL == path))
-                                    //{
-                                    foreach (var mstrMenu in _menuList.Where(x => x.FKMasterFormID == null || x.FKMasterFormID == 0).ToList())
+                                    if (mstrMenu.SubMenu != null && mstrMenu.SubMenu.Any())
                                     {
-
-
                                         <li class="nav-item">
                                             <a href="#" class="nav-link">
                                                 @Html.Raw(mstrMenu.Image)
@@ -171,10 +139,9 @@
                                             </a>
                                             <ul class="nav nav-treeview">
 
-                                                @foreach (var menu in _menuList.Where(x => x.FKMasterFormID == mstrMenu.PKFormID).ToList())
+                                                @foreach (var menu in mstrMenu.SubMenu)
                                                 {
-                                                    var _subMenu = _menuList.Where(x => x.FKMasterFormID == menu.PKFormID).ToList();
-                                                    if (_subMenu.Count > 0)
+                                                    if (menu.SubMenu != null && menu.SubMenu.Any())
                                                     {
                                                         <li class="nav-item">
                                                             <a href="#" class="nav-link">
@@ -185,8 +152,8 @@
                                                                 </p>
                                                             </a>
                                                             <ul class="nav nav-treeview" style="display: none;">
-                                                                @foreach (var _m in _menuList.Where(x => x.FKMasterFormID == menu.PKFormID).ToList())
-                                                                {
+                                                                @foreach (var _m in menu.SubMenu)
+                                                                    {
                                                                     <li class="nav-item">
                                                                         <a href="@_m.WebURL" class="nav-link">
                                                                             @Html.Raw(_m.Image)
@@ -212,12 +179,17 @@
                                             </ul>
                                         </li>
                                     }
-                                    //}
-                                    //else { Context.Response.Redirect("/Auth"); }
+                                    else
+                                    {
+                                        <li class="nav-item">
+                                            <a href="@mstrMenu.WebURL" class="nav-link">
+                                                @Html.Raw(mstrMenu.Image)
+                                                <p>@mstrMenu.FormName</p>
+                                            </a>
+                                        </li>                                    
+                                    }
                                 }
-                                else { Context.Response.Redirect("/Auth"); }
                             }
-                            else { Context.Response.Redirect("/Auth"); }
                         }
 
                     </ul>
@@ -244,7 +216,7 @@
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper" >
         <!-- Main content -->
-        <div class="container-fluid ms-2 ps-0" style="background-color: #fff;height: calc(100vh - 45px);overflow:auto;  ">
+        <div class="container-fluid ms-2 px-0" style="background-color: #fff;height: calc(100vh - 45px);overflow:auto;  ">
             @RenderBody()
         </div>
     </div>

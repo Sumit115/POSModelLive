@@ -35,7 +35,7 @@ namespace SSAdmin.Areas
             string filePath = Path.Combine(path, "menulist.json");
 
             var jsondata = System.IO.File.ReadAllText(filePath);
-            if (!string.IsNullOrEmpty(jsondata))
+            if (!string.IsNullOrEmpty(jsondata))  
             {
                 var _lst = JsonConvert.DeserializeObject<List<MenuModel>>(jsondata);
                 ViewBag.Menulist = _lst;

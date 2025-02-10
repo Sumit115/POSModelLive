@@ -10,7 +10,7 @@ namespace SSRepository.Repository.Master
 {
     public class LocalityRepository : Repository<TblLocalityMas>, ILocalityRepository
     {
-        public LocalityRepository(AppDbContext dbContext) : base(dbContext)
+        public LocalityRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

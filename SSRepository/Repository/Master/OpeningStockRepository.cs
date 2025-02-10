@@ -1,4 +1,5 @@
 ﻿using Azure;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using SSRepository.Data;
 using SSRepository.IRepository.Master;
@@ -13,7 +14,7 @@ namespace SSRepository.Repository.Master
 {
     public class OpeningStockRepository: Repository<TblProdStockDtl>, IOpeningStockRepository
     {
-        public OpeningStockRepository(AppDbContext dbContext) : base(dbContext)
+        public OpeningStockRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
         public string isAlreadyExist(TblProdStockDtlModel model, string Mode)

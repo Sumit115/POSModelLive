@@ -16,6 +16,7 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Timers;
 using System.Globalization;
+using Microsoft.AspNetCore.Http;
 
 namespace SSRepository.Repository.Report
 {
@@ -28,7 +29,7 @@ namespace SSRepository.Repository.Report
         public static string Backupdir;
 
         
-        public StockDetailReportRepository(AppDbContext dbContext) : base(dbContext)
+        public StockDetailReportRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
             GetSP = "usp_SalesStock";
         }

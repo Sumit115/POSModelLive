@@ -10,7 +10,7 @@ namespace SSRepository.Repository.Master
 {
     public class BrandRepository : Repository<TblBrandMas>, IBrandRepository
     {
-        public BrandRepository(AppDbContext dbContext) : base(dbContext)
+        public BrandRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
        

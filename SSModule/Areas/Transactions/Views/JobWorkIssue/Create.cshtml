@@ -6,9 +6,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div style="display: flex;justify-content: space-between;overflow: hidden;">
-    <div class="Tran-page-ui">
-        <form id="TranForm" class="form">
+<input type="hidden" id="hdTranType" value="Sales" />
+
+<div class="row" style="margin-right:0px;margin-left: -4.5px;">
+    <div class="p-2" style="flex: 0 0 95%;max-width: 96%;">
+        <form class="row g-3 form" id="loginform1">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PkId" />
+            <input type="hidden" id="hdData" value="@ViewBag.Data" />
+            <input type="hidden" id="hdGridIn" value="@ViewBag.GridIn" />
+            <input type="hidden" id="hdGridOut" value="@ViewBag.GridOut" />
+            <input type="hidden" id="hdControllerName" value="JobworkIssue " />
             <partial name="~/Views/Shared/Transactions/JobWork/_tranHeader.cshtml" />
             <partial name="~/Views/Shared/Transactions/JobWork/_tranGrid.cshtml" />
         </form>

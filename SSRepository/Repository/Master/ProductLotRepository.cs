@@ -10,7 +10,7 @@ namespace SSRepository.Repository.Master
 {
     public class ProductLotRepository : Repository<TblProdLotDtl>, IProductLotRepository
     {
-        public ProductLotRepository(AppDbContext dbContext) : base(dbContext)
+        public ProductLotRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

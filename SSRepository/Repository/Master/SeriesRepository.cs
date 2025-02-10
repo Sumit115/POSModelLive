@@ -13,7 +13,7 @@ namespace SSRepository.Repository.Master
 {
     public class SeriesRepository : Repository<TblSeriesMas>, ISeriesRepository
     {
-        public SeriesRepository(AppDbContext dbContext) : base(dbContext)
+        public SeriesRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

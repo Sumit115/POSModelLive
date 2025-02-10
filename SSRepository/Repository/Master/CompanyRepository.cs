@@ -17,7 +17,7 @@ namespace SSRepository.Repository.Master
 {
     public class CompanyRepository : Repository<TblCompany>, ICompanyRepository
     {
-        public CompanyRepository(AppDbContext dbContext) : base(dbContext)
+        public CompanyRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

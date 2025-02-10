@@ -9,10 +9,10 @@ namespace SSRepository.IRepository.Master
          List<ColumnStructure> ColumnList(string GridName = "");
 
         string isAlreadyExist(RoleModel tblBankMas, string Mode);
-        List<RoleModel> GetList(int pageSize, int pageNo = 1, string search = "", long RoleGroupId = 0);
+        List<RoleModel> GetList(int pageSize, int pageNo = 1, string search = "", long fkUserId = 0);
         object GetDrpRole(int pageSize, int pageNo = 1, string search = "");
 
-        RoleModel GetSingleRecord(long PkID);
+        RoleModel GetSingleRecord(long PkID, bool IsAccess = false);
 
         string DeleteRecord(long PKID);
     }

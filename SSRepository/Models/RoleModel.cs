@@ -16,7 +16,7 @@ namespace SSRepository.Models
         [StringLength(50)]
         public string RoleName { get; set; }
 
-        public List<RoleDtlModel>? RoleDtl_lst { get; set; }
+        public List<RoleDtlModel> RoleDtls { get; set; }
 
     }
 

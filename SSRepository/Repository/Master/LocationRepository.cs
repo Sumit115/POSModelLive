@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using SSRepository.Data;
 using SSRepository.IRepository.Master;
 using SSRepository.Models;
@@ -8,7 +9,7 @@ namespace SSRepository.Repository.Master
 {
     public class LocationRepository : Repository<TblLocationMas>, ILocationRepository
     {
-        public LocationRepository(AppDbContext dbContext) : base(dbContext)
+        public LocationRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 

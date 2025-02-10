@@ -13,7 +13,7 @@ namespace SSRepository.Repository.Master
 {
     public class CustomerRepository : Repository<TblCustomerMas>, ICustomerRepository
     {
-        public CustomerRepository(AppDbContext dbContext) : base(dbContext)
+        public CustomerRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
         public string isAlreadyExist(PartyModel model, string Mode)
@@ -328,7 +328,7 @@ namespace SSRepository.Repository.Master
             long ID = 0;
             try
             {
-                new AccountMasRepository(__dbContext).SaveBaseData(ref md, "Create", ref ID);
+                new AccountMasRepository(__dbContext, _contextAccessor).SaveBaseData(ref md, "Create", ref ID);
 
             }
             catch (Exception ex) { }

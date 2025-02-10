@@ -11,6 +11,25 @@
     --scrollbar-color-track: #eaf1fb !important;
     scrollbar-color: var(--scrollbar-color-thumb) var(--scrollbar-color-track) !important;
 }
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
 
 .pagetitle {
     height: 100%;
@@ -557,17 +576,6 @@
     padding:.75rem
 }
 
-.right-header-bar {
-    overflow: visible;
-    width: 50px;
-    background: #f4f7fd;
-    border-left: solid 1.5px #3a46552e;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    z-index: 99;
-}
 
 .master-offcanvas {
     width: calc(100% - 44%) !important;
@@ -606,11 +614,16 @@ hr {
     width: 50px;
     background: #f4f7fd;
     border-left: solid 1.5px #3a46552e;
-    height: calc(100vh - 50px);
+    height: calc(100vh - 45px);
     display: flex;
     flex-direction: column;
     gap: 5px;
     z-index: 99;
+}
+
+.tran-content {
+    flex: 0 0 95%;
+    max-width: calc(100% - 50px);
 }
 
 .Tran-page-ui {
@@ -618,6 +631,10 @@ hr {
     padding: 0rem .5rem !important;
     background-image: url(https://www.shutterstock.com/shutterstock/photos/2281284523/display_1500/stock-vector-abstract-white-background-minimal-geometric-white-light-background-abstract-design-2281284523.jpg);
 }
+.form-group {
+    margin-bottom: .5rem;
+}
+
 .trn-header {
     background-color: transparent;
     padding-top: 5px;
@@ -745,4 +762,15 @@ hr {
         min-width: 89px;
     }
 
+}
+
+.table input[readonly], .table input[readonly]:focus {
+    border: none;
+    width: 100%;
+    background: transparent;
+    cursor: context-menu;
+    outline:none;
+}
+.form-switch .form-check-input {
+    margin-left:0px;
 }

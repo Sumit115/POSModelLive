@@ -11,7 +11,7 @@ namespace SSRepository.Repository.Master
 {
     public class AccountGroupRepository : Repository<TblAccountGroupMas>, IAccountGroupRepository
     {
-        public AccountGroupRepository(AppDbContext dbContext) : base(dbContext)
+        public AccountGroupRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
 
