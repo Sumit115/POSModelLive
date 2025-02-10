@@ -1,15 +1,16 @@
 ﻿@model SSRepository.Models.DashboardSummaryModel
 @{
     Layout = "_Layout";
+    ViewData["bdClass"] = "summary";
 }
 <div style="background-color:#fafbfe;overflow: auto;">
     <div class="row mt-4 pl-3 pr-3 SalesSummary">
         <div class="col-md-2 box ps-0">
             <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
                 <div class="p-2">
-                    <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ @Model.TotalAmount_PurchaseInvoice</h5>
+                    <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_PurchaseInvoice">@Model.TotalAmount_PurchaseInvoice</span></h5>
                     <p class="mb-0 pt-1 Name">Purchase</p>
-                    <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Purchase @Model.TotalCount_PurchaseInvoice</h6>
+                    <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Purchase <span id="TotalCount_PurchaseInvoice">@Model.TotalCount_PurchaseInvoice</span></h6>
                 </div>
                 <div class="icon-wrapper mr-2 mt-2">
                     <i class="fas fa-chart-bar"></i>
@@ -19,9 +20,9 @@
         <div class="col-md-2 box">
             <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
                 <div class="p-2">
-                    <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ @Model.TotalAmount_SalesOrder</h5>
+                    <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesOrder">@Model.TotalAmount_SalesOrder</span></h5>
                     <p class="mb-0 pt-1 Name">Sales Order</p>
-                    <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Order @Model.TotalCount_SalesOrder</h6>
+                    <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Order <span id="TotalCount_SalesOrder">@Model.TotalCount_SalesOrder</span></h6>
                 </div>
                 <div class="icon-wrapper mr-2 mt-2">
                     <i class="fas fa-shopping-bag"></i>
@@ -31,9 +32,9 @@
         <div class="col-md-2 box">
             <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
                 <div class="p-2">
-                    <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ @Model.TotalAmount_SalesInvoice</h5>
+                    <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesInvoice">@Model.TotalAmount_SalesInvoice</span></h5>
                     <p class="mb-0 pt-1 Name">Sales</p>
-                    <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Sales @Model.TotalCount_SalesInvoice</h6>
+                    <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Sales <span id="TotalCount_SalesInvoice">@Model.TotalCount_SalesInvoice</span></h6>
                 </div>
                 <div class="icon-wrapper mr-2 mt-2">
                     <i class="fas fa-box"></i>
@@ -43,9 +44,9 @@
         <div class="col-md-2 box">
             <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
                 <div class="p-2">
-                    <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ @Model.TotalAmount_SalesChallan</h5>
+                    <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesChallan">@Model.TotalAmount_SalesChallan</span></h5>
                     <p class="mb-0 pt-1 Name">Sales Challan</p>
-                    <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Challan @Model.TotalCount_SalesChallan</h6>
+                    <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Challan <span id="TotalCount_SalesChallan">@Model.TotalCount_SalesChallan</span></h6>
                 </div>
                 <div class="icon-wrapper mr-2 mt-2">
                     <i class="fas fa-user"></i>
@@ -59,14 +60,14 @@
     <div class="row mt-4 pl-3 pr-3">
         <div class="col-md-12">
             <div class="card" style="height: 495px!important;">
-                <div class="card-header">
-                   Current Month
+                <div class="card-header" id="header_graph">
+                    Current Month
                 </div>
-                    <div class="card-body">
-                       
-                        <div id="morris-area-chart"></div>
+                <div class="card-body">
 
-                    </div>
+                    <div id="morris-area-chart"></div>
+
+                </div>
 
                 <div class="card-footer bg-transparent">
                     <div class="row">
@@ -111,7 +112,14 @@
     <script src="~/morris/morris.js"></script>
     <script src="~/morris/raphael.js"></script>
     <script>
-        $(document).ready(function () { Load_Morris_Area_Chart_Data(); });
+        $(document).ready(function () {
+            DashboardSummary();
+            $("#ddlForType_Summary").on("change", function () {
+                DashboardSummary();
+            });
+           
+           // Load_Morris_Area_Chart_Data();
+        });
         var display_date = function (d) {
             var month = d.getMonth() + 1,
                 day = d.getDate(),
@@ -179,5 +187,37 @@
             //    $(this).text(aa);
             //});
         }
+
+
+        function DashboardSummary() {
+            var ForType = $("#ddlForType_Summary").val();
+            $("#header_graph").text((ForType == "All" ? "All Data" : ("Current "+ForType)));
+            $.ajax({
+                type: "POST",
+                url: '/Transactions/SalesInvoice/DashboardSummary',
+                data: { ForType },
+                datatype: "json",
+                success: function (res) {
+                    //console.log(res);
+                    if (res.status == "success") {
+                        // console.log(res.data);
+                        var _d = res.data;
+                        $("#TotalCount_PurchaseInvoice").text(_d.TotalCount_PurchaseInvoice);
+                        $("#TotalAmount_PurchaseInvoice").text(_d.TotalAmount_PurchaseInvoice);
+                        $("#TotalCount_SalesOrder").text(_d.TotalCount_SalesOrder);
+                        $("#TotalAmount_SalesOrder").text(_d.TotalAmount_SalesOrder);
+                        $("#TotalCount_SalesInvoice").text(_d.TotalCount_SalesInvoice);
+                        $("#TotalAmount_SalesInvoice").text(_d.TotalAmount_SalesInvoice);
+                        $("#TotalCount_SalesChallan").text(_d.TotalCount_SalesChallan);
+                        $("#TotalAmount_SalesChallan").text(_d.TotalAmount_SalesChallan) ;
+                        $("#hdCurrentMonthData_MorrisAreaChart").val(JSON.stringify(_d.CurrentMonthData));
+                        Load_Morris_Area_Chart_Data();
+                    }
+                    else
+                        alert(res.msg);
+                }
+            })
+
+        };
     </script>
 }

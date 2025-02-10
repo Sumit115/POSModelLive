@@ -74,7 +74,9 @@
 .page .f-ctrl, .Tran .f-ctrl {
     display: block !important;
 }
-
+.summary .f-ddl {
+    display: block !important;
+}
 .btn-create {
     height: 100%;
     font-size: 15px;

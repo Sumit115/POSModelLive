@@ -903,7 +903,7 @@ namespace SSRepository.Repository
             return data;
         }
 
-        public DashboardSummaryModel usp_DashboardSummary()
+        public DashboardSummaryModel usp_DashboardSummary(string ForType)
         {
             DashboardSummaryModel model = new DashboardSummaryModel();
             DataSet ds = new DataSet();
@@ -913,7 +913,7 @@ namespace SSRepository.Repository
                 con.Open();
                 SqlCommand cmd = new SqlCommand("usp_DashboardSummary", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                //cmd.Parameters.AddWithValue("@PkUserId", UserId);
+                cmd.Parameters.AddWithValue("@ForType", ForType);
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(ds);
 

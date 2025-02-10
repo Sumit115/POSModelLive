@@ -22,5 +22,8 @@
 <input type="hidden" id="hdControllerName" value="SalesInvoice" />
 <partial name="~/Views/Shared/Transactions/_tranInfo.cshtml" />
 @section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script src="~/js/transaction/transaction.js"></script>
 }

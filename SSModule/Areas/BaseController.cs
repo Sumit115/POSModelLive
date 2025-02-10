@@ -224,7 +224,18 @@ namespace SSAdmin.Areas
             // model.BarcodePrintPreviewModel = _gridLayoutRepository.BarcodePrintList("BarcodePrint_");
             return PartialView(model);
         }
-        
+
+        [HttpPost]
+        public async Task<JsonResult> DashboardSummary(string ForType)
+        {
+            return Json(new
+            {
+                status = "success",
+                data = _gridLayoutRepository.usp_DashboardSummary(ForType)
+            });
+        }
+
+
     }
 
 }
