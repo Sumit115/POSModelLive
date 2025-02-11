@@ -226,12 +226,12 @@ namespace SSAdmin.Areas
         }
 
         [HttpPost]
-        public async Task<JsonResult> DashboardSummary(string ForType)
+        public async Task<JsonResult> DashboardSummary(int Month)
         {
             return Json(new
             {
                 status = "success",
-                data = _gridLayoutRepository.usp_DashboardSummary(ForType)
+                data = _gridLayoutRepository.usp_DashboardSummary(Month)
             });
         }
 

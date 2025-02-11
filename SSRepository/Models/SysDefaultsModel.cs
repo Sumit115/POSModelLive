@@ -51,5 +51,6 @@ namespace SSRepository.Models
         public string? BarcodePrint_FontSize { get; set; }
 
         public string? FkHoldLocationId { get; set; }
+        public string? FinYear { get; set; }
     }
 }

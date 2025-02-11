@@ -10,7 +10,7 @@ namespace SSRepository.Models
     {
         public DashboardSummaryModel()
         {
-            CurrentMonthData = new List<CurrentMonthDataModel>();
+            GraphDataList = new List<GraphDataModel>();
         }
         public Int64 TotalCount_PurchaseInvoice { get; set; }
         public decimal TotalAmount_PurchaseInvoice { get; set; }
@@ -20,13 +20,13 @@ namespace SSRepository.Models
         public decimal TotalAmount_SalesInvoice { get; set; }
         public Int64 TotalCount_SalesChallan { get; set; }
         public decimal TotalAmount_SalesChallan { get; set; }
-        public List<CurrentMonthDataModel> CurrentMonthData { get; set; }
+        public List<GraphDataModel> GraphDataList { get; set; }
     }
-    public class CurrentMonthDataModel
+    public class GraphDataModel
     {
         public DateTime Date { get; set; }
-        public string DateStr { get { return Date.ToString("yyyy-dd-MM"); } }
-
+        public int Day { get; set; }
+        public string DateStr { get { return Date.ToString("yyyy-dd-MM"); } } 
         public Int64 PurchaseInvoiceCount { get; set; }
         public decimal PurchaseInvoiceAmount { get; set; }
         public Int64 SalesInvoiceCount { get; set; }

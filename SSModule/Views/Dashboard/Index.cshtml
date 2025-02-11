@@ -106,15 +106,16 @@
         </div>
     </div>
 </div>
-<input type="hidden" id="hdCurrentMonthData_MorrisAreaChart" value="@Newtonsoft.Json.JsonConvert.SerializeObject(Model.CurrentMonthData)" />
+<input type="hidden" id="hdGraphData_MorrisAreaChart" value="@Newtonsoft.Json.JsonConvert.SerializeObject(Model.GraphDataList)" />
 @section Scripts {
     <link href="~/morris/morris.css" rel="stylesheet" />
     <script src="~/morris/morris.js"></script>
     <script src="~/morris/raphael.js"></script>
     <script>
         $(document).ready(function () {
+            $("#ddlMonth_Summary").val(@DateTime.Now.Month);
             DashboardSummary();
-            $("#ddlForType_Summary").on("change", function () {
+            $("#ddlMonth_Summary").on("change", function () {
                 DashboardSummary();
             });
            
@@ -125,7 +126,7 @@
                 day = d.getDate(),
                 year = d.getFullYear();
 
-            var formattedDay = (day < 10 ? '0' + day : day) + '-' + (month < 10 ? '0' + month : month) + '-' + year;
+            var formattedDay = (day < 10 ? '0' + day : day);// + '-' + (month < 10 ? '0' + month : month) + '-' + year;
 
             return formattedDay; // Return "M-DD" format for date
         }
@@ -135,7 +136,7 @@
             $("#morris-area-chart").html('');
             //  $("#span_graphHeading").text('Last_30_Days_Data');
             debugger;
-            var ItemList = JSON.parse($("#hdCurrentMonthData_MorrisAreaChart").val());
+            var ItemList = JSON.parse($("#hdGraphData_MorrisAreaChart").val());
             var xkey = 'Date';
             //console.log(ItemList);
             var ykeys = [];
@@ -190,12 +191,12 @@
 
 
         function DashboardSummary() {
-            var ForType = $("#ddlForType_Summary").val();
-            $("#header_graph").text((ForType == "All" ? "All Data" : ("Current "+ForType)));
+            var Month = $("#ddlMonth_Summary").val();
+            $("#header_graph").text($("#ddlMonth_Summary option:selected").text() + " Month Data");
             $.ajax({
                 type: "POST",
                 url: '/Transactions/SalesInvoice/DashboardSummary',
-                data: { ForType },
+                data: { Month },
                 datatype: "json",
                 success: function (res) {
                     //console.log(res);
@@ -210,7 +211,7 @@
                         $("#TotalAmount_SalesInvoice").text(_d.TotalAmount_SalesInvoice);
                         $("#TotalCount_SalesChallan").text(_d.TotalCount_SalesChallan);
                         $("#TotalAmount_SalesChallan").text(_d.TotalAmount_SalesChallan) ;
-                        $("#hdCurrentMonthData_MorrisAreaChart").val(JSON.stringify(_d.CurrentMonthData));
+                        $("#hdGraphData_MorrisAreaChart").val(JSON.stringify(_d.GraphDataList));
                         Load_Morris_Area_Chart_Data();
                     }
                     else

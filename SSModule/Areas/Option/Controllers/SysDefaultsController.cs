@@ -77,6 +77,7 @@ namespace SSAdmin.Areas.Option.Controllers
                     _model.Add(new SysDefaultsModel() { SysDefKey = "BarcodePrint_MarginBetWeenRowColumn", SysDefValue = model.BarcodePrint_MarginBetWeenRowColumn });
                     _model.Add(new SysDefaultsModel() { SysDefKey = "BarcodePrint_FontSize", SysDefValue = model.BarcodePrint_FontSize });
                     _model.Add(new SysDefaultsModel() { SysDefKey = "FkHoldLocationId", SysDefValue = Convert.ToString(model.FkHoldLocationId) });
+                    _model.Add(new SysDefaultsModel() { SysDefKey = "FinYear", SysDefValue = Convert.ToString(model.FinYear) });
 
                     _repositoryLocation.InsertUpdateSysDefaults(_model);
 
