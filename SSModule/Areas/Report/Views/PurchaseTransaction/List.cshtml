@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Purchase Transaction";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    DateTime dt = ViewBag.Date;
 }
 
 <div class="p-1">
@@ -74,9 +75,9 @@
             RPTOption.GridHeight = GridHeight = "85vh";
             RPTOption.Controller = Controller = 'PurchaseTransaction';
 
-            var dt = new Date;
-            document.getElementById("FromDate").valueAsDate = new Date();
-            document.getElementById("ToDate").valueAsDate = new Date();
+            var dt = new Date(@dt.Year, @dt.Month-1, @dt.Day+1);
+            document.getElementById("FromDate").valueAsDate = dt;
+            document.getElementById("ToDate").valueAsDate = dt;
             //View();
         });
         function Render(Export) {

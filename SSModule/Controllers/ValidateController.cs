@@ -41,7 +41,7 @@ namespace SSAdmin.Controllers
                 {
                     HttpContext.Session.SetString("RoleId", (ds.FkRoleId ?? 0).ToString());
                     HttpContext.Session.SetString("IsAdmin", ds.IsAdmin.ToString());
-                    DeployStoredProcedures();
+                   // DeployStoredProcedures();
 
 
                     FileManage();

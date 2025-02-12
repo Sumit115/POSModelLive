@@ -34,7 +34,7 @@ namespace SSAdmin.Areas.Report.Controllers
         }
         public async Task<IActionResult> List()
         {
-
+           
             return View();
         }
 

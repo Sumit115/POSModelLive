@@ -48,6 +48,8 @@ namespace SSAdmin.Areas
                 var _lst = JsonConvert.DeserializeObject<SysDefaults>(jsondataSysDefaults);
                 ViewBag.SysDefaults = _lst;
             }
+
+            ViewBag.Date = DateTime.Now; 
         }
 
         public long FKFormID = 0;

@@ -1,8 +1,8 @@
 ﻿@{
     ViewData["Title"] = "Product Wise Purchase";
     Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
+    DateTime dt = ViewBag.Date;
+} 
 <div class="p-1">
     <div class="form-group row filter m-0 p-2 border-bottom">
 
@@ -62,7 +62,6 @@
 
     <div class="row m-0">
         <div id="WUCHM" class="col-12 slick-grid">
-
         </div>
     </div>
 </div>
@@ -74,10 +73,11 @@
 
             RPTOption.IdProperty = IdProperty = "sno";
             RPTOption.GridHeight = GridHeight = "85vh";
-            RPTOption.Controller = Controller = 'PurchaseStock';
-            var dt = new Date;
-            document.getElementById("FromDate").valueAsDate = new Date();
-            document.getElementById("ToDate").valueAsDate = new Date();
+            RPTOption.Controller = Controller = 'PurchaseStock'; 
+        
+            var dt = new Date(@dt.Year, @dt.Month-1, @dt.Day+1); 
+            document.getElementById("FromDate").valueAsDate = dt;
+            document.getElementById("ToDate").valueAsDate = dt;
         });
         function Render(Export) {
             Common.Get(".filter", "", function (flag, _d) {
