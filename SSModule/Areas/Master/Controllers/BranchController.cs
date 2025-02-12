@@ -112,8 +112,6 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             try
             {
-                model.FKUserId = 1;
-                model.FKCreatedByID = 1;
                 model.FkRegId = 1;
                 if (ModelState.IsValid)
                 {

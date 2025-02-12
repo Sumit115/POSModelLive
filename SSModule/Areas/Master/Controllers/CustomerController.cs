@@ -96,8 +96,6 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             try
             {
-                model.FKUserId = 1;
-                model.FKCreatedByID = 1;
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
@@ -151,6 +149,7 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             return response;
         }
+        
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {
             return _repository.ColumnList(GridName);

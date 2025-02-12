@@ -111,8 +111,6 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             try
             {
-                model.FKUserId = 1;
-                model.FKCreatedByID = 1;
                 model.FkCategoryGroupId = (model.FkCategoryGroupId > 0 ? model.FkCategoryGroupId : 0);
 
                 if (ModelState.IsValid)

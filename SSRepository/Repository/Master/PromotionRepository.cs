@@ -41,10 +41,6 @@ namespace SSRepository.Repository.Master
                                          select (new PromotionModel
                                          {
                                              PkPromotionId = cou.PkPromotionId,
-                                             FKUserId = cou.FKUserID,
-                                             FKCreatedByID = cou.FKCreatedByID,
-                                             ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                                             CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                              PromotionDuring = cou.PromotionDuring,
                                              PromotionName = cou.PromotionName,
                                              PromotionFromDt = cou.PromotionFromDt,
@@ -71,6 +67,8 @@ namespace SSRepository.Repository.Master
                                              SequenceNo = cou.SequenceNo,
                                              //FkPromotionGroupId = cou.FkPromotionGroupId,
                                              //GroupName = catGrp.PromotionGroupName,
+                                             FKUserID = cou.FKUserID,
+                                             DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                          }
                                         )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -103,10 +101,6 @@ namespace SSRepository.Repository.Master
                     select (new PromotionModel
                     {
                         PkPromotionId = cou.PkPromotionId,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
-                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         PromotionDuring = cou.PromotionDuring,
                         PromotionName = cou.PromotionName,
                         PromotionFromDt = cou.PromotionFromDt,
@@ -139,6 +133,8 @@ namespace SSRepository.Repository.Master
                         LocationName = location.Location,
                         PromotionProductName = freePrd.Product,
                         SequenceNo = cou.SequenceNo,
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                         PromotionLocation_lst = (from ad in __dbContext.TblPromotionLocationLnk
                                                  join loc in __dbContext.TblLocationMas on ad.FKLocationId equals loc.PkLocationID
                                                  where (ad.FkPromotionId == cou.PkPromotionId)
@@ -279,11 +275,12 @@ namespace SSRepository.Repository.Master
             Tbl.FkBrandId = model.FkBrandId > 0 ? model.FkBrandId : null;
             Tbl.SequenceNo = model.SequenceNo > 0 ? model.SequenceNo : 99;
             Tbl.ModifiedDate = DateTime.Now;
+            Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
             {
-                Tbl.FKCreatedByID = model.FKCreatedByID;
-                Tbl.FKUserID = model.FKUserId;
-                Tbl.CreationDate = DateTime.Now;
+
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate;
                 Tbl.PkPromotionId = getIdOfSeriesByEntity("PkPromotionId", null, Tbl, "TblPromotionMas");
                 AddData(Tbl, false);
             }
@@ -317,10 +314,10 @@ namespace SSRepository.Repository.Master
                     else if (item.Mode == 0)
                     {
                         //  locObj.PKAccountDtlId = getIdOfSeriesByEntity("PKAccountDtlId", null, Tbl, "TblAccountDtl");
-                        locObj.FKCreatedByID = model.FKCreatedByID;
-                        locObj.FKUserID = model.FKUserId;
-                        locObj.CreationDate = DateTime.Now;
-                        locObj.ModifiedDate = DateTime.Now;
+                        Tbl.ModifiedDate = DateTime.Now;
+                        Tbl.FKUserID = GetUserID();
+                        Tbl.FKCreatedByID = Tbl.FKUserID;
+                        Tbl.CreationDate = Tbl.ModifiedDate;
                         lstAdd.Add(locObj);
                     }
 
@@ -335,8 +332,8 @@ namespace SSRepository.Repository.Master
                             lstDel.Add(locObj);
                         }
                     }
-////////////////////////
-                   
+                    ////////////////////////
+
                 }
 
                 if (lstDel.Count() > 0)
@@ -356,7 +353,7 @@ namespace SSRepository.Repository.Master
                     TblPromotionLnk locObj = new TblPromotionLnk();
                     locObj.FkLinkId = item.FkLinkId;
                     locObj.FkPromotionId = Tbl.PkPromotionId;
-                    locObj.PkId = item.PkId; 
+                    locObj.PkId = item.PkId;
                     //   lstAdd.Add(locObj);
                     if (item.Mode == 1)
                     {
@@ -365,11 +362,10 @@ namespace SSRepository.Repository.Master
                     }
                     else if (item.Mode == 0)
                     {
-                        //  locObj.PKAccountDtlId = getIdOfSeriesByEntity("PKAccountDtlId", null, Tbl, "TblAccountDtl");
-                        locObj.FKCreatedByID = model.FKCreatedByID;
-                        locObj.FKUserID = model.FKUserId;
-                        locObj.CreationDate = DateTime.Now;
-                        locObj.ModifiedDate = DateTime.Now;
+                        Tbl.ModifiedDate = DateTime.Now;
+                        Tbl.FKUserID = GetUserID();
+                        Tbl.FKCreatedByID = Tbl.FKUserID;
+                        Tbl.CreationDate = Tbl.ModifiedDate;
                         lstAdd.Add(locObj);
                     }
 
@@ -383,7 +379,7 @@ namespace SSRepository.Repository.Master
                         {
                             lstDel.Add(locObj);
                         }
-                    } 
+                    }
                 }
 
                 if (lstDel.Count() > 0)

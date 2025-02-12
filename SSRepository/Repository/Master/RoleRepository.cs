@@ -36,7 +36,7 @@ namespace SSRepository.Repository.Master
 
         public List<RoleModel> GetList(int pageSize, int pageNo = 1, string search = "", long FKUserID = 0)
         {
-            if (FKUserID !=0 && IsAdmin() != 1)
+            if (FKUserID != 0 && IsAdmin() != 1)
             {
                 FKUserID = GetUserID();
             }
@@ -44,16 +44,14 @@ namespace SSRepository.Repository.Master
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<RoleModel> data = (from cou in __dbContext.TblRoleMas
                                     where (EF.Functions.Like(cou.RoleName.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                    && (FKUserID ==0 || cou.FKUserID == FKUserID)
+                                    && (FKUserID == 0 || cou.FKUserID == FKUserID)
                                     orderby cou.PkRoleId
                                     select (new RoleModel
                                     {
                                         PkRoleId = cou.PkRoleId,
-                                        FKUserId = cou.FKUserID,
-                                        FKCreatedByID = cou.FKCreatedByID,
-                                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                         RoleName = cou.RoleName,
+                                        FKUserID = cou.FKUserID,
+                                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                     }
                                    )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -81,11 +79,9 @@ namespace SSRepository.Repository.Master
                               select (new RoleModel
                               {
                                   PkRoleId = cou.PkRoleId,
-                                  FKUserId = cou.FKUserID,
-                                  FKCreatedByID = cou.FKCreatedByID,
-                                  ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                                  CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
-                                  RoleName = cou.RoleName
+                                  RoleName = cou.RoleName,
+                                  FKUserID = cou.FKUserID,
+                                  DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                               })).FirstOrDefault();
 
             if (data != null)
@@ -215,12 +211,14 @@ namespace SSRepository.Repository.Master
 
             Tbl.PkRoleId = model.PkRoleId;
             Tbl.RoleName = model.RoleName;
+
             Tbl.ModifiedDate = DateTime.Now;
+            Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
             {
-                Tbl.FKCreatedByID = model.FKCreatedByID;
-                Tbl.FKUserID = model.FKUserId;
-                Tbl.CreationDate = DateTime.Now;
+
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate;
                 Tbl.PkRoleId = getIdOfSeriesByEntity("PkRoleId", null, Tbl, "TblRoleMas");
                 AddData(Tbl, false);
             }
@@ -266,7 +264,7 @@ namespace SSRepository.Repository.Master
                 {
                     flag = true;
                 }
-                if(tbl.PkRoleDtlId > 0)
+                if (tbl.PkRoleDtlId > 0)
                     UpdateData(tbl, false);
                 else
                     AddData(tbl, false);

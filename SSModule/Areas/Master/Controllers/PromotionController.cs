@@ -135,9 +135,6 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             try
             {
-                model.FKUserId = 1;
-                model.FKCreatedByID = 1;
-
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
@@ -202,7 +199,7 @@ namespace SSAdmin.Areas.Master.Controllers
         [HttpPost]
         public object FkCustomerId(int pageSize, int pageNo = 1, string search = "")
         {
-            return _repositoryCustomer.GetDrpCustomer(pageSize, pageNo, search);
+            return _repositoryCustomer.CustomDropDown(pageSize, pageNo, search);
         }
         [HttpPost]
         public object FkVendorId(int pageSize, int pageNo = 1, string search = "")

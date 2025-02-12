@@ -42,13 +42,11 @@ namespace SSRepository.Repository.Master
                                         select (new CategoryModel
                                         {
                                             PkCategoryId = cou.PkCategoryId,
-                                            FKUserId = cou.FKUserID,
-                                            FKCreatedByID = cou.FKCreatedByID,
-                                            ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                                            CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                             Category = cou.CategoryName,
                                             FkCategoryGroupId = cou.FkCategoryGroupId,
                                             GroupName = catGrp.CategoryGroupName,
+                                            FKUserID = cou.FKUserID,
+                                            DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                         }
                                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -60,7 +58,7 @@ namespace SSRepository.Repository.Master
 
             var result = GetList(pageSize, pageNo, search);
 
-         //   result.Insert(0, new CategoryModel { PkCategoryId = 0, CategoryName = "Select" });
+            //   result.Insert(0, new CategoryModel { PkCategoryId = 0, CategoryName = "Select" });
 
             return (from r in result
                     select new
@@ -80,12 +78,10 @@ namespace SSRepository.Repository.Master
                     select (new CategoryModel
                     {
                         PkCategoryId = cou.PkCategoryId,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
-                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         Category = cou.CategoryName,
                         FkCategoryGroupId = cou.FkCategoryGroupId,
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                         CategorySize_lst = (from ad in __dbContext.TblCategorySizeLnk
                                                 //  join loc in __dbContext.TblBranchMas on ad.FKLocationID equals loc.PkBranchId
                                             where (ad.FkCategoryId == cou.PkCategoryId)
@@ -160,11 +156,12 @@ namespace SSRepository.Repository.Master
             Tbl.CategoryName = model.Category;
             Tbl.FkCategoryGroupId = model.FkCategoryGroupId;
             Tbl.ModifiedDate = DateTime.Now;
+            Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
             {
-                Tbl.FKCreatedByID = model.FKCreatedByID;
-                Tbl.FKUserID = model.FKUserId;
-                Tbl.CreationDate = DateTime.Now;
+
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate;
                 Tbl.PkCategoryId = getIdOfSeriesByEntity("PkCategoryId", null, Tbl, "TblCategoryMas");
                 AddData(Tbl, false);
             }
@@ -200,10 +197,10 @@ namespace SSRepository.Repository.Master
                     else if (item.Mode == 0)
                     {
                         //  locObj.PKAccountDtlId = getIdOfSeriesByEntity("PKAccountDtlId", null, Tbl, "TblAccountDtl");
-                        locObj.FKCreatedByID = model.FKCreatedByID;
-                        locObj.FKUserID = model.FKUserId;
-                        locObj.CreationDate = DateTime.Now;
-                        locObj.ModifiedDate = DateTime.Now;
+                        Tbl.ModifiedDate = DateTime.Now;
+                        Tbl.FKUserID = GetUserID();
+                        Tbl.FKCreatedByID = Tbl.FKUserID;
+                        Tbl.CreationDate = Tbl.ModifiedDate;
                         lstAdd.Add(locObj);
                     }
 

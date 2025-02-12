@@ -37,10 +37,6 @@ namespace SSRepository.Repository.Master
                                     select (new UserModel
                                     {
                                         PkUserId = cou.PkUserId,
-                                        FKUserId = cou.FKUserID,
-                                        FKCreatedByID = cou.FKCreatedByID,
-                                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                         UserId = cou.UserId,
                                         Pwd = cou.Pwd,
                                         FkRegId = cou.FkRegId,
@@ -61,6 +57,8 @@ namespace SSRepository.Repository.Master
                                         //    PkBranchId = brch.PkBranchId,
                                         BranchName = brch.BranchName,
                                         //}
+                                        FKUserID = cou.FKUserID,
+                                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                     }
                                    )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -76,10 +74,8 @@ namespace SSRepository.Repository.Master
                     select (new UserModel
                     {
                         PkUserId = cou.PkUserId,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
-                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                         UserId = cou.UserId,
                         Pwd = cou.Pwd,
                         FkRegId = cou.FkRegId,
@@ -183,11 +179,12 @@ namespace SSRepository.Repository.Master
             Tbl.FkEmployeeId = model.FkEmployeeId;
             Tbl.IsAdmin = model.IsAdmin;
             Tbl.ModifiedDate= DateTime.Now;
+            Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
             {
-                Tbl.FKCreatedByID = model.FKCreatedByID;
-                Tbl.FKUserID = model.FKUserId;
-                Tbl.CreationDate = DateTime.Now;
+
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }

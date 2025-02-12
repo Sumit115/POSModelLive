@@ -107,8 +107,6 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             try
             {
-                model.FKUserId = 1;
-                model.FKCreatedByID = 1;
                 model.FkCountryId = (model.FkCountryId > 0 ? model.FkCountryId : 0);
 
                 if (ModelState.IsValid)

@@ -46,8 +46,6 @@ namespace SSRepository.Repository.Master
                                           select (new AccountMasModel
                                           {
                                               PkAccountId = cou.PkAccountId,
-                                              FKUserId = cou.FKUserID,
-                                              FKCreatedByID = cou.FKCreatedByID,
                                               Account = cou.Account,
                                               Alias = cou.Alias,
                                               FkAccountGroupId = cou.FkAccountGroupId,
@@ -70,8 +68,9 @@ namespace SSRepository.Repository.Master
                                               AccountNo = cou.AccountNo,
                                               Status = cou.Status,
                                               DiscDate = cou.DiscDate,
-
                                               AccountGroupName = AccGrp.AccountGroupName,
+                                              FKUserID = cou.FKUserID,
+                                              DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                           }
                                          )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -90,8 +89,6 @@ namespace SSRepository.Repository.Master
                     select (new AccountMasModel
                     {
                         PkAccountId = cou.PkAccountId,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
                         Account = cou.Account,
                         Alias = cou.Alias,
                         FkAccountGroupId = cou.FkAccountGroupId,
@@ -109,6 +106,8 @@ namespace SSRepository.Repository.Master
                         DiscDate = cou.DiscDate,
                         FKBankID = cou.FKBankID,
                         AccountNo = cou.AccountNo,
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                         AccountLocation_lst = (from ad in __dbContext.TblAccountLocLnk
                                                    //  join loc in __dbContext.TblBranchMas on ad.FKLocationID equals loc.PkBranchId
                                                where (ad.FkAccountId == cou.PkAccountId)
@@ -250,13 +249,13 @@ namespace SSRepository.Repository.Master
             Tbl.FKBankID = model.FKBankID;
             Tbl.AccountNo = model.AccountNo;
             Tbl.ModifiedDate = DateTime.Now;
-            Tbl.FKUserID = model.FKUserId;
+            Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
             {
-                ID = Tbl.PkAccountId = getIdOfSeriesByEntity("PkcountryId", null, Tbl, "TblAccountMas");
-                Tbl.FKCreatedByID = model.FKCreatedByID;
-                Tbl.CreationDate = DateTime.Now;
 
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate;
+                ID = Tbl.PkAccountId = getIdOfSeriesByEntity("PkcountryId", null, Tbl, "TblAccountMas");
                 AddData(Tbl, false);
             }
             else
@@ -298,11 +297,10 @@ namespace SSRepository.Repository.Master
                         //   objLoc.PKAccountLocLnkId = getIdOfSeriesByEntity("PKAccountLocLnkId", null, Tbl, "TblAccountLocLnk");
                         objLoc.PKAccountLocLnkId = lc.PKAccountLocLnkId;
                         objLoc.FkAccountId = Tbl.PkAccountId;
-                        objLoc.FKLocationID = lc.FKLocationID;
-                        objLoc.FKCreatedByID = model.FKCreatedByID;
-                        objLoc.FKUserID = model.FKUserId;
-                        objLoc.CreationDate = DateTime.Now;
-                        objLoc.ModifiedDate = DateTime.Now;
+                        objLoc.FKLocationID = lc.FKLocationID; Tbl.ModifiedDate = DateTime.Now;
+                        Tbl.FKUserID = GetUserID();
+                        Tbl.FKCreatedByID = Tbl.FKUserID;
+                        Tbl.CreationDate = Tbl.ModifiedDate;
                         //if (objLoc.PKAccountLocLnkId > 0)
                         //    lstEditLocation.Add(objLoc);
                         //else
@@ -353,10 +351,10 @@ namespace SSRepository.Repository.Master
                     else if (item.Mode == 0)
                     {
                         //  locObj.PKAccountDtlId = getIdOfSeriesByEntity("PKAccountDtlId", null, Tbl, "TblAccountDtl");
-                        locObj.FKCreatedByID = model.FKCreatedByID;
-                        locObj.FKUserID = model.FKUserId;
-                        locObj.CreationDate = DateTime.Now;
-                        locObj.ModifiedDate = DateTime.Now;
+                        Tbl.ModifiedDate = DateTime.Now;
+                        Tbl.FKUserID = GetUserID();
+                        Tbl.FKCreatedByID = Tbl.FKUserID;
+                        Tbl.CreationDate = Tbl.ModifiedDate;
                         lstAdd.Add(locObj);
                     }
 
@@ -408,10 +406,10 @@ namespace SSRepository.Repository.Master
                     if (!string.IsNullOrEmpty(item.Description) && locObj.PKAccountLicDtlId == 0)
                     {
                         //  locObj.PKAccountLicDtlId = getIdOfSeriesByEntity("PKAccountLicDtlId", null, Tbl, "TblAccountLicDtl");
-                        locObj.FKCreatedByID = model.FKCreatedByID;
-                        locObj.FKUserID = model.FKUserId;
-                        locObj.CreationDate = DateTime.Now;
-                        locObj.ModifiedDate = DateTime.Now;
+                        Tbl.ModifiedDate = DateTime.Now;
+                        Tbl.FKUserID = GetUserID();
+                        Tbl.FKCreatedByID = Tbl.FKUserID;
+                        Tbl.CreationDate = Tbl.ModifiedDate;
                         lstAdd.Add(locObj);
                     }
                     else if (!string.IsNullOrEmpty(item.Description) && locObj.PKAccountLicDtlId > 0)

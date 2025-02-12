@@ -58,10 +58,6 @@ namespace SSRepository.Repository.Master
                                       select (new BranchModel
                                       {
                                           PkBranchId = cou.PkBranchId,
-                                          FKUserId = cou.FKUserID,
-                                          FKCreatedByID = cou.FKCreatedByID,
-                                          ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                                          CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                           BranchName = cou.BranchName,
                                           ContactPerson = cou.ContactPerson,
                                           Email = cou.Email,
@@ -76,6 +72,8 @@ namespace SSRepository.Repository.Master
                                           BranchCode = cou.BranchCode,
                                           Location = cou.Location,
                                           Image1 = cou.Image1,
+                                          FKUserID = cou.FKUserID,
+                                          DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                       }
                                      )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -91,10 +89,6 @@ namespace SSRepository.Repository.Master
                     select (new BranchModel
                     {
                         PkBranchId = cou.PkBranchId,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
-                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         BranchName = cou.BranchName,
                         ContactPerson = cou.ContactPerson,
                         Email = cou.Email,
@@ -108,6 +102,8 @@ namespace SSRepository.Repository.Master
                         BranchCode = cou.BranchCode,
                         Location = cou.Location,
                         Image1 = cou.Image1,
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                     })).FirstOrDefault();
             return data;
         }
@@ -197,13 +193,14 @@ namespace SSRepository.Repository.Master
             Tbl.FkRegId = model.FkRegId;
             Tbl.BranchCode = model.BranchCode;
             Tbl.Location = model.Location;
-            Tbl.ModifiedDate= DateTime.Now;
             Tbl.Image1 = model.Image1;
+            Tbl.ModifiedDate = DateTime.Now;
+            Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
             {
-                Tbl.FKCreatedByID = model.FKCreatedByID;
-                Tbl.FKUserID = model.FKUserId;
-                Tbl.CreationDate = DateTime.Now;
+
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }

@@ -130,8 +130,6 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             try
             {
-                model.FKUserId = 1;
-                model.FKCreatedByID = 1;
                 model.NameToDisplay = model.NameToPrint = model.Product;
                 model.ShelfID = model.CaseLot = model.Unit1 = model.Unit2 = model.Unit3 = "";
                 model.FKTaxID = model.BoxSize = 0;

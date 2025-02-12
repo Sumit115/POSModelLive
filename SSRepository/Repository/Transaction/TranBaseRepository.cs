@@ -1395,9 +1395,6 @@ namespace SSRepository.Repository.Transaction
                     .Select(cou => new PartyModel()
                     {
                         PkId = cou.PKLocationID,
-                        Name = cou.Location,
-                        FKUserId = cou.FKUserId,
-                        FKCreatedByID = cou.FKCreatedByID,
                         Email = cou.Email,
                         Mobile = cou.Phone1,
                         Address = cou.Address,
@@ -1405,6 +1402,9 @@ namespace SSRepository.Repository.Transaction
                         FkCityId = cou.FkCityId,
                         //  City = city.CityName, 
                         Pin = cou.Pincode,
+                        Name = cou.Location,
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.DATE_MODIFIED
                     }).ToList();
                 return lst;
             }
@@ -1572,7 +1572,7 @@ namespace SSRepository.Repository.Transaction
                                               InTrnsno = cou.InTrnsno,
                                               Remarks = cou.Remarks,
                                               //FKUserId = cou.FKUserID,
-                                              //FKCreatedByID = cou.FKCreatedByID,
+                                              //
                                               //ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                                               //CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                           }
@@ -1864,10 +1864,8 @@ namespace SSRepository.Repository.Transaction
             Tbl.MarriageDate = model.MarriageDate;
             Tbl.Address = model.Address;
             Tbl.FkLocationId = model.FkLocationId;
-            Tbl.ModifiedDate = DateTime.Now;
-            Tbl.FKCreatedByID = model.FKCreatedByID;
-            Tbl.FKUserID = model.FKUserId;
-            Tbl.CreationDate = DateTime.Now;
+            Tbl.CreationDate = Tbl.ModifiedDate = DateTime.Now;
+            Tbl.FKCreatedByID = Tbl.FKUserID = model.FKUserID;
             //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
             __dbContext.Add(Tbl);
             __dbContext.SaveChanges();
@@ -1892,10 +1890,8 @@ namespace SSRepository.Repository.Transaction
                         Dob = cou.Dob,
                         MarriageDate = cou.MarriageDate,
                         Address = cou.Address,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
-                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                     })).FirstOrDefault();
 
             return data;

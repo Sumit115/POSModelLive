@@ -49,10 +49,6 @@ namespace SSRepository.Repository.Master
                                        select (new ProductModel
                                        {
                                            PkProductId = cou.PkProductId,
-                                           FKUserId = cou.FKUserID,
-                                           FKCreatedByID = cou.FKCreatedByID,
-                                           ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                                           CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                            Product = cou.Product,
                                            NameToDisplay = cou.NameToDisplay,
                                            NameToPrint = cou.NameToPrint,
@@ -86,6 +82,8 @@ namespace SSRepository.Repository.Master
                                            KeepStock = cou.KeepStock,
                                            CategoryName = cat.CategoryName,
                                            BrandName = brand.BrandName,
+                                           FKUserID = cou.FKUserID,
+                                           DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                        }
                                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -110,10 +108,6 @@ namespace SSRepository.Repository.Master
                                        select (new ProductModel
                                        {
                                            PkProductId = cou.PkProductId,
-                                           FKUserId = cou.FKUserID,
-                                           FKCreatedByID = cou.FKCreatedByID,
-                                           ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                                           CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                            Product = cou.Product,
                                            NameToDisplay = cou.NameToDisplay,
                                            NameToPrint = cou.NameToPrint,
@@ -150,6 +144,8 @@ namespace SSRepository.Repository.Master
                                            FKInvoiceID = sale.PkId,
                                            InvoiceSrNo = saledtl.SrNo,
                                            FKInvoiceSrID = sale.FKSeriesId,
+                                           FKUserID = cou.FKUserID,
+                                           DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                        }
                                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -165,10 +161,6 @@ namespace SSRepository.Repository.Master
                     select (new ProductModel
                     {
                         PkProductId = cou.PkProductId,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
-                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         Product = cou.Product,
                         NameToDisplay = cou.NameToDisplay,
                         NameToPrint = cou.NameToPrint,
@@ -205,6 +197,8 @@ namespace SSRepository.Repository.Master
                         CodingScheme = cou.CodingScheme,
                         FkUnitId = cou.FkUnitId,
                        CategoryName = cat.CategoryName,
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                     })).FirstOrDefault();
 
             return data;
@@ -318,12 +312,16 @@ namespace SSRepository.Repository.Master
             Tbl.PurchaseRate = model.PurchaseRate;
             Tbl.PurchaseRateUnit = "";
             Tbl.KeepStock = model.KeepStock;
-            Tbl.ModifiedDate = DateTime.Now;
             Tbl.Genration = model.Genration;
             Tbl.CodingScheme = model.CodingScheme;
             Tbl.FkUnitId = model.FkUnitId;
+            Tbl.ModifiedDate = DateTime.Now;
+            Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
             {
+
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate;
                 var data = __dbContext.TblProductMas.OrderByDescending(u => u.PkProductId).FirstOrDefault();
                 if (data != null)
                 {
@@ -333,9 +331,7 @@ namespace SSRepository.Repository.Master
                 {
                     Tbl.PkProductId = 1;
                 }
-                Tbl.FKCreatedByID = model.FKCreatedByID;
-                Tbl.FKUserID = model.FKUserId;
-                Tbl.CreationDate = DateTime.Now;
+               
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
@@ -389,10 +385,6 @@ namespace SSRepository.Repository.Master
                     select (new ProductModel
                     {
                         PkProductId = cou.PkProductId,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
-                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         Product = cou.Product,
                         NameToDisplay = cou.NameToDisplay,
                         NameToPrint = cou.NameToPrint,
@@ -427,7 +419,9 @@ namespace SSRepository.Repository.Master
                         KeepStock = cou.KeepStock,
                         Genration = cou.Genration,
                         CodingScheme = cou.CodingScheme,
-                        FkUnitId = cou.FkUnitId
+                        FkUnitId = cou.FkUnitId,
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                     })).FirstOrDefault();
 
             return data;
