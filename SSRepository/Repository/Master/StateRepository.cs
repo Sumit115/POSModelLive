@@ -43,14 +43,15 @@ namespace SSRepository.Repository.Master
                                      select (new StateModel
                                      {
                                          PkStateId = cou.PkStateId,
-                                         FKUserId = cou.FKUserID,
-                                         FKCreatedByID = cou.FKCreatedByID,
+                                         
                                          StateName = cou.StateName,
                                          CapitalName = cou.CapitalName,
                                          StateType = cou.StateType,
                                          StateCode = cou.StateCode,
                                          FkCountryId = cou.FkCountryId,
                                          CountryName = catGrp.CountryName,
+                                         FKUserID = cou.FKUserID,
+                                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                      }
                                     )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -67,15 +68,15 @@ namespace SSRepository.Repository.Master
                                      orderby cou.PkStateId
                                      select (new StateModel
                                      {
-                                         PkStateId = cou.PkStateId,
-                                         FKUserId = cou.FKUserID,
-                                         FKCreatedByID = cou.FKCreatedByID,
+                                         PkStateId = cou.PkStateId,                                         
                                          StateName = cou.StateName,
                                          CapitalName = cou.CapitalName,
                                          StateType = cou.StateType,
                                          StateCode = cou.StateCode,
                                          FkCountryId = cou.FkCountryId,
                                          CountryName = catGrp.CountryName,
+                                         FKUserID = cou.FKUserID,
+                                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                      }
                                     )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -91,14 +92,14 @@ namespace SSRepository.Repository.Master
                     select (new StateModel
                     {
                         PkStateId = cou.PkStateId,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
                         StateName = cou.StateName,
                         CapitalName = cou.CapitalName,
                         StateType = cou.StateType,
                         StateCode = cou.StateCode,
                         FkCountryId = cou.FkCountryId,
                         CountryName = catGrp.CountryName,
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                     })).FirstOrDefault();
             return data;
         }
@@ -213,12 +214,13 @@ namespace SSRepository.Repository.Master
             Tbl.CapitalName = model.CapitalName;
             Tbl.StateType = model.StateType;
             Tbl.StateCode = model.StateCode;
-            Tbl.ModifiedDate= DateTime.Now;
+            Tbl.ModifiedDate = DateTime.Now;
+            Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
             {
-                Tbl.FKCreatedByID = model.FKCreatedByID;
-                Tbl.FKUserID = model.FKUserId;
-                Tbl.CreationDate = DateTime.Now;
+
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }

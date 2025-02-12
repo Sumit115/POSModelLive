@@ -51,15 +51,10 @@ namespace SSRepository.Models
         public BaseModel() {
         }
 
-        public string? CreateDate { get; set; }//DateCreated
+        public long FKUserID { get; set; }
+        public string? UserName { get; set; }
 
-        public string? ModifiDate { get; set; }
-
-
-        public string? CreateBy { get; set; }
-        public string? ModifiBy { get; set; }
-        public long FKUserId { get; set; }
-        public long FKCreatedByID { get; set; }
+        public string? DATE_MODIFIED { get; set; }
     }
 
      

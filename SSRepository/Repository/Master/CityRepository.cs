@@ -43,10 +43,10 @@ namespace SSRepository.Repository.Master
                                     select (new CityModel
                                     {
                                         PkCityId = cou.PkCityId,
-                                        FKUserId = cou.FKUserID,
-                                        FKCreatedByID = cou.FKCreatedByID,
                                         CityName = cou.CityName,
                                         StateName = cou.StateName,
+                                        FKUserID = cou.FKUserID,
+                                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                     }
                                    )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -62,10 +62,10 @@ namespace SSRepository.Repository.Master
                     select (new CityModel
                     {
                         PkCityId = cou.PkCityId,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
                         CityName = cou.CityName,
                         StateName = cou.StateName,
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
 
                     })).FirstOrDefault();
             return data;
@@ -159,12 +159,13 @@ namespace SSRepository.Repository.Master
             Tbl.CityName = model.CityName;
             Tbl.StateName = model.StateName;
 
-            Tbl.ModifiedDate= DateTime.Now;
+            Tbl.ModifiedDate = DateTime.Now;
+            Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
             {
-                Tbl.FKCreatedByID = model.FKCreatedByID;
-                Tbl.FKUserID = model.FKUserId;
-                Tbl.CreationDate = DateTime.Now;
+
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }

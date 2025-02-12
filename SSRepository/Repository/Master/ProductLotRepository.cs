@@ -38,7 +38,7 @@ namespace SSRepository.Repository.Master
                                           {
                                               PkLotId = cou.PkLotId,
                                               //FKUserId = cou.FKUserID,
-                                              //FKCreatedByID = cou.FKCreatedByID,
+                                              //
                                               //ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                                               //CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                               FKProductId = cou.FKProductId,
@@ -94,7 +94,7 @@ namespace SSRepository.Repository.Master
                         {
                             PkLotId = cou.PkLotId,
                             //FKUserId = cou.FKUserID,
-                            //FKCreatedByID = cou.FKCreatedByID,
+                            //
                             //ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                             //CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                             FKProductId = cou.FKProductId,
@@ -138,7 +138,7 @@ namespace SSRepository.Repository.Master
                     {
                         PkLotId = cou.PkLotId,
                         //FKUserId = cou.FKUserID,
-                        //FKCreatedByID = cou.FKCreatedByID,
+                        //
                         //ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                         //CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         FKProductId = cou.FKProductId,

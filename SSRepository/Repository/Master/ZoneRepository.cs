@@ -40,10 +40,10 @@ namespace SSRepository.Repository.Master
                                        select (new ZoneModel
                                        {
                                            PkZoneId = cou.PkZoneId,
-                                           FKUserId = cou.FKUserID,
-                                           FKCreatedByID = cou.FKCreatedByID,
+                                           FKUserID = cou.FKUserID,
                                            ZoneName = cou.ZoneName,
                                            Description = cou.Description,
+                                           DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                        }
                                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -53,16 +53,15 @@ namespace SSRepository.Repository.Master
         public ZoneModel GetSingleRecord(long PkZoneId)
         {
 
-            ZoneModel data = new ZoneModel();
-            data = (from cou in __dbContext.TblZoneMas
+            ZoneModel data = (from cou in __dbContext.TblZoneMas
                     where cou.PkZoneId == PkZoneId
                     select (new ZoneModel
                     {
                         PkZoneId = cou.PkZoneId,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
                         ZoneName = cou.ZoneName,
                         Description = cou.Description,
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                     })).FirstOrDefault();
             return data;
         }
@@ -157,12 +156,12 @@ namespace SSRepository.Repository.Master
             Tbl.PkZoneId = model.PkZoneId;
             Tbl.ZoneName = model.ZoneName;
             Tbl.Description = model.Description;
+            Tbl.FKUserID = GetUserID();
             Tbl.ModifiedDate= DateTime.Now;
             if (Mode == "Create")
-            {
-                Tbl.FKCreatedByID = model.FKCreatedByID;
-                Tbl.FKUserID = model.FKUserId;
-                Tbl.CreationDate = DateTime.Now;
+            {                
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate;
                 //obj.PkZoneId = ID = getIdOfSeriesByEntity("PkZoneId", null, obj);
                 AddData(Tbl, false);
             }

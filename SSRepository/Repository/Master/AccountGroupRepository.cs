@@ -44,8 +44,6 @@ namespace SSRepository.Repository.Master
                                             select (new AccountGroupModel
                                             {
                                                 PkAccountGroupId = cou.PkAccountGroupId,
-                                                FKUserId = cou.FKUserID,
-                                                FKCreatedByID = cou.FKCreatedByID,
                                                 AccountGroupName = cou.AccountGroupName,
                                                 FkAccountGroupId = cou.FkAccountGroupId,
                                                 PAccountGroupName = AccGrp.AccountGroupName,
@@ -54,6 +52,8 @@ namespace SSRepository.Repository.Master
                                                 NatureOfGroup = cou.NatureOfGroup,
                                                 PrintDtl = cou.PrintDtl,
                                                 NetCrDrBalanceForRpt = cou.NetCrDrBalanceForRpt,
+                                                FKUserID = cou.FKUserID,
+                                                DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                             }
                                            )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -69,8 +69,6 @@ namespace SSRepository.Repository.Master
                     select (new AccountGroupModel
                     {
                         PkAccountGroupId = cou.PkAccountGroupId,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
                         AccountGroupName = cou.AccountGroupName,
                         FkAccountGroupId = cou.FkAccountGroupId,
                         GroupType = cou.GroupType,
@@ -78,6 +76,8 @@ namespace SSRepository.Repository.Master
                         NatureOfGroup = cou.NatureOfGroup,
                         PrintDtl = cou.PrintDtl,
                         NetCrDrBalanceForRpt = cou.NetCrDrBalanceForRpt,
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                     })).FirstOrDefault();
             return data;
         }
@@ -163,11 +163,12 @@ namespace SSRepository.Repository.Master
             Tbl.PrintDtl = model.PrintDtl;
             Tbl.NetCrDrBalanceForRpt = model.NetCrDrBalanceForRpt;
             Tbl.ModifiedDate = DateTime.Now;
-            Tbl.FKUserID = model.FKUserId;
+            Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
             {
-                Tbl.FKCreatedByID = model.FKCreatedByID;
-                Tbl.CreationDate = DateTime.Now;
+
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }

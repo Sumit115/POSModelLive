@@ -103,10 +103,7 @@ namespace SSAdmin.Areas.Master.Controllers
         public async Task<IActionResult> Create(ZoneModel model)
         {
             try
-            {
-                model.FKUserId = 1;
-                model.FKCreatedByID = 1;
-              
+            {              
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";

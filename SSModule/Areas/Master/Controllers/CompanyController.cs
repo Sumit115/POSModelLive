@@ -62,8 +62,7 @@ namespace SSAdmin.Areas.Master.Controllers
         public async Task<IActionResult> Create(CompanyModel model)
         {
             try
-            {
-                model.FKUserId = LoginId;               
+            {              
                 string Mode = "Create";
                 Int64 ID = model.PkCompanyId;
                 

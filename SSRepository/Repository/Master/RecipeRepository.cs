@@ -32,11 +32,9 @@ namespace SSRepository.Repository.Master
                                       select (new RecipeModel
                                       {
                                           PkRecipeId = cou.PkRecipeId,
-                                          FKUserId = cou.FKUserID,
-                                          FKCreatedByID = cou.FKCreatedByID,
-                                          ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                                          CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                           Name = cou.Name,
+                                          FKUserID = cou.FKUserID,
+                                          DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                       }
                                      )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -51,11 +49,9 @@ namespace SSRepository.Repository.Master
                     select (new RecipeModel
                     {
                         PkRecipeId = cou.PkRecipeId,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
-                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         Name = cou.Name,
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                         Recipe_dtl = (from ad in __dbContext.TblRecipeDtl
                                       join prd in __dbContext.TblProductMas on ad.FkProductId equals prd.PkProductId
                                       where (ad.FkRecipeId == cou.PkRecipeId)
@@ -150,11 +146,12 @@ namespace SSRepository.Repository.Master
             Tbl.PkRecipeId = model.PkRecipeId;
             Tbl.Name = model.Name;
             Tbl.ModifiedDate = DateTime.Now;
+            Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
             {
-                Tbl.FKCreatedByID = model.FKCreatedByID;
-                Tbl.FKUserID = model.FKUserId;
-                Tbl.CreationDate = DateTime.Now;
+
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate;
                 Tbl.PkRecipeId = getIdOfSeriesByEntity("PkRecipeId", null, Tbl, "TblRecipeMas");
                 AddData(Tbl, false);
             }

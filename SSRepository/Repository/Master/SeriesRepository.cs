@@ -65,15 +65,11 @@ namespace SSRepository.Repository.Master
                         select (new SeriesModel
                         {
                             PkSeriesId = cou.PkSeriesId,
-                            FKUserId = cou.FKUserID,
-                            FKCreatedByID = cou.FKCreatedByID,
-                            ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                            CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                             Series = cou.Series,
                             SeriesNo = cou.SeriesNo,
                             //FkBranchId = cou.FkBranchId,
                             BillingRate = cou.BillingRate,
-                            TranAlias = cou.TranAlias,
+                            TranAlias = cou.TranAlias??"",
                             FormatName = cou.FormatName,
                             ResetNoFor = cou.ResetNoFor,
                             AllowWalkIn = cou.AllowWalkIn,
@@ -82,9 +78,11 @@ namespace SSRepository.Repository.Master
                             DefaultQty = cou.DefaultQty,
                             AllowZeroRate = cou.AllowZeroRate,
                             AllowFreeQty = cou.AllowFreeQty,
-                            DocumentType = cou.DocumentType,
+                            DocumentType = cou.DocumentType ?? "",
                             FKLocationID = cou.FKLocationID,
                             TaxType = cou.TaxType,
+                            FKUserID = cou.FKUserID,
+                            DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                             //TranAliasName= GetTranAliasName(cou.TranAlias),
                         }
                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
@@ -109,10 +107,6 @@ namespace SSRepository.Repository.Master
                     select (new SeriesModel
                     {
                         PkSeriesId = cou.PkSeriesId,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
-                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         Series = cou.Series,
                         SeriesNo = cou.SeriesNo,
                        // FkBranchId = cou.FkBranchId,
@@ -131,7 +125,8 @@ namespace SSRepository.Repository.Master
                         Location = location.Location,
                         TaxType = cou.TaxType,
                         DocumentType = cou.DocumentType,
-
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                     })).FirstOrDefault();
             return data;
         }
@@ -210,14 +205,15 @@ namespace SSRepository.Repository.Master
             Tbl.TaxType = model.TaxType;
             Tbl.DocumentType = string.IsNullOrEmpty(model.DocumentType) ? "B" : model.DocumentType;
             Tbl.FKLocationID = model.FKLocationID == 0 ? 11 : model.FKLocationID;
+
             Tbl.ModifiedDate = DateTime.Now;
+            Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
             {
                 Tbl.SeriesNo = model.SeriesNo;
                 Tbl.TranAlias = model.TranAlias;
-                Tbl.FKCreatedByID = model.FKCreatedByID;
-                Tbl.FKUserID = model.FKUserId;
-                Tbl.CreationDate = DateTime.Now;
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate; ;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }

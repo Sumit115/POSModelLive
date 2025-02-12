@@ -29,10 +29,6 @@ namespace SSRepository.Repository.Master
                     select (new CompanyModel
                     {
                         PkCompanyId = cou.PkCompanyId,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
-                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                         CompanyName = cou.CompanyName,
                         ContactPerson = cou.ContactPerson,
                         Email = cou.Email,
@@ -44,7 +40,9 @@ namespace SSRepository.Repository.Master
                         Country = cou.Country,
                         Gstn = cou.Gstn,
                         LogoImg = cou.LogoImg,
-                        ThumbnailImg = cou.ThumbnailImg
+                        ThumbnailImg = cou.ThumbnailImg,
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                     })).FirstOrDefault();
 
             return data;
@@ -81,12 +79,13 @@ namespace SSRepository.Repository.Master
             Tbl.Gstn = model.Gstn;
             Tbl.LogoImg = model.LogoImg;
             Tbl.ThumbnailImg = model.ThumbnailImg;
-            Tbl.FKUserID = model.FKUserId;
             Tbl.ModifiedDate = DateTime.Now;
+            Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
-            {                
-                Tbl.FKCreatedByID = model.FKUserId;
-                Tbl.CreationDate = DateTime.Now;
+            {
+
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate;
                 AddData(Tbl, false);
             }
             else

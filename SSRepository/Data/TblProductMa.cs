@@ -12,7 +12,7 @@ namespace SSRepository.Data
         [Key]
         public long PkProductId { get; set; }
         public string? Alias { get; set; }
-        public string? Product { get; set; }
+        public string Product { get; set; }
         public string? Brand { get; set; }
         public string? Strength { get; set; }
         public string? Unit1 { get; set; }

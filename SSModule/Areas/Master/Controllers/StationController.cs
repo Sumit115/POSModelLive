@@ -107,8 +107,6 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             try
             {
-                model.FKUserId = 1;
-                model.FKCreatedByID = 1;
                 model.FkDistrictId = (model.FkDistrictId > 0 ? model.FkDistrictId : 0);
 
                 if (ModelState.IsValid)

@@ -57,10 +57,6 @@ namespace SSRepository.Repository.Master
                                             PkId = cou.PkVendorId,
                                             Code = cou.Code,
                                             Name = cou.Name,
-                                            FKUserId = cou.FKUserID,
-                                            FKCreatedByID = cou.FKCreatedByID,
-                                            ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                                            CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"),
                                             Marital = cou.Marital,
                                             Gender = cou.Gender,
                                             Dob = cou.Dob,
@@ -82,6 +78,8 @@ namespace SSRepository.Repository.Master
                                             FkCityId = cou.FkCityId,
                                             //  City = city.CityName, 
                                             Pin = cou.Pin,
+                                            FKUserID = cou.FKUserID,
+                                            DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                         }
                                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -99,10 +97,6 @@ namespace SSRepository.Repository.Master
                         PkId = cou.PkVendorId,
                         Code = cou.Code,
                         Name = cou.Name,
-                        FKUserId = cou.FKUserID,
-                        FKCreatedByID = cou.FKCreatedByID,
-                        ModifiDate = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
-                        CreateDate = cou.CreationDate.ToString("dd-MMM-yyyy"), 
                         Marital = cou.Marital,
                         Gender = cou.Gender,
                         Dob = cou.Dob,
@@ -123,7 +117,9 @@ namespace SSRepository.Repository.Master
                         StateName = cou.StateName,
                         FkCityId = cou.FkCityId,
                         //  City = city.CityName, 
-                        Pin = cou.Pin, 
+                        Pin = cou.Pin,
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                     })).FirstOrDefault();
             return data;
         }
@@ -237,17 +233,18 @@ namespace SSRepository.Repository.Master
             Tbl.FkCityId = model.FkCityId;
             Tbl.StateName = model.StateName;
             Tbl.Pin = model.Pin;
-             Tbl.ModifiedDate= DateTime.Now;
+            Tbl.ModifiedDate = DateTime.Now;
+            Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
             {
 
-                Tbl.FKCreatedByID = model.FKCreatedByID;
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate;
+
                 Tbl.Code = model.Code;
-                Tbl.FKUserID = model.FKUserId;
                 Tbl.IsAadharVerify = 0;
                 Tbl.IsPanVerify = 0;
                 Tbl.Status = 1;
-                Tbl.CreationDate = DateTime.Now;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 Tbl.FkAccountID = SaveAndGetAccountId(model);
                 AddData(Tbl, false);
@@ -360,8 +357,7 @@ namespace SSRepository.Repository.Master
                 //FKBankID = model.FKBankID,
                 //AccountNo = model.AccountNo,
                 //ModifiedDate = DateTime.Now,
-                FKUserId = model.FKUserId,
-                FKCreatedByID = model.FKCreatedByID,
+                FKUserID = GetUserID(),
             };
 
             long ID = 0;
