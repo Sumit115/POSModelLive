@@ -167,7 +167,11 @@ namespace SSAdmin.Areas
             foreach (string barcode in barcodelist)
             {
                 sno++;
-                _repository.BarcodeScan(model, barcode, barcodelist.Count == sno ? true : false);
+                try
+                {
+                    _repository.BarcodeScan(model, barcode, barcodelist.Count == sno ? true : false);
+                }
+                catch (Exception ex) { }
             }
             var ListNotFound = string.Join(",", barcodelist.Where(item => !model.UniqIdDetails.ToList().Any(item2 =>
             item2.Barcode == item.ToString())).ToList());
@@ -360,8 +364,8 @@ namespace SSAdmin.Areas
                 var htmlString = "";
                 if (model.TranDetails != null)
                 {
-                    if(model.TranAlias == "SORD")
-                        model.TranDetails=model.TranDetails.ToList().OrderBy(x => x.Product).ToList();
+                    if (model.TranAlias == "SORD")
+                        model.TranDetails = model.TranDetails.ToList().OrderBy(x => x.Product).ToList();
                     else
                         model.TranDetails.ToList().OrderBy(x => x.SrNo).ToList();
                 }

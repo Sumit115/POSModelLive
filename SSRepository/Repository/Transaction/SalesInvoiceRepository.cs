@@ -39,8 +39,6 @@ namespace SSRepository.Repository.Transaction
         {
             var obj = (from cou in __dbContext.TblSalesInvoicetrn
                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
-                       join location in __dbContext.TblLocationMas on ser.FKLocationID equals location.PkLocationID
-                       join branch in __dbContext.TblBranchMas on location.FkBranchID equals branch.PkBranchId
                        where cou.FKUserID == UserId && ser.TranAlias == TranAlias
                        && ser.DocumentType == DocumentType
                        orderby cou.PkId descending
@@ -48,42 +46,27 @@ namespace SSRepository.Repository.Transaction
                        {
                            cou,
                            ser,
-                           branch,
-                           location,
                        }).FirstOrDefault();
             if (obj != null)
             {
-                if (obj.ser != null)
-                {
-                    model.SeriesName = obj.ser.Series == null ? "" : obj.ser.Series.ToString();
-                    model.FKLocationID = obj.location.PkLocationID;
-                    model.FKSeriesId = obj.ser.PkSeriesId;
-                    model.BillingRate = obj.ser.BillingRate;
-                    model.BranchStateName = obj.location.State;
-                }
+                model.FKSeriesId = obj.ser.PkSeriesId;
             }
             if (model.FKSeriesId == 0)
             {
                 var _entity = (from cou in __dbContext.TblSeriesMas
-                               join location in __dbContext.TblLocationMas on cou.FKLocationID equals location.PkLocationID
-                               join branch in __dbContext.TblBranchMas on location.FkBranchID equals branch.PkBranchId
                                where cou.TranAlias == TranAlias
-                                && cou.DocumentType == DocumentType
+                               && cou.DocumentType == DocumentType
                                select new
                                {
-                                   cou,
-                                   branch,
-                                   location
+                                   cou
                                }).FirstOrDefault();
                 if (_entity != null)
                 {
-                    model.SeriesName = _entity.cou.Series == null ? "" : _entity.cou.Series.ToString();
-                    model.FKLocationID = _entity.location.PkLocationID;
                     model.FKSeriesId = _entity.cou.PkSeriesId;
-                    model.BillingRate = _entity.cou.BillingRate;
-                    model.BranchStateName = _entity.location.State;
                 }
             }
+            if (model.FKSeriesId != 0)
+                SetSeries(model, model.FKSeriesId);
             return model;
         }
 

@@ -545,17 +545,14 @@ namespace SSRepository.Repository.Transaction
                                 data.Branch = data.BranchDetails.FirstOrDefault();
                             }
                         }
+                        CalculateExe_For_Update(data);
+                        SetSeries(data, data.FKSeriesId);
                     }
+
                 }
-            }
-            else
-            {
-                //UserLastSeries
-            }
-            CalculateExe_For_Update(data);
+            } 
             return data;
         }
-
         public void CalculateExe_For_Update(TransactionModel model)
         {
             foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
@@ -785,46 +782,49 @@ namespace SSRepository.Repository.Transaction
         public object BarcodeScan(TransactionModel model, string Barcode, bool isCalGridTotal)
         {
             DataTable dtProduct = GetProduct(Barcode, model.FKLocationID, 0, 0, "", false, model.TranAlias, model.FkPartyId, model.FKOrderID, model.FKOrderSrID);
-
-            long FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-            long FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
-            var drdetail = model.TranDetails.Where(x => x.FkProductId == FkProductId && x.FkLotId == FkLotId && x.ModeForm != 2)
-                .FirstOrDefault();
-            if (drdetail != null)
+            if (dtProduct.Rows.Count > 0)
             {
-                int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == FkProductId && a.FkLotId == FkLotId && a.ModeForm != 2);
-                SetProduct(model, drdetail, dtProduct);
-
-
-                model.TranDetails[rowIndex].Qty += 1;
-                CalculateExe(model,     model.TranDetails[rowIndex]);
-                // Check Product UNique/Lot/PRoduct
-                var _check = model.UniqIdDetails.ToList().Where(x => x.Barcode == Barcode).FirstOrDefault();
-                if (_check == null)
+                long FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+                long FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
+                var drdetail = model.TranDetails.Where(x => x.FkProductId == FkProductId && x.FkLotId == FkLotId && x.ModeForm != 2)
+                    .FirstOrDefault();
+                if (drdetail != null)
                 {
-                    model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = model.TranDetails[rowIndex].SrNo, Barcode = Barcode });
+                    int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == FkProductId && a.FkLotId == FkLotId && a.ModeForm != 2);
+                    SetProduct(model, drdetail, dtProduct);
+
+
+                    model.TranDetails[rowIndex].Qty += 1;
+                    CalculateExe(model, model.TranDetails[rowIndex]);
+                    // Check Product UNique/Lot/PRoduct
+                    var _check = model.UniqIdDetails.ToList().Where(x => x.Barcode == Barcode).FirstOrDefault();
+                    if (_check == null)
+                    {
+                        model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = model.TranDetails[rowIndex].SrNo, Barcode = Barcode });
+                    }
+                }
+                else
+                {
+                    var detail = new TranDetails();
+                    TranDetailDefault(model, detail);
+                    SetProduct(model, detail, dtProduct);
+                    detail.Barcode = "Barcode";
+                    detail.BarcodeTest = Barcode;
+
+                    CalculateExe(model, detail);
+                    model.TranDetails.Add(detail);
+
+                    // Check Product UNique/Lot/PRoduct
+                    model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = detail.SrNo, Barcode = Barcode });
+
+                }
+                if (isCalGridTotal)
+                {
+                    SetGridTotal(model);
+                    SetPaymentDetail(model);
                 }
             }
-            else
-            {
-                var detail = new TranDetails();
-                TranDetailDefault(model, detail);
-                SetProduct(model, detail, dtProduct);
-                detail.Barcode = "Barcode";
-                detail.BarcodeTest = Barcode;
-
-                CalculateExe(model, detail);
-                model.TranDetails.Add(detail);
-
-                // Check Product UNique/Lot/PRoduct
-                model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = detail.SrNo, Barcode = Barcode });
-
-            }
-            if (isCalGridTotal)
-            {
-                SetGridTotal(model);
-                SetPaymentDetail(model);
-            }
+            else { throw new Exception("Data Not Found"); }
             return model;
         }
         public object ProductTouch(TransactionModel model, long PkProductId)
