@@ -86,6 +86,7 @@ namespace SSRepository.Data
         public virtual DbSet<TblUnitMas> TblUnitMas { get; set; } = null!;
         public virtual DbSet<TblJobWorktrn> TblJobWorktrn { get; set; } = null!;
         public virtual DbSet<TblJobWorkdtl> TblJobWorkdtl { get; set; } = null!;
+        public virtual DbSet<TblMasterLogDtl> TblMasterLogDtl { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

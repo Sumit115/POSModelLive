@@ -6,8 +6,10 @@ using Newtonsoft.Json;
 using SSRepository.Data;
 using SSRepository.IRepository;
 using SSRepository.Models;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 
 namespace SSRepository.Repository
 {
@@ -22,7 +24,7 @@ namespace SSRepository.Repository
             if (ErrorMsg == "")
             {
                 SaveBaseData(ref tblmas, Mode, ref ID);
-                ErrorMsg = SaveClientData();                
+                ErrorMsg = SaveClientData();
             }
 
             return ErrorMsg;
@@ -156,7 +158,10 @@ namespace SSRepository.Repository
                 {
                     MaxID = __dbContext.TblRoleMas.ToList().Count > 0 ? __dbContext.TblRoleMas.ToList().Max(x => x.PkRoleId) : 0;
                 }
-
+                else if (TableName == "TblMasterLogDtl")
+                {
+                    MaxID = __dbContext.TblMasterLogDtl.ToList().Count > 0 ? __dbContext.TblMasterLogDtl.ToList().Max(x => x.PKMasterLogID) : 0;
+                }
                 return Convert.ToInt64(MaxID) + 1;
             }
             catch (Exception ex)
@@ -502,7 +507,7 @@ namespace SSRepository.Repository
 
             return dataTable;
         }
-       
+
         //Sql Conn
         #region sql Connection
         public string conn
@@ -689,7 +694,7 @@ namespace SSRepository.Repository
             List<SysDefaultsModel> model = (List<SysDefaultsModel>)objmodel;
             try
             {
-                foreach (var item in model.ToList().Where(x=>!string.IsNullOrEmpty(x.SysDefValue)))
+                foreach (var item in model.ToList().Where(x => !string.IsNullOrEmpty(x.SysDefValue)))
                 {
 
                     var _entity = __dbContext.TblSysDefaults.Where(x => x.SysDefKey == item.SysDefKey).FirstOrDefault();
@@ -723,7 +728,7 @@ namespace SSRepository.Repository
 
                     }
                 }
-  
+
             }
             catch (Exception ex)
             {
@@ -941,7 +946,34 @@ namespace SSRepository.Repository
             return model;
         }
 
-     
+
+        public void AddMasterLog(long FKFormID, long FKID, long FKSeriseId,DateTime EntryDate, bool IsDelete
+            , string JsonDetail, string Description, long FKUserId, DateTime ModifyDate, long FKLastUserId, DateTime LastModifyDate)
+        {
+             try
+            { 
+                TblMasterLogDtl Tbl = new TblMasterLogDtl();
+                Tbl.PKMasterLogID = 1 + (__dbContext.TblMasterLogDtl.ToList().Count > 0 ? __dbContext.TblMasterLogDtl.ToList().Max(x => x.PKMasterLogID) : 0);
+                Tbl.FKFormID = FKFormID;
+                Tbl.FKID = FKID;
+                Tbl.FKSeriseId = FKSeriseId;
+                Tbl.IsDelete = IsDelete;
+                Tbl.JsonDetail = JsonDetail;
+                Tbl.Description = Description;
+                Tbl.EntryDate = EntryDate;
+                Tbl.FKUserId = FKUserId;
+                Tbl.ModifyDate = ModifyDate;
+                Tbl.FKLastUserId = FKLastUserId;
+                Tbl.LastModifyDate = LastModifyDate;
+                AddData(Tbl, false); 
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            } 
+        }
+
     }
 
 }

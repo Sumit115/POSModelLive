@@ -107,7 +107,8 @@ namespace SSRepository.Models
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime CreationDate { get; set; }
+        public DateTime ModifiedDate { get; set; }
+       // public DateTime CreationDate { get; set; }
         public long FKUserId { get; set; }
         public ExtPropertie ExtProperties { get; set; }
 
@@ -135,6 +136,7 @@ namespace SSRepository.Models
         public decimal FreePoint { get; set; }
 
         public char TaxType { get; set; } = 'I';
+        public int IsLock { get; set; } = 1;//For Delete 
 
     }
 

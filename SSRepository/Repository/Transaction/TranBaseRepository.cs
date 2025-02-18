@@ -113,12 +113,12 @@ namespace SSRepository.Repository.Transaction
                                 if (_bQty.Count != (item.Qty + item.FreeQty)) { throw new Exception("Product (" + item.Product + ") Qty & Barcode Qty Not Match"); }
                             }
                         }
-                         
+
                         if (string.IsNullOrEmpty(item.Batch))
                         {
                             throw new Exception("Size Required on Product " + item.Product);
                         }
-                        CalculateExe(objmodel,item);
+                        CalculateExe(objmodel, item);
                     }
 
                 }
@@ -126,7 +126,7 @@ namespace SSRepository.Repository.Transaction
                 if (objmodel.TranReturnDetails != null)
                 {
                     foreach (var item in objmodel.TranReturnDetails.Where(x => x.FkProductId > 0 && x.ModeForm != 2))
-                    {  
+                    {
                         //For JobWork
                         if (objmodel.TranAlias == "PJ_I" && objmodel.UniqIdReturnDetails != null)
                         {
@@ -451,30 +451,45 @@ namespace SSRepository.Repository.Transaction
 
         public void SaveData(TransactionModel JsonData, ref long Id, ref string ErrMsg, ref long SeriesNo)
         {
-
-            var aa = JsonConvert.SerializeObject(JsonData);
-
-
-            using (SqlConnection con = new SqlConnection(conn))
+            try
             {
-                //con.Open();
-                if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
-                }
-                SqlCommand cmd = new SqlCommand(SPAddUpd, con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@JsonData", JsonConvert.SerializeObject(JsonData));
+                string oldJsonData = "";
+                if (JsonData.PkId > 0)
+                    oldJsonData = GetData(JsonData.PkId, JsonData.FKSeriesId, ref ErrMsg);
 
-                cmd.Parameters.Add(new SqlParameter("@OutParam", SqlDbType.BigInt, 20, ParameterDirection.Output, false, 0, 10, "OutParam", DataRowVersion.Default, null));
-                cmd.Parameters.Add(new SqlParameter("@SeriesNo", SqlDbType.BigInt, 20, ParameterDirection.Output, false, 0, 10, "SeriesNo", DataRowVersion.Default, null));
-                cmd.Parameters.Add(new SqlParameter("@ErrMsg", SqlDbType.NVarChar, int.MaxValue, ParameterDirection.Output, false, 0, 10, "ErrMsg", DataRowVersion.Default, null));
-                cmd.ExecuteNonQuery();
-                Id = Convert.ToInt64(cmd.Parameters["@OutParam"].Value);
-                SeriesNo = cmd.Parameters["@SeriesNo"].Value != null ? Convert.ToInt64(cmd.Parameters["@SeriesNo"].Value) : 0;
-                ErrMsg = Convert.ToString(cmd.Parameters["@ErrMsg"].Value);
-                con.Close();
+                //var aa = JsonConvert.SerializeObject(JsonData);
+
+
+                using (SqlConnection con = new SqlConnection(conn))
+                {
+                    //con.Open();
+                    if (con.State == ConnectionState.Closed)
+                    {
+                        con.Open();
+                    }
+                    SqlCommand cmd = new SqlCommand(SPAddUpd, con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@JsonData", JsonConvert.SerializeObject(JsonData));
+
+                    cmd.Parameters.Add(new SqlParameter("@OutParam", SqlDbType.BigInt, 20, ParameterDirection.Output, false, 0, 10, "OutParam", DataRowVersion.Default, null));
+                    cmd.Parameters.Add(new SqlParameter("@SeriesNo", SqlDbType.BigInt, 20, ParameterDirection.Output, false, 0, 10, "SeriesNo", DataRowVersion.Default, null));
+                    cmd.Parameters.Add(new SqlParameter("@ErrMsg", SqlDbType.NVarChar, int.MaxValue, ParameterDirection.Output, false, 0, 10, "ErrMsg", DataRowVersion.Default, null));
+                    cmd.ExecuteNonQuery();
+                    Id = Convert.ToInt64(cmd.Parameters["@OutParam"].Value);
+                    SeriesNo = cmd.Parameters["@SeriesNo"].Value != null ? Convert.ToInt64(cmd.Parameters["@SeriesNo"].Value) : 0;
+                    ErrMsg = Convert.ToString(cmd.Parameters["@ErrMsg"].Value);
+                    con.Close();
+                }
+
+                if (string.IsNullOrEmpty(ErrMsg) && JsonData.PkId > 0)
+                {
+                    TransactionModel _oldData = JsonConvert.DeserializeObject<List<TransactionModel>>(oldJsonData).ToList().FirstOrDefault();
+
+                    AddMasterLog(JsonData.ExtProperties.FKFormID, JsonData.PkId, JsonData.FKSeriesId, _oldData.EntryDate, false, oldJsonData, _oldData.EntryNo.ToString(), JsonData.FKUserId, JsonData.ModifiedDate, _oldData.FKUserId,_oldData.ModifiedDate);
+                    SaveClientData();
+                }
             }
+            catch (Exception ex) { throw ex; }
         }
 
         public DataTable GetList(string FromDate, string ToDate, string SeriesFilter, string DocumentType, string LocationFilter)
@@ -550,7 +565,7 @@ namespace SSRepository.Repository.Transaction
                     }
 
                 }
-            } 
+            }
             return data;
         }
         public void CalculateExe_For_Update(TransactionModel model)
@@ -615,7 +630,7 @@ namespace SSRepository.Repository.Transaction
                         break;
                 }
 
-                CalculateExe(model, ( IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
+                CalculateExe(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
                 SetGridTotal(model);
                 SetPaymentDetail(model);
                 model.IsTranChange = true;
@@ -745,7 +760,7 @@ namespace SSRepository.Repository.Transaction
                 detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
                 detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
                 detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
-                if (model.TranAlias == "PORD" || model.TranAlias == "PINV" || (model.TranAlias == "PJ_R" && detail.TranType=="I"))
+                if (model.TranAlias == "PORD" || model.TranAlias == "PINV" || (model.TranAlias == "PJ_R" && detail.TranType == "I"))
                 {
                     detail.FkLotId = 0;
                 }
@@ -1201,7 +1216,7 @@ namespace SSRepository.Repository.Transaction
             // model.TranDetails = model.TranDetails.Where(x => x.FkProductId > 0).ToList();
         }
 
-        public void CalculateExe(TransactionModel model,TranDetails item)
+        public void CalculateExe(TransactionModel model, TranDetails item)
         {
 
             decimal GrossAmt = item.Rate * item.Qty;
@@ -1215,7 +1230,7 @@ namespace SSRepository.Repository.Transaction
             }
 
             item.GrossAmt = Math.Round((GrossAmt - item.TradeDiscAmt), 2);
-            item.GstRate = (item.GrossAmt / item.Qty) < 1000 ? 5 : 12 ;
+            item.GstRate = (item.GrossAmt / item.Qty) < 1000 ? 5 : 12;
             if (model.TaxType == 'E')
             {
                 item.TaxableAmt = item.GrossAmt;
@@ -1510,7 +1525,7 @@ namespace SSRepository.Repository.Transaction
                 model.BillingRate = obj.BillingRate;
                 model.BranchStateName = obj.BranchStateName;
                 model.TaxType = obj.TaxType;
-                
+
             }
             model.IsTranChange = true;
 
@@ -1531,7 +1546,7 @@ namespace SSRepository.Repository.Transaction
                                      BillingRate = cou.BillingRate,
                                      TaxType = cou.TaxType,
                                      BranchStateName = branch.State,
-                                     
+
                                  }
                                 )).FirstOrDefault();
             return data;
