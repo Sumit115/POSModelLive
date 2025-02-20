@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/SSModule/wwwroot/ExcelFile
+/SSModule/wwwroot/InvoicePDF
