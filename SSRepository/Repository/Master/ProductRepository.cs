@@ -341,7 +341,7 @@ namespace SSRepository.Repository.Master
                 ProductModel oldModel = GetSingleRecord(Tbl.PkProductId);
                 ID = Tbl.PkProductId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKProductID, oldModel.PkProductId, oldModel.FKProductID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.Product, Tbl.PkProductId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Product, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKProductID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

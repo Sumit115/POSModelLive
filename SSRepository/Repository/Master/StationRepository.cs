@@ -199,7 +199,7 @@ namespace SSRepository.Repository.Master
                 StationModel oldModel = GetSingleRecord(Tbl.PkStationId);
                 ID = Tbl.PkStationId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKStationID, oldModel.PkStationId, oldModel.FKStationID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.Station, Tbl.PkStationId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.StationName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKStationID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

@@ -128,13 +128,14 @@ function bindGrid(GridId, data, IdProperty) {
                 })
 
             }
-            else if (command == "InvoiceDownload") {
+            else if (command == "InvoicePrint" || command == "DueInvoicePrint") {
 
                 $(".loader").show();
+                var PrintFormatName = command == "DueInvoicePrint" ? "sizewiseDueqty" : "";
                 $.ajax({
                     type: "POST",
                     url: 'InvoicePrint_Pdf_Url',
-                    data: { PkId: pk_Id, FkSeriesId: FkSeriesId },
+                    data: { PkId: pk_Id, FkSeriesId: FkSeriesId, PrintFormatName: PrintFormatName },
                     datatype: "json",
                     success: function (res) {
 

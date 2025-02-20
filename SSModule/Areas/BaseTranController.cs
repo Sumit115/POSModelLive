@@ -342,7 +342,7 @@ namespace SSAdmin.Areas
 
         }
 
-        public ActionResult InvoicePrint_Pdf_Url(long PkId, long FkSeriesId)
+        public ActionResult InvoicePrint_Pdf_Url(long PkId, long FkSeriesId, string PrintFormatName = "")
         {
             ResModel res = new ResModel();
             try
@@ -350,9 +350,10 @@ namespace SSAdmin.Areas
                 // var model = new TransactionModel();
                 //var model = _repository.GetSingleRecord(Id, 0);
                 var data = _repository.GetPrintData(PkId, FkSeriesId);
-                var FormatName = data.GetType().GetProperties().First(o => o.Name == "FormatName").GetValue(data, null);
+                var FormatName = !string.IsNullOrEmpty(PrintFormatName) ? PrintFormatName : data.GetType().GetProperties().First(o => o.Name == "FormatName").GetValue(data, null);
                 TransactionModel model = (TransactionModel)data.GetType().GetProperties().First(o => o.Name == "model").GetValue(data, null);
-
+                if (FormatName == "sizewiseDueqty" && model.TranDetails.Where(x => x.DueQty > 0).ToList().Count == 0)
+                    throw new Exception("Due Qty Product Not Available");
                 string webRootPath = _webHostEnvironment.WebRootPath;
                 string contentRootPath = _webHostEnvironment.ContentRootPath;
 

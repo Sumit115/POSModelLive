@@ -282,7 +282,7 @@
                         {
                             var qty = @item._lst.Where(x => x.Batch == size.Batch).Sum(x => x.Qty);
 
-                            <td class="text-center">@(qty > 0 ? qty:"")</td>
+                            <td class="text-center">@(qty > 0 ? qty.ToString("G29") : "")</td>
                         }
                     </tr>
                 }

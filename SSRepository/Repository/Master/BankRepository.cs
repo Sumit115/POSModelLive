@@ -162,7 +162,7 @@ namespace SSRepository.Repository.Master
                 BankModel oldModel = GetSingleRecord(Tbl.PkBankId);
                 ID = Tbl.PkBankId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKBankID, oldModel.PkBankId, oldModel.FKBankID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.Bank, Tbl.PkBankId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.BankName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKBankID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

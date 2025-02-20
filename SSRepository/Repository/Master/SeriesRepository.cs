@@ -223,7 +223,7 @@ namespace SSRepository.Repository.Master
                 SeriesModel oldModel = GetSingleRecord(Tbl.PkSeriesId);
                 ID = Tbl.PkSeriesId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKSeriesID, oldModel.PkSeriesId, oldModel.FKSeriesID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.Series, Tbl.PkSeriesId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Series, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKSeriesID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

@@ -1,9 +1,13 @@
 ﻿using SSRepository.Models;
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace SSAdmin
-{
+ 
     public class Handler
     {
 
@@ -89,7 +93,7 @@ namespace SSAdmin
             ImportStock = 300,
 
             //350-Option
-            sysDefaults= 350,
+            sysDefaults = 350,
 
 
         }
@@ -148,7 +152,7 @@ namespace SSAdmin
                    new ddl { Text = "Contra Voucher", Value = "V_CT",Value2="" },
                    new ddl { Text = "Journal Voucher", Value = "V_JR",Value2="" },
                    new ddl { Text = "Payment Voucher", Value = "V_PY",Value2="" },
-                   new ddl { Text = "Receipt Voucher", Value = "V_RC",Value2="" },                
+                   new ddl { Text = "Receipt Voucher", Value = "V_RC",Value2="" },
                    new ddl { Text = "Location Request", Value = "LORD",Value2="" },
                    new ddl { Text = "Location Invoice", Value = "LINV",Value2="" },
                    new ddl { Text = "Job Order", Value = "PJ_O",Value2="" },
@@ -408,4 +412,4 @@ namespace SSAdmin
         }
 
     }
-}
+

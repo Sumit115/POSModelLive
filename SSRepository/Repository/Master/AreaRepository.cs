@@ -218,7 +218,7 @@ namespace SSRepository.Repository.Master
                 AreaModel oldModel = GetSingleRecord(Tbl.PkAreaId);
                 ID = Tbl.PkAreaId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKAreaID, oldModel.PkAreaId, oldModel.FKAreaID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.Area, Tbl.PkAreaId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.AreaName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKAreaID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

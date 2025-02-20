@@ -239,7 +239,7 @@ namespace SSRepository.Repository.Master
                 EmployeeModel oldModel = GetSingleRecord(Tbl.PkEmployeeId);
                 ID = Tbl.PkEmployeeId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKEmployeeID, oldModel.PkEmployeeId, oldModel.FKEmployeeID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.Employee, Tbl.PkEmployeeId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Name, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKEmployeeID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

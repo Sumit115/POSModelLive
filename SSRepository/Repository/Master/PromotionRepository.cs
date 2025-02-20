@@ -290,7 +290,7 @@ namespace SSRepository.Repository.Master
                 PromotionModel oldModel = GetSingleRecord(Tbl.PkPromotionId);
                 ID = Tbl.PkPromotionId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKPromotionID, oldModel.PkPromotionId, oldModel.FKPromotionID, oldModel.DATE_MODIFIED);
+                AddMasterLog((Tbl.PromotionDuring== "Sales" ? (long)Handler.Form.SalesPromotion : (long)Handler.Form.PurchasePromotion), Tbl.PkPromotionId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.PromotionName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             if (model.PromotionLocation_lst != null)
             {

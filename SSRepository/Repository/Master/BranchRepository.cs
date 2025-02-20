@@ -210,7 +210,7 @@ namespace SSRepository.Repository.Master
                 BranchModel oldModel = GetSingleRecord(Tbl.PkBranchId);
                 ID = Tbl.PkBranchId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKBranchID, oldModel.PkBranchId, oldModel.FKBranchID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.Branch, Tbl.PkBranchId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.BranchName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKBranchID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

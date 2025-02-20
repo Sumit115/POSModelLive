@@ -171,7 +171,7 @@ namespace SSRepository.Repository.Master
                 CategoryModel oldModel = GetSingleRecord(Tbl.PkCategoryId);
                 ID = Tbl.PkCategoryId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKCategoryID, oldModel.PkCategoryId, oldModel.FKCategoryID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.Category, Tbl.PkCategoryId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Category, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
 
 

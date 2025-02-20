@@ -255,7 +255,7 @@ namespace SSRepository.Repository.Master
                 PartyModel oldModel = GetSingleRecord(Tbl.PkVendorId);
                 ID = Tbl.PkVendorId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKVendorID, oldModel.PkVendorId, oldModel.FKVendorID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.Vendor, Tbl.PkVendorId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Name, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKVendorID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }        

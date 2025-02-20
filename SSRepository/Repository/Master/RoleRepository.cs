@@ -228,7 +228,7 @@ namespace SSRepository.Repository.Master
                 RoleModel oldModel = GetSingleRecord(Tbl.PkRoleId);
                 ID = Tbl.PkRoleId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKRoleID, oldModel.PkRoleId, oldModel.FKRoleID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.Role, Tbl.PkRoleId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.RoleName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
 
 

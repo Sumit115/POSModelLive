@@ -230,7 +230,7 @@ namespace SSRepository.Repository.Master
                 StateModel oldModel = GetSingleRecord(Tbl.PkStateId);
                 ID = Tbl.PkStateId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKStateID, oldModel.PkStateId, oldModel.FKStateID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.State, Tbl.PkStateId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.StateName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKStateID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

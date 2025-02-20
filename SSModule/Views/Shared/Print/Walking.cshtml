@@ -166,7 +166,7 @@
             }
 
         </table>
-        <p class="text-left font-weight-bold" style="padding:5px; margin:0;border-bottom: 1px solid;">GST Collection :Rupees @(SSAdmin.Handler.ConvertNumbertoWords(Convert.ToInt32(Model.TaxAmt))) Only</p>
+        <p class="text-left font-weight-bold" style="padding:5px; margin:0;border-bottom: 1px solid;">GST Collection :Rupees @(Handler.ConvertNumbertoWords(Convert.ToInt32(Model.TaxAmt))) Only</p>
         <table class="table-item">
             <tr>
                 <td style="width:75%;margin:0px;padding:0px;    padding-right: 15px;">
@@ -262,7 +262,7 @@
         </table>
 
 
-        <p class="text-left font-weight-bold" style="padding:5px; margin:0;border-bottom: 1px solid;">Total (In Words) : @(SSAdmin.Handler.ConvertNumbertoWords(Convert.ToInt32(Model.NetAmt)))</p>
+        <p class="text-left font-weight-bold" style="padding:5px; margin:0;border-bottom: 1px solid;">Total (In Words) : @(Handler.ConvertNumbertoWords(Convert.ToInt32(Model.NetAmt)))</p>
 
         <table style="border: 1px solid #000;border-bottom: 0; width: 100%;margin-top: 10px;    padding-top: 10px;text-align: center; ">
             <tr>

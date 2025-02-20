@@ -156,7 +156,7 @@ namespace SSRepository.Repository.Master
                 UnitModel oldModel = GetSingleRecord(Tbl.PkUnitId);
                 ID = Tbl.PkUnitId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKUnitID, oldModel.PkUnitId, oldModel.FKUnitID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.Unit, Tbl.PkUnitId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.UnitName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKUnitID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

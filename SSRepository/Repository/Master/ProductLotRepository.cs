@@ -266,7 +266,7 @@ namespace SSRepository.Repository.Master
                 ProdLotDtlModel oldModel = GetSingleRecord(Tbl.PkLotId);
                 ID = Tbl.PkLotId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKProductLotID, oldModel.PkLotId, oldModel.FKProductLotID, oldModel.DATE_MODIFIED);
+                //AddMasterLog((long)Handler.Form.ProductLot, Tbl.PkLotId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.LotName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKProductLotID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

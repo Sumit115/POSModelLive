@@ -173,7 +173,7 @@ namespace SSRepository.Repository.Master
                 CountryModel oldModel = GetSingleRecord(Tbl.PkCountryId);
                 ID = Tbl.PkCountryId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKCountryID, oldModel.PkCountryId, oldModel.FKCountryID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.Country, Tbl.PkCountryId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.CountryName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKCountryID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

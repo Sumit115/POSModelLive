@@ -161,7 +161,7 @@ namespace SSRepository.Repository.Master
                 RecipeModel oldModel = GetSingleRecord(Tbl.PkRecipeId);
                 ID = Tbl.PkRecipeId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKRecipeID, oldModel.PkRecipeId, oldModel.FKRecipeID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.Recipe, Tbl.PkRecipeId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Name, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
 
 

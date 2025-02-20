@@ -47,6 +47,8 @@ namespace SSRepository.Repository.Master
                                                  CategoryGroupName = cou.CategoryGroupName,
                                                  FkCategoryGroupId = cou.FkCategoryGroupId,
                                                  PCategoryGroupName = catGrp.CategoryGroupName,
+                                                 FKUserID = cou.FKUserID,
+                                                 DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                              }
                                             )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -64,6 +66,8 @@ namespace SSRepository.Repository.Master
                         PkCategoryGroupId = cou.PkCategoryGroupId,
                         CategoryGroupName = cou.CategoryGroupName,
                         FkCategoryGroupId = cou.FkCategoryGroupId,
+                        FKUserID = cou.FKUserID,
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                     })).FirstOrDefault();
             return data;
         }
@@ -157,7 +161,7 @@ namespace SSRepository.Repository.Master
                 CategoryGroupModel oldModel = GetSingleRecord(Tbl.PkCategoryGroupId);
                 ID = Tbl.PkCategoryGroupId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKCategoryGroupID, oldModel.PkCategoryGroupId, oldModel.FKCategoryGroupID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.CategoryGroup, Tbl.PkCategoryGroupId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.CategoryGroupName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKCategoryGroupID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

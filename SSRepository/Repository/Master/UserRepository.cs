@@ -193,7 +193,7 @@ namespace SSRepository.Repository.Master
                 UserModel oldModel = GetSingleRecord(Tbl.PkUserId);
                 ID = Tbl.PkUserId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKUserID, oldModel.PkUserId, oldModel.FKUserID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.User, Tbl.PkUserId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.UserName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKUserID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

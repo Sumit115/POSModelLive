@@ -264,7 +264,7 @@ namespace SSRepository.Repository.Master
                 AccountMasModel oldModel = GetSingleRecord(Tbl.PkAccountId);
                 ID = Tbl.PkAccountId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FkAccountId, oldModel.PkAccountId, oldModel.FkAccountId, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.AccountMas, Tbl.PkAccountId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Account, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FkAccountId, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
 

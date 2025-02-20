@@ -178,7 +178,7 @@ namespace SSRepository.Repository.Master
                 AccountGroupModel oldModel = GetSingleRecord(Tbl.PkAccountGroupId);
                 ID = Tbl.PkAccountGroupId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKAccountGroupID, oldModel.PkAccountGroupId, oldModel.FKAccountGroupID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.AccountGroup, Tbl.PkAccountGroupId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.AccountGroupName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKAccountGroupID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

@@ -214,7 +214,7 @@ namespace SSRepository.Repository.Master
                 DistrictModel oldModel = GetSingleRecord(Tbl.PkDistrictId);
                 ID = Tbl.PkDistrictId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKDistrictID, oldModel.PkDistrictId, oldModel.FKDistrictID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.District, Tbl.PkDistrictId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.DistrictName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKDistrictID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

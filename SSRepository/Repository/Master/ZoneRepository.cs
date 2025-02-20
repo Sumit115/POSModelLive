@@ -171,7 +171,7 @@ namespace SSRepository.Repository.Master
                 ZoneModel oldModel = GetSingleRecord(Tbl.PkZoneId);
                 ID = Tbl.PkZoneId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblZone.FKZoneID, oldModel.PkZoneId, oldModel.FKZoneID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.Zone, Tbl.PkZoneId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.ZoneName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkZoneId, obj.FKZoneID, tblZone.Images, tblZone.Remarks, tblZone.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

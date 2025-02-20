@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using SSRepository.Data;
 using SSRepository.IRepository.Master;
 using SSRepository.Models;
@@ -212,7 +213,7 @@ namespace SSRepository.Repository.Master
                 LocationModel oldModel = GetSingleRecord(Tbl.PkLocationID);
                 ID = Tbl.PkLocationID;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKLocationID, oldModel.PkLocationId, oldModel.FKLocationID, oldModel.DATE_MODIFIED);
+                AddMasterLog((long)Handler.Form.Location, Tbl.PkLocationID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Location, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKLocationID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

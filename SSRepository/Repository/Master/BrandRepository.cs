@@ -158,7 +158,8 @@ namespace SSRepository.Repository.Master
                 BrandModel oldModel = GetSingleRecord(Tbl.PkBrandId);
                 ID = Tbl.PkBrandId;
                 UpdateData(Tbl, false);
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKBrandID, oldModel.PkBrandId, oldModel.FKBrandID, oldModel.DATE_MODIFIED);
+               
+                AddMasterLog((long)Handler.Form.Brand, Tbl.PkBrandId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.BrandName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKBrandID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
