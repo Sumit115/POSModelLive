@@ -51,18 +51,21 @@ namespace SSRepository.Repository.Transaction
             {
                 model.FKSeriesId = obj.ser.PkSeriesId;
             }
-            if (model.FKSeriesId == 0)
-            {
-                var _entity = (from cou in __dbContext.TblSeriesMas
-                               where cou.TranAlias == TranAlias
-                               && cou.DocumentType == DocumentType
-                               select new
-                               {
-                                   cou
-                               }).FirstOrDefault();
-                if (_entity != null)
+            else
+            { 
+                if (model.FKSeriesId == 0)
                 {
-                    model.FKSeriesId = _entity.cou.PkSeriesId;
+                    var _entity = (from cou in __dbContext.TblSeriesMas
+                                   where cou.TranAlias == TranAlias
+                                    && cou.DocumentType == DocumentType
+                                   select new
+                                   {
+                                       cou
+                                   }).FirstOrDefault();
+                    if (_entity != null)
+                    {                        
+                        model.FKSeriesId = _entity.cou.PkSeriesId;                        
+                    }
                 }
             }
             if (model.FKSeriesId != 0)
