@@ -56,6 +56,7 @@ function ViewData(_d, Export) {
             data: _d,
             datatype: "json",
             success: function (res) {
+                 
                 var data = JSON.parse(res.data);
                 
                 Common.Grid(parseInt(RPTOption.FormId), $("#ReportType").val(), function (s) {
@@ -72,8 +73,7 @@ function ViewData(_d, Export) {
                     cg.setSortableColumns(s.SortableColumns);
                     cg.setIdProperty(RPTOption.IdProperty);
                     cg.setCtrlType(s.setCtrlType);
-                    
-                    if (s.TotalOn != '' && s.TotalOn != undefined) {
+                      if (s.TotalOn != '' && s.TotalOn != undefined) {
                         if (s.TotalOn.replace('~') != '') {
                             cg.setTotalOn(s.TotalOn)
                         }

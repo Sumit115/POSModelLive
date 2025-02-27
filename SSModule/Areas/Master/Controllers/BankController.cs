@@ -77,6 +77,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 if (id != 0 && pageview.ToLower() == "log")
                 {
                     ViewBag.PageType = "Log";
+                    Model = _repository.GetMasterLog<BankModel>(id);
                 }
                 else if (id != 0)
                 {

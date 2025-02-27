@@ -457,7 +457,7 @@ namespace SSRepository.Repository.Transaction
                 if (JsonData.PkId > 0)
                     oldJsonData = GetData(JsonData.PkId, JsonData.FKSeriesId, ref ErrMsg);
 
-                //var aa = JsonConvert.SerializeObject(JsonData);
+                var aa = JsonConvert.SerializeObject(JsonData);
 
 
                 using (SqlConnection con = new SqlConnection(conn))
@@ -483,16 +483,16 @@ namespace SSRepository.Repository.Transaction
 
                 if (string.IsNullOrEmpty(ErrMsg) && JsonData.PkId > 0)
                 {
-                    TransactionModel _oldData = JsonConvert.DeserializeObject<List<TransactionModel>>(oldJsonData).ToList().FirstOrDefault();
+                    TransactionModel oldModel = JsonConvert.DeserializeObject<List<TransactionModel>>(oldJsonData).ToList().FirstOrDefault();
 
-                    AddMasterLog(JsonData.ExtProperties.FKFormID, JsonData.PkId, JsonData.FKSeriesId, _oldData.EntryDate, false, oldJsonData, _oldData.EntryNo.ToString(), JsonData.FKUserId, JsonData.ModifiedDate, _oldData.FKUserId,_oldData.ModifiedDate);
+                    AddMasterLog(JsonData.ExtProperties.FKFormID, JsonData.PkId, JsonData.FKSeriesId, oldModel.EntryDate, false, JsonConvert.SerializeObject(oldModel), oldModel.EntryNo.ToString(), JsonData.FKUserId, JsonData.ModifiedDate, oldModel.FKUserId, oldModel.ModifiedDate);
                     SaveClientData();
                 }
             }
             catch (Exception ex) { throw ex; }
         }
 
-        public DataTable GetList(string FromDate, string ToDate, string SeriesFilter, string DocumentType, string LocationFilter)
+        public DataTable GetList(string FromDate, string ToDate, string SeriesFilter, string DocumentType, string LocationFilter, string StateFilter = "")
         {
             DataTable dt = new DataTable();
             using (SqlConnection con = new SqlConnection(conn))
@@ -505,6 +505,8 @@ namespace SSRepository.Repository.Transaction
                 cmd.Parameters.AddWithValue("@SeriesFilter", SeriesFilter);
                 cmd.Parameters.AddWithValue("@DocumentType", DocumentType);
                 cmd.Parameters.AddWithValue("@LocationFilter", GetFilterData(LocationFilter));
+                if (SeriesFilter == "SORD")
+                    cmd.Parameters.AddWithValue("@StateFilter", GetFilterData(StateFilter));
                 //Get Output Parametr
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(dt);

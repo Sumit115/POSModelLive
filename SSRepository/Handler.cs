@@ -92,12 +92,13 @@ using System.Threading.Tasks;
             //
             ImportStock = 300,
 
-            //350-Option
-            sysDefaults = 350,
+        //350-Option
+        sysDefaults = 350,
+        EntryLog = 351,
 
 
-        }
-        public enum AccountGroupMasterId
+    }
+    public enum AccountGroupMasterId
         {
             Sundry_Creditors = 1,
             Sundry_Debtors = 2,

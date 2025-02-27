@@ -5,15 +5,15 @@ var TranAlias = "";
 var ModeFormForEdit = 1;
 
 $(document).ready(function () {
-    
+
     ModeFormForEdit = Handler.isNullOrEmpty($("#hdModeFormForEdit").val()) ? 1 : parseInt($("#hdModeFormForEdit").val());
     Common.InputFormat();
+    ControllerName = $("#hdControllerName").val();
     Load();
     tranModel.TrnStatus = Handler.isNullOrEmpty(tranModel.TrnStatus) ? "P" : tranModel.TrnStatus.replace('\u0000', '');
     TranAlias = tranModel.ExtProperties.TranAlias;
     $("#hdFormId").val(tranModel.ExtProperties.FKFormID);
     $("#hdGridName").val('dtl');
-    ControllerName = $("#hdControllerName").val();
     if ((TranAlias == "SRTN" || TranAlias == "SCRN" || TranAlias == "SORD" || TranAlias == "LORD" || TranAlias == "PORD" || TranAlias == "PINV")) {
         $(".trn-barcode").hide();
     } else { $(".trn-barcode").show(); $("#txtSearchBarcode").focus(); }
@@ -96,7 +96,7 @@ $(document).ready(function () {
 });
 
 function Load() {
-    
+
     var PkId = $("#PkId").val();
     tranModel = JSON.parse($("#hdData").val());
     if (PkId > 0 || tranModel.TranDetails.length > 0) {
@@ -104,7 +104,7 @@ function Load() {
         console.log(tranModel);
         $(tranModel.TranDetails).each(function (i, v) {
             //  v["Product"] = parseInt(v.FkProductId);
-            
+
             v["ModeForm"] = ModeFormForEdit;
             if (ModeFormForEdit == 0) {
                 v["FKSeriesId"] = tranModel.FKSeriesId;
@@ -143,6 +143,9 @@ function BindGrid(GridId, data) {
 
     $("#" + GridId).empty();
     Common.Grid(tranModel.ExtProperties.FKFormID, "dtl", function (s) {
+
+
+        if (tranModel.FKOrderID > 0 && tranModel.FKOrderSrID) { s.setCtrlType = s.setCtrlType.replace("CD", "").replace("CD", "") }
         //var ProductList = (ControllerName == "SalesReturn" || ControllerName == "SalesCrNote") ? [] : JSON.parse($("#hdProductList").val());
         var ProductLotList = [];
         cg = new coGrid("#" + GridId);
@@ -255,7 +258,7 @@ function BindGrid(GridId, data) {
         }
         /*---------------    ---------------   ---------------   ---------------*/
         cg.outGrid.onBeforeEditCell.subscribe(function (e, args) {
-            
+
             if (args.cell != undefined) {
 
                 var field = cg.columns[args.cell].field;
@@ -414,20 +417,21 @@ function BindGrid(GridId, data) {
                     ColumnChange(args, args.row, "TradeDisc");
                 }
                 else if (field == "Batch") {
-                    var FkLotId = args.item["FkLotId"];
-                    if (FkLotId > 0) {
-                        ColumnChange(args, args.row, "Batch");
+                    debugger;
+                    if (tranModel.ExtProperties.TranType == "P" || TranAlias == "SORD" || TranAlias == "LORD") {
 
-                    } else {
-                        if (tranModel.ExtProperties.TranType == "P" || TranAlias == "SORD" || TranAlias == "LORD") {
-
+                    }
+                    else {
+                        var FkLotId = args.item["FkLotId"];
+                        if (FkLotId > 0) {
+                            ColumnChange(args, args.row, "Batch");
                         }
                         else {
                             args.item["Batch"] = "";
                             cg.updateRefreshDataRow(args.row);
                         }
-
                     }
+
                 }
                 else if (field == "Color") {
 
@@ -464,7 +468,7 @@ function BindGrid(GridId, data) {
                     ColumnChange(args, args.row, "Delete");
                 }
                 else if (field == "Barcode" && ModeForm != 2 && BarcodeText != "") {
-                    
+
                     if (tranModel.ExtProperties.StockFlag == "I") {
 
                         if (FkProductId > 0) {
@@ -525,7 +529,7 @@ function BindGrid(GridId, data) {
 function BarcodePopupUniqId_CheckboxList(args, rowIndex) {
 
     tranModel.TranDetails = GetDataFromGrid();
-    
+
     if (tranModel.TranDetails.length > 0) {
         $(".loader").show();
         $.ajax({
@@ -678,7 +682,7 @@ function Bind_cgGridUniqIdTextbox(args, rowIndex, _d) {
 
         if (args.cell != undefined) {
             var field = cgGridUniqIdTextbox.columns[args.cell].field;
-            
+
             var SrNo = args.grid.getDataItem(args.row)["SrNo"];
             var Barcode = args.grid.getDataItem(args.row)["Barcode"];
             if (field == "Delete") {
@@ -773,9 +777,9 @@ function BarcodeScan(barcode) {
 function cg_ClearRow(args) {
     args.item["PkId"] = 0;
     args.item["ModeForm"] = 0;
-    args.item["FkProductId"] = 0;
+    args.item["FkProductId"] = "";
     args.item["ProductName_Text"] = "";
-    args.item["Product"] = 0;
+    args.item["Product"] = "";
     args.item["MRP"] = "";
     args.item["Rate"] = "";
     args.item["Qty"] = "";
@@ -904,7 +908,7 @@ function handleFileLoad(event) {
 function ColumnChange(args, rowIndex, fieldName) {
 
     tranModel.TranDetails = GetDataFromGrid();
-    
+
     if (tranModel.TranDetails.length > 0) {
         // if (Handler.isNullOrEmpty(tranModel.TranDetails[rowIndex].LinkSrNo) || tranModel.TranDetails[rowIndex].LinkSrNo <= 0 || fieldName == 'Delete') {
         $(".loader").show();
@@ -914,7 +918,7 @@ function ColumnChange(args, rowIndex, fieldName) {
             data: { model: tranModel, rowIndex: rowIndex, fieldName: fieldName },
             datatype: "json",
             success: function (res) {
-                
+
                 if (res.status == "success") {
                     tranModel = res.data;
                     setFooterData(tranModel);
@@ -1033,7 +1037,7 @@ function setPaymentDetail(data) {
 
 
 function setGridRowData(args, data, rowIndex, fieldName) {
-    
+
     if (fieldName == 'Delete') {
         args.grid.getDataItem(args.row).ModeForm = 2
     }
@@ -1077,9 +1081,9 @@ function setGridRowData(args, data, rowIndex, fieldName) {
 
         var CodingScheme = data[rowIndex].CodingScheme;
         args.item["CodingScheme"] = CodingScheme;
-        
+
         if (tranModel.ExtProperties.TranType == "P") {
-            if (CodingScheme == 'fixed' || tranModel.TranAlias=="PORD")
+            if (CodingScheme == 'fixed' || tranModel.TranAlias == "PORD")
                 args.item["Barcode"] = "";
             else
                 args.item["Barcode"] = "Barcode";
@@ -1136,7 +1140,7 @@ function GetDataFromGrid(ifForsave) {
 function GetAndCheckBarcodeQty(_d) {
     var _NotFound = []
     _d.filter(function (element) {
-        
+
         let totalQty = (parseFloat(element.Qty) + parseFloat(element.FreeQty))
         var _srnoList = tranModel.UniqIdDetails.filter((u) => { return u.SrNo == element.SrNo });
         if (_srnoList.length != totalQty && element.ModeForm != 2 && element.CodingScheme == 'Unique')
@@ -1173,17 +1177,17 @@ function SaveRecord() {
                                 data: { model: tranModel },
                                 datatype: "json",
                                 success: function (res) {
-                                    
+
                                     if (res.status == "success") {
                                         alert('Save Successfully..');
                                         if (ControllerName == 'SalesInvoiceTouch') {
                                             location.reload();
                                         } else {
                                             window.location = Handler.currentPath() + 'List';
-                                        } 
+                                        }
                                     }
                                     else {
-                                        
+
                                         alert(res.msg);
                                         tranModel = res.data;
                                         BindGrid('DDT', tranModel.TranDetails);

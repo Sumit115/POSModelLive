@@ -18,6 +18,7 @@ function View() {
             _d["pageSize"] = pageSize;
             if (typeof RPTFilter !== 'undefined') {
                 _d["LocationFilter"] = RPTFilter.Location.Filter;
+                _d["StateFilter"] = RPTFilter.State.Filter;
             }
 
             $.ajax({
@@ -27,7 +28,7 @@ function View() {
                 datatype: "json",
                 success: function (res) {
                     console.log(res);
-                    if (res.status == "success") {
+                    if (res.status == "success") { 
                         bindGrid(GridId, res.data, IdProperty);
                     }
                     else
@@ -55,6 +56,11 @@ function bindGrid(GridId, data, IdProperty) {
         cg.setSortableColumns(s.SortableColumns);
         cg.setIdProperty(IdProperty);
         cg.setCtrlType(s.setCtrlType);
+        if (s.TotalOn != '' && s.TotalOn != undefined) {
+            if (s.TotalOn.replace('~') != '') {
+                cg.setTotalOn(s.TotalOn)
+            }
+        }
         cg.bind(data);
         cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
         cg.outGrid.onDblClick.subscribe(function (e, args) {
@@ -69,7 +75,7 @@ function bindGrid(GridId, data, IdProperty) {
                     var type = location.href.substring(location.href.indexOf("List/") + 5);
                     window.location.href = Handler.currentPath() + "Create/" + type + "/" + pk_Id;
 
-                }
+                } else if (window.location.href.indexOf("EntryLog") > 0) { }
                 else
                     window.location.href = "Create/" + pk_Id;
             }
@@ -260,7 +266,26 @@ function bindGrid(GridId, data, IdProperty) {
                 })
 
             }
+            else if (command == "ViewLog") {
+                debugger;
+                console.log(UDI.outGrid.getDataItem(row));
+                var WebUrl = UDI.outGrid.getDataItem(row).WebUrl;
+               // var FKID = UDI.outGrid.getDataItem(row).FKID;
+                 // FKSeriseId = UDI.outGrid.getDataItem(row).FKSeriseId;
+                var baseurl = window.location.origin   + WebUrl.substring(0, WebUrl.indexOf("List"));
+                var _url = '';
+                if (WebUrl.indexOf("List/") != -1) {
+                    var type = WebUrl.substring(WebUrl.indexOf("List/") + 5);
+                    _url = baseurl + "Create/" + type + "/" + pk_Id +  "?pageview=log";
+                }
+                else { _url = baseurl + "Create/" + pk_Id + "?pageview=log"; }
 
+                window.open(
+                    _url,
+                    '_blank' // <- This is what makes it open in a new window.
+                );
+
+            }
         });
     });
 };

@@ -56,6 +56,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 if (id != 0 && pageview.ToLower() == "log")
                 {
                     ViewBag.PageType = "Log";
+                    Model = _repository.GetMasterLog<LocationModel>(id);
                 }
                 else if (id != 0)
                 {

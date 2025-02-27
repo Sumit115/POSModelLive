@@ -36,6 +36,7 @@ namespace SSAdmin.Controllers
                 HttpContext.Session.SetString("ConnectionString", Convert.ToString(HttpContext.User.FindFirst("ConnectionString")?.Value));
                 HttpContext.Session.SetString("UserID", Convert.ToString(HttpContext.User.FindFirst("UserId")?.Value));
                 //DeployStoredProcedures();
+                //var aaa= Convert.ToString(HttpContext.User.FindFirst("ConnectionString")?.Value);
                 UserModel ds = _Userrepository.GetSingleRecord(Convert.ToInt64(HttpContext.User.FindFirst("UserId")?.Value));
                 if (ds != null)
                 {

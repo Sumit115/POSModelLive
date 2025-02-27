@@ -38,12 +38,12 @@ namespace SSAdmin.Areas.Transactions.Controllers
         }
 
         [HttpPost]
-        public JsonResult List(string FDate, string TDate, string LocationFilter)
+        public JsonResult List(string FDate, string TDate, string LocationFilter, string StateFilter)
         {
             return Json(new
             {
                 status = "success",
-                data = _repository.GetList(FDate, TDate, TranAlias, DocumentType, LocationFilter)
+                data = _repository.GetList(FDate, TDate, TranAlias, DocumentType, LocationFilter, StateFilter)
             });
         }
 
@@ -83,6 +83,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 if (id != 0 && pageview.ToLower() == "log")
                 {
                     PageType = "Log";
+                    Trans =_repository.GetMasterLog<TransactionModel>(id);
                 }
                 else
                 {

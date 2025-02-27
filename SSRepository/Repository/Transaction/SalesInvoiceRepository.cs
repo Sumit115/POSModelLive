@@ -113,6 +113,7 @@ namespace SSRepository.Repository.Transaction
                  new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="RoundOf Amt", Fields="RoundOfDiff",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Shipping Amt ", Fields="Shipping",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Net Amt", Fields="NetAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                 new ColumnStructure{ pk_Id=13, Orderby =6, Heading ="Qty", Fields="ProductCount",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~",TotalOn="ProductCount" },
 
             };
             }

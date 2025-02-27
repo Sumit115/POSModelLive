@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SSRepository.Repository.Master;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Drawing.Printing;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace SSAdmin.Areas.Master.Controllers
 {
@@ -85,6 +86,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 if (id != 0 && pageview.ToLower() == "log")
                 {
                     ViewBag.PageType = "Log";
+                    model = _repository.GetMasterLog<RecipeModel>(id);
                 }
                 else if (id != 0)
                 {

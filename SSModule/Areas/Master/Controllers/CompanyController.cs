@@ -38,14 +38,19 @@ namespace SSAdmin.Areas.Master.Controllers
             CompanyModel Model = new CompanyModel();
             try
             {
-                Model = _repository.GetSingleRecord();
-                if (Model == null)
+                ViewBag.PageType = "";
+                if (id != 0 && pageview.ToLower() == "log")
                 {
-                    Model = new CompanyModel();
-                    Model.PkCompanyId = 0;
+                    ViewBag.PageType = "Log";
+                    Model = _repository.GetMasterLog<CompanyModel>(id);
+                }
+                else
+                {
+                    ViewBag.PageType = "Edit";
+                    Model = _repository.GetSingleRecord();
+                    Model.Country = "India";
 
                 }
-                Model.Country = "India";
                 ViewBag.StateList = Handler.GetDrpState();
 
 
@@ -62,10 +67,10 @@ namespace SSAdmin.Areas.Master.Controllers
         public async Task<IActionResult> Create(CompanyModel model)
         {
             try
-            {              
+            {
                 string Mode = "Create";
                 Int64 ID = model.PkCompanyId;
-                
+
                 string error = await _repository.CreateAsync(model, Mode, ID);
                 if (error != "" && !error.ToLower().Contains("success"))
                 {

@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Logs";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    DateTime dt = ViewBag.Date;
+}
+<div class="p-1">
+    <div class="form-group row filter m-0 p-2 border-bottom">
+
+        <div class="col-md-2">
+            <input name="FromDate" type="date" id="FromDate" class="form-control" maxlength="10" placeholder="From Date*" required="" title="From Date*">
+            <span class="field-validation-valid text-danger" data-valmsg-for="FromDate"></span>
+        </div>
+        <div class="col-md-2">
+            <input name="ToDate" type="date" id="ToDate" class="form-control" maxlength="10" placeholder="To Date*" required="" title="To Date*">
+            <span class="field-validation-valid text-danger" data-valmsg-for="ToDate"></span>
+        </div>
+        
+
+        <div class="col-md-8 text-right">
+       @*      <button class="btn btn-info" onclick="Render('')" title="View"><i class="bi bi-send"></i> &nbsp;View</button>
+*@
+            <button class="btn btn-info" onclick="View()"><i class="bi bi-send"></i> &nbsp;View</button>
+
+        </div>
+    </div>
+
+    <partial name="~/Views/Shared/partial/_Grid.cshtml" />
+</div>
+<ul id="contextMenu" style="display:none;position:absolute">
+    <li id="contextViewLog" data="ViewLog">View</li>
+</ul>
+@section Scripts {
+    <script src="~/js/report/report.js"></script>
+    <script src="~/js/master/browser.js"></script>
+    <script>
+        $(document).ready(function () {
+
+
+            RPTOption.IdProperty = IdProperty = "PKMasterLogID";
+            RPTOption.GridHeight = GridHeight = "85vh";
+            RPTOption.Controller = Controller = 'EntryLog';
+
+            var dt = new Date(@dt.Year, @dt.Month-1, @dt.Day+1);
+            document.getElementById("FromDate").valueAsDate = dt;
+            document.getElementById("ToDate").valueAsDate = dt;
+            View();
+        });
+
+        //function Render(Export) {
+        //    Common.Get(".filter", "", function (flag, _d) {
+        //        if (flag) { 
+        //            ViewData(_d, Export)
+        //            UDI.outGrid.onDblClick.subscribe(function (e, args) {
+        //                if (args.cell != undefined) {
+        //                    alert();
+        //                    var pk_Id = args.grid.getDataItem(args.row)[IdProperty];
+        //                    //if (window.location.href.indexOf("Transactions") > 0 && window.location.href.indexOf("Voucher") <= 0) {
+        //                    //    var FKSeriesId = args.grid.getDataItem(args.row)["FKSeriesId"];
+        //                    //    window.location.href = "Create/" + pk_Id + "/" + FKSeriesId;
+        //                    //}
+        //                    //else if (window.location.href.indexOf("Voucher") > 0) { }
+        //                    //else if (window.location.href.indexOf("List/") > 0) {
+        //                    //    var type = location.href.substring(location.href.indexOf("List/") + 5);
+        //                    //    window.location.href = Handler.currentPath() + "Create/" + type + "/" + pk_Id;
+
+        //                    //}
+        //                    //else
+        //                    //    window.location.href = "Create/" + pk_Id;
+        //                }
+        //            });
+
+        //        }
+        //    });
+       // }
+    </script>
+
+}

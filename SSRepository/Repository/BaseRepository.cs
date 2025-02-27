@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SSRepository.Data;
 using SSRepository.IRepository;
 using SSRepository.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Numerics;
 using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
 
@@ -947,11 +949,11 @@ namespace SSRepository.Repository
         }
 
 
-        public void AddMasterLog(long FKFormID, long FKID, long FKSeriseId,DateTime EntryDate, bool IsDelete
+        public void AddMasterLog(long FKFormID, long FKID, long FKSeriseId, DateTime EntryDate, bool IsDelete
             , string JsonDetail, string Description, long FKUserId, DateTime ModifyDate, long FKLastUserId, DateTime LastModifyDate)
         {
-             try
-            { 
+            try
+            {
                 TblMasterLogDtl Tbl = new TblMasterLogDtl();
                 Tbl.PKMasterLogID = 1 + (__dbContext.TblMasterLogDtl.ToList().Count > 0 ? __dbContext.TblMasterLogDtl.ToList().Max(x => x.PKMasterLogID) : 0);
                 Tbl.FKFormID = FKFormID;
@@ -965,13 +967,55 @@ namespace SSRepository.Repository
                 Tbl.ModifyDate = ModifyDate;
                 Tbl.FKLastUserId = FKLastUserId;
                 Tbl.LastModifyDate = LastModifyDate;
-                AddData(Tbl, false); 
+                AddData(Tbl, false);
 
             }
             catch (Exception ex)
             {
                 throw ex;
-            } 
+            }
+        }
+
+        public MasterLogDtlModel GetMasterLog(long PKMasterLogID)
+        {
+
+            MasterLogDtlModel data = (from cou in __dbContext.TblMasterLogDtl
+                                      join user in __dbContext.TblUserMas on cou.FKUserId equals user.PkUserId
+                                      join lastUser in __dbContext.TblUserMas on cou.FKLastUserId equals lastUser.PkUserId
+                                      join form in __dbContext.TblFormMas on cou.FKFormID equals form.PKFormID
+                                      where cou.PKMasterLogID == PKMasterLogID
+                                      select (new MasterLogDtlModel
+                                      {
+                                          PKMasterLogID = cou.PKMasterLogID,
+                                          FKFormID = cou.FKFormID,
+                                          FKID = cou.FKID,
+                                          FKSeriseId = cou.FKSeriseId,
+                                          EntryDate = cou.EntryDate,
+                                          IsDelete = cou.IsDelete,
+                                          JsonDetail = cou.JsonDetail,
+                                          Description = cou.Description,
+                                          FKUserId = cou.FKUserId,
+                                          ModifyDate = cou.ModifyDate,
+                                          FKLastUserId = cou.FKLastUserId,
+                                          LastModifyDate = cou.LastModifyDate,
+                                      }
+                                     )).FirstOrDefault();
+            return data;
+        }
+
+        public T GetMasterLog<T>(long PKMasterLogID)
+        { 
+            var _entity = __dbContext.TblMasterLogDtl.Find(PKMasterLogID);
+
+            if (_entity.JsonDetail is JArray)
+            {
+                return JsonConvert.DeserializeObject<List<T>>(_entity.JsonDetail).FirstOrDefault();
+            }
+            else //if (_entity.JsonDetail is JObject)
+            {
+                return JsonConvert.DeserializeObject<T>(_entity.JsonDetail);
+            }
+            //else { return new typeof(T); }
         }
 
     }

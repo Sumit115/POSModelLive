@@ -106,6 +106,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 if (id2 != 0 && pageview.ToLower() == "log")
                 {
                     ViewBag.PageType = "Log";
+                    Model = _repository.GetMasterLog<PromotionModel>(id2);
                 }
                 else if (id2 != 0)
                 {

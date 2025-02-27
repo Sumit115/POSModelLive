@@ -24,5 +24,7 @@ namespace SSRepository.IRepository
          public List<FormModel> GetFormList(long? FKMasterFormID = null);
         public int ExecNonQuery(string cmdText);
         DashboardSummaryModel usp_DashboardSummary(int Month);
+        MasterLogDtlModel GetMasterLog(long PKMasterLogID);
+        T GetMasterLog<T>(long PKMasterLogID);
     }
 }
