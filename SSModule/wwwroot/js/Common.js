@@ -1387,20 +1387,19 @@ function C_GridColSetup(n, n2, f) {
         Handler.hide();
         if (res.PkGridId > 0) {
             var d = JSON.parse(res.JsonData);
-            var htm = $`<div class="card card-outline card-primary">
-                            <div class="card-header">
-                                <h3 class="card-title">Set Grid Layout</h3>
-                                <div class="card-tools">
-                                <button type="button" id="btnSaveGridColSetup" class="btn btn-outline-secondary" >
-                                    <i class="bi bi-floppy"></i> Save</button>
-                                 </div>
-                            </div>
-                            <div class="card-body">
-                            <input type="hidden" name="hdPkGridId" id="hdPkGridId"  value="{n}"  />
-                                <div style="height:62vh;overflow: auto;border: solid 1px #efeff6;">';
-                            <table class="table">';
-                            <thead><tr><th>COLUMN</th><th>VISIBLE</th><th>WIDTH</th></thead>';
-                        <tbody >`;
+            var htm = '';
+            htm += '<div class="card card-outline card-primary">';
+            htm += '<div class="card-header">';
+            htm += '<h3 class="card-title">Set Grid Layout</h3>';
+            htm += '<div class="card-tools">';
+            htm += '<button type="button" id="btnSaveGridColSetup" class="btn btn-outline-secondary" >';
+            htm += '<i class="bi bi-floppy"></i> Save</button></div></div>';
+            htm += '<div class="card-body">';
+            htm += '<input type="hidden" name="hdPkGridId" id="hdPkGridId"  value="' + n + '"  />';
+            htm += '<div style="height:62vh;overflow: auto;border: solid 1px #efeff6;">';
+            htm += '<table class="table">';
+            htm += '<thead><tr><th>COLUMN</th><th>VISIBLE</th><th>WIDTH</th></thead>';
+             htm += '<tbody >';
             $(d).each(function (i, v) {
                 htm += '<tr class="trGridColumnw"><td>' + v.Heading + '</td>';
                 htm += ' <td>';

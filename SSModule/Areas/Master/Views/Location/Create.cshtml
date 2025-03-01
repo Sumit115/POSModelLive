@@ -1,202 +1,172 @@
 ﻿@model SSRepository.Models.LocationModel
 
 @{
-    ViewData["Title"] = "Stock Location";
+    ViewData["Title"] = "Location";
     ViewData["bdClass"] = "page";
 }
-
-<div class="master-page-ui">
-    <form asp-action="Create" enctype="multipart/form-data">
+<div class="p-3">
+    <form asp-action="Create" class="g-3" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="PKLocationID" />
         <div class="row">
-            <div class="col-md-8">
-                <div class="form-group row">
-                    <label class="col-sm-2">Branch<span class="required">*</span> </label>
-                    <div class="col-md-6">
-                        <select asp-for="FKBranchID" asp-items="@(new SelectList(ViewBag.BranchList,"PkBranchId","BranchName"))" class="form-select" required>
-                        </select>
-                        <span asp-validation-for="FKBranchID" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2">Name<span class="required">*</span> </label>
-                    <div class="col-md-6">
-                        <input asp-for="Location" class="form-control" placeholder="Enter Name" required maxlength="50"/>
-                        <span asp-validation-for="Location" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2">Alias</label>
-                    <div class="col-md-3">
-                        <input asp-for="Alias" class="form-control" maxlength="10" placeholder="Enter Alias" />
-                        <span asp-validation-for="Alias" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-3">
-                        <button type="button" onclick="GenerateAlias()" class="btn btn-warning">
-                            <i class="bi bi-gear-fill me-2" style="color: black;"></i>Auto Generate
-
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-2">Address</label>
-                    <div class="col-md-6">
-                        <textarea asp-for="Address" class="form-control"></textarea>
-                        <span asp-validation-for="Address" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2">Station / Locality</label>
-                    <div class="col-md-3">
-                        <select asp-for="FKStationID" class="form-select">
-                            <option value="1">Station 01</option>
-                        </select>
-                        <span asp-validation-for="FKStationID" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-3">
-                        <select asp-for="FKLocalityID" class="form-select">
-                            <option value="1">Locality  1</option>
-                        </select>
-                        <span asp-validation-for="FKLocalityID" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-2">Pincode / Phone</label>
-                    <div class="col-md-3">
-                        <input asp-for="Pincode" type="number" class="form-control input-number" maxlength="6" placeholder="Enter Pincode" />
-                        <span asp-validation-for="Pincode" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-3">
-                        <input asp-for="Phone1" class="form-control input-number" maxlength="10" placeholder="Enter Phone" />
-                        <span asp-validation-for="Phone1" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-2">Mobile / Email</label>
-                    
-                    <div class="col-md-3">
-                        <input asp-for="Phone2" class="form-control input-number" pattern="Mobile" maxlength="10" placeholder="Enter Mobile" />
-                        <span asp-validation-for="Phone2" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-3">
-                        <input asp-for="Email" class="form-control" pattern="Email" placeholder="Enter Email" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
-
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2">Fax / WebSite</label>
-                    
-                    <div class="col-md-3">
-                        <input asp-for="Fax" class="form-control input-number" placeholder="Enter Fax" />
-                        <span asp-validation-for="Fax" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-3">
-                        <input asp-for="Website" class="form-control" placeholder="Enter WebSite" />
-                        <span asp-validation-for="Website" class="text-danger"></span>
-
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2">Posting Account</label>
-                    <div class="col-md-6">
-                        <select asp-for="FKAccountID" class="form-select">
-                         asp-for="FKAccountID" class="form-select">
-                            <option value="2">sdfcsdf</option>
-                            <option value="3">zdsa</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group row">
-
-                    <label class="col-sm-2">&nbsp;</label>
-                    <div class="col-md-3">
-                        <div class="form-switch d-flex form-switch form-check">
-                            <input asp-for="IsBillingLocation" class="form-check-input" type="checkbox">
-                            <label class="ms-1">Billing Location</label>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Branch</label>
+                            <select asp-for="FKBranchID" asp-items="@(new SelectList(ViewBag.BranchList,"PkBranchId","BranchName"))" class="form-control" id="FkBranchId">
+                            </select>
                         </div>
                     </div>
-                    <div class="col-md-2">
-                        <div class="form-switch d-flex form-switch form-check">
-                            <input asp-for="IsAllProduct" class="form-check-input" type="checkbox">
-                            <label class="ms-1">All Product</label>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Location</label>
+                            <input asp-for="Location" class="form-control" />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">ALIAS</label>
+                            <input asp-for="Alias" id="txtalias" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 pt-2">
+                        <input type="button" onclick="GenerateAlias()" value="Auto Generate " class="btn btn-warning">
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Address</label>
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Billing Location</label>
+                            <input type="checkbox" asp-for="IsBillingLocation" class="form-control" />
+                         
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">All Product</label>
+                            <input type="checkbox" asp-for="IsAllProduct" class="form-control" />
+                            
+                        </div>
+                    </div> 
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">All Customer</label>
+                            <input type="checkbox" asp-for="IsAllCustomer" class="form-control" />
+                           
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Different Tax</label>
+                            <input type="checkbox" asp-for="IsDifferentTax" class="form-control" />
+                            
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="row">
 
-            <div class="col-sm-12">
-                <div class="tabs-ui-fmt mt-2" id="scrollfixheader">
-                    <nav>
-                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                            <button class="nav-link active" id="Usertab-tab" data-bs-toggle="tab" data-bs-target="#Usertab" type="button" role="tab" aria-controls="Usertab" aria-selected="false" fdprocessedid="w66vj" tabindex="-1">User</button>
-                            <button class="nav-link" id="Producttab-tab" data-bs-toggle="tab" data-bs-target="#Producttab" type="button" role="tab" aria-controls="Producttab" aria-selected="true">Product</button>
-
-                        </div>
-                    </nav>
-                </div>
-                <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade active show" id="Usertab" role="tabpanel" aria-labelledby="Usertab-tab" tabindex="-1">
-                        <div class="row" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
-                            <div class="col-sm-12">
-                                <div class="row form-group">
-                                    <div class="col-sm-4">
-                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "drpUser" }, { "Class", "" }, { "event", "" },
-                                        { "value", "" }, { "text", "" }, { "uri", "user" }})
-                                        <input type="hidden" id="hidUserLocIndex">
-                                    </div>
-                                    <div class="col-sm-1 ">
-                                        <span class="btn btn-success" onclick="AddUser();">
-                                            <i class="bi bi-plus-lg"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-5 default-scroll-grid">
-                                <table id="tblUserLoc" class="table border tableheader-fixed">
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Station</label>
+                            @* <select asp-for="FKStationID" asp-items="@(new SelectList(ViewBag.StationList,"PkStationId","StationName"))" class="form-control" id="FkBranchId">
+                            </select> *@
+                            <select asp-for="FKStationID" class="form-control">
+                                <option value="1">Station 01</option>
+                            </select>
+                            <span asp-validation-for="FKStationID" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="Producttab" role="tabpanel" aria-labelledby="Producttab-tab" tabindex="-1">
-                        <div class="row">
-                            <div class="row col-sm-12 form-group">
-                                <div class="col-sm-4">
-
-                                    <div id="drpListdrpProduct" class="ui-custom-DropDown  " extraparam="" event="" parent="">
-                                        <input id="drpProduct" name="drpProduct" type="hidden" value="" disabled="disabled">
-                                        <input id="drpdrpProduct" class="form-control ui-custom-DropDown-input" autocomplete="off" placeholder="" type="text" value="" disabled="disabled">
-                                        <span class="down"><i class="fas fa-caret-down"></i></span>
-                                    </div>
-
-
-                                    <input type="hidden" id="hidProdLocIndex">
-                                </div>
-                                <div class="col-sm-2 d-flex gap-2">
-                                    <span class="btn btn-success" onclick="AddProd();">
-                                        <i class="bi bi-plus-lg"></i>
-                                    </span>
-                                    <span class="filter-btn">
-                                        <button type="button" id="btnRptProduct" class=" btn btn-primary" onclick="FilterObject.Product.Show()" disabled="disabled">
-                                            <i class="bi bi-funnel"></i>
-                                        </button>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 default-scroll-grid">
-                                <table id="tblProdLoc" class="table border tableheader-fixed">
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Locality</label>
+                            <select asp-for="FKLocalityID" class="form-control">
+                                <option value="1">Locality  1</option>
+                            </select>
+                            @* <input asp-for="FKLocalityID" class="form-control  input-number" maxlength="6" pattern="PinCode" /> *@
+                            <span asp-validation-for="FKLocalityID" class="text-danger"></span>
                         </div>
                     </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Pincode" class="control-label"></label>
+                            <input asp-for="Pincode" type="number" class="form-control input-number" pattern="Mobile" maxlength="10" />
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Fax" class="control-label"></label>
+                            <input asp-for="Fax" class="form-control input-number" pattern="Mobile" maxlength="10" />
+                            <span asp-validation-for="Fax" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                  
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Phone</label>
+                            <input asp-for="Phone1" class="form-control input-number" pattern="Mobile" maxlength="10" />
+                            <span asp-validation-for="Phone1" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Mobile</label>
+                            <input asp-for="Phone2" class="form-control input-number" pattern="Mobile" maxlength="10" />
+                            <span asp-validation-for="Phone2" class="text-danger"></span>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Email</label>
+                            <input asp-for="Email" class="form-control" pattern="Email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">WebSite</label>
+                            <input asp-for="Website" class="form-control"  />
+                            <span asp-validation-for="Website" class="text-danger"></span>
+
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Posting Account</label>
+                            <select asp-for="FKAccountID" class="form-control">
+                                <option value="2">sdfcsdf</option>
+                                <option value="3">zdsa</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">All Vendor</label>
+                            <input type="checkbox" asp-for="IsAllVendor" class="form-control" />
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Cost Center</label>
+                            <input type="checkbox" asp-for="IsAllCostCenter" class="form-control" />
+                           
+                        </div>
+                    </div>
+                  
                 </div>
             </div>
         </div>
@@ -208,33 +178,34 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
-        $(document).ready(function () {
+       $(document).ready(function () {
+      
+         Common.InputFormat();
+      //     //BindCity(20Model.FkCityId);
+          $('#btnServerSave').click(function (e) {
+              e.preventDefault();
+              $("form").submit();
+          });
+      })
 
-            Common.InputFormat();
-            $('#btnServerSave').click(function (e) {
-                e.preventDefault();
-                $("form").submit();
-            });
-        })
 
 
-
-        function GenerateAlias() {
-            if ($("#txtalias").val() == "") {
-                $.ajax({
-                    type: "POST",
+       function GenerateAlias() {
+           if ($("#txtalias").val() == "") {
+               $.ajax({
+                   type: "POST",
                     url: '/Master/Location/GetAlias',
-                    data: {},
-                    datatype: "json",
-                    success: function (res) {
-                        if (res != "") {
-                            $("#txtalias").val(res);
-                        }
-                    }
-                });
-            }
+                   data: {},
+                   datatype: "json",
+                   success: function (res) {
+                       if (res != "") {
+                           $("#txtalias").val(res);
+                       }
+                   }
+               });
+           }
 
-        }
+       }
     </script>
 
 }

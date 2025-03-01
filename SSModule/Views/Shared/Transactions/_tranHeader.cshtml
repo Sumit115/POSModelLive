@@ -7,7 +7,7 @@
 <div class="row trn-header">
     <div class="col-md-12">
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-7">
                 <div class="row">
                     <div class="col-md-8">
                         <div class="form-group">
@@ -49,19 +49,6 @@
                                 <label>Balance</label>
                                 <input name="PartyBalance" type="text" id="PartyBalance" class="form-control" value="0" disabled />
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label class="control-label">Refer By </label>
-
-                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKSeriesId" }, { "Class", "val-cus-drp" }, { "event", "setSeries()" },
-                            { "value", Model.FKSeriesId }, { "text", Model.SeriesName }, { "uri", "" }})
-
                         </div>
                     </div>
                 </div>
