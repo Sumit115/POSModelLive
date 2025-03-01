@@ -52,7 +52,5 @@ namespace SSRepository.Models
 
         public string? FkHoldLocationId { get; set; }
         public string? FinYear { get; set; }
-        public string BillingLocation { get; set; }
-        public string Location { get; set; }
     }
 }

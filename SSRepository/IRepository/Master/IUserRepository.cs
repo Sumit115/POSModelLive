@@ -13,7 +13,5 @@ namespace SSRepository.IRepository.Master
 
         string DeleteRecord(long PKID);
 
-        object CustomList(int pageSize, int pageNo = 1, string search = "");
-
     }
 }

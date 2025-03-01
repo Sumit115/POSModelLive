@@ -26,8 +26,6 @@ namespace SSRepository.Data
         public virtual DbSet<TblCompany> TblCompanies { get; set; } = null!;
         public virtual DbSet<TblEmployeeMas> TblEmployeeMas { get; set; } = null!;
         public virtual DbSet<TblUserMas> TblUserMas { get; set; } = null!;
-
-        public virtual DbSet<TblUserLocLnk> TblUserLocLnk { get; set; } = null!;
         public virtual DbSet<TblCustomerMas> TblCustomerMas { get; set; } = null!;
         public virtual DbSet<TblWalkingCustomerMas> TblWalkingCustomerMas { get; set; } = null!;
         public virtual DbSet<TblVendorMas> TblVendorMas { get; set; } = null!;
@@ -143,27 +141,6 @@ namespace SSRepository.Data
                       .WithMany(e => e.ChildForms)
                       .HasForeignKey(e => e.FKMasterFormID)
                       .OnDelete(DeleteBehavior.NoAction); 
-            });
-            modelBuilder.Entity<TblUserLocLnk>(entity =>
-            {
-                // Table name and primary key
-                entity.ToTable("tblUserLoc_Lnk");
-                entity.HasKey(e => new { e.FKUserID, e.FKLocationID});
-
-                // Columns
-                entity.Property(e => e.FKUserID).IsRequired();
-                entity.Property(e => e.FKLocationID).IsRequired();
-
-                // Self-referencing foreign key
-                entity.HasOne(e => e.User)
-                      .WithMany()
-                      .HasForeignKey(e => e.FKUserID)
-                      .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(e => e.Location)
-                       .WithMany()
-                       .HasForeignKey(e => e.FKLocationID)
-                       .OnDelete(DeleteBehavior.Restrict);
             });
 
         }

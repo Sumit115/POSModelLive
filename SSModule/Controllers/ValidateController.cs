@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using SSRepository.IRepository;
 using SSRepository.IRepository.Master;
 using SSRepository.Models;
 using System.Data;
@@ -10,7 +9,9 @@ namespace SSAdmin.Controllers
 {
     public class ValidateController : Controller
     {
-        private readonly ILoginRepository _repository;
+        private readonly IUserRepository _repository;
+        private readonly IUserRepository _Userrepository;
+        private readonly IRoleRepository _Rolerepository;
 
         public string Message
         {
@@ -20,9 +21,11 @@ namespace SSAdmin.Controllers
                 ViewBag.Message = value;
             }
         }
-        public ValidateController(ILoginRepository repository)
+        public ValidateController(IUserRepository repository, IUserRepository Userrepository, IRoleRepository Rolerepository)
         {
             _repository = repository;
+            _Userrepository = Userrepository;
+            _Rolerepository = Rolerepository;
         }
 
         [HttpGet]        
@@ -32,12 +35,12 @@ namespace SSAdmin.Controllers
             {
                 HttpContext.Session.SetString("ConnectionString", Convert.ToString(HttpContext.User.FindFirst("ConnectionString")?.Value));
                 HttpContext.Session.SetString("UserID", Convert.ToString(HttpContext.User.FindFirst("UserId")?.Value));
-                UserModel ds = _repository.ValidateUser(Convert.ToInt64(HttpContext.User.FindFirst("UserId")?.Value));
+                UserModel ds = _Userrepository.GetSingleRecord(Convert.ToInt64(HttpContext.User.FindFirst("UserId")?.Value));
                 if (ds != null)
                 {
                     HttpContext.Session.SetString("RoleId", (ds.FkRoleId ?? 0).ToString());
                     HttpContext.Session.SetString("IsAdmin", ds.IsAdmin.ToString());                    
-                    
+                    FileManage();
                     Response.Redirect("/Dashboard");
                 }
                 else
@@ -75,8 +78,8 @@ namespace SSAdmin.Controllers
                 file.Delete();
 
             long roleId = Convert.ToInt64(HttpContext.Session.GetString("RoleId") ?? "0");
-            //RoleModel role = _Rolerepository.GetSingleRecord(roleId, true);
-            //System.IO.File.WriteAllText(filePath, JsonConvert.SerializeObject(role.RoleDtls));
+            RoleModel role = _Rolerepository.GetSingleRecord(roleId, true);
+            System.IO.File.WriteAllText(filePath, JsonConvert.SerializeObject(role.RoleDtls));
 
             string filePathSysDefaults = Path.Combine(path, "sysdefaults.json");
 
@@ -84,8 +87,8 @@ namespace SSAdmin.Controllers
             if (fileSysDefaults.Exists)
                 fileSysDefaults.Delete();
 
-            //string jsonSysDefaults = JsonConvert.SerializeObject(_repository.GetSysDefaults());
-            //System.IO.File.WriteAllText(filePathSysDefaults, jsonSysDefaults);
+            string jsonSysDefaults = JsonConvert.SerializeObject(_repository.GetSysDefaults());
+            System.IO.File.WriteAllText(filePathSysDefaults, jsonSysDefaults);
         }
 
 

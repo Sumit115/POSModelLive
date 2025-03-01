@@ -47,8 +47,16 @@ namespace SSRepository.Repository.Master
                                         ExpirePwddt = cou.ExpirePwddt,
                                         FkEmployeeId = cou.FkEmployeeId,
                                         IsAdmin = cou.IsAdmin,
+                                        //EmployeeVM = new EmployeeModel
+                                        //{
+                                        //    PkEmployeeId = emp.PkEmployeeId,
                                         EmployeeName = emp.Name,
+                                        //},
+                                        //BranchVM = new BranchModel
+                                        //{
+                                        //    PkBranchId = brch.PkBranchId,
                                         BranchName = brch.BranchName,
+                                        //}
                                         FKUserID = cou.FKUserID,
                                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                     }
@@ -81,8 +89,7 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             return data;
         }
-
-        public object CustomList(int pageno, int pagesize, string search = "")
+        public object GetDrpUser(int pageno, int pagesize, string search = "")
         {
             if (search != null) search = search.ToLower();
             if (search == null) search = "";
@@ -94,13 +101,16 @@ namespace SSRepository.Repository.Master
                     select new
                     {
                         r.PkUserId,
-                        r.Usertype,
-                        r.IsAdmin,
-                        r.EmployeeName,
-                        r.BranchName,
+                        r.UserId
                     }).ToList(); ;
         }
-        
+        public string GetDrp(long PkUserId)
+        {
+            return (from cou in __dbContext.TblUserMas
+                    where cou.PkUserId == PkUserId
+                    select cou.UserId).FirstOrDefault();
+
+        }
         public string DeleteRecord(long PkUserId)
         {
             string Error = "";

@@ -4,12 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SSRepository.Data;
 using SSRepository.IRepository;
-using SSRepository.IRepository.Master;
 using SSRepository.Models;
-using SSRepository.Repository.Master;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics.Contracts;
 using System.Reflection;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -17,66 +14,51 @@ namespace SSRepository.Repository
 {
     public class LoginRepository : BaseRepository, ILoginRepository
     {
-        
+        //protected readonly AppDbContext __dbContext;
+        //public LoginRepository(AppDbContext dbContext)
+        //{
+        //    __dbContext = dbContext;
+        //}
         public LoginRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
 
         }
 
-       
+        public string usp_Dashboard(long UserId)
+        {
+            DataSet ds = new DataSet();
+            string data = "";
+            using (SqlConnection con = new SqlConnection(conn))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("usp_ValidateUser", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@PkUserId", UserId);
+                SqlDataAdapter adp = new SqlDataAdapter(cmd);
+                adp.Fill(ds);
+
+                data = Convert.ToString(ds.Tables[0].Rows[0]["JsonData"]);
+                con.Close();
+            }
+            return data;
+        }
         public UserModel ValidateUser(long UserId)
         {
 
-            UserModel data = new UserRepository(__dbContext, _contextAccessor).GetSingleRecord(UserId);
-            SysDefaults Sys = GetSysDefaults();
+            UserModel data = new UserModel();
 
-            var result = (from c in __dbContext.TblUserLocLnk
-                       where c.FKUserID == UserId
-                       select (new { 
-                        c.FKLocationID,
-                        c.Location.IsBillingLocation
-                       })
-                       ).ToList();
-            Sys.BillingLocation = string.Join(",", result.Where(x => x.IsBillingLocation == true).Select(r => r.FKLocationID));
-            Sys.Location = string.Join(",", result.Select(r => r.FKLocationID));
-
-            SaveFile("sysdefaults.json", JsonConvert.SerializeObject(Sys));
-
-            RoleModel role = new RoleRepository(__dbContext, _contextAccessor).GetSingleRecord(data.FkRoleId??0, true);
-            SaveFile("menulist.json", JsonConvert.SerializeObject(role.RoleDtls));
-            return data;
-        }
-
-
-        private void SaveFile(string FileName,string Data)
-        {
-
-            string path = Path.Combine("wwwroot", "Data");
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            path = Path.Combine(path, Convert.ToString(_contextAccessor.HttpContext.User.FindFirst("CompanyName")?.Value ?? ""));
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-
-            path = Path.Combine(path, Convert.ToString(_contextAccessor.HttpContext.User.FindFirst("UserId")?.Value?? ""));
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            string filePath = Path.Combine(path, FileName);
-
-            FileInfo file = new FileInfo(filePath);
-            if (file.Exists)
-                file.Delete();
-            using (var fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+            string ErrMsg = "";
+            string dd = usp_Dashboard(UserId);
+            if (dd != null)
             {
-                using (var writer = new StreamWriter(fileStream))
+                List<UserModel> aa = JsonConvert.DeserializeObject<List<UserModel>>(dd);
+                if (aa != null)
                 {
-                    writer.Write(Data);
+                    data = aa[0];
                 }
             }
 
+            return data;
         }
 
 
