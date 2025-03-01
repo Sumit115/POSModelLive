@@ -105,6 +105,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 if (id != 0 && pageview.ToLower() == "log")
                 {
                     ViewBag.PageType = "Log";
+                    Trans = _repository.GetMasterLog<TransactionModel>(id);
                 }
                 else if (id != 0)
                 {
@@ -114,7 +115,6 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 else
                 {
                     ViewBag.PageType = "Create";
-
                 }
             }
             catch (Exception ex)

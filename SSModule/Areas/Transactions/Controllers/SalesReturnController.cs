@@ -39,11 +39,17 @@ namespace SSAdmin.Areas.Transactions.Controllers
             {
                 if (id != 0 && pageview.ToLower() == "log")
                 {
-                    PageType = "Log";
+                    ViewBag.PageType = "Log";
+                    Trans = _repository.GetMasterLog<TransactionModel>(id);
+                }
+                else if (id != 0)
+                {
+                    ViewBag.PageType = "Edit";
+                    Trans = _repository.GetSingleRecord(id, FKSeriesID);
                 }
                 else
                 {
-                    Trans = _repository.GetSingleRecord(id, FKSeriesID);
+                    ViewBag.PageType = "Create";
                 }
             }
             catch (Exception ex)

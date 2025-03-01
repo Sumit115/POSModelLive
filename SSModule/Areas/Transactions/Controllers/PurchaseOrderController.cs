@@ -73,16 +73,21 @@ namespace SSAdmin.Areas.Transactions.Controllers
         public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();
-            var PageType = "";
-            try
+             try
             {
                 if (id != 0 && pageview.ToLower() == "log")
                 {
-                    PageType = "Log";
+                    ViewBag.PageType = "Log";
+                    Trans = _repository.GetMasterLog<TransactionModel>(id);
+                }
+                else if (id != 0)
+                {
+                    ViewBag.PageType = "Edit";
+                    Trans = _repository.GetSingleRecord(id, FKSeriesID);
                 }
                 else
                 {
-                    Trans = _repository.GetSingleRecord(id, FKSeriesID);
+                    ViewBag.PageType = "Create";
                 }
             }
             catch (Exception ex)

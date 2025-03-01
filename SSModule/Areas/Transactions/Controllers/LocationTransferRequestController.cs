@@ -20,15 +20,15 @@ namespace SSAdmin.Areas.Transactions.Controllers
     public class LocationTransferRequestController : BaseTranController<ILocationTransferRequestRepository, IGridLayoutRepository, ICompositeViewEngine, IWebHostEnvironment>
     {
         private readonly ILocationTransferRequestRepository _repository;
-       
-        public LocationTransferRequestController(ILocationTransferRequestRepository repository,  IGridLayoutRepository gridLayoutRepository, ICompositeViewEngine viewEngine, IWebHostEnvironment webHostEnvironment) : base(repository, gridLayoutRepository, viewEngine, webHostEnvironment)
+
+        public LocationTransferRequestController(ILocationTransferRequestRepository repository, IGridLayoutRepository gridLayoutRepository, ICompositeViewEngine viewEngine, IWebHostEnvironment webHostEnvironment) : base(repository, gridLayoutRepository, viewEngine, webHostEnvironment)
         {
             _repository = repository;
             TranType = "S";
             TranAlias = "LORD";
             StockFlag = "A";
             FKFormID = (long)Handler.Form.LocationTransferRequest;
-            PostInAc = false; 
+            PostInAc = false;
         }
 
         public async Task<IActionResult> List()
@@ -63,7 +63,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    var Fname = "Sales-Order-List.xls"; 
+                    var Fname = "Sales-Order-List.xls";
                     return File(stream.ToArray(), "application/ms-excel", Fname);// "Purchase-Invoice-List.xls");
                     // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
                 }
@@ -77,16 +77,21 @@ namespace SSAdmin.Areas.Transactions.Controllers
         public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();
-            var PageType = "";
             try
             {
                 if (id != 0 && pageview.ToLower() == "log")
                 {
-                    PageType = "Log";
+                    ViewBag.PageType = "Log";
+                    Trans = _repository.GetMasterLog<TransactionModel>(id);
+                }
+                else if (id != 0)
+                {
+                    ViewBag.PageType = "Edit";
+                    Trans = _repository.GetSingleRecord(id, FKSeriesID);
                 }
                 else
                 {
-                    Trans = _repository.GetSingleRecord(id, FKSeriesID);
+                    ViewBag.PageType = "Create";
                 }
             }
             catch (Exception ex)
@@ -123,7 +128,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
         {
             ResModel res = new ResModel();
             try
-            { 
+            {
                 string Error = _repository.Create(model);
                 if (string.IsNullOrEmpty(Error))
                 {
@@ -151,7 +156,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
             _repository.UpdateTrnSatus(PkId, FKSeriesId, TrnStatus);
             return Json(new
             {
-                status = "success", 
+                status = "success",
             });
 
         }
