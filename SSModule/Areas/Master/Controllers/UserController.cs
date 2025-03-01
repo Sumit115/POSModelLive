@@ -167,5 +167,12 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             return _repository.ColumnList(GridName);
         }
+
+
+        [HttpPost]
+        public object CustomList(int pageSize, int pageNo = 1, string search = "")
+        {
+            return _repository.CustomList(pageSize, pageNo, search);
+        }
     }
 }

@@ -73,8 +73,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
             model.FKUserId = LoginId;
             model.ModifiedDate = DateTime.Now;
             if (model.PkId == 0)
-            {
-                _repository.SetLastSeries(model, LoginId, TranAlias, DocumentType);
+            {                
                 model.Cash = model.Credit = model.Cheque = model.CreditCard = false;
 
             }

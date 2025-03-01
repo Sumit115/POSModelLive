@@ -3,9 +3,11 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SSRepository.Data;
+using SSRepository.IRepository;
 using SSRepository.Models;
 using SSRepository.Repository.Master;
 using System.Data;
+using System.Xml.Linq;
 
 namespace SSRepository.Repository.Transaction
 {
@@ -113,12 +115,12 @@ namespace SSRepository.Repository.Transaction
                                 if (_bQty.Count != (item.Qty + item.FreeQty)) { throw new Exception("Product (" + item.Product + ") Qty & Barcode Qty Not Match"); }
                             }
                         }
-
+                         
                         if (string.IsNullOrEmpty(item.Batch))
                         {
                             throw new Exception("Size Required on Product " + item.Product);
                         }
-                        CalculateExe(objmodel, item);
+                        CalculateExe(objmodel,item);
                     }
 
                 }
@@ -126,7 +128,7 @@ namespace SSRepository.Repository.Transaction
                 if (objmodel.TranReturnDetails != null)
                 {
                     foreach (var item in objmodel.TranReturnDetails.Where(x => x.FkProductId > 0 && x.ModeForm != 2))
-                    {
+                    {  
                         //For JobWork
                         if (objmodel.TranAlias == "PJ_I" && objmodel.UniqIdReturnDetails != null)
                         {
@@ -451,25 +453,20 @@ namespace SSRepository.Repository.Transaction
 
         public void SaveData(TransactionModel JsonData, ref long Id, ref string ErrMsg, ref long SeriesNo)
         {
-            try
-            {
-                string oldJsonData = "";
-                if (JsonData.PkId > 0)
-                    oldJsonData = GetData(JsonData.PkId, JsonData.FKSeriesId, ref ErrMsg);
 
                 var aa = JsonConvert.SerializeObject(JsonData);
 
 
-                using (SqlConnection con = new SqlConnection(conn))
+            using (SqlConnection con = new SqlConnection(conn))
+            {
+                //con.Open();
+                if (con.State == ConnectionState.Closed)
                 {
-                    //con.Open();
-                    if (con.State == ConnectionState.Closed)
-                    {
-                        con.Open();
-                    }
-                    SqlCommand cmd = new SqlCommand(SPAddUpd, con);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@JsonData", JsonConvert.SerializeObject(JsonData));
+                    con.Open();
+                }
+                SqlCommand cmd = new SqlCommand(SPAddUpd, con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@JsonData", JsonConvert.SerializeObject(JsonData));
 
                     cmd.Parameters.Add(new SqlParameter("@OutParam", SqlDbType.BigInt, 20, ParameterDirection.Output, false, 0, 10, "OutParam", DataRowVersion.Default, null));
                     cmd.Parameters.Add(new SqlParameter("@SeriesNo", SqlDbType.BigInt, 20, ParameterDirection.Output, false, 0, 10, "SeriesNo", DataRowVersion.Default, null));
@@ -568,8 +565,12 @@ namespace SSRepository.Repository.Transaction
 
                 }
             }
+            
+            
             return data;
         }
+
+
         public void CalculateExe_For_Update(TransactionModel model)
         {
             foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
@@ -632,7 +633,7 @@ namespace SSRepository.Repository.Transaction
                         break;
                 }
 
-                CalculateExe(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
+                CalculateExe(model, ( IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
                 SetGridTotal(model);
                 SetPaymentDetail(model);
                 model.IsTranChange = true;
@@ -762,7 +763,7 @@ namespace SSRepository.Repository.Transaction
                 detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
                 detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
                 detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
-                if (model.TranAlias == "PORD" || model.TranAlias == "PINV" || (model.TranAlias == "PJ_R" && detail.TranType == "I"))
+                if (model.TranAlias == "PORD" || model.TranAlias == "PINV" || (model.TranAlias == "PJ_R" && detail.TranType=="I"))
                 {
                     detail.FkLotId = 0;
                 }
@@ -799,49 +800,46 @@ namespace SSRepository.Repository.Transaction
         public object BarcodeScan(TransactionModel model, string Barcode, bool isCalGridTotal)
         {
             DataTable dtProduct = GetProduct(Barcode, model.FKLocationID, 0, 0, "", false, model.TranAlias, model.FkPartyId, model.FKOrderID, model.FKOrderSrID);
-            if (dtProduct.Rows.Count > 0)
+
+            long FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+            long FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
+            var drdetail = model.TranDetails.Where(x => x.FkProductId == FkProductId && x.FkLotId == FkLotId && x.ModeForm != 2)
+                .FirstOrDefault();
+            if (drdetail != null)
             {
-                long FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                long FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
-                var drdetail = model.TranDetails.Where(x => x.FkProductId == FkProductId && x.FkLotId == FkLotId && x.ModeForm != 2)
-                    .FirstOrDefault();
-                if (drdetail != null)
+                int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == FkProductId && a.FkLotId == FkLotId && a.ModeForm != 2);
+                SetProduct(model, drdetail, dtProduct);
+
+
+                model.TranDetails[rowIndex].Qty += 1;
+                CalculateExe(model,     model.TranDetails[rowIndex]);
+                // Check Product UNique/Lot/PRoduct
+                var _check = model.UniqIdDetails.ToList().Where(x => x.Barcode == Barcode).FirstOrDefault();
+                if (_check == null)
                 {
-                    int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == FkProductId && a.FkLotId == FkLotId && a.ModeForm != 2);
-                    SetProduct(model, drdetail, dtProduct);
-
-
-                    model.TranDetails[rowIndex].Qty += 1;
-                    CalculateExe(model, model.TranDetails[rowIndex]);
-                    // Check Product UNique/Lot/PRoduct
-                    var _check = model.UniqIdDetails.ToList().Where(x => x.Barcode == Barcode).FirstOrDefault();
-                    if (_check == null)
-                    {
-                        model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = model.TranDetails[rowIndex].SrNo, Barcode = Barcode });
-                    }
-                }
-                else
-                {
-                    var detail = new TranDetails();
-                    TranDetailDefault(model, detail);
-                    SetProduct(model, detail, dtProduct);
-                    detail.Barcode = "Barcode";
-                    detail.BarcodeTest = Barcode;
-
-                    CalculateExe(model, detail);
-                    model.TranDetails.Add(detail);
-
-                    // Check Product UNique/Lot/PRoduct
-                    model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = detail.SrNo, Barcode = Barcode });
-
-                }
-                if (isCalGridTotal)
-                {
-                    SetGridTotal(model);
-                    SetPaymentDetail(model);
+                    model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = model.TranDetails[rowIndex].SrNo, Barcode = Barcode });
                 }
             }
-            else { throw new Exception("Data Not Found"); }
+            else
+            {
+                var detail = new TranDetails();
+                TranDetailDefault(model, detail);
+                SetProduct(model, detail, dtProduct);
+                detail.Barcode = "Barcode";
+                detail.BarcodeTest = Barcode;
+
+                CalculateExe(model, detail);
+                model.TranDetails.Add(detail);
+
+                // Check Product UNique/Lot/PRoduct
+                model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = detail.SrNo, Barcode = Barcode });
+
+            }
+            if (isCalGridTotal)
+            {
+                SetGridTotal(model);
+                SetPaymentDetail(model);
+            }
             return model;
         }
         public object ProductTouch(TransactionModel model, long PkProductId)
@@ -1218,7 +1216,7 @@ namespace SSRepository.Repository.Transaction
             // model.TranDetails = model.TranDetails.Where(x => x.FkProductId > 0).ToList();
         }
 
-        public void CalculateExe(TransactionModel model, TranDetails item)
+        public void CalculateExe(TransactionModel model,TranDetails item)
         {
 
             decimal GrossAmt = item.Rate * item.Qty;
@@ -1232,7 +1230,7 @@ namespace SSRepository.Repository.Transaction
             }
 
             item.GrossAmt = Math.Round((GrossAmt - item.TradeDiscAmt), 2);
-            item.GstRate = (item.GrossAmt / item.Qty) < 1000 ? 5 : 12;
+            item.GstRate = (item.GrossAmt / item.Qty) < 1000 ? 5 : 12 ;
             if (model.TaxType == 'E')
             {
                 item.TaxableAmt = item.GrossAmt;
@@ -1527,7 +1525,7 @@ namespace SSRepository.Repository.Transaction
                 model.BillingRate = obj.BillingRate;
                 model.BranchStateName = obj.BranchStateName;
                 model.TaxType = obj.TaxType;
-
+                
             }
             model.IsTranChange = true;
 
@@ -1548,11 +1546,13 @@ namespace SSRepository.Repository.Transaction
                                      BillingRate = cou.BillingRate,
                                      TaxType = cou.TaxType,
                                      BranchStateName = branch.State,
-
+                                     
                                  }
                                 )).FirstOrDefault();
             return data;
         }
+
+
 
         public List<ProdLotDtlModel> Get_ProductLotDtlList(int PKProductId, string Batch, string Color)
         {
@@ -1994,7 +1994,7 @@ namespace SSRepository.Repository.Transaction
                     new ColumnStructure{ pk_Id=9 ,  Orderby =9 ,  Heading ="Distribution Rate",Fields="DistributionRate",    Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
                     new ColumnStructure{ pk_Id=10,  Orderby =10,  Heading ="QTY",             Fields="Qty",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
                     new ColumnStructure{ pk_Id=11,  Orderby =11,  Heading ="Free Qty",        Fields="FreeQty",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
-                    new ColumnStructure{ pk_Id=12,  Orderby =13,  Heading ="Disc %",          Fields="TradeDisc",           Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
+                    new ColumnStructure{ pk_Id=12,  Orderby =12,  Heading ="Disc %",          Fields="TradeDisc",           Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
                     new ColumnStructure{ pk_Id=13,  Orderby =13,  Heading ="Disc Amt",        Fields="TradeDiscAmt",        Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
                     new ColumnStructure{ pk_Id=14,  Orderby =14,  Heading ="Disc Type",       Fields="TradeDiscType",       Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
                     new ColumnStructure{ pk_Id=15,  Orderby =15,  Heading ="Gross Amt",       Fields="GrossAmt",            Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
@@ -2002,8 +2002,7 @@ namespace SSRepository.Repository.Transaction
                     new ColumnStructure{ pk_Id=17,  Orderby =17,  Heading ="GST Amount",      Fields="GstAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
                     new ColumnStructure{ pk_Id=18,  Orderby =18,  Heading ="Net Amount",      Fields="NetAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
                     new ColumnStructure{ pk_Id=19,  Orderby =19,  Heading ="Barcode",         Fields="Barcode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
-                    new ColumnStructure{ pk_Id=20,  Orderby =20,  Heading ="Del",             Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" },
-                    new ColumnStructure{ pk_Id=21,  Orderby =12,  Heading ="Due Qty",         Fields="DueQty",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""},
+                    new ColumnStructure{ pk_Id=20,  Orderby =20,  Heading ="Del",             Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" }
 
                 };
             }
@@ -2044,7 +2043,7 @@ namespace SSRepository.Repository.Transaction
                     new ColumnStructure{ pk_Id=5,   Orderby =5,  Heading ="Rate",         Fields="Rate",                Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""},
                     new ColumnStructure{ pk_Id=6,   Orderby =6,  Heading ="QTY",          Fields="Qty",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
                     new ColumnStructure{ pk_Id=7,   Orderby =7,  Heading ="Free Qty",     Fields="FreeQty",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
-                    new ColumnStructure{ pk_Id=8,   Orderby =9,  Heading ="Disc %",       Fields="TradeDisc",           Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
+                    new ColumnStructure{ pk_Id=8,   Orderby =8,  Heading ="Disc %",       Fields="TradeDisc",           Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
                     new ColumnStructure{ pk_Id=9,   Orderby =9,  Heading ="Disc Amt",     Fields="TradeDiscAmt",        Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
                     new ColumnStructure{ pk_Id=10,  Orderby =10, Heading ="Disc Type",    Fields="TradeDiscType",       Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
                     new ColumnStructure{ pk_Id=11,  Orderby =11, Heading ="Gross Amt",    Fields="GrossAmt",            Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
@@ -2052,8 +2051,7 @@ namespace SSRepository.Repository.Transaction
                     new ColumnStructure{ pk_Id=13,  Orderby =13, Heading ="GST Amount",   Fields="GstAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
                     new ColumnStructure{ pk_Id=14,  Orderby =14, Heading ="Net Amount",   Fields="NetAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
                     new ColumnStructure{ pk_Id=15,  Orderby =15, Heading ="Barcode",      Fields="Barcode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
-                    new ColumnStructure{ pk_Id=16,  Orderby =16, Heading ="Del",          Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" },
-                    new ColumnStructure{ pk_Id=17,  Orderby =8,  Heading ="Due Qty",         Fields="DueQty",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""},
+                    new ColumnStructure{ pk_Id=16,  Orderby =16, Heading ="Del",          Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" }
 
                 };
             }
@@ -2068,7 +2066,7 @@ namespace SSRepository.Repository.Transaction
                     new ColumnStructure{ pk_Id=5,   Orderby =5,  Heading ="Rate",         Fields="Rate",                Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""},
                     new ColumnStructure{ pk_Id=6,   Orderby =6,  Heading ="QTY",          Fields="Qty",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
                     new ColumnStructure{ pk_Id=7,   Orderby =7,  Heading ="Free Qty",     Fields="FreeQty",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
-                    new ColumnStructure{ pk_Id=8,   Orderby =9,  Heading ="Disc %",       Fields="TradeDisc",           Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
+                    new ColumnStructure{ pk_Id=8,   Orderby =8,  Heading ="Disc %",       Fields="TradeDisc",           Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
                     new ColumnStructure{ pk_Id=9,   Orderby =9,  Heading ="Disc Amt",     Fields="TradeDiscAmt",        Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
                     new ColumnStructure{ pk_Id=10,  Orderby =10, Heading ="Disc Type",    Fields="TradeDiscType",       Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
                     new ColumnStructure{ pk_Id=11,  Orderby =11, Heading ="Gross Amt",    Fields="GrossAmt",            Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
@@ -2076,8 +2074,7 @@ namespace SSRepository.Repository.Transaction
                     new ColumnStructure{ pk_Id=13,  Orderby =13, Heading ="GST Amount",   Fields="GstAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
                     new ColumnStructure{ pk_Id=14,  Orderby =14, Heading ="Net Amount",   Fields="NetAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
                     new ColumnStructure{ pk_Id=15,  Orderby =15, Heading ="Barcode",      Fields="Barcode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
-                    new ColumnStructure{ pk_Id=16,  Orderby =16, Heading ="Del",          Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" },
-                    new ColumnStructure{ pk_Id=17,  Orderby =8,  Heading ="Due Qty",         Fields="DueQty",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""},
+                    new ColumnStructure{ pk_Id=16,  Orderby =16, Heading ="Del",          Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" }
 
                 };
             }
