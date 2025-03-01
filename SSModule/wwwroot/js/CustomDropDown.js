@@ -7,9 +7,12 @@
 
 var arrHideColumns = ['DateCreated', 'DATE_CREATED', 'DATE_MODIFIED', 'DateModified', 'UserName', 'FKUserId', 'src'];
 var DateColumns = [];
-
 let $dropdown = $("#dvCommonCusDropV2List");
 let _Custdropdown = [];
+const uriList = {
+    Branch: "",
+    user: "/Master/User/CustomList",
+};
 $(document).ready(function () {
 
     GlobleDropDownBind();
@@ -218,7 +221,8 @@ function fnCustomDropDown(hid) {
     var fetchDropdownData = function (data) {
         var result = "";
         var url = Handler.currentUrl + '/' + FieldName;
-
+        if ($Container.attr("uri"))
+            url = uriList[$Container.attr("uri")];
         $.ajax({
             url: url,
             data: data,

@@ -145,14 +145,8 @@
                             <div class="col-sm-12">
                                 <div class="row form-group">
                                     <div class="col-sm-4">
-
-                                        <div id="drpListdrpUser" class="ui-custom-DropDown  " extraparam="" event="" parent="">
-                                            <input id="drpUser" name="drpUser" type="hidden" value="">
-                                            <input id="drpdrpUser" class="form-control ui-custom-DropDown-input" autocomplete="off" placeholder="" type="text" value="" fdprocessedid="4gq0y8">
-                                            <span class="down"><i class="fas fa-caret-down"></i></span>
-                                        </div>
-
-
+                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "drpUser" }, { "Class", "" }, { "event", "" },
+                                        { "value", "" }, { "text", "" }, { "uri", "user" }})
                                         <input type="hidden" id="hidUserLocIndex">
                                     </div>
                                     <div class="col-sm-1 ">

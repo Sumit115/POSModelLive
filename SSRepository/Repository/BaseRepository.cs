@@ -629,36 +629,19 @@ namespace SSRepository.Repository
         }
         public SysDefaults GetSysDefaults()
         {
-
             SysDefaults model = new SysDefaults();
-            DataSet ds = new DataSet();
-            using (SqlConnection con = new SqlConnection(conn))
+            DataTable dt = Handler.ExecuteDataTable(conn, "usp_GetSysDefaults");
+            if (dt.Rows.Count > 0)
             {
-                con.Open();
-                SqlCommand cmd = new SqlCommand("usp_GetSysDefaults", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                //cmd.Parameters.AddWithValue("@PkId", PkId);
-                //cmd.Parameters.AddWithValue("@FkSeriesId", FkSeriesId);
-                //cmd.Parameters.Add(new SqlParameter("@JsonData", SqlDbType.NVarChar, int.MaxValue, ParameterDirection.Output, false, 0, 10, "JsonData", DataRowVersion.Default, null));
-                //cmd.Parameters.Add(new SqlParameter("@ErrMsg", SqlDbType.NVarChar, int.MaxValue, ParameterDirection.Output, false, 0, 10, "ErrMsg", DataRowVersion.Default, null));
-                SqlDataAdapter adp = new SqlDataAdapter(cmd);
-                adp.Fill(ds);
-                con.Close();
-            }
-            if (ds.Tables.Count > 0)
-            {
-                if (ds.Tables[0].Rows.Count > 0)
+                DataRow dr = dt.Rows[0];
+                foreach (DataColumn column in dr.Table.Columns)
                 {
-                    DataRow dr = ds.Tables[0].Rows[0];
-                    foreach (DataColumn column in dr.Table.Columns)
+                    foreach (PropertyInfo pro in typeof(SysDefaults).GetProperties())
                     {
-                        foreach (PropertyInfo pro in typeof(SysDefaults).GetProperties())
-                        {
-                            if (pro.Name == column.ColumnName)
-                                pro.SetValue(model, dr[column.ColumnName], null);
-                            else
-                                continue;
-                        }
+                        if (pro.Name == column.ColumnName)
+                            pro.SetValue(model, dr[column.ColumnName], null);
+                        else
+                            continue;
                     }
                 }
             }
