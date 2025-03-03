@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using LMS.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.SqlServer.Server;
@@ -26,6 +27,8 @@ namespace SSRepository.Data
         public virtual DbSet<TblCompany> TblCompanies { get; set; } = null!;
         public virtual DbSet<TblEmployeeMas> TblEmployeeMas { get; set; } = null!;
         public virtual DbSet<TblUserMas> TblUserMas { get; set; } = null!;
+
+        public virtual DbSet<TblUserLocLnk> TblUserLocLnk { get; set; } = null!;
         public virtual DbSet<TblCustomerMas> TblCustomerMas { get; set; } = null!;
         public virtual DbSet<TblWalkingCustomerMas> TblWalkingCustomerMas { get; set; } = null!;
         public virtual DbSet<TblVendorMas> TblVendorMas { get; set; } = null!;
@@ -140,9 +143,18 @@ namespace SSRepository.Data
                 entity.HasOne(e => e.ParentForm)
                       .WithMany(e => e.ChildForms)
                       .HasForeignKey(e => e.FKMasterFormID)
-                      .OnDelete(DeleteBehavior.NoAction); 
+                      .OnDelete(DeleteBehavior.NoAction);
             });
 
+            modelBuilder.Entity<TblUserLocLnk>(entity =>
+                    {
+                       // entity.HasNoKey();
+                        entity.ToTable("tblUserLoc_Lnk"); //
+                        // Adding the key itself, using the index name as well
+                        entity.HasKey(e => new { e.FKLocationID, e.FKUserID })
+                              .HasName("PRIMARY");
+                         
+                    });
         }
     }
 }

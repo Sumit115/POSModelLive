@@ -98,7 +98,7 @@ namespace SSRepository.Repository.Master
                     {
                         PKLocationID = cou.PkLocationID,
                         Location = cou.Location,
-                       // PkLocationID = cou.PkLocationID,
+                        // PkLocationID = cou.PkLocationID,
                         Address = cou.Address,
                         Alias = cou.Alias,
                         IsBillingLocation = cou.IsBillingLocation,
@@ -119,9 +119,21 @@ namespace SSRepository.Repository.Master
                         FKBranchID = cou.FkBranchID,
                         IsAllAccount = cou.IsAllAccount,
                         FKUserID = cou.FKUserID,
-                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
 
                     })).FirstOrDefault();
+            if (data != null)
+            {
+                data.UserLoc_lst = (from ad in __dbContext.TblUserLocLnk
+                                    join user in __dbContext.TblUserMas on ad.FKUserID equals user.PkUserId
+                                    where (ad.FKLocationID == data.PKLocationID)
+                                    select (new UserLocLnkModel
+                                    {
+                                        FKLocationID = ad.FKLocationID,
+                                        FKUserID = ad.FKUserID,
+                                        UserId = user.UserId,
+                                    })).ToList();
+            }
             return data;
         }
 
@@ -134,11 +146,17 @@ namespace SSRepository.Repository.Master
 
             if (Error == "")
             {
+                var lstDeluserlink = (from x in __dbContext.TblUserLocLnk
+                                      where x.FKLocationID == PkLocationId
+                                      select x).ToList();
+                __dbContext.TblUserLocLnk.RemoveRange(lstDeluserlink);
+
                 var lst = (from x in __dbContext.TblLocationMas
                            where x.PkLocationID == PkLocationId
                            select x).ToList();
                 if (lst.Count > 0)
                     __dbContext.TblLocationMas.RemoveRange(lst);
+
 
                 //var imglst = (from x in _context.TblImagesDtl
                 //              where x.Fkid == PkLocationId && x.FKSeriesID == __FormID
@@ -206,6 +224,7 @@ namespace SSRepository.Repository.Master
 
                 Tbl.FKCreatedByID = Tbl.FKUserID;
                 Tbl.CreationDate = Tbl.ModifiedDate;
+                Tbl.PkLocationID = getIdOfSeriesByEntity("PkLocationID", null, Tbl, "TblLocationMas");
                 AddData(Tbl, false);
             }
             else
@@ -214,6 +233,33 @@ namespace SSRepository.Repository.Master
                 ID = Tbl.PkLocationID;
                 UpdateData(Tbl, false);
                 AddMasterLog((long)Handler.Form.Location, Tbl.PkLocationID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Location, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
+            }
+            if (model.UserLoc_lst != null)
+            {
+                List<TblUserLocLnk> lstAdd = new List<TblUserLocLnk>();
+                // List<TblUserLocLnk> lstEdit = new List<TblUserLocLnk>();
+                List<TblUserLocLnk> lstDel = new List<TblUserLocLnk>();
+
+                //var lstDel = (from x in __dbContext.TblUserLocLnk
+                //              where x.FKLocationID == Tbl.PkLocationID
+                //              select x).ToList();
+
+
+                foreach (var item in model.UserLoc_lst)
+                {
+                    TblUserLocLnk locObj = new TblUserLocLnk();
+                    locObj.FKLocationID = Tbl.PkLocationID;
+                    locObj.FKUserID = item.FKUserID;
+                    if (item.Mode == 0)
+                        lstAdd.Add(locObj);
+                    if (item.Mode == 2)
+                        lstDel.Add(locObj);
+                }
+
+                if (lstDel.Count() > 0)
+                    DeleteData(lstDel, true);
+                if (lstAdd.Count() > 0)
+                    AddData(lstAdd, true);
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKLocationID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }

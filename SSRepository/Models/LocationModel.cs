@@ -51,5 +51,8 @@ namespace SSRepository.Models
         [Required]
         public int FkCityId { get; set; }
         public string? State { get; set; }
+
+        public List<UserLocLnkModel>? UserLoc_lst { get; set; }
+
     }
 }

@@ -51,7 +51,7 @@ namespace SSRepository.Models
         public BaseModel() {
         }
 
-        public long FKUserID { get; set; }
+        public long FKUserID { get; set; } = 1;
         public string? UserName { get; set; }
 
         public string? DATE_MODIFIED { get; set; }

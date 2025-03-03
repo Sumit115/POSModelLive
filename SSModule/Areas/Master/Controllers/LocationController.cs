@@ -13,14 +13,16 @@ namespace SSAdmin.Areas.Master.Controllers
         private readonly ILocationRepository _repository;
         private readonly IBranchRepository _Branchrepository;
         private readonly IVendorRepository _Vendorrepository;
+        private readonly IUserRepository _Userpository;
 
-        public LocationController(ILocationRepository repository,IGridLayoutRepository gridLayoutRepository, IBranchRepository BranchRepository, IVendorRepository vendorrepository) : base(gridLayoutRepository)
+        public LocationController(ILocationRepository repository, IGridLayoutRepository gridLayoutRepository, IBranchRepository BranchRepository, IVendorRepository vendorrepository, IUserRepository userpository) : base(gridLayoutRepository)
         {
             _repository = repository;
             _Branchrepository = BranchRepository;
-           // _Stationrepository = Stationrepository; 
+            // _Stationrepository = Stationrepository; 
             FKFormID = (long)Handler.Form.Location;
             _Vendorrepository = vendorrepository;
+            _Userpository = userpository;
         }
 
         public async Task<IActionResult> List()
@@ -47,6 +49,7 @@ namespace SSAdmin.Areas.Master.Controllers
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
             LocationModel Model = new LocationModel();
+            Model.UserLoc_lst = new List<UserLocLnkModel>();
             try
             {
                 ViewBag.PageType = "";
@@ -82,6 +85,7 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             try
             {
+                ModelState.Remove("FKUserID");
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
@@ -106,7 +110,8 @@ namespace SSAdmin.Areas.Master.Controllers
                     {
                         foreach (ModelError error in modelState.Errors)
                         {
-                            var sdfs = error.ErrorMessage;
+                            //   var sdfs = error.ErrorMessage;
+                            throw new Exception(error.ErrorMessage);
                         }
                     }
                 }
@@ -115,6 +120,7 @@ namespace SSAdmin.Areas.Master.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
             }
+            ViewBag.BranchList = _Branchrepository.GetDrpBranch(1, 1000);
             return View(model);
         }
 

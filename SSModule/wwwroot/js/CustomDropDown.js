@@ -72,7 +72,7 @@ function fnCustomDropDown(hid) {
     let KeyText = "";
     let columns = [];
     this.onload = null;
-    this.onSelect = null;
+    this.onSelect = null; 
 
     var Init = () => {
         bindEvents();
@@ -180,7 +180,8 @@ function fnCustomDropDown(hid) {
             pageno: PageNo,
             pagesize: 20,
             search: $input.val().trim(),
-            param: ''
+            param: '',
+            uri: $Container.attr("uri"),
         };
         let hidExtra = $Container.attr("ExtraParam");
         if (hidExtra !== '') {
@@ -216,9 +217,10 @@ function fnCustomDropDown(hid) {
     }
 
     var fetchDropdownData = function (data) {
-        var result = "";
+         var result = "";
         var url = Handler.currentUrl + '/' + FieldName;
-
+        if (!Handler.isNullOrEmpty(data.uri))
+            url = '/'+data.uri + '/' + FieldName;
         $.ajax({
             url: url,
             data: data,

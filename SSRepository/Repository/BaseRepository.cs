@@ -164,6 +164,10 @@ namespace SSRepository.Repository
                 {
                     MaxID = __dbContext.TblMasterLogDtl.ToList().Count > 0 ? __dbContext.TblMasterLogDtl.ToList().Max(x => x.PKMasterLogID) : 0;
                 }
+                else if (TableName == "TblLocationMas")
+                {
+                    MaxID = __dbContext.TblLocationMas.ToList().Count > 0 ? __dbContext.TblLocationMas.ToList().Max(x => x.PkLocationID) : 0;
+                }
                 return Convert.ToInt64(MaxID) + 1;
             }
             catch (Exception ex)

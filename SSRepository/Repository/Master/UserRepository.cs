@@ -89,12 +89,12 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpUser(int pageno, int pagesize, string search = "")
+        public object GetDrpUser(int pageSize, int pageNo = 1, string search = "")
         {
             if (search != null) search = search.ToLower();
             if (search == null) search = "";
 
-            var result = GetList(pagesize, pageno, search);
+            var result = GetList(pageSize, pageNo, search);
 
 
             return (from r in result
