@@ -12,8 +12,6 @@ namespace SSAdmin.Controllers
 {
     public class CustomDropDownController : Controller
     {
-        private readonly IUserRepository _userRepository;
-        private readonly ISeriesRepository _seriesRepository;
         private readonly AppDbContext _dbContext;
         private readonly IHttpContextAccessor _contextAccessor;
 
@@ -29,6 +27,15 @@ namespace SSAdmin.Controllers
             
             UserRepository repository = new UserRepository(_dbContext, _contextAccessor);
             return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo,  search);
+        }
+
+        [HttpPost]
+        public object FKSeriesId(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
+        {
+            return _seriesRepository.CustomList(1, pageSize, pageNo, search, TranAlias, DocumentType);
+=
+            
+            
         }
 
         [HttpPost]
@@ -64,4 +71,6 @@ namespace SSAdmin.Controllers
         }
 
     }
+
+
 }
