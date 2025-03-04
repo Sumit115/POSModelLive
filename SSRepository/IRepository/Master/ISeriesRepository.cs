@@ -9,7 +9,8 @@ namespace SSRepository.IRepository.Master
          List<ColumnStructure> ColumnList(string GridName = "");
 
         string isAlreadyExist(SeriesModel tblBankMas, string Mode);
-        List<SeriesModel> GetList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "",string DocumentType="");
+        List<SeriesModel> GetList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "");
+        object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "");
         SeriesModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);

@@ -9,6 +9,7 @@ using SSRepository.IRepository;
 using SSRepository.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.IO;
 using System.Numerics;
 using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
@@ -1008,7 +1009,7 @@ namespace SSRepository.Repository
         }
 
         public T GetMasterLog<T>(long PKMasterLogID)
-        { 
+        {
             var _entity = __dbContext.TblMasterLogDtl.Find(PKMasterLogID);
 
             if (_entity.JsonDetail is JArray)
@@ -1020,6 +1021,33 @@ namespace SSRepository.Repository
                 return JsonConvert.DeserializeObject<T>(_entity.JsonDetail);
             }
             //else { return new typeof(T); }
+        }
+
+        public SysDefaults SysDefaults_byLogin()
+        {
+            var model=new SysDefaults();
+
+            var jsondataSysDefaults = _contextAccessor.HttpContext.Session.GetString("SysDefaults");
+            if (jsondataSysDefaults != null)
+            {
+                model = JsonConvert.DeserializeObject<SysDefaults>(jsondataSysDefaults); 
+            }
+            else
+            {
+                string path = Path.Combine("wwwroot", "Data");
+                path = Path.Combine(path, Convert.ToString(_contextAccessor.HttpContext.User.FindFirst("CompanyName")?.Value ?? ""));
+                path = Path.Combine(path, Convert.ToString(_contextAccessor.HttpContext.User.FindFirst("UserId")?.Value ?? ""));
+
+                 string filePathSysDefaults = Path.Combine(path, "sysdefaults.json");
+                jsondataSysDefaults = System.IO.File.ReadAllText(filePathSysDefaults);
+                if (!string.IsNullOrEmpty(jsondataSysDefaults))
+                {
+                    model = JsonConvert.DeserializeObject<SysDefaults>(jsondataSysDefaults);
+                    _contextAccessor.HttpContext.Session.SetString("SysDefaults", jsondataSysDefaults);
+
+                }
+            }
+            return model;
         }
 
     }

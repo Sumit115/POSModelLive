@@ -69,7 +69,7 @@ namespace SSRepository.Repository.Master
                             SeriesNo = cou.SeriesNo,
                             //FkBranchId = cou.FkBranchId,
                             BillingRate = cou.BillingRate,
-                            TranAlias = cou.TranAlias??"",
+                            TranAlias = cou.TranAlias ?? "",
                             FormatName = cou.FormatName,
                             ResetNoFor = cou.ResetNoFor,
                             AllowWalkIn = cou.AllowWalkIn,
@@ -94,8 +94,37 @@ namespace SSRepository.Repository.Master
             return data.ToList();
         }
 
+       
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
+        {
+            if (EnCustomFlag == 1)//(int)Handler.en_CustomFlag.CustomDrop)
+            {
+                var key = SysDefaults_byLogin();
 
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblSeriesMas
+                             //join _tranAlias in GetDrpTranAlias().ToList() on cou.TranAlias equals _tranAlias.Value
+                         where EF.Functions.Like(cou.Series.Trim().ToLower(), search + "%")
+                         && (TranAlias == "" || cou.TranAlias == TranAlias)
+                         && (DocumentType == "" || cou.DocumentType == DocumentType)
+                         orderby cou.PkSeriesId
+                         select (new
+                         {
+                             cou.PkSeriesId,
+                             cou.Series,
+                             cou.SeriesNo,
+                             cou.BillingRate,
+                             cou.TranAlias,
 
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else
+            {
+                return null;
+            }
+        }
         public SeriesModel GetSingleRecord(long PkSeriesId)
         {
 
@@ -109,7 +138,7 @@ namespace SSRepository.Repository.Master
                         PkSeriesId = cou.PkSeriesId,
                         Series = cou.Series,
                         SeriesNo = cou.SeriesNo,
-                       // FkBranchId = cou.FkBranchId,
+                        // FkBranchId = cou.FkBranchId,
                         BillingRate = cou.BillingRate,
                         TranAlias = cou.TranAlias,
                         FormatName = cou.FormatName,
@@ -175,7 +204,7 @@ namespace SSRepository.Repository.Master
             error = isAlreadyExist(model, Mode);
             if (string.IsNullOrEmpty(error) && model.PkSeriesId > 0)
             {
-               // error = isAvailableForEdit(model, Mode);
+                // error = isAvailableForEdit(model, Mode);
             }
             return error;
 
@@ -192,7 +221,7 @@ namespace SSRepository.Repository.Master
             }
 
             Tbl.Series = model.Series;
-             //Tbl.FkBranchId = model.FkBranchId;
+            //Tbl.FkBranchId = model.FkBranchId;
             Tbl.BillingRate = model.BillingRate;
             Tbl.FormatName = model.FormatName;
             Tbl.ResetNoFor = model.ResetNoFor;

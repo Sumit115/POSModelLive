@@ -172,6 +172,7 @@ function fnCustomDropDown(hid) {
         $dropdown.hide().html('');
     }
     var get = function () {
+        debugger;
         if (PageNo == 1) {
             calculateDropdownPosition();
         }
@@ -185,6 +186,7 @@ function fnCustomDropDown(hid) {
         };
         let hidExtra = $Container.attr("ExtraParam");
         if (hidExtra !== '') {
+            debugger;
             let ExtraParam = '';
             var arrExtra = hidExtra.split(',');
             $(arrExtra).each(function (index, item) {
@@ -217,6 +219,7 @@ function fnCustomDropDown(hid) {
     }
 
     var fetchDropdownData = function (data) {
+        debugger;
          var result = "";
         var url = Handler.currentUrl + '/' + FieldName;
         if (!Handler.isNullOrEmpty(data.uri))

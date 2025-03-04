@@ -5,7 +5,8 @@
 }
 <input type="hidden" asp-for="PkId" />
 <input type="hidden" id="hdData" value="@ViewBag.Data" />
-<input asp-for="ExtProperties.TranAlias" type="hidden" />
+<input asp-for="ExtProperties.TranAlias" type="hidden" id="TranAlias" />
+<input asp-for="ExtProperties.DocumentType" type="hidden" id="DocumentType" />
 
 <input type="hidden" id="hdProductList" value="@ViewBag.ProductList" />
 <input type="hidden" id="hdInvoiceList" value="[]" />
