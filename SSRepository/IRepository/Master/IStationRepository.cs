@@ -10,8 +10,8 @@ namespace SSRepository.IRepository.Master
 
         string isAlreadyExist(StationModel tblBankMas, string Mode);
         List<StationModel> GetList(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpStation(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpStationByDistrictId(long DistrictId, int pageSize, int pageNo = 1, string search = "");
+        object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", long DistrictId = 0);
+        
         StationModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);

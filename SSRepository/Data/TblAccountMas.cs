@@ -10,7 +10,7 @@ namespace SSRepository.Data
     {
         [Key]
         public long PkAccountId { get; set; }
-        public string? Account { get; set; }
+        public string Account { get; set; }
         public string? Alias { get; set; }
         public long FkAccountGroupId { get; set; }
         public string? Address { get; set; }

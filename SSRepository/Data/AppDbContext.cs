@@ -146,15 +146,150 @@ namespace SSRepository.Data
                       .OnDelete(DeleteBehavior.NoAction);
             });
 
+            modelBuilder.Entity<TblLocationMas>(entity =>
+            {
+                entity.HasKey(e => e.PkLocationID);
+
+                entity.Property(e => e.PkLocationID)
+            .HasColumnName("PkLocationID")
+            .IsRequired();
+
+                entity.Property(e => e.Location)
+                    .HasColumnName("Location")
+                    .HasMaxLength(200)
+                    .IsRequired();
+
+                entity.Property(e => e.Alias)
+                    .HasColumnName("Alias")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.IsBillingLocation)
+                    .HasColumnName("IsBillingLocation")
+                    .HasDefaultValue(false);
+
+                entity.Property(e => e.IsAllProduct)
+                    .HasColumnName("IsAllProduct")
+                    .HasDefaultValue(false);
+
+                entity.Property(e => e.IsAllCustomer)
+                    .HasColumnName("IsAllCustomer")
+                    .HasDefaultValue(false);
+
+                entity.Property(e => e.IsAllVendor)
+                    .HasColumnName("IsAllVendor")
+                    .HasDefaultValue(false);
+
+                entity.Property(e => e.Address)
+                    .HasColumnName("Address")
+                    .HasMaxLength(500)
+                    .IsUnicode(true);
+
+                entity.Property(e => e.FkStationID)
+                    .HasColumnName("FkStationID");
+
+                entity.Property(e => e.FkLocalityID)
+                    .HasColumnName("FkLocalityID");
+
+                entity.Property(e => e.Pincode)
+                    .HasColumnName("Pincode")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.Phone1)
+                    .HasColumnName("Phone1")
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Phone2)
+                    .HasColumnName("Phone2")
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Fax)
+                    .HasColumnName("Fax")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Email)
+                    .HasColumnName("Email")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Website)
+                    .HasColumnName("Website")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.IsDifferentTax)
+                    .HasColumnName("IsDifferentTax")
+                    .HasDefaultValue(false);
+
+                entity.Property(e => e.FkAccountID)
+                    .HasColumnName("FkAccountID");
+
+                entity.Property(e => e.FkBranchID)
+                    .HasColumnName("FkBranchID")
+                    .IsRequired();
+
+                entity.Property(e => e.IsAllCostCenter)
+                    .HasColumnName("IsAllCostCenter")
+                    .HasDefaultValue(false);
+
+                entity.Property(e => e.IsAllAccount)
+                    .HasColumnName("IsAllAccount")
+                    .HasDefaultValue(false);
+
+                entity.Property(e => e.FkCityId)
+                    .HasColumnName("FkCityId")
+                    .IsRequired();
+
+                entity.Property(e => e.State)
+                    .HasColumnName("State")
+                    .HasMaxLength(100);
+
+                entity.HasOne(e => e.branchMas)
+                    .WithMany()
+                    .HasForeignKey(e => e.FkBranchID)
+                    .OnDelete(DeleteBehavior.Restrict); // Prevent accidental deletion
+
+                entity.HasOne(e => e.accountMas)
+                    .WithMany()
+                    .HasForeignKey(e => e.FkAccountID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.stationMas)
+                    .WithMany()
+                    .HasForeignKey(e => e.FkStationID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.localityMas)
+                    .WithMany()
+                    .HasForeignKey(e => e.FkLocalityID)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
             modelBuilder.Entity<TblUserLocLnk>(entity =>
-                    {
-                       // entity.HasNoKey();
-                        entity.ToTable("tblUserLoc_Lnk"); //
-                        // Adding the key itself, using the index name as well
-                        entity.HasKey(e => new { e.FKLocationID, e.FKUserID })
-                              .HasName("PRIMARY");
-                         
-                    });
+            {
+                entity.HasKey(e => new { e.FKUserID, e.FKLocationID });
+
+                entity.Property(e => e.FKUserID)
+                    .HasColumnType("bigint")
+                    .IsRequired();
+
+                entity.Property(e => e.FKLocationID)
+                    .HasColumnType("bigint")
+                    .IsRequired();
+
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Location)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKLocationID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+            });
         }
     }
 }

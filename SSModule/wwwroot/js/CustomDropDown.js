@@ -182,7 +182,6 @@ function fnCustomDropDown(hid) {
             pagesize: 20,
             search: $input.val().trim(),
             param: '',
-            uri: $Container.attr("uri"),
         };
         let hidExtra = $Container.attr("ExtraParam");
         if (hidExtra !== '') {
@@ -222,8 +221,10 @@ function fnCustomDropDown(hid) {
         debugger;
          var result = "";
         var url = Handler.currentUrl + '/' + FieldName;
-        if (!Handler.isNullOrEmpty(data.uri))
-            url = '/'+data.uri + '/' + FieldName;
+
+        var uri = $Container.attr("uri");
+        if (!Handler.isNullOrEmpty(uri))
+            url = '/CustomDropDown/' + uri;
         $.ajax({
             url: url,
             data: data,
@@ -321,7 +322,6 @@ function fnCustomDropDown(hid) {
         // Generate table rows
         data.forEach((item) => {
             html += "<tr tabindex='-1' hid='" + item[Keyval] + "' >";
-            let columns = Object.keys(item);
 
             columns.forEach((col, index) => {
                 if (index > 0 && arrHideColumns.indexOf(col) === -1 && !col.toLowerCase().startsWith("fk")) {

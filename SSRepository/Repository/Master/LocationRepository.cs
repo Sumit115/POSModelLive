@@ -98,7 +98,6 @@ namespace SSRepository.Repository.Master
                     {
                         PKLocationID = cou.PkLocationID,
                         Location = cou.Location,
-                        // PkLocationID = cou.PkLocationID,
                         Address = cou.Address,
                         Alias = cou.Alias,
                         IsBillingLocation = cou.IsBillingLocation,
@@ -106,7 +105,9 @@ namespace SSRepository.Repository.Master
                         IsAllCustomer = cou.IsAllCustomer,
                         IsAllVendor = cou.IsAllVendor,
                         FKStationID = cou.FkStationID,
+                        Station = cou.stationMas.StationName,
                         FKLocalityID = cou.FkLocalityID,
+                        Locality = cou.localityMas.LocalityName,
                         Pincode = cou.Pincode,
                         Phone1 = cou.Phone1,
                         Phone2 = cou.Phone2,
@@ -116,7 +117,9 @@ namespace SSRepository.Repository.Master
                         Website = cou.Website,
                         IsDifferentTax = cou.IsDifferentTax,
                         FKAccountID = cou.FkAccountID,
+                        Account = cou.accountMas.Account,
                         FKBranchID = cou.FkBranchID,
+                        Branch = cou.branchMas.BranchName,
                         IsAllAccount = cou.IsAllAccount,
                         FKUserID = cou.FKUserID,
                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
@@ -124,15 +127,15 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             if (data != null)
             {
-                data.UserLoc_lst = (from ad in __dbContext.TblUserLocLnk
-                                    join user in __dbContext.TblUserMas on ad.FKUserID equals user.PkUserId
-                                    where (ad.FKLocationID == data.PKLocationID)
-                                    select (new UserLocLnkModel
-                                    {
-                                        FKLocationID = ad.FKLocationID,
-                                        FKUserID = ad.FKUserID,
-                                        UserId = user.UserId,
-                                    })).ToList();
+                data.UserLoclnk = (from ad in __dbContext.TblUserLocLnk
+                                   join user in __dbContext.TblUserMas on ad.FKUserID equals user.PkUserId
+                                   where (ad.FKLocationID == data.PKLocationID)
+                                   select (new UserLocLnkModel
+                                   {
+                                       FKLocationID = ad.FKLocationID,
+                                       FKUserID = ad.FKUserID,
+                                       UserName = user.UserId,
+                                   })).ToList();
             }
             return data;
         }
@@ -190,9 +193,15 @@ namespace SSRepository.Repository.Master
             TblLocationMas Tbl = new TblLocationMas();
             if (model.PKLocationID > 0)
             {
-                var _entity = __dbContext.TblLocationMas.Find(model.PKLocationID);
-                if (_entity != null) { Tbl = _entity; }
-                else { throw new Exception("data not found"); }
+                var _entity = GetSingleRecord(model.PKLocationID);
+            }
+            IList<TblUserLocLnk> userlnk = (from x in __dbContext.TblUserLocLnk
+                                            where x.FKLocationID == model.PKLocationID
+                                            select x).ToList();
+
+            if (userlnk.Count > 0)
+            {
+                DeleteData(userlnk, true);
             }
 
             Tbl.PkLocationID = model.PKLocationID;
@@ -221,7 +230,6 @@ namespace SSRepository.Repository.Master
             Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
             {
-
                 Tbl.FKCreatedByID = Tbl.FKUserID;
                 Tbl.CreationDate = Tbl.ModifiedDate;
                 Tbl.PkLocationID = getIdOfSeriesByEntity("PkLocationID", null, Tbl, "TblLocationMas");
@@ -234,51 +242,42 @@ namespace SSRepository.Repository.Master
                 UpdateData(Tbl, false);
                 AddMasterLog((long)Handler.Form.Location, Tbl.PkLocationID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Location, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
-            if (model.UserLoc_lst != null)
+            if (model.UserLoclnk != null)
             {
                 List<TblUserLocLnk> lstAdd = new List<TblUserLocLnk>();
-                // List<TblUserLocLnk> lstEdit = new List<TblUserLocLnk>();
-                List<TblUserLocLnk> lstDel = new List<TblUserLocLnk>();
-
-                //var lstDel = (from x in __dbContext.TblUserLocLnk
-                //              where x.FKLocationID == Tbl.PkLocationID
-                //              select x).ToList();
-
-
-                foreach (var item in model.UserLoc_lst)
+                foreach (var item in model.UserLoclnk)
                 {
                     TblUserLocLnk locObj = new TblUserLocLnk();
                     locObj.FKLocationID = Tbl.PkLocationID;
                     locObj.FKUserID = item.FKUserID;
-                    if (item.Mode == 0)
+                    if (item.ModeForm == 0)
+                    {
                         lstAdd.Add(locObj);
-                    if (item.Mode == 2)
-                        lstDel.Add(locObj);
+                    }
                 }
-
-                if (lstDel.Count() > 0)
-                    DeleteData(lstDel, true);
-                if (lstAdd.Count() > 0)
+                if (lstAdd.Count > 0)
                     AddData(lstAdd, true);
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKLocationID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
             var list = new List<ColumnStructure>
             {
-                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Location", Fields="Location",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Alias", Fields="Alias",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Address", Fields="Address",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Pincode", Fields="Pincode",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Phone1", Fields="Phone1",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Phone2", Fields="Phone2",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Phone2", Fields="Phone2",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Fax", Fields="Fax",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Email", Fields="Email",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Website", Fields="Website",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Location", Fields="Location",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Alias",    Fields="Alias",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Address",  Fields="Address",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Pincode",  Fields="Pincode",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Phone1",   Fields="Phone1",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Phone2", Fields="Phone2",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Phone2", Fields="Phone2",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Fax", Fields="Fax",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Email", Fields="Email",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Website", Fields="Website",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
 
                         };
             return list;

@@ -11,7 +11,8 @@ namespace SSRepository.Repository.Master
     public class BranchRepository : Repository<TblBranchMas>, IBranchRepository
     {
         public BranchRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
-        {;
+        {
+            ;
         }
 
         public string isAlreadyExist(BranchModel model, string Mode)
@@ -52,7 +53,8 @@ namespace SSRepository.Repository.Master
             List<BranchModel> data = (from cou in __dbContext.TblBranchMas
                                       join _city in __dbContext.TblCityMas
                                        on new { User = cou.FkCityId } equals new { User = (long?)_city.PkCityId }
-                                       into _citytmp from city in _citytmp.DefaultIfEmpty()
+                                       into _citytmp
+                                      from city in _citytmp.DefaultIfEmpty()
                                           // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                       orderby cou.PkBranchId
                                       select (new BranchModel
@@ -107,20 +109,22 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpBranch(int pageno, int pagesize, string search = "")
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "")
         {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetList(pagesize, pageno, search);
-
-
-            return (from r in result
-                    select new
-                    {
-                        r.PkBranchId,
-                        r.BranchName
-                    }).ToList(); ;
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                var result = GetList(pageSize, pageNo, search);
+                return (from r in result
+                        select new
+                        {
+                            r.PkBranchId,
+                            r.BranchName
+                        }).ToList();
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public string DeleteRecord(long PkBranchId)

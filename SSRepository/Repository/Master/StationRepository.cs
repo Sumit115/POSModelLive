@@ -35,42 +35,20 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<StationModel> data = (from cou in __dbContext.TblStationMas
-                                        join catGrp in __dbContext.TblDistrictMas on cou.FkDistrictId equals catGrp.PkDistrictId
+                                       join catGrp in __dbContext.TblDistrictMas on cou.FkDistrictId equals catGrp.PkDistrictId
 
-                                        // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                        orderby cou.PkStationId
-                                        select (new StationModel
-                                        {
-                                            PkStationId = cou.PkStationId,
-                                            StationName = cou.StationName,
-                                            FkDistrictId = cou.FkDistrictId,
-                                            DistrictName = catGrp.DistrictName,
-                                            FKUserID = cou.FKUserID, 
-                                            DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
-                                        }
-                                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
-            return data;
-        }
-
-        public List<StationModel> GetListByGroupId(long DistrictId, int pageSize, int pageNo = 1, string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
-            List<StationModel> data = (from cou in __dbContext.TblStationMas
-                                        join catGrp in __dbContext.TblDistrictMas on cou.FkDistrictId equals catGrp.PkDistrictId
-                                        where cou.FkDistrictId == DistrictId
-                                        // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                        orderby cou.PkStationId
-                                        select (new StationModel
-                                        {
-                                            PkStationId = cou.PkStationId,
-                                            StationName = cou.StationName,
-                                            FkDistrictId = cou.FkDistrictId,
-                                            DistrictName = catGrp.DistrictName,
-                                            FKUserID = cou.FKUserID,
-                                            DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
-                                        }
-                                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+                                       // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                       orderby cou.PkStationId
+                                       select (new StationModel
+                                       {
+                                           PkStationId = cou.PkStationId,
+                                           StationName = cou.StationName,
+                                           FkDistrictId = cou.FkDistrictId,
+                                           DistrictName = catGrp.DistrictName,
+                                           FKUserID = cou.FKUserID,
+                                           DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                                       }
+                                      )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
 
@@ -92,35 +70,31 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpStation(int pagesize, int pageno, string search = "")
+
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", long DistrictId = 0)
         {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetList(pagesize, pageno, search);
-
-            result.Insert(0, new StationModel { PkStationId = 0, StationName = "Select" });
-            return (from r in result
-                    select new
-                    {
-                        r.PkStationId,
-                        r.StationName
-                    }).ToList();
-        }
-        public object GetDrpStationByDistrictId(long DistrictId, int pagesize, int pageno, string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetListByGroupId(DistrictId, pagesize, pageno, search);
-
-            result.Insert(0, new StationModel { PkStationId = 0, StationName = "Select" });
-            return (from r in result
-                    select new
-                    {
-                        r.PkStationId,
-                        r.StationName
-                    }).ToList();
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return (from cou in __dbContext.TblStationMas
+                        join catGrp in __dbContext.TblDistrictMas on cou.FkDistrictId equals catGrp.PkDistrictId
+                        where (DistrictId == 0 || cou.FkDistrictId == DistrictId)
+                        // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                        orderby cou.PkStationId
+                        select (new
+                        {
+                            cou.PkStationId,
+                            cou.StationName,
+                            cou.FkDistrictId,
+                            catGrp.DistrictName
+                        }
+       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public string DeleteRecord(long PkStationId)

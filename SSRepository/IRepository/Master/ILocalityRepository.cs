@@ -10,9 +10,8 @@ namespace SSRepository.IRepository.Master
 
         string isAlreadyExist(LocalityModel tblBankMas, string Mode);
         List<LocalityModel> GetList(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpLocality(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpLocalityByAreaId(long AreaId, int pageSize, int pageNo = 1, string search = "");
-        object GetDrpTableLocality(int pageSize, int pageNo = 1, string search = "");
+        object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", long DistrictId = 0);
+
         LocalityModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);

@@ -20,8 +20,13 @@ using System.Threading.Tasks;
             Customer,//=4
             Employee,//5
         }
+        public enum en_CustomFlag
+    {
+            CustomDrop=100,
+            Filter=101
+        }
 
-        public enum Form
+    public enum Form
         {
             //MainMenu start from 1000
 

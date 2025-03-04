@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SSRepository.Data
 {
     [Table("tblLocation_mas", Schema = "dbo")]
     public class TblLocationMas: TblBase, IEntity //TblBase not mapped to database becasue of that givind error
     {
+        public TblLocationMas()
+        {
+            LocationUsers = new HashSet<TblUserLocLnk>();
+        }
+
         [Key]
         public long PkLocationID { get; set; } 
         public string Location { get;set; }
@@ -35,15 +35,26 @@ namespace SSRepository.Data
         public bool IsDifferentTax { get; set; }
 
         public long? FkAccountID { get; set; }
-        public long? FkBranchID { get; set; }
+
+        public long FkBranchID { get; set; }
 
         public bool IsAllCostCenter { get; set; }
+        
         public bool IsAllAccount { get; set; }
 
-        
-
-         
         public int  FkCityId { get; set; }
+        
         public string? State { get; set; }
+
+
+        public virtual TblBranchMas branchMas { get; set; }
+
+        public virtual TblAccountMas accountMas { get; set; }
+
+        public virtual TblStationMas stationMas { get; set; }
+
+        public virtual TblLocalityMas localityMas { get; set; }
+
+        public virtual ICollection<TblUserLocLnk> LocationUsers { get; set; }
     }
 }

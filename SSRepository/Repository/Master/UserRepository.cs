@@ -89,27 +89,24 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpUser(int pageSize, int pageNo = 1, string search = "")
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1,  string search = "")
         {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
 
-            var result = GetList(pageSize, pageNo, search);
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                var result = GetList(pageSize, pageNo, search);
 
-
-            return (from r in result
-                    select new
-                    {
-                        r.PkUserId,
-                        r.UserId
-                    }).ToList(); ;
-        }
-        public string GetDrp(long PkUserId)
-        {
-            return (from cou in __dbContext.TblUserMas
-                    where cou.PkUserId == PkUserId
-                    select cou.UserId).FirstOrDefault();
-
+                return (from r in result
+                        select new
+                        {
+                            PkId = r.PkUserId,
+                            Name =r.UserId
+                        }).ToList();
+            }
+            else
+            {
+                return null;
+            }
         }
         public string DeleteRecord(long PkUserId)
         {

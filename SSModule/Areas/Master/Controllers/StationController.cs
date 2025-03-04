@@ -49,23 +49,7 @@ namespace SSAdmin.Areas.Master.Controllers
         public string Export(string ColumnList, string HeaderList, string Name, string Type)
         {
             string FileName = "";
-            //try
-            //{
-            //    List<BankModel> model = new List<BankModel>();
-            //    string result = CommonCore.API(ControllerName, "export", GetAPIDefaultParam());
-            //    if (CommonCore.CheckError(result) == "")
-            //    {
-            //        model = JsonConvert.DeserializeObject<List<BankModel>>(result);
-            //        FileName = Common.Export(model, HeaderList, ColumnList, Name, Type);
-            //    }
-            //    else
-            //        FileName = result;
-            //}
-            //catch (Exception ex)
-            //{
-            //    CommonCore.WriteLog(ex, "Export " + Type, ControllerName, GetErrorLogParam());
-            //    return CommonCore.SetError(ex.Message);
-            //}
+            
             return FileName;
         }
 
@@ -162,13 +146,6 @@ namespace SSAdmin.Areas.Master.Controllers
                 //return CommonCore.SetError(ex.Message);
             }
             return response;
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> GetDrpStationByDistrictId(int DistrictId)
-        {
-            var data = _repository.GetDrpStationByDistrictId(DistrictId,1000);
-            return new JsonResult(data);
         }
 
         public override List<ColumnStructure> ColumnList(string GridName = "")

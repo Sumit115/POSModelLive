@@ -9,6 +9,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using LMS.IRepository;
 using LMS.Models;
+using LMS;
 
 namespace SSAdmin.Controllers
 {
@@ -41,8 +42,8 @@ namespace SSAdmin.Controllers
             {
                 SignInModel model = new SignInModel();
 #if DEBUG
-                        model.UserID = "pos@gmail.com";
-                        model.Password = "Admin";
+                model.UserID = "pos@gmail.com";
+                model.Password = "Suresh@@12#";
 #endif
                 return View(model);
             }
