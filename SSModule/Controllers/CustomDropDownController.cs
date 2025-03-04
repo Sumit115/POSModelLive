@@ -14,6 +14,8 @@ namespace SSAdmin.Controllers
         private readonly AppDbContext _dbContext;
         private readonly IHttpContextAccessor _contextAccessor;
 
+        private readonly IHttpContextAccessor _contextAccessorrrr;
+
         public CustomDropDownController(AppDbContext dbContext, IHttpContextAccessor contextAccessor)
         {
             _dbContext = dbContext;
