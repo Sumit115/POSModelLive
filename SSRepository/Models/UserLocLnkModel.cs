@@ -11,10 +11,8 @@ namespace SSRepository.Models
     {
         public long FKUserID { get; set; }
         public long FKLocationID { get; set; }
-        //public virtual TblUserMas User { get; set; }
-        //public virtual TblLocationMas Location { get; set; }
 
-        public string? UserId { get; set; }
-        public long Mode { get; set; }
+        public string UserName { get; set; }
+        public long ModeForm { get; set; }
     }
 }

@@ -43,7 +43,7 @@ namespace SSAdmin.Controllers
                 SignInModel model = new SignInModel();
 #if DEBUG
                 model.UserID = "pos@gmail.com";
-                model.Password = "Admin";
+                model.Password = "Suresh@@12#";
 #endif
                 return View(model);
             }

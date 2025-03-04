@@ -5,6 +5,7 @@ using SSRepository.IRepository.Master;
 using Microsoft.AspNetCore.Http;
 using SSRepository.Models;
 using Microsoft.VisualBasic;
+using Azure;
 
 namespace SSRepository.Repository.Master
 {
@@ -53,29 +54,7 @@ namespace SSRepository.Repository.Master
             return data;
         }
 
-        public List<LocalityModel> GetListByGroupId(long AreaId, int pageSize, int pageNo = 1, string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
-            List<LocalityModel> data = (from cou in __dbContext.TblLocalityMas
-                                        join catGrp in __dbContext.TblAreaMas on cou.FkAreaId equals catGrp.PkAreaId
-                                        where cou.FkAreaId == AreaId
-                                        // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                        orderby cou.PkLocalityId
-                                        select (new LocalityModel
-                                        {
-                                            PkLocalityId = cou.PkLocalityId,
-                                            LocalityName = cou.LocalityName,
-                                            Description = cou.Description,
-                                            FkAreaId = cou.FkAreaId,
-                                            AreaName = catGrp.AreaName,
-                                            FKUserID = cou.FKUserID,
-                                            DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
-                                        }
-                                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
-            return data;
-        }
-
+       
         public LocalityModel GetSingleRecord(long PkLocalityId)
         {
 
@@ -95,52 +74,34 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpLocality(int pagesize, int pageno, string search = "")
+       
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", long AreaId=0)
         {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetList(pagesize, pageno, search);
-
-            result.Insert(0, new LocalityModel { PkLocalityId = 0, LocalityName = "Select" });
-            return (from r in result
-                    select new
-                    {
-                        r.PkLocalityId,
-                        r.LocalityName
-                    }).ToList();
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return (from cou in __dbContext.TblLocalityMas
+                                            join catGrp in __dbContext.TblAreaMas on cou.FkAreaId equals catGrp.PkAreaId
+                                            where (AreaId==0 || cou.FkAreaId == AreaId)
+                                            orderby cou.PkLocalityId
+                                            select (new 
+                                            {
+                                                cou.PkLocalityId,
+                                                cou.LocalityName,
+                                                cou.Description,
+                                                cou.FkAreaId,
+                                                catGrp.AreaName,
+                                                
+                                            }
+                                           )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+            }
+            else
+            {
+                return null;
+            }
         }
-        public object GetDrpLocalityByAreaId(long AreaId, int pagesize, int pageno, string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
 
-            var result = GetListByGroupId(AreaId, pagesize, pageno, search);
-
-            result.Insert(0, new LocalityModel { PkLocalityId = 0, LocalityName = "Select" });
-            return (from r in result
-                    select new
-                    {
-                        r.PkLocalityId,
-                        r.LocalityName
-                    }).ToList();
-        }
-        public object GetDrpTableLocality(int pagesize, int pageno, string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetList(pagesize, pageno, search);
-
-            return (from r in result
-                    select new
-                    {
-                        r.PkLocalityId,
-                        Locality = r.LocalityName,
-                        r.Description,
-                        Area = r.AreaName,
-                    }).ToList();
-        }
         public string DeleteRecord(long PkLocalityId)
         {
             string Error = "";

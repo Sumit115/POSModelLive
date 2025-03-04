@@ -72,7 +72,6 @@ namespace SSAdmin.Areas.Master.Controllers
             try
             {
                 ViewBag.EmployeeList = _employeeRepository.GetDrpEmployee(1,1000);
-                ViewBag.BranchList = _branchRepository.GetDrpBranch(1, 1000);
                 ViewBag.RoleList = _roleRepository.GetDrpRole(1, 1000);
 
                 if (id != 0 && pageview.ToLower() == "log")

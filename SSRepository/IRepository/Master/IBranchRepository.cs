@@ -10,7 +10,7 @@ namespace SSRepository.IRepository.Master
 
         string isAlreadyExist(BranchModel tblBankMas, string Mode);
         List<BranchModel> GetList(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpBranch(int pageSize, int pageNo = 1, string search = "");
+        object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "");
         BranchModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);

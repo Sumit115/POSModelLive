@@ -9,7 +9,6 @@ namespace SSRepository.IRepository.Master
          List<ColumnStructure> ColumnList(string GridName = "");
         string isAlreadyExist(UserModel tblBankMas, string Mode);
         List<UserModel> GetList(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpUser(int pageSize, int pageNo = 1, string search = "");
         UserModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);

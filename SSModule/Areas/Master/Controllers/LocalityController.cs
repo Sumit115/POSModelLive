@@ -164,13 +164,6 @@ namespace SSAdmin.Areas.Master.Controllers
             return response;
         }
 
-        [HttpPost]
-        public async Task<JsonResult> GetDrpLocalityByAreaId(int AreaId)
-        {
-            var data = _repository.GetDrpLocalityByAreaId(AreaId,1000);
-            return new JsonResult(data);
-        }
-
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {
             return _repository.ColumnList(GridName);

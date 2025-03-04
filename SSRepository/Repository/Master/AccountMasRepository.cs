@@ -8,6 +8,7 @@ using Microsoft.VisualBasic;
 using System.Drawing;
 using System;
 using System.Diagnostics;
+using static Handler;
 
 namespace SSRepository.Repository.Master
 {
@@ -149,20 +150,23 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpAccount(int pageno, int pagesize, string search = "")
+        public object CustomList(int EnCustomFlag, int pageNo, int pageSize, string search = "")
         {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                var result = GetList(pageSize, pageNo, search);
+                return (from r in result
+                        select new
+                        {
+                            r.PkAccountId,
+                            r.Account
+                        }).ToList();
+            }
+            else
+            {
+                return null;
+            }
 
-            var result = GetList(pagesize, pageno, search);
-
-            result.Insert(0, new AccountMasModel { PkAccountId = 0, Account = "Select" });
-            return (from r in result
-                    select new
-                    {
-                        r.PkAccountId,
-                        r.Account
-                    }).ToList();
         }
 
         public string DeleteRecord(long PkAccountId)

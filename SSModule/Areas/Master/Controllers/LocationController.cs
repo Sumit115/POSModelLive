@@ -49,11 +49,11 @@ namespace SSAdmin.Areas.Master.Controllers
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
             LocationModel Model = new LocationModel();
-            Model.UserLoc_lst = new List<UserLocLnkModel>();
+            Model.UserLoclnk = new List<UserLocLnkModel>();
             try
             {
                 ViewBag.PageType = "";
-                ViewBag.BranchList = _Branchrepository.GetDrpBranch(1, 1000);
+                
                 ViewBag.StationList = ""; //_Stationrepository.GetDrpStation(1, 1000);
 
                 if (id != 0 && pageview.ToLower() == "log")
@@ -120,7 +120,6 @@ namespace SSAdmin.Areas.Master.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
             }
-            ViewBag.BranchList = _Branchrepository.GetDrpBranch(1, 1000);
             return View(model);
         }
 
