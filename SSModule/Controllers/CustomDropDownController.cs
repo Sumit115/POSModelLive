@@ -15,6 +15,8 @@ namespace SSAdmin.Controllers
         private readonly AppDbContext _dbContext;
         private readonly IHttpContextAccessor _contextAccessor;
 
+        private readonly IHttpContextAccessor _contextAccessorttttt;
+
         public CustomDropDownController(AppDbContext dbContext, IHttpContextAccessor contextAccessor)
         {
             _dbContext = dbContext;
@@ -24,19 +26,18 @@ namespace SSAdmin.Controllers
         [HttpPost]
         public object Usermas(int pageSize, int pageNo = 1, string search = "")
         {
-            
+
             UserRepository repository = new UserRepository(_dbContext, _contextAccessor);
-            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo,  search);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
         }
 
-        [HttpPost]
-        public object FKSeriesId(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
-        {
-            return _seriesRepository.CustomList(1, pageSize, pageNo, search, TranAlias, DocumentType);
-=
-            
-            
-        }
+        //[HttpPost]
+        //public object FKSeriesId(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
+        //{
+        //    return _seriesRepository.CustomList(1, pageSize, pageNo, search, TranAlias, DocumentType);
+
+
+        //}
 
         [HttpPost]
         public object Branch(int pageSize, int pageNo = 1, string search = "")
