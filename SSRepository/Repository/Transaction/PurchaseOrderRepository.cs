@@ -34,10 +34,12 @@ namespace SSRepository.Repository.Transaction
 
         public object SetLastSeries(TransactionModel model, long UserId, string TranAlias, string DocumentType)
         {
+            var BillingLocation = SysDefaults_byLogin().BillingLocation.Split(',').ToList();
             var obj = (from cou in __dbContext.TblPurchaseOrdertrn
                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
                        where cou.FKUserID == UserId && ser.TranAlias == TranAlias
                        && ser.DocumentType == DocumentType
+                       && BillingLocation.Contains(ser.FKLocationID.ToString())
                        orderby cou.PkId descending
                        select new
                        {
@@ -53,6 +55,7 @@ namespace SSRepository.Repository.Transaction
                 var _entity = (from cou in __dbContext.TblSeriesMas
                                where cou.TranAlias == TranAlias
                                && cou.DocumentType == DocumentType
+                               && BillingLocation.Contains(cou.FKLocationID.ToString())
                                select new
                                {
                                    cou
