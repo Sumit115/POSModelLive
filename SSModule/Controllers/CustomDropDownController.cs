@@ -29,6 +29,13 @@ namespace SSAdmin.Controllers
             return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
         }
 
+        [HttpPost]
+        public object Series(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
+        {
+
+            SeriesRepository repository = new SeriesRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, TranAlias, DocumentType);
+        }
         //[HttpPost]
         //public object FKSeriesId(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
         //{

@@ -5,6 +5,7 @@ using SSRepository.IRepository.Transaction;
 using SSRepository.Models;
 using SSRepository.Repository.Master;
 using System.Data;
+using System.Runtime.ConstrainedExecution;
 using System.Xml.Linq;
 
 namespace SSRepository.Repository.Transaction
@@ -30,10 +31,12 @@ namespace SSRepository.Repository.Transaction
 
         public object SetLastSeries(TransactionModel model, long UserId, string TranAlias, string DocumentType)
         {
+            var BillingLocation = SysDefaults_byLogin().BillingLocation.Split(',').ToList();
             var obj = (from cou in __dbContext.TblSalesOrdertrn
                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
                        where cou.FKUserID == UserId && ser.TranAlias == TranAlias
                        && ser.DocumentType == DocumentType
+                       && BillingLocation.Contains(ser.FKLocationID.ToString())
                        orderby cou.PkId descending
                        select new
                        {
@@ -47,8 +50,8 @@ namespace SSRepository.Repository.Transaction
             if (model.FKSeriesId == 0)
             {
                 var _entity = (from cou in __dbContext.TblSeriesMas
-                               where cou.TranAlias == TranAlias
-                               && cou.DocumentType == DocumentType
+                               where cou.TranAlias == TranAlias && cou.DocumentType == DocumentType
+                               && BillingLocation.Contains(cou.FKLocationID.ToString()) 
                                select new
                                {
                                    cou

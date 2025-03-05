@@ -97,9 +97,9 @@ namespace SSRepository.Repository.Master
        
         public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
         {
-            if (EnCustomFlag == 1)//(int)Handler.en_CustomFlag.CustomDrop)
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
             {
-                var key = SysDefaults_byLogin();
+                var BillingLocation = SysDefaults_byLogin().BillingLocation.Split(',').ToList();
 
                 if (search != null) search = search.ToLower();
                 pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
@@ -108,6 +108,7 @@ namespace SSRepository.Repository.Master
                          where EF.Functions.Like(cou.Series.Trim().ToLower(), search + "%")
                          && (TranAlias == "" || cou.TranAlias == TranAlias)
                          && (DocumentType == "" || cou.DocumentType == DocumentType)
+                         && BillingLocation.Contains(cou.FKLocationID.ToString())
                          orderby cou.PkSeriesId
                          select (new
                          {

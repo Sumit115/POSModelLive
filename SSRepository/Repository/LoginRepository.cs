@@ -30,23 +30,19 @@ namespace SSRepository.Repository
             UserModel data = new UserRepository(__dbContext, _contextAccessor).GetSingleRecord(UserId);
             SysDefaults Sys = GetSysDefaults();
 
-            //var result = (from c in __dbContext.TblUserLocLnk
-            //              where c.FKUserID == UserId
-            //              select (new
-            //              {
-            //                  c.FKLocationID, 
-            //                  c.Location.IsBillingLocation 
-            //              })
-            //           ).ToList();
+            var result = (from c in __dbContext.TblUserLocLnk
+                          where c.FKUserID == UserId
+                          select (new
+                          {
+                              c.FKLocationID,
+                              c.Location.IsBillingLocation
+                          })
+                       ).ToList();
 
 
-            //Sys.BillingLocation = string.Join(",", result.Where(x => x.IsBillingLocation == true).Select(r => r.FKLocationID));
-            //Sys.Location = string.Join(",", result.Select(r => r.FKLocationID));
-
-            Sys.BillingLocation = string.Join(",", "11,16");
-            Sys.Location = string.Join(",", "11,16");
-
-
+            Sys.BillingLocation = string.Join(",", result.Where(x => x.IsBillingLocation == true).Select(r => r.FKLocationID));
+            Sys.Location = string.Join(",", result.Select(r => r.FKLocationID));
+              
             SaveFile("sysdefaults.json", JsonConvert.SerializeObject(Sys));
 
             RoleModel role = new RoleRepository(__dbContext, _contextAccessor).GetSingleRecord(data.FkRoleId ?? 0, true);

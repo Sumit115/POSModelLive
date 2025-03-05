@@ -70,10 +70,9 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label class="control-label">Series </label>
-
-                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKSeriesId" }, { "Class", "val-cus-drp" }, { "event", "setSeries()" },
-                            { "value", Model.FKSeriesId }, { "text", Model.SeriesName }, { "uri", "CustomDropDown" }
+                            <label class="control-label">Series </label> 
+                              @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKSeriesId" },{"name","Series"}, { "Class", "val-cus-drp" }, { "event", "setSeries()" },
+                            { "value", Model.FKSeriesId }, { "text", Model.SeriesName }, { "uri", "Series" }, { "required", "required" },{ "placeholder", "Select Series"}
                             ,{ "parentid", "TranAlias,DocumentType" }, { "ExtraParam", "" }})
 
                         </div>

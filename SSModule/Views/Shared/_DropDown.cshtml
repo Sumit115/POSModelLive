@@ -3,22 +3,22 @@
 
     var ID = Convert.ToString(ViewData["ID"]);
     var drpList = "drpList" + ID;
-    var name = Convert.ToString(ViewData["name"]) ?? "drp" + ID;
-    var text = Convert.ToString(ViewData["text"]) ?? "";
-    var val = Convert.ToString(ViewData["value"]) ?? "";
-    var action = Convert.ToString(ViewData["event"])?? "";
-    var ParentValue = Convert.ToString(ViewData["parentid"]) ?? "";
-    var uri = Convert.ToString(ViewData["uri"]) ?? "";
-    var required = Convert.ToString(ViewData["required"]) ?? "";
-    var placeholder = Convert.ToString(ViewData["placeholder"]) ?? "";
-    var ExtraValue = Convert.ToString(ViewData["ExtraParam"]) ?? "";
-    
-
+    var name = ViewData["name"] ?? ("drp" + ID);
+    var text = ViewData["text"] ?? "";
+    var val = ViewData["value"] ?? "";
+    var action = ViewData["event"]?? "";
+    var ParentValue = ViewData["parentid"] ?? "";
+    var uri = ViewData["uri"] ?? "";
+    var required = ViewData["required"] ?? "";
+    var placeholder = ViewData["placeholder"] ?? "";
+    var ExtraValue = ViewData["ExtraParam"] ?? ""; 
 }
 <div id="@drpList" class="ui-custom-DropDown  val-cus-drp" extraparam="@ExtraValue" event="@action" parent="@ParentValue" uri="@uri">
     <input id="@ID" name="@ID" type="hidden" value="@val">
     <input id="@name" name="@name" class="form-control ui-custom-DropDown-input" autocomplete="off" type="text" value="@text" placeholder="@placeholder" @required>
     <span class="down"><i class="fas fa-caret-down"></i></span>
+    <span class="text-danger field-validation-valid" data-valmsg-for="@name" data-valmsg-replace="true"></span>
+
 </div>
 
 
