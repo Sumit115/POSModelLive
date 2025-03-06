@@ -56,29 +56,48 @@ namespace SSRepository.Repository.Master
             return data;
         }
 
-        public List<object> CustomList(int pageSize, int pageNo = 1, string search = "")
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "")
         {
-            if (search != null) search = search.ToLower();
-            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
-            var data = (from cou in __dbContext.TblCustomerMas
-                        join _city in __dbContext.TblCityMas
-                       on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
-                       into _citytmp
-                        from city in _citytmp.DefaultIfEmpty()
-                        where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                        orderby cou.PkCustomerId
-                        select (new
-                        {
-                            cou.PkCustomerId,
-                            cou.Code,
-                            cou.Name,
-                            cou.StateName,
-                            cou.Address,
-                            cou.Mobile,
-                            cou.Email
-                        }
-                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
-            return data.Select(x => (object)x).ToList();
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblCustomerMas
+                         where EF.Functions.Like(cou.Name.Trim().ToLower(), search + "%")
+                         orderby cou.Name
+                         select (new
+                         {
+                             cou.PkCustomerId,
+                             PkId = cou.PkCustomerId,
+                             cou.Name,
+                             cou.Code,
+                             cou.Email,
+                             cou.Mobile,
+                             cou.Address,
+                             cou.StateName,
+                             cou.Pin,
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else if (EnCustomFlag == (int)Handler.en_CustomFlag.Filter)
+            {
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblCustomerMas
+                         where EF.Functions.Like(cou.Name.Trim().ToLower(), search + "%")
+                         orderby cou.Name
+                         select (new
+                         {
+                             cou.PkCustomerId,
+                             PkId = cou.PkCustomerId,
+                             cou.Name,
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public PartyModel GetSingleRecord(long PkCustomerId)

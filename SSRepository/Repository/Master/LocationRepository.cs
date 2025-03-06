@@ -60,6 +60,46 @@ namespace SSRepository.Repository.Master
 
             return data;
         }
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
+        {
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                 if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblLocationMas
+                         where (EF.Functions.Like(cou.Location.Trim().ToLower(), Convert.ToString(search) + "%"))
+                         orderby cou.Location
+                         select (new
+                         {
+                             cou.PkLocationID,
+                             cou.Location, 
+                             cou.Alias,
+                             cou.Address,
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else if (EnCustomFlag == (int)Handler.en_CustomFlag.Filter)
+            {
+                var BillingLocation = SysDefaults_byLogin().BillingLocation.Split(',').ToList(); 
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblLocationMas
+                         where (EF.Functions.Like(cou.Location.Trim().ToLower(), Convert.ToString(search) + "%"))
+                         && BillingLocation.Contains(cou.PkLocationID.ToString())
+                         orderby cou.Location
+                         select (new
+                         {
+                             cou.PkLocationID,
+                             cou.Location,
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public object GetDrpLocation(int pageSize, int pageNo = 1, string search = "")
         {
             if (search != null) search = search.ToLower();

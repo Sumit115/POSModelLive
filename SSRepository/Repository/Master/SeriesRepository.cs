@@ -121,6 +121,24 @@ namespace SSRepository.Repository.Master
                          }
                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
             }
+            else if (EnCustomFlag == (int)Handler.en_CustomFlag.Filter)
+            {
+                var BillingLocation = SysDefaults_byLogin().BillingLocation.Split(',').ToList();
+
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblSeriesMas
+                             //join _tranAlias in GetDrpTranAlias().ToList() on cou.TranAlias equals _tranAlias.Value
+                         where EF.Functions.Like(cou.Series.Trim().ToLower(), search + "%") 
+                         && BillingLocation.Contains(cou.FKLocationID.ToString())
+                         orderby cou.PkSeriesId
+                         select (new
+                         {
+                             cou.PkSeriesId,
+                             cou.Series, 
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
             else
             {
                 return null;

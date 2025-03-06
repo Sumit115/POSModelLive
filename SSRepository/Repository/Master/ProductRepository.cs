@@ -88,6 +88,54 @@ namespace SSRepository.Repository.Master
                                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "")
+        {
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblProductMas
+                         join cat in __dbContext.TblCategoryMas on cou.FKProdCatgId equals cat.PkCategoryId
+                         join Pbrand in __dbContext.TblBrandMas on cou.FkBrandId equals Pbrand.PkBrandId
+                                               into tembrand
+                         from brand in tembrand.DefaultIfEmpty()
+                         where EF.Functions.Like(cou.Product.Trim().ToLower(), search + "%")
+                         orderby cou.Product
+                         select (new
+                         {
+                             PkProductId = cou.PkProductId,
+                             Product = cou.Product,
+                             NameToDisplay = cou.NameToDisplay,
+                             NameToPrint = cou.NameToPrint,
+                             CategoryName = cat.CategoryName,
+                             BrandName = brand.BrandName,
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else if (EnCustomFlag == (int)Handler.en_CustomFlag.Filter)
+            {
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblProductMas
+                         join cat in __dbContext.TblCategoryMas on cou.FKProdCatgId equals cat.PkCategoryId
+                         join Pbrand in __dbContext.TblBrandMas on cou.FkBrandId equals Pbrand.PkBrandId
+                                               into tembrand
+                         from brand in tembrand.DefaultIfEmpty()
+                         where EF.Functions.Like(cou.Product.Trim().ToLower(), search + "%")
+                         orderby cou.Product
+                         select (new
+                         {
+                             PkProductId = cou.PkProductId,
+                             Product = cou.Product,
+                             NameToDisplay = cou.NameToDisplay,  
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         public List<ProductModel> GetListByPartyId_InSaleInvoice(int pageSize, int pageNo = 1, string search = "", long FkPartyId = 0, long FkInvoiceId = 0, DateTime? InvoiceDate = null)
         {

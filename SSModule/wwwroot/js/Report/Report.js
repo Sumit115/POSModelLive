@@ -14,7 +14,7 @@ var RPTFilter = {
     Vendor: { Data: [], Filter: null, IdProperty: "PkId", Field: "Name" },
     Customer: { Data: [], Filter: null, IdProperty: "PkId", Field: "Name" },
     Product: { Data: [], Filter: null, IdProperty: "PkProductId", Field: "NameToDisplay" },
-    Location: { Data: [], Filter: null, IdProperty: "PKLocationID", Field: "Location" },
+    Location: { Data: [], Filter: null, IdProperty: "PkLocationID", Field: "Location" },
     Series: { Data: [], Filter: null, IdProperty: "PkSeriesId", Field: "Series" },
     State: { Data: [], Filter: null, IdProperty: "Value", Field: "Text" },
     TrnStatus: { Data: [{ Value: "P", Text: "Pending", tick: true }, { Value: "I", Text: "Invoice" }, { Value: "C", Text: "Close" }], Filter: '[{ "Text": "P" }]', IdProperty: "Value", Field: "Text" },
@@ -103,17 +103,17 @@ function ShowFilter(type) {
         _d["pageSize"] = RPTOption.pageSize;
         $.ajax({
             type: "POST",
-            url: '/Master/' + type + '/List',
+            url: '/Filter/' + type ,
             data: _d,
             datatype: "json",
             success: function (res) {
 
-                if (res.status == "success") {
-                    RPTFilter[type].Data = res.data;
+            /*    if (res.status == "success") {*/
+                    RPTFilter[type].Data = res;
                     showpopupWithData();
-                }
-                else
-                    alert(res.msg);
+                //}
+                //else
+                //    alert(res.msg);
 
             }
         });

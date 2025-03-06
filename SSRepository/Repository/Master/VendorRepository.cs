@@ -155,6 +155,49 @@ namespace SSRepository.Repository.Master
                     }
                    )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
         }
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "")
+        {
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                 if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblVendorMas
+                         where EF.Functions.Like(cou.Name.Trim().ToLower(), search + "%") 
+                         orderby cou.Name
+                         select (new
+                         {
+                             cou.PkVendorId,
+                             PkId=cou.PkVendorId,
+                             cou.Name,
+                             cou.Code,
+                             cou.Email,
+                             cou.Mobile, 
+                             cou.Address,
+                             cou.StateName, 
+                             cou.Pin,
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else if (EnCustomFlag == (int)Handler.en_CustomFlag.Filter)
+            {
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblVendorMas
+                          where EF.Functions.Like(cou.Name.Trim().ToLower(), search + "%")
+                          orderby cou.Name
+                         select (new
+                         {
+                             cou.PkVendorId,
+                             PkId=cou.PkVendorId,
+                             cou.Name,
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         public string DeleteRecord(long PkVendorId)
         {
