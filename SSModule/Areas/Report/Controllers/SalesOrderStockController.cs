@@ -58,6 +58,9 @@ namespace SSAdmin.Areas.Report.Controllers
             DataTable ds = _repository.ViewData("L", StateFilter, TrnStatusFilter, GroupByColumn);
             DataRow dr = ds.NewRow();
             dr["OrderQty"] = ds.AsEnumerable().Sum(row => row.Field<decimal>("OrderQty")); ;
+            dr["DueQty"] = ds.AsEnumerable().Sum(row => row.Field<decimal>("DueQty")); ;
+            dr["InQty"] = ds.AsEnumerable().Sum(row => row.Field<decimal>("InQty")); ;
+            dr["OutQty"] = ds.AsEnumerable().Sum(row => row.Field<decimal>("OutQty")); ;
             dr["StockQty"] = ds.AsEnumerable().Sum(row => row.Field<decimal>("StockQty")); ;
             ds.Rows.Add(dr);
 

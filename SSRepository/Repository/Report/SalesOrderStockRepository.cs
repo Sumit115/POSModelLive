@@ -34,13 +34,16 @@ namespace SSRepository.Repository.Report
         {
             var list = new List<ColumnStructure>();
 
-            list.Add(new ColumnStructure { pk_Id = 1, Orderby = 1, Heading = "Party Name", Fields = "PartyName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = 2, Orderby = 2, Heading = "Section Name", Fields = "CategoryGroupName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = 3, Orderby = 3, Heading = "Sub Section Name", Fields = "CategoryName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = 4, Orderby = 4, Heading = "Artical", Fields = "Product", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = 5, Orderby = 5, Heading = "Size", Fields = "Batch", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = 6, Orderby = 6, Heading = "Order Qty", Fields = "OrderQty", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~", TotalOn = "OrderQty" });
-            list.Add(new ColumnStructure { pk_Id = 7, Orderby = 7, Heading = "Stock Qty", Fields = "StockQty", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~", TotalOn = "StockQty" });
+            list.Add(new ColumnStructure { pk_Id = 1,  Orderby = 1,  Heading = "Party Name", Fields = "PartyName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
+            list.Add(new ColumnStructure { pk_Id = 2,  Orderby = 2,  Heading = "Section Name", Fields = "CategoryGroupName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
+            list.Add(new ColumnStructure { pk_Id = 3,  Orderby = 3,  Heading = "Sub Section Name", Fields = "CategoryName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
+            list.Add(new ColumnStructure { pk_Id = 4,  Orderby = 4,  Heading = "Artical", Fields = "Product", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
+            list.Add(new ColumnStructure { pk_Id = 5,  Orderby = 5,  Heading = "Size", Fields = "Batch", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
+            list.Add(new ColumnStructure { pk_Id = 6,  Orderby = 6,  Heading = "Order Qty", Fields = "OrderQty", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~", TotalOn = "OrderQty" });
+            list.Add(new ColumnStructure { pk_Id = 7,  Orderby = 7,  Heading = "Due Qty", Fields = "DueQty", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~", TotalOn = "DueQty" });
+            list.Add(new ColumnStructure { pk_Id = 8,  Orderby = 8,  Heading = "In Qty", Fields = "InQty", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~", TotalOn = "InQty" });
+            list.Add(new ColumnStructure { pk_Id = 9,  Orderby = 9,  Heading = "Out Qty", Fields = "OutQty", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~", TotalOn = "OutQty" });
+            list.Add(new ColumnStructure { pk_Id = 10, Orderby = 10, Heading = "Current Stock", Fields = "StockQty", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~", TotalOn = "StockQty" });
 
             return list;
         }
