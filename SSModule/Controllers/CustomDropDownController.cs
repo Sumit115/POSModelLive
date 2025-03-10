@@ -23,8 +23,7 @@ namespace SSAdmin.Controllers
 
         [HttpPost]
         public object Usermas(int pageSize, int pageNo = 1, string search = "")
-        {
-
+        { 
             UserRepository repository = new UserRepository(_dbContext, _contextAccessor);
             return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
         }
@@ -34,6 +33,13 @@ namespace SSAdmin.Controllers
         {
 
             SeriesRepository repository = new SeriesRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, TranAlias, DocumentType);
+        }
+        [HttpPost]
+        public object AccountGroup(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
+        {
+
+            AccountGroupRepository repository = new AccountGroupRepository(_dbContext, _contextAccessor);
             return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, TranAlias, DocumentType);
         }
         //[HttpPost]

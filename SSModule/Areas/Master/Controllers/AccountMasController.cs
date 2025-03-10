@@ -108,8 +108,7 @@ namespace SSAdmin.Areas.Master.Controllers
             }
 
             //BindViewBags(0, tblBankMas);
-            ViewBag.AccountGroupList = _repositoryAccountGroup.GetDrpAccountGroup(1000, 1);
-            ViewBag.BankMasList = _repositoryBank.GetDrpBank(1000, 1);
+             ViewBag.BankMasList = _repositoryBank.GetDrpBank(1000, 1);
             Model.AccountLocation_lst = _repositoryBranch.GetList(1000, 1).ToList().Select(x => new AccountLocLnkModel()
             {
                 BranchName = x.BranchName,
@@ -160,8 +159,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 ModelState.AddModelError("", ex.Message);
             }
             //BindViewBags(tblBankMas.PKID, tblBankMas);
-            ViewBag.AccountGroupList = _repositoryAccountGroup.GetDrpAccountGroup(1000, 1);
-            ViewBag.BankMasList = _repositoryBank.GetDrpBank(1000, 1);
+              ViewBag.BankMasList = _repositoryBank.GetDrpBank(1000, 1);
             model.AccountLocation_lst = _repositoryBranch.GetList(1000, 1).ToList().Select(x => new AccountLocLnkModel()
             {
                 BranchName = x.BranchName,

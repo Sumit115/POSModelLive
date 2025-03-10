@@ -1,307 +1,342 @@
 ﻿@model SSRepository.Models.AccountMasModel
- 
+
 @{
     ViewData["Title"] = "Ledger Account";
     ViewData["bdClass"] = "page";
 }
-<style>
-    tr.tbl-delete, tr.tbl-delete input {
-        background: red;
-    } 
-    .shelf-tblProdLoc input{
-    border:none;}
-</style>
-<div class="p-3">
-    <form asp-action="Create" class="g-3" enctype="multipart/form-data">
+
+<div class="master-page-ui">
+    <form asp-action="Create" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="PkAccountId" />
         <div class="row">
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label class="control-label">Master Group </label>
-                            <select asp-for="FkAccountGroupId" asp-items="@(new SelectList(ViewBag.AccountGroupList,"PkAccountGroupId","AccountGroupName"))" class="form-control" id="FkAccountGroupId">
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label class="control-label">Account</label>
-                            <input asp-for="Account" class="form-control" />
-                            <span asp-validation-for="Account" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="form-group">
-                            <label class="control-label">Alias</label>
-                            <input asp-for="Alias" class="form-control" />
-                            <span asp-validation-for="Alias" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <a href="#" class="btn btn-warning mt-2">Auto Generate</a>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label class="control-label">Address</label>
-                            <textarea asp-for="Address" class="form-control"></textarea>
-                            <span asp-validation-for="Address" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Station</label>
-                            <input asp-for="Station" class="form-control" />
-                            <span asp-validation-for="Station" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Locality</label>
-                            <input asp-for="Locality" class="form-control" />
-                            <span asp-validation-for="Locality" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Pincode</label>
-                            <input asp-for="Pincode" class="form-control  input-number" maxlength="6" pattern="PinCode" />
-                            <span asp-validation-for="Pincode" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Phone </label>
-                            <input asp-for="Phone1" class="form-control  input-number" />
-                            <span asp-validation-for="Phone1" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Mobile</label>
-                            <input asp-for="Phone2" class="form-control  input-number" />
-                            <span asp-validation-for="Phone2" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Email</label>
-                            <input asp-for="Email" class="form-control" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Bank</label>
-                            <select asp-for="FKBankID" asp-items="@(new SelectList(ViewBag.BankMasList,"PkBankId","BankName"))" class="form-control" id="FKBankID" onchange="FillIFSC()">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Account No</label>
-                            <input asp-for="AccountNo" class="form-control input-number" type="text" />
-                            <span asp-validation-for="AccountNo" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">IFSC Code</label>
-                            <input id="IFSCCode" class="form-control" type="text" readonly="readonly" />
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                    <div class="row">
-                    <div class="col-md-8">
-                        <div class="form-group">
-                            <label class="control-label">Status</label>
-                            <div class="d-flex">
-                                <div class="radio-class mr-3">
-                                    <input asp-for="Status" class="radios__input" name="Status" id="StatusContinue" type="radio" value="Continue" checked>
-                                    <label class="label" for="StatusContinue">Continue</label>
-                                </div>
-                                <div class="radios__item mr-3">
-                                    <input asp-for="Status" class="radios__input" name="Status" id="StatusDisContinue" type="radio" value="DisContinue">
-                                    <label class="label" for="StatusDisContinue">DisContinue</label>
-                                </div>
-                            </div>
-                            <span asp-validation-for="Status" class="text-danger"></span>
-
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group mt-3">
-                            <input asp-for="DiscDate" class="form-control" type="date" />
-                            @*    @Html.TextBoxFor(m => m.DiscDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off" })
-                            @Html.TextBoxFor(x => x.DiscDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date"})
-                            *@   <span asp-validation-for="DiscDate" class="text-danger"></span>
-                        </div>
-                    </div>
-                    </div>
-                <div class="border p-4">
-                    <h4>License Detail</h4>
-                    @for (int i = 0; i < 6; i++)
-                    {
-                        int No = i + 1;
-                        var _data = Model.AccountLicDtl_lst.Count > 0 ? Model.AccountLicDtl_lst.Where(x => x.No == No.ToString()).FirstOrDefault() : null;
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label class="control-label">License @No</label>
-                                <input id="@("AccountLicDtl_lst_"+i+"_Description")" name="AccountLicDtl_lst[@i].Description" type="text" value="@(_data!=null?_data.Description:"")">
-                                <input id="@("AccountLicDtl_lst_"+i+"_No")" name="AccountLicDtl_lst[@i].No" type="hidden" value="@No">
-                                <input id="@("AccountLicDtl_lst_"+i+"_PKAccountLicDtlId")" name="AccountLicDtl_lst[@i].PKAccountLicDtlId" type="hidden" value="@(_data!=null?_data.PKAccountLicDtlId:0)">
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Issue Date</label>
-                                    @if (_data != null)
-                                    {
-                                        <input asp-for="@_data.IssueDate" class="form-control" type="date" id="@("AccountLicDtl_lst_"+i+"_IssueDate")" name="AccountLicDtl_lst[@i].IssueDate" />
-                                    }
-                                    else
-                                    {
-                                        <input id="@("AccountLicDtl_lst_"+i+"_IssueDate")" name="AccountLicDtl_lst[@i].IssueDate" type="date" class="form-control" maxlength="10">
-                                    }
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Valid Till</label>
-                                    @if (_data != null)
-                                    {
-                                        <input asp-for="@_data.ValidTill" class="form-control" type="date" id="@("AccountLicDtl_lst_"+i+"_ValidTill")" name="AccountLicDtl_lst[@i].ValidTill" />
-                                    }
-                                    else
-                                    {
-                                        <input id="@("AccountLicDtl_lst_"+i+"_ValidTill")" name="AccountLicDtl_lst[@i].ValidTill" type="date" class="form-control" maxlength="10">
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-
-                <div class="row">
-                 
-
-                </div>
-            </div>
-
             <div class="col-md-8">
-                <div class="border p-4">
-                    <h4>Opening Location</h4>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                @*<label class="control-label">Bank</label>*@
-                                <select asp-items="@(new SelectList(Model.AccountLocation_lst,"FKLocationID","BranchName"))" class="form-control" id="FklocalityGridId">
-                                    <option value="">Select</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <input id="OpeningBalance" class="form-control input-Amount" type="text" />
+                <div class="form-group row">
+                    <label class="col-sm-2">Group<span class="required">*</span> </label>
+                    <div class="col-md-6">
+                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkAccountGroupId" },{"name","AccountGroup"}, { "Class", "val-cus-drp" },
+                        { "value", Model.FkAccountGroupId }, { "text", Model.AccountGroupName }, { "uri", "AccountGroup" }, { "required", "required" },{ "placeholder", "Select Group"} })
+   @*                        <select asp-for="FkAccountGroupId" asp-items="@(new SelectList(ViewBag.AccountGroupList,"PkAccountGroupId","AccountGroupName"))" class="form-control" id="FkAccountGroupId">
+                        </select>*@
+                        <span asp-validation-for="FkAccountGroupId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Name<span class="required">*</span> </label>
+                    <div class="col-md-6">
+                        <input asp-for="Account" class="form-control" />
+                        <span asp-validation-for="Account" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Alias</label>
+                    <div class="col-md-3">
+                        <input asp-for="Alias" class="form-control" />
+                        <span asp-validation-for="Alias" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-warning">
+                            <i class="bi bi-gear-fill me-2" style="color: black;"></i>Auto Generate
 
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Mobile / Email</label>
 
-                                <div class="d-flex">
-                                    <div class="radio-class mr-3">
-                                        <input class="radios__input DrCr" name="DrCr" id="rbtdr" type="radio" value="Dr">
-                                        <label class="label" for="rbtdr">Dr</label>
+                    <div class="col-md-3">
+                        <input asp-for="Phone2" class="form-control input-number" pattern="Mobile" maxlength="10" placeholder="Enter Mobile" />
+                        <span asp-validation-for="Phone2" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <input asp-for="Email" class="form-control" pattern="Email" placeholder="Enter Email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Status</label>
+                    <div class="col-md-4">
+                        <div class="row m-0">
+                            <div class="col-sm-6 d-flex align-items-center form-check form-switch">
+                                <span>  <input asp-for="Status" class="form-check-input" role="switch" id="StatusContinue" type="radio" value="Continue" checked></span>
+                                <label class="form-check-label ms-1" for="StatusContinue">Continue</label>
+                            </div>
+
+                            <div class="col-sm-6 d-flex align-items-center form-check form-switch">
+                                <span>  <input asp-for="Status" class="form-check-input" role="switch" id="StatusDisContinue" type="radio" value="DisContinue"></span>
+                                <label class="form-check-label ms-1" for="StatusDisContinue">DisContinue</label>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="col-md-2">
+                        <input asp-for="DiscDate" class="form-control" type="date" />
+                        @*    @Html.TextBoxFor(m => m.DiscDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off" })
+                        @Html.TextBoxFor(x => x.DiscDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date"})
+                        *@   <span asp-validation-for="DiscDate" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+
+
+            <div class="col-sm-12">
+                <div class="tabs-ui-fmt mt-2" id="scrollfixheader">
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <button class="nav-link active" id="Addresstab-tab" data-bs-toggle="tab" data-bs-target="#Addresstab" type="button" role="tab" aria-controls="Addresstab" aria-selected="false" fdprocessedid="w66vj" tabindex="-1">Address</button>
+                            <button class="nav-link" id="Licensetab-tab" data-bs-toggle="tab" data-bs-target="#Licensetab" type="button" role="tab" aria-controls="Licensetab" aria-selected="true">License Detail</button>
+                            <button class="nav-link" id="Locationtab-tab" data-bs-toggle="tab" data-bs-target="#Locationtab" type="button" role="tab" aria-controls="Locationtab" aria-selected="true">Location</button>
+                            <button class="nav-link" id="Banktab-tab" data-bs-toggle="tab" data-bs-target="#Banktab" type="button" role="tab" aria-controls="Banktab" aria-selected="true">Bank</button>
+
+                        </div>
+                    </nav>
+                </div>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade active show mt-4" id="Addresstab" role="tabpanel" aria-labelledby="Addresstab-tab" tabindex="-1">
+                        <div class="row ">
+                            <div class="col-sm-6">
+                                <div class="card card-detail">
+                                    <div class="card-header">
+                                        Billing Address
                                     </div>
-                                    <div class="radios__item mr-3">
-                                        <input class="radios__input DrCr" name="DrCr" id="rbtcr" type="radio" value="Cr" checked>
-                                        <label class="label" for="rbtcr">Cr</label>
+                                    <div class="card-body">
+                                        <div class="row form-group">
+                                            <label class="col-sm-4">Address</label>
+                                            <div class="col-md-8">
+                                                <textarea asp-for="Address" class="form-control"></textarea>
+                                                <span asp-validation-for="Address" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <label class="col-sm-4">Station</label>
+                                            <div class="col-sm-8">
+                                                <input asp-for="Station" class="form-control" />
+                                                <span asp-validation-for="Station" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <label class="col-sm-4">Locality</label>
+                                            <div class="col-sm-8">
+                                                <input asp-for="Locality" class="form-control" />
+                                                <span asp-validation-for="Locality" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                            <label class="col-sm-4">Pincode </label>
+                                            <div class="col-sm-8">
+                                                <input asp-for="Pincode" class="form-control  input-number" maxlength="6" pattern="PinCode" />
+                                                <span asp-validation-for="Pincode" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <label class="col-sm-4">Phone</label>
+
+                                            <div class="col-sm-8">
+                                                <input asp-for="Phone1" class="form-control  input-number" />
+                                                <span asp-validation-for="Phone1" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="card card-detail">
+                                    <div class="card-header">
+                                        Opening Balance
+                                        <button class="btn btn-default text-primary p-0" type="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Opening balance not allowed for  P&amp;L and Trading A/c.<br/> Use Opening Balance Pending Bills Option for debtors and creditors">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row m-0 tabel-color-theme">
+                                            <table id="tblOpeningBalance" class="tableheader-fixed tbl-form table border ">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="col-6">Stock Location</th>
+                                                        <th class="col-3">Opening Balance</th>
+                                                        <th class="col-2">Dr/ Cr</th>
+                                                        <th class="col-1"> &nbsp;</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <select asp-items="@(new SelectList(Model.AccountLocation_lst,"FKLocationID","BranchName"))" class="form-control form-select" id="FklocalityGridId">
+                                                                    <option value="">Select</option>
+                                                                </select>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <input id="OpeningBalance" class="form-control input-Amount" type="text" />
+                                                            </div>
+                                                        </td>
+
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <select id="sltCrAmt" class="form-select">
+                                                                    <option value="Cr">Cr</option>
+                                                                    <option value="Dr">Dr</option>
+                                                                </select>
+                                                            </div>
+                                                        </td>
+                                                        <td class="tbl-ui-drpcolumn">
+                                                            <div class="form-group ">
+                                                                <input type="hidden" id="hidLocationIndex" autocomplete="off" value="">
+                                                                <button type="button" class="btn btn-primary" onclick="addOpeningBalance();">
+                                                                    <i class="bi bi-plus-lg"></i>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade mt-4" id="Licensetab" role="tabpanel" aria-labelledby="Licensetab-tab" tabindex="-1">
+                        <div class="row" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                            <div class="col-sm-9">
+                                @for (int i = 0; i < 6; i++)
+                                {
+                                    int No = i + 1;
+                                    var _data = Model.AccountLicDtl_lst.Count > 0 ? Model.AccountLicDtl_lst.Where(x => x.No == No.ToString()).FirstOrDefault() : null;
+
+                                <div class="row">
+                                    <div class=" col-md-6 ">
+                                        <div class="row form-group">
+                                                <label for="exampleInputEmail1" class="License1 control-label col-sm-4">License @No</label>
+                                            <div class=" col-md-8 ">
+                                                    <input id="@("AccountLicDtl_lst_"+i+"_Description")" name="AccountLicDtl_lst[@i].Description" type="text" value="@(_data!=null?_data.Description:"")" class="form-control">
+                                                    <input id="@("AccountLicDtl_lst_"+i+"_No")" name="AccountLicDtl_lst[@i].No" type="hidden" value="@No">
+                                                    <input id="@("AccountLicDtl_lst_"+i+"_PKAccountLicDtlId")" name="AccountLicDtl_lst[@i].PKAccountLicDtlId" type="hidden" value="@(_data!=null?_data.PKAccountLicDtlId:0)">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class=" col-md-3">
+                                        <div class="row form-group">
+                                            <label for="exampleInputEmail1" class="control-label col-sm-5">Issue Date</label>
+                                            <div class=" col-md-7 "> 
+                                                    @if (_data != null)
+                                                    {
+                                                        <input asp-for="@_data.IssueDate" class="form-control" type="date" id="@("AccountLicDtl_lst_"+i+"_IssueDate")" name="AccountLicDtl_lst[@i].IssueDate" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <input id="@("AccountLicDtl_lst_"+i+"_IssueDate")" name="AccountLicDtl_lst[@i].IssueDate" type="date" class="form-control" maxlength="10">
+                                                    }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="row form-group">
+                                            <label for="exampleInputEmail1" class="control-label col-sm-5">Valid Till</label>
+                                            <div class="col-sm-7">
+                                                    @if (_data != null)
+                                                    {
+                                                        <input asp-for="@_data.ValidTill" class="form-control" type="date" id="@("AccountLicDtl_lst_"+i+"_ValidTill")" name="AccountLicDtl_lst[@i].ValidTill" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <input id="@("AccountLicDtl_lst_"+i+"_ValidTill")" name="AccountLicDtl_lst[@i].ValidTill" type="date" class="form-control" maxlength="10">
+                                                    }
+                                                </div>
+                                        </div>
+                                    </div> 
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade mt-4" id="Locationtab" role="tabpanel" aria-labelledby="Locationtab-tab" tabindex="-1">
+                        <div class="row" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                            <div class="row ">
+                                <div class="col-sm-6">
+                                    <div class="card card-detail">
+                                        <div class="card-header">
+                                           Locations
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="list-inline">
+                                                @for (int i = 0; i < Model.AccountLocation_lst.Count; i++)
+                                                {
+
+                                                    <li class="form-check form-switch">
+                                                        <span class="mr-2"> @Html.CheckBoxFor(m => m.AccountLocation_lst[i].Selected, new {@class="form-check-input" })</span>
+                                                        @Html.HiddenFor(m => m.AccountLocation_lst[i].FKLocationID)
+                                                        @Html.LabelFor(m => m.AccountLocation_lst[i].Selected,
+                                                    Model.AccountLocation_lst[i].BranchName)
+                                                        <input id="AccountLocation_lst@(i)__PKAccountLocLnkId" name="AccountLocation_lst[@i].PKAccountLocLnkId" type="hidden" value="@Model.AccountLocation_lst[i].PKAccountLocLnkId">
+
+                                                    </li>
+                                                }
+                                            </ul>
+
+                                        </div>
                                     </div>
                                 </div>
 
+                              
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <input type="hidden" id="hidLocationIndex" autocomplete="off" value="">
-                                <input type="button" class="btn btn-warning" value="Add" onclick="addLocations()" autocomplete="off">
-                            </div>
-                        </div>
-
-                        <div class="col-md-12">
-                            <table id="tblLocation" class="shelf-tblProdLoc table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Location</th>
-                                        <th>Balance</th>
-                                        <th>Type</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody class="md-height">
-                                    @{
-                                        int AcNo = -1;
-                                    }
-                                    @for (int i = 0; i < Model.AccountDtl_lst.Count; i++)
-                                    {
-                                        AcNo++;
-                                        <tr index="0">
-                                            <td class="tabel-xs-larg-class">
-                                                <input readonly="readonly" id="AccountDtl_lst_@(i)__Location" name="AccountDtl_lst[@(i)].Location" type="text" value="@Model.AccountDtl_lst[i].Location" tabindex="-1" class="valid" aria-invalid="false">
-                                                <input id="AccountDtl_lst_@(i)__FKLocationID" name="AccountDtl_lst[@i].FKLocationID" type="hidden" value="@Model.AccountDtl_lst[i].FKLocationID">
-                                                <input id="AccountDtl_lst_@(i)__PKAccountDtlId" name="AccountDtl_lst[@i].PKAccountDtlId" type="hidden" value="@Model.AccountDtl_lst[i].PKAccountDtlId">
-                                            </td>
-                                            <td class="tabel-td-xs">
-                                                <input readonly="readonly" id="AccountDtl_lst_@(i)__OpBal" name="AccountDtl_lst[@i].OpBal" type="text" value="@Model.AccountDtl_lst[i].OpBal" tabindex="-1">
-                                            </td>
-                                            <td class="tabel-td-xs">
-                                                <input readonly="readonly" id="AccountDtl_lst_@(i)__type" name="AccountDtl_lst[@i].type" type="text" value="@Model.AccountDtl_lst[i].type" tabindex="-1">
-                                            </td>
-                                            <td class="tabel-td-xs">
-                                                <input id="AccountDtl_lst_@(i)__Mode" name="AccountDtl_lst[@i].Mode" type="hidden" value="@Model.AccountDtl_lst[i].Mode"> 
-                                                <span class="action-icon" onclick="UpdateLocation(this,@i,'edit')">
-                                                    <i class="fa fa-edit"></i>
-                                                </span>  &nbsp; | &nbsp; <span class="action-icon" onclick="UpdateLocation(this,@i,'del')">
-                                                    <i class="fa fa-trash"></i>
-                                                </span>
-                                            </td>
-                                        </tr>
-
-
-
-                                    }
-                                </tbody>
-
-                            </table>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="border p-4">
-                    <h4>Location</h4>
-                    <ul class="list-inline">
-                        @for (int i = 0; i < Model.AccountLocation_lst.Count; i++)
-                        {
+                    <div class="tab-pane fade mt-4" id="Banktab" role="tabpanel" aria-labelledby="Banktab-tab" tabindex="-1">
+                        <div class="row" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                            <div class="tab-pane fade active show" id="Banktab" role="tabpanel" aria-labelledby="Banktab-tab" tabindex="-1">
+                                <div class="row">
+                                    <div class="col-sm-7">
+                                        <div class="row form-group">
+                                            <label class="control-label col-sm-4">Bank</label>
+                                            <div class="col-sm-6">
+                                                <select asp-for="FKBankID" asp-items="@(new SelectList(ViewBag.BankMasList,"PkBankId","BankName"))" class="form-control" id="FKBankID" onchange="FillIFSC()">
+                                                </select>
+                                            </div>
 
-                            <li>
-                                @Html.CheckBoxFor(m => m.AccountLocation_lst[i].Selected, new { })
-                                @Html.HiddenFor(m => m.AccountLocation_lst[i].FKLocationID)
-                                @Html.LabelFor(m => m.AccountLocation_lst[i].Selected,
-                            Model.AccountLocation_lst[i].BranchName)
-                                <input id="AccountLocation_lst@(i)__PKAccountLocLnkId" name="AccountLocation_lst[@i].PKAccountLocLnkId" type="hidden" value="@Model.AccountLocation_lst[i].PKAccountLocLnkId">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class=" col-md-7">
+                                        <div class="row form-group">
+                                            <label class="control-label col-sm-4">Account No</label>
+                                            <div class="col-md-6">
+                                                <input asp-for="AccountNo" class="form-control input-number" type="text" />
+                                                <span asp-validation-for="AccountNo" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class=" col-md-7">
+                                        <div class="row form-group">
+                                            <label class="control-label col-sm-4">IFSC</label>
+                                            <div class="col-md-6">
+                                                 <input id="IFSCCode" class="form-control" type="text" readonly="readonly" />
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                             
+                        </div>
+                    </div>
 
-                            </li>
-                        }
-                    </ul>
                 </div>
             </div>
         </div>
@@ -317,7 +352,7 @@
         $(document).ready(function () {
             Common.InputFormat();
             setDiscDate();
-            FillIFSC();
+             FillIFSC();
             $('#btnServerSave').click(function (e) {
                 e.preventDefault();
                 $("form").submit();
@@ -348,15 +383,15 @@
     </script>
 
     <script>
-        function addLocations() {
-
-            var rowCount = $('#tblLocation tr').length;
+        function addOpeningBalance() {
+            debugger;
+            var rowCount = $('#tblOpeningBalance tbody tr').length;
             var index = $("#hidLocationIndex").val();
             var Exists = false;
 
             var locid = $("#FklocalityGridId").val();
             if (locid > 0) {
-                $('#tblLocation tr').each(function (ind) {
+                $('#tblOpeningBalance tbody tr').each(function (ind) {
 
                     if ($("#AccountDtl_lst_" + ind + "__FKLocationID").val() === locid && index !== ind.toString() && $("#AccountDtl_lst_" + ind + "__Mode").val() != '2') {
                         alert("Already Exists");
@@ -368,23 +403,23 @@
 
                     if (index === "") {
                         var html = '<tr index="' + rowCount + '">';
-                        html += '<td class="tabel-xs-larg-class">  <input readonly="true" id="AccountDtl_lst_' + rowCount + '__Location" name="AccountDtl_lst[' + rowCount + '].Location" type="text" value="' + $("#FklocalityGridId :selected").text() + '" tabindex="-1"> ';
+                        html += '<td class="p-2">  <input readonly="true" id="AccountDtl_lst_' + rowCount + '__Location" name="AccountDtl_lst[' + rowCount + '].Location" type="text" value="' + $("#FklocalityGridId :selected").text() + '" tabindex="-1"> ';
                         html += ' <input id="AccountDtl_lst_' + rowCount + '__FKLocationID" name="AccountDtl_lst[' + rowCount + '].FKLocationID" type="hidden" value="' + $("#FklocalityGridId").val() + '"> </td>';
 
-                        html += '<td class="tabel-td-xs">  <input readonly="true" id="AccountDtl_lst_' + rowCount + '__OpBal" name="AccountDtl_lst[' + rowCount + '].OpBal" type="text" value="' + $("#OpeningBalance").val() + '" tabindex="-1"> </td>';
-                        html += '<td class="tabel-td-xs">  <input readonly="true" id="AccountDtl_lst_' + rowCount + '__type" name="AccountDtl_lst[' + rowCount + '].type" type="text" value="' + $(".DrCr:checked").val() + '" tabindex="-1"> </td>';
-                        html += '<td class="tabel-td-xs"> <input id="AccountDtl_lst_' + rowCount + '__Mode" name="AccountDtl_lst[' + rowCount + '].Mode" type="hidden" value="0"> <span class="action-icon" onclick="UpdateLocation(this,' + rowCount + ',\'edit\')"><i class="fa fa-edit" /></span> ';
+                        html += '<td class="p-2">  <input readonly="true" id="AccountDtl_lst_' + rowCount + '__OpBal" name="AccountDtl_lst[' + rowCount + '].OpBal" type="text" value="' + $("#OpeningBalance").val() + '" tabindex="-1"> </td>';
+                        html += '<td class="p-2">  <input readonly="true" id="AccountDtl_lst_' + rowCount + '__type" name="AccountDtl_lst[' + rowCount + '].type" type="text" value="' + $("#sltCrAmt").val() + '" tabindex="-1"> </td>';
+                        html += '<td class="p-2 d-flex"> <input id="AccountDtl_lst_' + rowCount + '__Mode" name="AccountDtl_lst[' + rowCount + '].Mode" type="hidden" value="0"> <span class="action-icon" onclick="UpdateLocation(this,' + rowCount + ',\'edit\')"><i class="fa fa-edit" /></span> ';
                         html += ' &nbsp; | &nbsp; <span class="action-icon" onclick="UpdateLocation(this,' + rowCount + ',\'del\')"><i class="fa fa-trash" /></span> </td>';
 
                         html += '</tr>';
-
-                        $("#tblLocation tbody").append(html);
+                        console.log(html);
+                        $("#tblOpeningBalance tbody").append(html);
                     } else {
 
                         $("#AccountDtl_lst_" + index + "__Location").val($("#FklocalityGridId :selected").text());
                         $("#AccountDtl_lst_" + index + "__FKLocationID").val($("#FklocalityGridId").val());
                         $("#AccountDtl_lst_" + index + "__OpBal").val($("#OpeningBalance").val());
-                        $("#AccountDtl_lst_" + index + "__type").val($(".DrCr:checked").val());
+                        $("#AccountDtl_lst_" + index + "__type").val($("#sltCrAmt").val());
                         //  $("#AccountDtl_lst_" + index + "__Mode").val('1');
 
                     }
@@ -406,7 +441,7 @@
                 $("#FklocalityGridId").val($("#AccountDtl_lst_" + index + "__FKLocationID").val());
                 // $("#drpFklocalityGridId").val($("#AccountDtl_lst_" + index + "__location").val());
                 $("#OpeningBalance").val($("#AccountDtl_lst_" + index + "__OpBal").val());
-                $('#thDrCr').find("input[value='" + $("#AccountDtl_lst_" + index + "__type").val() + "']").prop('checked', true);
+                $("#sltCrAmt").val($("#AccountDtl_lst_" + index + "__type").val());
                 $(obj).closest('tr').removeClass('tbl-delete');
             } else if (action === 'del') {
                 $(obj).closest('tr').addClass('tbl-delete');
