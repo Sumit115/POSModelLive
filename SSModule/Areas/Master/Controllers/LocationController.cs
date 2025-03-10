@@ -27,6 +27,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         public async Task<IActionResult> List()
         {
+            ViewBag.FormId = FKFormID;
             return View();
         }
 
@@ -94,6 +95,8 @@ namespace SSAdmin.Areas.Master.Controllers
                         Mode = "Edit";
                     }
                     Int64 ID = model.PKLocationID;
+                    model.IsAllAccount = true;
+                    model.IsAllCostCenter = true;
                     string error = await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {

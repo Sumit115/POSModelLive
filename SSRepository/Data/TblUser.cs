@@ -8,6 +8,10 @@ namespace SSRepository.Data
     [Table("tblUser_mas", Schema = "dbo")]
     public partial class TblUserMas : TblBase, IEntity
     {
+        public TblUserMas()
+        {
+            LocationUsers = new HashSet<TblUserLocLnk>();
+        }
         [Key]
         public long PkUserId { get; set; }  
         public string UserId { get; set; } = null!;
@@ -29,6 +33,9 @@ namespace SSRepository.Data
         public long FkEmployeeId { get; set; }
 
         public int IsAdmin { get; set; }
+
+
+        public virtual ICollection<TblUserLocLnk> LocationUsers { get; set; }
 
     }
 }

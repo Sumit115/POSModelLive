@@ -150,6 +150,7 @@ namespace SSRepository.Data
             {
                 entity.HasKey(e => e.PkLocationID);
 
+                entity.ToTable("tblLocation_mas");
                 entity.Property(e => e.PkLocationID)
             .HasColumnName("PkLocationID")
             .IsRequired();
@@ -279,15 +280,23 @@ namespace SSRepository.Data
                     .HasColumnType("bigint")
                     .IsRequired();
 
-                entity.HasOne(e => e.User)
+                entity.HasOne(e => e.FKUser)
                     .WithMany()
                     .HasForeignKey(e => e.FKUserID)
                     .OnDelete(DeleteBehavior.Restrict);
+                
+                entity.HasOne(e => e.FKUser) // Navigation property
+               .WithMany(l => l.LocationUsers)  // Navigation collection in TblUserMas
+               .HasForeignKey(e => e.FKUserID) // FK in TblUserLocLnk
+               .HasPrincipalKey(l => l.PkUserId) // Maps to correct PK in TblUserMas
+               .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(e => e.Location)
-                    .WithMany()
-                    .HasForeignKey(e => e.FKLocationID)
-                    .OnDelete(DeleteBehavior.Restrict);
+                
+                entity.HasOne(e => e.FKLocation) // Navigation property
+                .WithMany(l => l.LocationUsers)  // Navigation collection in TblLocationMas
+                .HasForeignKey(e => e.FKLocationID) // FK in TblUserLocLnk
+                .HasPrincipalKey(l => l.PkLocationID) // Maps to correct PK in TblLocationMas
+                .OnDelete(DeleteBehavior.Restrict);
 
             });
         }

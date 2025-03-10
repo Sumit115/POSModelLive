@@ -46,7 +46,17 @@ namespace SSRepository.Repository.Master
                         Location = Loc.Location,
                         Alias = Loc.Alias,
                         Address = Loc.Address,
-                        FKStationID = Loc.FkStationID,
+                        Station = Loc.stationMas.StationName,
+                        Locality = Loc.localityMas.LocalityName,
+                        Branch = Loc.branchMas.BranchName,
+                        Account = Loc.accountMas.Account,
+                        IsAllAccount = Loc.IsAllAccount,
+                        IsAllCostCenter = Loc.IsAllCostCenter,
+                        IsAllCustomer = Loc.IsAllCustomer,
+                        IsAllProduct = Loc.IsAllProduct,
+                        IsAllVendor = Loc.IsAllVendor,
+                        IsBillingLocation = Loc.IsBillingLocation,
+                        IsDifferentTax = Loc.IsAllVendor,
                         Pincode = Loc.Pincode,
                         Phone1 = Loc.Phone1,
                         Phone2 = Loc.Phone2,
@@ -234,16 +244,16 @@ namespace SSRepository.Repository.Master
             if (model.PKLocationID > 0)
             {
                 var _entity = GetSingleRecord(model.PKLocationID);
-            }
-            IList<TblUserLocLnk> userlnk = (from x in __dbContext.TblUserLocLnk
-                                            where x.FKLocationID == model.PKLocationID
-                                            select x).ToList();
 
-            if (userlnk.Count > 0)
-            {
-                DeleteData(userlnk, true);
-            }
+                IList<TblUserLocLnk> userlnk = (from x in __dbContext.TblUserLocLnk
+                                                where x.FKLocationID == model.PKLocationID
+                                                select x).ToList();
 
+                if (userlnk.Any())
+                {
+                    DeleteData(userlnk, true);
+                }
+            }
             Tbl.PkLocationID = model.PKLocationID;
             Tbl.Location = model.Location;
             Tbl.Address = model.Address;
@@ -251,8 +261,8 @@ namespace SSRepository.Repository.Master
             Tbl.CreationDate = DateTime.Now;
             Tbl.IsBillingLocation = model.IsBillingLocation;
             Tbl.IsAllProduct = model.IsAllProduct;
-            Tbl.IsAllCustomer = model.IsAllCustomer;
-            Tbl.IsAllVendor = model.IsAllVendor;
+            Tbl.IsAllCustomer =  false;
+            Tbl.IsAllVendor = false;
             Tbl.FkStationID = model.FKStationID;
             Tbl.FkLocalityID = model.FKLocalityID;
             Tbl.Pincode = model.Pincode;
@@ -264,8 +274,8 @@ namespace SSRepository.Repository.Master
             Tbl.IsDifferentTax = model.IsDifferentTax;
             Tbl.FkAccountID = model.FKAccountID;
             Tbl.FkBranchID = model.FKBranchID;
-            Tbl.IsAllAccount = model.IsAllAccount;
-            Tbl.IsAllCostCenter = model.IsAllCostCenter;
+            Tbl.IsAllAccount = false;
+            Tbl.IsAllCostCenter = false;
             Tbl.ModifiedDate = DateTime.Now;
             Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
@@ -306,18 +316,23 @@ namespace SSRepository.Repository.Master
             int Orderby = 1;
             var list = new List<ColumnStructure>
             {
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Location", Fields="Location",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Alias",    Fields="Alias",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Address",  Fields="Address",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Pincode",  Fields="Pincode",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Phone1",   Fields="Phone1",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Phone2", Fields="Phone2",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Phone2", Fields="Phone2",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Fax", Fields="Fax",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Email", Fields="Email",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Website", Fields="Website",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Location", Fields="Location",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Alias",    Fields="Alias",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Branch",    Fields="Branch",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Account",    Fields="Account",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="IsBillingLocation", Fields="IsBillingLocation",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Address",  Fields="Address",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Pincode",  Fields="Pincode",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Station", Fields="Station",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Station", Fields="Station",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Locality",   Fields="Locality",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Phone2", Fields="Phone2",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Email", Fields="Email",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Fax", Fields="Fax",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Website", Fields="Website",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="User",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
 
                         };
             return list;

@@ -35,7 +35,7 @@ namespace SSRepository.Repository
                           select (new
                           {
                               c.FKLocationID,
-                              c.Location.IsBillingLocation
+                              c.FKLocation.IsBillingLocation
                           })
                        ).ToList();
 

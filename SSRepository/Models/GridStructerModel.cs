@@ -17,5 +17,7 @@ namespace SSRepository.Models
         public string GridName { get; set; }
 
         public string JsonData { get; set; }
+
+        public int Modeform { get; set; }
     }
 }

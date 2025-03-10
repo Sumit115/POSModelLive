@@ -1,4 +1,5 @@
 ﻿using Azure;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -74,9 +75,11 @@ namespace SSAdmin.Areas
         public async Task<JsonResult> GridStrucher(long FormId, string GridName = "")
         {
             if (FormId == 0) FormId = FKFormID;
-            var data = _gridLayoutRepository.GetSingleRecord(1, FormId, GridName, ColumnList(GridName));
+            var data = _gridLayoutRepository.GetSingleRecord(Convert.ToInt64(HttpContext.User.FindFirst("UserId")?.Value ?? ""), FormId, GridName, ColumnList(GridName));
             return new JsonResult(data);
         }
+
+       
 
         public virtual List<ColumnStructure> ColumnList(string GridName = "")
         {
@@ -87,8 +90,13 @@ namespace SSAdmin.Areas
         [HttpPost]
         public IActionResult ActiveGridColumn(GridStructerModel data)
         {
-            data.FkUserId = 1;
+            data.FkUserId = Convert.ToInt64(HttpContext.User.FindFirst("UserId")?.Value ?? "");
+            
             if (data.FkFormId == 0) data.FkFormId = FKFormID;
+            if (data.Modeform == 2)
+            {
+                data.JsonData = JsonConvert.SerializeObject(ColumnList(data.GridName));
+            }
             _gridLayoutRepository.CreateAsync(data, "Edit", data.PkGridId);
             return Json(new
             {

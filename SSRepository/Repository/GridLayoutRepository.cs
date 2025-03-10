@@ -84,16 +84,11 @@ formbase:
                ).FirstOrDefault();
                 if (_entity != null)
                 {
-                    //UserModel oldModel = GetSingleRecord(Tbl.PkId);
-                    // ID = _entity.PkGridId;
                     _entity.JsonData = model.JsonData;
                     UpdateData(_entity, false);
                 }
                 else { AddData(Tbl, false); }
-                //AddMasterLog(oldModel, __FormID, tblCountry.FKUserID, oldModel.PKID, oldModel.FKUserID, oldModel.DATE_MODIFIED);
             }
-            //SaveDataAsync();
-            //AddImagesAndRemark(obj.PkcountryId, obj.FKUserID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
 
     }

@@ -1387,19 +1387,21 @@ function C_GridColSetup(n, n2, f) {
         Handler.hide();
         if (res.PkGridId > 0) {
             var d = JSON.parse(res.JsonData);
-            var htm = '';
-            htm += '<div class="card card-outline card-primary">';
-            htm += '<div class="card-header">';
-            htm += '<h3 class="card-title">Set Grid Layout</h3>';
-            htm += '<div class="card-tools">';
-            htm += '<button type="button" id="btnSaveGridColSetup" class="btn btn-outline-secondary" >';
-            htm += '<i class="bi bi-floppy"></i> Save</button></div></div>';
-            htm += '<div class="card-body">';
-            htm += '<input type="hidden" name="hdPkGridId" id="hdPkGridId"  value="' + n + '"  />';
-            htm += '<div style="height:62vh;overflow: auto;border: solid 1px #efeff6;">';
-            htm += '<table class="table">';
-            htm += '<thead><tr><th>COLUMN</th><th>VISIBLE</th><th>WIDTH</th></thead>';
-             htm += '<tbody >';
+            var htm = `<div class="card card-outline card-primary">
+                        <div class="card-header"> 
+                    <h3 class="card-title">Set Grid Layout</h3>
+                    <div class="card-tools">
+                        <button type="button" id="btnSaveGridColSetup" class="btn btn-outline-secondary" >
+                        <i class="bi bi-floppy"></i> Save</button>
+                            <button type="button" id="btnReSaveGridColSetup" class="btn btn-outline-primary" >
+                        <i class="bi bi-floppy"></i> Restore</button>
+                    </div></div>
+                    <div class="card-body">
+                    <input type="hidden" name="hdPkGridId" id="hdPkGridId"  value="${n}"  />
+                    <div style="height:62vh;overflow: auto;border: solid 1px #efeff6;">
+                    <table class="table">
+                    <thead><tr><th>Column</th><th>Visible</th><th>Width</th></thead>
+                    <tbody >`;
             $(d).each(function (i, v) {
                 htm += '<tr class="trGridColumnw"><td>' + v.Heading + '</td>';
                 htm += ' <td>';
@@ -1420,6 +1422,9 @@ function C_GridColSetup(n, n2, f) {
             htm += ' </tbody></table>';
             htm += '</div></div></div>';
             Handler.popUp(htm, { width: "550px", height: "400px" }, function () {
+                $("#btnReSaveGridColSetup").click(function () {
+                    Savesgl("", 2);
+                });
                 $("#btnSaveGridColSetup").click(function () {
                     var ColList = [];
                     $(".trGridColumnw").each(function () {
@@ -1434,32 +1439,9 @@ function C_GridColSetup(n, n2, f) {
                         var odrby = $(this).find("[name='txtGridColumnOrderby']");
                         var totalon = $(this).find("[name='txtGridColumnTotalOn']");
                         ColList.push({ pk_Id: chk.val(), Width: wid.val(), Heading: hding.val(), Fields: flds.val(), SearchType: styp.val(), Sortable: sotyp.val(), CtrlType: ctyp.val(), Orderby: odrby.val(), IsActive: (chk.prop("checked") ? 1 : 0), TotalOn: totalon.val() });
-                    });                    
+                    });
                     var jsonData = JSON.stringify(ColList);
-                    
-                    var _d = {
-                        PkGridId: $('#hdPkGridId').val(),
-                        JsonData: jsonData,
-                        FkFormId: $("#hdFormId").val(),
-                        GridName: $("#hdGridName").val()
-                    };
-                    //
-                    $.ajax({
-                        type: "POST",
-                        url: '/Master/Customer/ActiveGridColumn',
-                        data: { data: _d },
-                        datatype: "json",
-                        success: function (res) {
-                            if (res.status == "success") {
-                                $(".popup_d").hide();
-                                f();
-                            }
-                            else
-                                alert(res.msg);
-                        }
-                    })
-                    //  dsadassdasda();
-                    //to prevent default form submit event
+                    Savesgl(jsonData, 0, f);
                     return false;
                 });
 
@@ -1468,6 +1450,39 @@ function C_GridColSetup(n, n2, f) {
         else
             alert(res.msg);
     });
+}
+
+function Savesgl(jsonData, Modeform,Callback) {
+    if (confirm("Do you want to save Grid Layout.")) {
+
+        var _d = {
+            PkGridId: $('#hdPkGridId').val(),
+            JsonData: jsonData,
+            FkFormId: $("#hdFormId").val(),
+            GridName: $("#hdGridName").val(),
+            Modeform: Modeform
+        };
+        //
+        $.ajax({
+            type: "POST",
+            url: Handler.currentPath() + 'ActiveGridColumn',
+            data: { data: _d },
+            datatype: "json",
+            success: function (res) {
+                if (res.status == "success") {
+                    $(".popup_d").hide();
+                    if (typeof (Callback) == "function")
+                        Callback();
+                    else
+                        window.location.reload();
+                }
+                else
+                    alert(res.msg);
+            }
+        })
+        //  dsadassdasda();
+        //to prevent default form submit event
+    }
 }
 
 

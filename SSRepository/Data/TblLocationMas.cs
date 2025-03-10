@@ -15,10 +15,10 @@ namespace SSRepository.Data
         public long PkLocationID { get; set; } 
         public string Location { get;set; }
         public string? Alias { get; set; }
-        public bool IsBillingLocation { get; set; }
-        public bool IsAllProduct { get; set; }
-        public bool IsAllCustomer { get; set; }
-        public bool IsAllVendor { get; set; }
+        public bool IsBillingLocation { get; set; } = false;
+        public bool IsAllProduct { get; set; } = false;
+        public bool IsAllCustomer { get; set; } = false;
+        public bool IsAllVendor { get; set; } = false;
         public string? Address { get; set; }
         public long? FkStationID { get; set; }
         public long? FkLocalityID { get; set; }
@@ -32,15 +32,15 @@ namespace SSRepository.Data
 
         public string? Website { get; set; }
 
-        public bool IsDifferentTax { get; set; }
+        public bool IsDifferentTax { get; set; } = false;
 
         public long? FkAccountID { get; set; }
 
         public long FkBranchID { get; set; }
 
-        public bool IsAllCostCenter { get; set; }
-        
-        public bool IsAllAccount { get; set; }
+        public bool IsAllCostCenter { get; set; } = false;
+
+        public bool IsAllAccount { get; set; } = false;
 
         public int  FkCityId { get; set; }
         

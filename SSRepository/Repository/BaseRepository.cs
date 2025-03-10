@@ -343,7 +343,7 @@ namespace SSRepository.Repository
                 catch (Exception ex)
                 {
                     trans.Rollback();
-                    return ex.Message;
+                    return ex.InnerException== null? ex.Message : ex.InnerException.Message;
                 }
             }
         }

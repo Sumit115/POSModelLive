@@ -8,8 +8,8 @@ namespace SSRepository.Data
     { 
         public long FKUserID { get; set; }
         public long FKLocationID { get; set; }
-        public virtual TblUserMas User { get; set; }
-        public virtual TblLocationMas Location { get; set; }
+        public virtual TblUserMas FKUser { get; set; }
+        public virtual TblLocationMas FKLocation { get; set; }
 
     }
 }
