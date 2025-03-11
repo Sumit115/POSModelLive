@@ -23,16 +23,22 @@ namespace SSRepository.Models
 
         public int? Usertype { get; set; }
 
+        public  string Mobile { get; set; }
+
         [Required(ErrorMessage = "Branch Required")]
         public long? FkBranchId { get; set; }
 
-        public long? FkRoleId { get; set; }
+        public long FkRoleId { get; set; }
+        public string Role { get; set; }   
 
         public DateTime? Expiredt { get; set; }
 
         public DateTime? ExpirePwddt { get; set; }
 
         public long FkEmployeeId { get; set; }
+
+        public char Status { get; set; }
+        
 
         public int IsAdmin { get; set; }
         //public EmployeeModel? EmployeeVM { get; set; }
@@ -42,6 +48,8 @@ namespace SSRepository.Models
         public string? BranchName { get; set; }
         public string? CompanyName { get; set; }
         public List<MenuModel> MenuList { get; set; }
+
+        public List<UserLocLnkModel> UserLoclnk { get; set; }
 
 
     }

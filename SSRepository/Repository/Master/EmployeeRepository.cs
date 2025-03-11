@@ -60,11 +60,6 @@ namespace SSRepository.Repository.Master
                                             Aadhar = cou.Aadhar,
                                             Panno = cou.Panno,
                                             Gstno = cou.Gstno,
-                                            //Passport = cou.Passport,
-                                            //AadharCardFront = cou.AadharCardFront,
-                                            //AadharCardBack = cou.AadharCardBack,
-                                            //PanCard = cou.PanCard,
-                                            //Signature = cou.Signature,
                                             IsAadharVerify = cou.IsAadharVerify,
                                             IsPanVerify = cou.IsPanVerify,
                                             Status = cou.Status,
@@ -73,7 +68,7 @@ namespace SSRepository.Repository.Master
                                             FkCityId = cou.FkCityId,
                                             City = city.CityName,
                                             Pin = cou.Pin,
-                                            Location = cou.Location,
+                                            //Location = cou.Location,
                                             Salary = cou.Salary,
                                             Post = cou.Post,
                                             FKUserID = cou.FKUserID,
@@ -116,7 +111,7 @@ namespace SSRepository.Repository.Master
                         FkCityId = cou.FkCityId,
                         //  City = city.CityName,
                         Pin = cou.Pin,
-                        Location = cou.Location,
+                        //Location = cou.Location,
                         Salary = cou.Salary,
                         Post = cou.Post,
                         FKUserID = cou.FKUserID,
@@ -124,20 +119,37 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpEmployee(int pageno, int pagesize, string search = "")
+       
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
         {
             if (search != null) search = search.ToLower();
             if (search == null) search = "";
 
-            var result = GetList(pagesize, pageno, search);
-
-
-            return (from r in result
-                    select new
-                    {
-                        r.PkEmployeeId,
-                        r.Name
-                    }).ToList(); ;
+            var result = GetList(pageSize, pageNo, search);
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                return (from r in result
+                        select new
+                        {
+                            r.PkEmployeeId,
+                            r.Name,
+                            r.Post
+                        }).ToList();
+            }
+            else if (EnCustomFlag == (int)Handler.en_CustomFlag.Filter)
+            {
+                return (from r in result
+                        select new
+                        {
+                            r.PkEmployeeId,
+                            r.Name,
+                            r.Post
+                        }).ToList();
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public string DeleteRecord(long PkEmployeeId)
@@ -216,7 +228,7 @@ namespace SSRepository.Repository.Master
             Tbl.FkCityId = model.FkCityId;
             Tbl.StateName = model.StateName;
             Tbl.Pin = model.Pin;
-            Tbl.Location = model.Location;
+            //Tbl.Location = model.Location;
             Tbl.Salary = model.Salary;
             Tbl.Post = model.Post;
             Tbl.ModifiedDate = DateTime.Now;

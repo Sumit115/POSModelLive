@@ -45,7 +45,7 @@ namespace SSRepository.Repository
               
             SaveFile("sysdefaults.json", JsonConvert.SerializeObject(Sys));
 
-            RoleModel role = new RoleRepository(__dbContext, _contextAccessor).GetSingleRecord(data.FkRoleId ?? 0, true);
+            RoleModel role = new RoleRepository(__dbContext, _contextAccessor).GetSingleRecord(data.FkRoleId, true);
             SaveFile("menulist.json", JsonConvert.SerializeObject(role.RoleDtls));
             return data;
         }

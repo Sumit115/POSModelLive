@@ -10,7 +10,6 @@ namespace SSRepository.IRepository.Master
 
         string isAlreadyExist(EmployeeModel tblBankMas, string Mode);
         List<EmployeeModel> GetList(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpEmployee(int pageSize, int pageNo = 1, string search = "");
         EmployeeModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);

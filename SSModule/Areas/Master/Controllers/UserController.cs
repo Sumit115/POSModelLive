@@ -71,9 +71,6 @@ namespace SSAdmin.Areas.Master.Controllers
             UserModel Model = new UserModel();
             try
             {
-                ViewBag.EmployeeList = _employeeRepository.GetDrpEmployee(1,1000);
-                ViewBag.RoleList = _roleRepository.GetDrpRole(1, 1000);
-
                 if (id != 0 && pageview.ToLower() == "log")
                 {
                     ViewBag.PageType = "Log";
@@ -86,18 +83,13 @@ namespace SSAdmin.Areas.Master.Controllers
                 }
                 else
                 {
-                    ViewBag.PageType = "Create";
-                    
+                    ViewBag.PageType = "Create";                    
                 }
-
             }
             catch (Exception ex)
             {
-                //CommonCore.WriteLog(ex, "Create Get ", ControllerName, GetErrorLogParam());
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(0, tblBankMas);
-
             return View(Model);
         }
 
