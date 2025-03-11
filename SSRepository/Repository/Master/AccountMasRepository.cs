@@ -86,6 +86,9 @@ namespace SSRepository.Repository.Master
                     join CatPGrp in __dbContext.TblAccountGroupMas on cou.FkAccountGroupId equals CatPGrp.PkAccountGroupId
                      into tempAccGrp
                     from AccGrp in tempAccGrp.DefaultIfEmpty()
+                    join bankrp in __dbContext.TblBankMas on cou.FKBankID equals bankrp.PkBankId
+                      into tempBank
+                    from bank in tempBank.DefaultIfEmpty()
                     where cou.PkAccountId == PkAccountId
                     select (new AccountMasModel
                     {
@@ -110,14 +113,15 @@ namespace SSRepository.Repository.Master
                         FKUserID = cou.FKUserID,
                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                         AccountLocation_lst = (from ad in __dbContext.TblAccountLocLnk
-                                                   //  join loc in __dbContext.TblBranchMas on ad.FKLocationID equals loc.PkBranchId
+                                               join loc in __dbContext.TblBranchMas on ad.FKLocationID equals loc.PkBranchId
                                                where (ad.FkAccountId == cou.PkAccountId)
                                                select (new AccountLocLnkModel
                                                {
                                                    PKAccountLocLnkId = ad.PKAccountLocLnkId,
                                                    FkAccountId = ad.FkAccountId,
                                                    FKLocationID = ad.FKLocationID,
-                                                   Selected = true
+                                                   ModeForm = 1,
+                                                   BranchName = loc.BranchName
                                                })).ToList(),
                         AccountDtl_lst = (from ad in __dbContext.TblAccountDtl
                                           join loc in __dbContext.TblBranchMas on ad.FKLocationID equals loc.PkBranchId
@@ -146,7 +150,8 @@ namespace SSRepository.Repository.Master
                                              })).ToList(),
 
                         AccountGroupName = AccGrp.AccountGroupName,
-
+                        BankName = bank.BankName,
+                        IFSCCode = bank.IFSCCode,
                     })).FirstOrDefault();
             return data;
         }
@@ -231,6 +236,8 @@ namespace SSRepository.Repository.Master
                 var _entity = __dbContext.TblAccountMas.Find(model.PkAccountId);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
+
+
             }
 
             Tbl.PkAccountId = model.PkAccountId;
@@ -278,45 +285,48 @@ namespace SSRepository.Repository.Master
 
             DeleteData(ul, true);
 
-            //  List<TblAccountLocLnk> lstDelLocation = new List<TblAccountLocLnk>();
+            //List<TblAccountLocLnk> lstDelLocation = new List<TblAccountLocLnk>();
             List<TblAccountLocLnk> lstAddLocation = new List<TblAccountLocLnk>();
-            List<TblAccountLocLnk> lstEditLocation = new List<TblAccountLocLnk>();
+            //  List<TblAccountLocLnk> lstEditLocation = new List<TblAccountLocLnk>();
 
             if (model.AccountLocation_lst != null)
             {
-                //lstDelLocation = (from x in __dbContext.TblAccountLocLnk
-                //                  where x.FkAccountId == Tbl.PkAccountId && !model.AccountLocation_lst.ToList().Any(y => y.PKAccountLocLnkId == x.PKAccountLocLnkId)
-                //                  select x).ToList();
 
                 foreach (var lc in model.AccountLocation_lst)
                 {
-                    if (lc.Selected)
+                    TblAccountLocLnk objLoc = new TblAccountLocLnk();
+                    //   objLoc.PKAccountLocLnkId = getIdOfSeriesByEntity("PKAccountLocLnkId", null, Tbl, "TblAccountLocLnk");
+                    //objLoc.PKAccountLocLnkId = lc.PKAccountLocLnkId;
+                    objLoc.FkAccountId = Tbl.PkAccountId;
+                    objLoc.FKLocationID = lc.FKLocationID;
+                    //if (lc.ModeForm == 1)
+                    //{
+                    //    //locObj.ModifiedDate = DateTime.Now;
+                    //    //lstEdit.Add(locObj);
+                    //}
+                    //else
+                    if (lc.ModeForm != 2)
                     {
-                        //TblUserLocLnk objLoc = new TblUserLocLnk();
-                        //objLoc.FKUserID = GetUserID();
-                        //objLoc.FKLocationID = lc.PkLocid;
-                        //AddData(objLoc, false);
-
-                        TblAccountLocLnk objLoc = new TblAccountLocLnk();
-                        //   objLoc.PKAccountLocLnkId = getIdOfSeriesByEntity("PKAccountLocLnkId", null, Tbl, "TblAccountLocLnk");
-                        objLoc.PKAccountLocLnkId = lc.PKAccountLocLnkId;
-                        objLoc.FkAccountId = Tbl.PkAccountId;
-                        objLoc.FKLocationID = lc.FKLocationID; Tbl.ModifiedDate = DateTime.Now;
-                        Tbl.FKUserID = GetUserID();
-                        Tbl.FKCreatedByID = Tbl.FKUserID;
-                        Tbl.CreationDate = Tbl.ModifiedDate;
-                        //if (objLoc.PKAccountLocLnkId > 0)
-                        //    lstEditLocation.Add(objLoc);
-                        //else
+                        //  locObj.PKAccountDtlId = getIdOfSeriesByEntity("PKAccountDtlId", null, Tbl, "TblAccountDtl");
+                        objLoc.ModifiedDate = DateTime.Now;
+                        objLoc.FKUserID = GetUserID();
+                        objLoc.FKCreatedByID = Tbl.FKUserID;
+                        objLoc.CreationDate = Tbl.ModifiedDate;
                         lstAddLocation.Add(objLoc);
                     }
+                    //else
+                    //{
+                    //    var res1 = (from x in __dbContext.TblAccountLocLnk
+                    //                where x.PKAccountLocLnkId == objLoc.PKAccountLocLnkId
+                    //                && x.FkAccountId == objLoc.FkAccountId
+                    //                && x.FKLocationID == objLoc.FKLocationID
+                    //                select x).Count();
+                    //    if (res1 > 0)
+                    //    {
+                    //        lstDelLocation.Add(objLoc);
+                    //    }
+                    //}
                 }
-            }
-            else
-            {
-                //lstDelLocation = (from x in __dbContext.TblAccountLocLnk
-                //                  where x.FkAccountId == Tbl.PkAccountId 
-                //                  select x).ToList();
             }
             //if (lstDelLocation.Count() > 0)
             //    DeleteData(lstDelLocation, true);
@@ -350,15 +360,17 @@ namespace SSRepository.Repository.Master
                     if (item.Mode == 1)
                     {
                         locObj.ModifiedDate = DateTime.Now;
+                        locObj.CreationDate = Tbl.CreationDate;
+                        locObj.FKUserID = locObj.FKCreatedByID = Tbl.FKUserID;
                         lstEdit.Add(locObj);
                     }
                     else if (item.Mode == 0)
                     {
                         //  locObj.PKAccountDtlId = getIdOfSeriesByEntity("PKAccountDtlId", null, Tbl, "TblAccountDtl");
-                        Tbl.ModifiedDate = DateTime.Now;
-                        Tbl.FKUserID = GetUserID();
-                        Tbl.FKCreatedByID = Tbl.FKUserID;
-                        Tbl.CreationDate = Tbl.ModifiedDate;
+                        locObj.ModifiedDate = DateTime.Now;
+                        locObj.FKUserID = GetUserID();
+                        locObj.FKCreatedByID = Tbl.FKUserID;
+                        locObj.CreationDate = Tbl.ModifiedDate;
                         lstAdd.Add(locObj);
                     }
 
@@ -410,17 +422,17 @@ namespace SSRepository.Repository.Master
                     if (!string.IsNullOrEmpty(item.Description) && locObj.PKAccountLicDtlId == 0)
                     {
                         //  locObj.PKAccountLicDtlId = getIdOfSeriesByEntity("PKAccountLicDtlId", null, Tbl, "TblAccountLicDtl");
-                        Tbl.ModifiedDate = DateTime.Now;
-                        Tbl.FKUserID = GetUserID();
-                        Tbl.FKCreatedByID = Tbl.FKUserID;
-                        Tbl.CreationDate = Tbl.ModifiedDate;
+                        locObj.ModifiedDate = DateTime.Now;
+                        locObj.FKUserID = GetUserID();
+                        locObj.FKCreatedByID = Tbl.FKUserID;
+                        locObj.CreationDate = Tbl.ModifiedDate;
                         lstAdd.Add(locObj);
                     }
                     else if (!string.IsNullOrEmpty(item.Description) && locObj.PKAccountLicDtlId > 0)
                     {
                         //  locObj.PKAccountLicDtlId = getIdOfSeriesByEntity("PKAccountLicDtlId", null, Tbl, "TblAccountLicDtl");
                         locObj.ModifiedDate = DateTime.Now;
-                        lstAdd.Add(locObj);
+                        lstEdit.Add(locObj);
                     }
                 }
 

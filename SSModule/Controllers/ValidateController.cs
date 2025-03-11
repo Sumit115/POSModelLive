@@ -30,6 +30,8 @@ namespace SSAdmin.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
+                HttpContext.Session.Clear();
+
                 HttpContext.Session.SetString("ConnectionString", Convert.ToString(HttpContext.User.FindFirst("ConnectionString")?.Value));
                 HttpContext.Session.SetString("UserID", Convert.ToString(HttpContext.User.FindFirst("UserId")?.Value));
                 UserModel ds = _repository.ValidateUser(Convert.ToInt64(HttpContext.User.FindFirst("UserId")?.Value));

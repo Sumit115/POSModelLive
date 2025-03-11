@@ -16,7 +16,7 @@
                     <div class="col-md-6">
                         @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkAccountGroupId" },{"name","AccountGroup"}, { "Class", "val-cus-drp" },
                         { "value", Model.FkAccountGroupId }, { "text", Model.AccountGroupName }, { "uri", "AccountGroup" }, { "required", "required" },{ "placeholder", "Select Group"} })
-   @*                        <select asp-for="FkAccountGroupId" asp-items="@(new SelectList(ViewBag.AccountGroupList,"PkAccountGroupId","AccountGroupName"))" class="form-control" id="FkAccountGroupId">
+                        @*                        <select asp-for="FkAccountGroupId" asp-items="@(new SelectList(ViewBag.AccountGroupList,"PkAccountGroupId","AccountGroupName"))" class="form-control" id="FkAccountGroupId">
                         </select>*@
                         <span asp-validation-for="FkAccountGroupId" class="text-danger"></span>
                     </div>
@@ -170,9 +170,9 @@
                                                     <tr>
                                                         <td>
                                                             <div class="form-group">
-                                                                <select asp-items="@(new SelectList(Model.AccountLocation_lst,"FKLocationID","BranchName"))" class="form-control form-select" id="FklocalityGridId">
-                                                                    <option value="">Select</option>
-                                                                </select>
+                                                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkLocationId_OpBal" },{ "name", "Location_OpBal" }, { "Class", "val-cus-drp" },
+                                                                { "value", "" }, { "text", "" }, { "uri", "Branch" },{ "placeholder", "Select Location"} })
+
                                                             </div>
                                                         </td>
                                                         <td>
@@ -200,6 +200,33 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    @if (Model.AccountDtl_lst != null)
+                                                    {
+                                                        for (int i = 0; i < Model.AccountDtl_lst.Count; i++)
+                                                        {
+                                                            <tr index="@i">
+                                                                <td class="p-2">
+                                                                    @Html.TextBoxFor(m => m.AccountDtl_lst[i].Location, new { @readonly = true, @tabindex = "-1" })
+                                                                    @Html.HiddenFor(m => m.AccountDtl_lst[i].FKLocationID)
+                                                                    @Html.HiddenFor(m => m.AccountDtl_lst[i].PKAccountDtlId)
+
+                                                                </td>
+                                                                <td class="p-2">
+                                                                    @Html.TextBoxFor(m => m.AccountDtl_lst[i].OpBal, new { @readonly = true, @tabindex = "-1" })
+                                                                </td>
+                                                                <td class="p-2">
+                                                                    @Html.TextBoxFor(m => m.AccountDtl_lst[i].type, new { @readonly = true, @tabindex = "-1" })
+                                                                </td>
+                                                                <td class="p-2 d-flex">
+                                                                    @Html.HiddenFor(x => x.AccountDtl_lst[i].Mode)
+                                                                    <span class="action-icon" onclick="UpdateAccountDtl(this,'@i','edit')"><i class="fa fa-edit"></i></span>
+                                                                    &nbsp; | &nbsp; <span class="action-icon" onclick="UpdateAccountDtl(this,' @i ','del')"><i class="fa fa-trash"></i></span>
+
+                                                                </td>
+                                                            </tr>
+
+                                                        }
+                                                    }
                                                 </tbody>
                                             </table>
                                         </div>
@@ -216,22 +243,22 @@
                                     int No = i + 1;
                                     var _data = Model.AccountLicDtl_lst.Count > 0 ? Model.AccountLicDtl_lst.Where(x => x.No == No.ToString()).FirstOrDefault() : null;
 
-                                <div class="row">
-                                    <div class=" col-md-6 ">
-                                        <div class="row form-group">
+                                    <div class="row">
+                                        <div class=" col-md-6 ">
+                                            <div class="row form-group">
                                                 <label for="exampleInputEmail1" class="License1 control-label col-sm-4">License @No</label>
-                                            <div class=" col-md-8 ">
+                                                <div class=" col-md-8 ">
                                                     <input id="@("AccountLicDtl_lst_"+i+"_Description")" name="AccountLicDtl_lst[@i].Description" type="text" value="@(_data!=null?_data.Description:"")" class="form-control">
                                                     <input id="@("AccountLicDtl_lst_"+i+"_No")" name="AccountLicDtl_lst[@i].No" type="hidden" value="@No">
                                                     <input id="@("AccountLicDtl_lst_"+i+"_PKAccountLicDtlId")" name="AccountLicDtl_lst[@i].PKAccountLicDtlId" type="hidden" value="@(_data!=null?_data.PKAccountLicDtlId:0)">
 
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class=" col-md-3">
-                                        <div class="row form-group">
-                                            <label for="exampleInputEmail1" class="control-label col-sm-5">Issue Date</label>
-                                            <div class=" col-md-7 "> 
+                                        <div class=" col-md-3">
+                                            <div class="row form-group">
+                                                <label for="exampleInputEmail1" class="control-label col-sm-5">Issue Date</label>
+                                                <div class=" col-md-7 ">
                                                     @if (_data != null)
                                                     {
                                                         <input asp-for="@_data.IssueDate" class="form-control" type="date" id="@("AccountLicDtl_lst_"+i+"_IssueDate")" name="AccountLicDtl_lst[@i].IssueDate" />
@@ -240,13 +267,13 @@
                                                     {
                                                         <input id="@("AccountLicDtl_lst_"+i+"_IssueDate")" name="AccountLicDtl_lst[@i].IssueDate" type="date" class="form-control" maxlength="10">
                                                     }
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="row form-group">
-                                            <label for="exampleInputEmail1" class="control-label col-sm-5">Valid Till</label>
-                                            <div class="col-sm-7">
+                                        <div class="col-md-3">
+                                            <div class="row form-group">
+                                                <label for="exampleInputEmail1" class="control-label col-sm-5">Valid Till</label>
+                                                <div class="col-sm-7">
                                                     @if (_data != null)
                                                     {
                                                         <input asp-for="@_data.ValidTill" class="form-control" type="date" id="@("AccountLicDtl_lst_"+i+"_ValidTill")" name="AccountLicDtl_lst[@i].ValidTill" />
@@ -256,43 +283,67 @@
                                                         <input id="@("AccountLicDtl_lst_"+i+"_ValidTill")" name="AccountLicDtl_lst[@i].ValidTill" type="date" class="form-control" maxlength="10">
                                                     }
                                                 </div>
+                                            </div>
                                         </div>
-                                    </div> 
-                                </div>
+                                    </div>
                                 }
                             </div>
                         </div>
                     </div>
                     <div class="tab-pane fade mt-4" id="Locationtab" role="tabpanel" aria-labelledby="Locationtab-tab" tabindex="-1">
                         <div class="row" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
-                            <div class="row ">
-                                <div class="col-sm-6">
-                                    <div class="card card-detail">
-                                        <div class="card-header">
-                                           Locations
-                                        </div>
-                                        <div class="card-body">
-                                            <ul class="list-inline">
-                                                @for (int i = 0; i < Model.AccountLocation_lst.Count; i++)
-                                                {
 
-                                                    <li class="form-check form-switch">
-                                                        <span class="mr-2"> @Html.CheckBoxFor(m => m.AccountLocation_lst[i].Selected, new {@class="form-check-input" })</span>
-                                                        @Html.HiddenFor(m => m.AccountLocation_lst[i].FKLocationID)
-                                                        @Html.LabelFor(m => m.AccountLocation_lst[i].Selected,
-                                                    Model.AccountLocation_lst[i].BranchName)
-                                                        <input id="AccountLocation_lst@(i)__PKAccountLocLnkId" name="AccountLocation_lst[@i].PKAccountLocLnkId" type="hidden" value="@Model.AccountLocation_lst[i].PKAccountLocLnkId">
 
-                                                    </li>
-                                                }
-                                            </ul>
+                            <div class="card card-detail">
+                                @*<div class="card-header">
+                                Locations
+                                </div>*@
+                                <div class="card-body">
+                                    <div class="col-sm-12 mt-3">
+                                        <div class="row form-group">
+                                            <div class="col-sm-4">
+                                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkBranchId" }, { "Class", "val-cus-drp" },
+                                                { "value", "" }, { "text", "" }, { "uri", "Branch" },{ "placeholder", "Select Location"} })
 
+                                            </div>
+                                            <div class="col-sm-1 ">
+                                                <span class="btn btn-success" onclick="AddBranch();">
+                                                    <i class="bi bi-plus-lg"></i>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                    <div class="col-sm-5 default-scroll-grid">
+                                        <table id="tblBranchLoc" class="table border tableheader-fixed">
+                                            <tbody class="md-height">
 
-                              
+                                                @if (Model.AccountLocation_lst != null)
+                                                {
+                                                    for (int i = 0; i < Model.AccountLocation_lst.Count; i++)
+                                                    {
+                                                        <tr index="@i">
+                                                            <td>
+                                                                @Html.TextBoxFor(m => m.AccountLocation_lst[i].BranchName, new { @readonly = true, @tabindex = "-1" })
+                                                                @Html.HiddenFor(m => m.AccountLocation_lst[i].FKLocationID)
+                                                                @Html.HiddenFor(m => m.AccountLocation_lst[i].PKAccountLocLnkId)
+                                                            </td>
+                                                            <td>
+                                                                @Html.HiddenFor(x => x.AccountLocation_lst[i].ModeForm)
+                                                                <button type="button" class="btn grid-close-btn" onclick="RowAction(this,@i,'del')">
+                                                                    <i class="bi bi-x-circle"></i>
+                                                                </button>
+
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
+
+
                         </div>
                     </div>
                     <div class="tab-pane fade mt-4" id="Banktab" role="tabpanel" aria-labelledby="Banktab-tab" tabindex="-1">
@@ -303,8 +354,11 @@
                                         <div class="row form-group">
                                             <label class="control-label col-sm-4">Bank</label>
                                             <div class="col-sm-6">
+                                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKBankID" },{"name","Bank"}, { "Class", "val-cus-drp" },
+                                                { "value", Model.FKBankID }, { "text", Model.BankName }, { "uri", "Bank" }, { "required", "required" },{ "placeholder", "Select Bank"} })
+                                                @*
                                                 <select asp-for="FKBankID" asp-items="@(new SelectList(ViewBag.BankMasList,"PkBankId","BankName"))" class="form-control" id="FKBankID" onchange="FillIFSC()">
-                                                </select>
+                                                </select>*@
                                             </div>
 
                                         </div>
@@ -326,14 +380,14 @@
                                         <div class="row form-group">
                                             <label class="control-label col-sm-4">IFSC</label>
                                             <div class="col-md-6">
-                                                 <input id="IFSCCode" class="form-control" type="text" readonly="readonly" />
+                                                <input id="IFSCCode" class="form-control" type="text" readonly="readonly" value="@Model.IFSCCode" />
                                             </div>
-                                            
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                             
+
                         </div>
                     </div>
 
@@ -342,7 +396,6 @@
         </div>
     </form>
 </div>
-<input type="hidden" id="hdBankMasList" value="@Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.BankMasList)" />
 
 @section Scripts{
     @{
@@ -352,7 +405,7 @@
         $(document).ready(function () {
             Common.InputFormat();
             setDiscDate();
-             FillIFSC();
+            //  FillIFSC();
             $('#btnServerSave').click(function (e) {
                 e.preventDefault();
                 $("form").submit();
@@ -362,6 +415,11 @@
                 $('#DiscDate').val('');
                 setDiscDate();
             });
+            _Custdropdown.FKBankID.onSelect = function (arg) {
+                console.log(arg.data);
+                $("#IFSCCode").val(arg.data.IFSCCode);
+
+            }
         })
         function setDiscDate() {
 
@@ -373,13 +431,13 @@
 
             }
         }
-        function FillIFSC() {
+        //function FillIFSC() {
 
-            var FKBankID = $("#FKBankID").val();
-            var bankList = JSON.parse($("#hdBankMasList").val());
+        //    var FKBankID = $("#FKBankID").val();
+        //    var bankList = JSON.parse($("#hdBankMasList").val());
 
-            $("#IFSCCode").val(bankList.filter(v => v.PkBankId == FKBankID)[0].IFSCCode);
-        }
+        //    $("#IFSCCode").val(bankList.filter(v => v.PkBankId == FKBankID)[0].IFSCCode);
+        //}
     </script>
 
     <script>
@@ -389,7 +447,7 @@
             var index = $("#hidLocationIndex").val();
             var Exists = false;
 
-            var locid = $("#FklocalityGridId").val();
+            var locid = $("#FkLocationId_OpBal").val();
             if (locid > 0) {
                 $('#tblOpeningBalance tbody tr').each(function (ind) {
 
@@ -403,28 +461,29 @@
 
                     if (index === "") {
                         var html = '<tr index="' + rowCount + '">';
-                        html += '<td class="p-2">  <input readonly="true" id="AccountDtl_lst_' + rowCount + '__Location" name="AccountDtl_lst[' + rowCount + '].Location" type="text" value="' + $("#FklocalityGridId :selected").text() + '" tabindex="-1"> ';
-                        html += ' <input id="AccountDtl_lst_' + rowCount + '__FKLocationID" name="AccountDtl_lst[' + rowCount + '].FKLocationID" type="hidden" value="' + $("#FklocalityGridId").val() + '"> </td>';
+                        html += '<td class="p-2">  <input readonly="true" id="AccountDtl_lst_' + rowCount + '__Location" name="AccountDtl_lst[' + rowCount + '].Location" type="text" value="' + $("#Location_OpBal").val() + '" tabindex="-1"> ';
+                        html += ' <input id="AccountDtl_lst_' + rowCount + '__FKLocationID" name="AccountDtl_lst[' + rowCount + '].FKLocationID" type="hidden" value="' + locid + '"> </td>';
 
                         html += '<td class="p-2">  <input readonly="true" id="AccountDtl_lst_' + rowCount + '__OpBal" name="AccountDtl_lst[' + rowCount + '].OpBal" type="text" value="' + $("#OpeningBalance").val() + '" tabindex="-1"> </td>';
                         html += '<td class="p-2">  <input readonly="true" id="AccountDtl_lst_' + rowCount + '__type" name="AccountDtl_lst[' + rowCount + '].type" type="text" value="' + $("#sltCrAmt").val() + '" tabindex="-1"> </td>';
-                        html += '<td class="p-2 d-flex"> <input id="AccountDtl_lst_' + rowCount + '__Mode" name="AccountDtl_lst[' + rowCount + '].Mode" type="hidden" value="0"> <span class="action-icon" onclick="UpdateLocation(this,' + rowCount + ',\'edit\')"><i class="fa fa-edit" /></span> ';
-                        html += ' &nbsp; | &nbsp; <span class="action-icon" onclick="UpdateLocation(this,' + rowCount + ',\'del\')"><i class="fa fa-trash" /></span> </td>';
+                        html += '<td class="p-2 d-flex"> <input id="AccountDtl_lst_' + rowCount + '__Mode" name="AccountDtl_lst[' + rowCount + '].Mode" type="hidden" value="0"> <span class="action-icon" onclick="UpdateAccountDtl(this,' + rowCount + ',\'edit\')"><i class="fa fa-edit" /></span> ';
+                        html += ' &nbsp; | &nbsp; <span class="action-icon" onclick="UpdateAccountDtl(this,' + rowCount + ',\'del\')"><i class="fa fa-trash" /></span> </td>';
 
                         html += '</tr>';
                         console.log(html);
                         $("#tblOpeningBalance tbody").append(html);
                     } else {
 
-                        $("#AccountDtl_lst_" + index + "__Location").val($("#FklocalityGridId :selected").text());
-                        $("#AccountDtl_lst_" + index + "__FKLocationID").val($("#FklocalityGridId").val());
+                        $("#AccountDtl_lst_" + index + "__Location").val($("#Location_OpBal").val());
+                        $("#AccountDtl_lst_" + index + "__FKLocationID").val($("#FkLocationId_OpBal").val());
                         $("#AccountDtl_lst_" + index + "__OpBal").val($("#OpeningBalance").val());
                         $("#AccountDtl_lst_" + index + "__type").val($("#sltCrAmt").val());
                         //  $("#AccountDtl_lst_" + index + "__Mode").val('1');
 
                     }
                     $("#OpeningBalance").val('0.0');
-                    $("#FklocalityGridId").val('');
+                    $("#FkLocationId_OpBal").val('');
+                    $("#Location_OpBal").val('');
                     $("#hidLocationIndex").val('');
                     //$("#FklocalityGridId").prop('selectedIndex', 0);
                     //DropDownReset('FklocalityGridId');
@@ -435,11 +494,11 @@
             return false;
         }
 
-        function UpdateLocation(obj, index, action) {
+        function UpdateAccountDtl(obj, index, action) {
             if (action === 'edit') {
                 $("#hidLocationIndex").val(index);
-                $("#FklocalityGridId").val($("#AccountDtl_lst_" + index + "__FKLocationID").val());
-                // $("#drpFklocalityGridId").val($("#AccountDtl_lst_" + index + "__location").val());
+                $("#FkLocationId_OpBal").val($("#AccountDtl_lst_" + index + "__FKLocationID").val());
+                $("#Location_OpBal").val($("#AccountDtl_lst_" + index + "__Location").val());
                 $("#OpeningBalance").val($("#AccountDtl_lst_" + index + "__OpBal").val());
                 $("#sltCrAmt").val($("#AccountDtl_lst_" + index + "__type").val());
                 $(obj).closest('tr').removeClass('tbl-delete');
@@ -449,7 +508,65 @@
             }
         }
     </script>
+    <script>
+        function AddBranch() {
+            var foundL = false;
+            if ($("#drpFkBranchId").val().replace('"', '').replace('"', '') == "") {
+                Alertdialog("Please Select Location");
+                return false;
+            }
+            else {
+                $('#tblBranchLoc tbody tr').each(function (index) {
+                    var val = $('#AccountLocation_lst_' + index + '__FKLocationID').val();
+                    var vald = $("#AccountLocation_lst_" + index + "__ModeForm").val();
+                    if (val == $("#FkBranchId").val()) {
+                        foundL = true;
+                        if (vald == '2') {
+                            RowAction($("#AccountLocation_lst_" + index + "__ModeForm").next(), index, 'undo');
+                        };
+                    }
+                });
 
+                if (foundL == false) {
+                    var i = $('#tblBranchLoc tbody tr').length;
+                    var html = `<tr index="${i}">
+                                <td>
+                                    <input id="AccountLocation_lst_${i}__BranchName" name="AccountLocation_lst[${i}].BranchName" type="text" value="${$("#drpFkBranchId").val().replace('"', '').replace('"', '')}" tabindex="-1" readonly="readonly" />
+                                            <input id="AccountLocation_lst_${i}__FKLocationID" name="AccountLocation_lst[${i}].FKLocationID" type="hidden" value="${$("#FkBranchId").val()}" />
+
+                                </td>
+                                <td>
+                                    <input id="AccountLocation_lst_${i}__ModeForm" name="AccountLocation_lst[${i}].ModeForm" type="hidden" value="0" />
+                                    <button type="button" class="btn grid-close-btn" onclick="RowAction(this,${i},\'del\')">
+                                        <i class="bi bi-x-circle"></i>
+                                    </button>
+                                </td>
+                                </tr>`;
+                    $("#tblBranchLoc tbody").append(html);
+                }
+            }
+
+            DropDownReset('FkBranchId');
+            return false;
+        }
+
+        function RowAction(obj, index, action) {
+            if (action == 'del') {
+                $(obj).attr('onclick', "RowAction(this,${i},\'undo\')");
+                $(obj).html('<i class="bi bi-arrow-counterclockwise"></i>');
+                $(obj).closest('tr').addClass('tbl-delete');
+                $(obj).prev("input[id$='__ModeForm']").val('2');
+                $(obj).closest('tr').find(".action-icon").css("pointer-events", "none");
+            }
+            else if (action == 'undo') {
+                $(obj).attr('onclick', "RowAction(this,${i},'del')")
+                $(obj).html('<i class="bi bi-x-circle"></i>');
+                $(obj).closest('tr').removeClass('tbl-delete');
+                $(obj).prev("input[id$='__ModeForm']").val('0');
+                $(obj).closest('tr').find(".action-icon").css("pointer-events", "all");
+            }
+        }
+    </script>
                 }
 
 

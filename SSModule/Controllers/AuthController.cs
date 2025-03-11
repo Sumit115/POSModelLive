@@ -102,7 +102,7 @@ namespace SSAdmin.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            HttpContext.Session.Remove("SysDefaults");
+            HttpContext.Session.Clear();
             _repository.Logout();
             return RedirectToAction("Index");
         }

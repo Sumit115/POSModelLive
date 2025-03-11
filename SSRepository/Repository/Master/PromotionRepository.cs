@@ -314,10 +314,10 @@ namespace SSRepository.Repository.Master
                     else if (item.Mode == 0)
                     {
                         //  locObj.PKAccountDtlId = getIdOfSeriesByEntity("PKAccountDtlId", null, Tbl, "TblAccountDtl");
-                        Tbl.ModifiedDate = DateTime.Now;
-                        Tbl.FKUserID = GetUserID();
-                        Tbl.FKCreatedByID = Tbl.FKUserID;
-                        Tbl.CreationDate = Tbl.ModifiedDate;
+                        locObj.ModifiedDate = DateTime.Now;
+                        locObj.FKUserID = GetUserID();
+                        locObj.FKCreatedByID = Tbl.FKUserID;
+                        locObj.CreationDate = Tbl.ModifiedDate;
                         lstAdd.Add(locObj);
                     }
 

@@ -50,6 +50,28 @@ namespace SSRepository.Repository.Master
             return data;
         }
 
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "")
+        {
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblBankMas
+                         where (EF.Functions.Like(cou.BankName.Trim().ToLower(), search + "%"))
+                         orderby cou.BankName
+                         select (new
+                         {
+                             cou.PkBankId,
+                             cou.BankName,
+                             cou.IFSCCode,
+                         }
+                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         public BankModel GetSingleRecord(long PkBankId)
         {

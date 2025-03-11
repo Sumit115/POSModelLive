@@ -45,6 +45,8 @@ namespace SSRepository.Models
         public List<AccountLicDtlModel>? AccountLicDtl_lst { get; set; }
 
         public string? AccountGroupName { get; set; }
+        public string? BankName { get; set; }
+        public string? IFSCCode { get; set; }
 
     }
 }

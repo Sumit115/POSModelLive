@@ -108,13 +108,13 @@ namespace SSAdmin.Areas.Master.Controllers
             }
 
             //BindViewBags(0, tblBankMas);
-             ViewBag.BankMasList = _repositoryBank.GetDrpBank(1000, 1);
-            Model.AccountLocation_lst = _repositoryBranch.GetList(1000, 1).ToList().Select(x => new AccountLocLnkModel()
-            {
-                BranchName = x.BranchName,
-                FKLocationID = x.PkBranchId,
-                Selected = Model.AccountLocation_lst.Where(y => y.FKLocationID == x.PkBranchId).ToList().Count > 0 ? true : false,
-            }).ToList();
+           //  ViewBag.BankMasList = _repositoryBank.GetDrpBank(1000, 1);
+            //Model.AccountLocation_lst = _repositoryBranch.GetList(1000, 1).ToList().Select(x => new AccountLocLnkModel()
+            //{
+            //    BranchName = x.BranchName,
+            //    FKLocationID = x.PkBranchId,
+            //    Selected = Model.AccountLocation_lst.Where(y => y.FKLocationID == x.PkBranchId).ToList().Count > 0 ? true : false,
+            //}).ToList();
 
             return View(Model);
         }
@@ -159,13 +159,13 @@ namespace SSAdmin.Areas.Master.Controllers
                 ModelState.AddModelError("", ex.Message);
             }
             //BindViewBags(tblBankMas.PKID, tblBankMas);
-              ViewBag.BankMasList = _repositoryBank.GetDrpBank(1000, 1);
-            model.AccountLocation_lst = _repositoryBranch.GetList(1000, 1).ToList().Select(x => new AccountLocLnkModel()
-            {
-                BranchName = x.BranchName,
-                FKLocationID = x.PkBranchId,
-                Selected = model.AccountLocation_lst.Where(y => y.FKLocationID == x.PkBranchId).ToList().Count > 0 ? true : false,
-            }).ToList();
+             // ViewBag.BankMasList = _repositoryBank.GetDrpBank(1000, 1);
+            //model.AccountLocation_lst = _repositoryBranch.GetList(1000, 1).ToList().Select(x => new AccountLocLnkModel()
+            //{
+            //    BranchName = x.BranchName,
+            //    FKLocationID = x.PkBranchId,
+            //    Selected = model.AccountLocation_lst.Where(y => y.FKLocationID == x.PkBranchId).ToList().Count > 0 ? true : false,
+            //}).ToList();
 
             return View(model);
         }
