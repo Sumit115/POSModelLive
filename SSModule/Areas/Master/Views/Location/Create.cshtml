@@ -165,8 +165,8 @@
                                             {
                                                 <tr index="@i">
                                                     <td>
-                                                        @Html.TextBoxFor(m => m.UserLoclnk[i].UserName, new { @readonly = true, @tabindex = "-1" })
-                                                        @Html.HiddenFor(m => m.UserLoclnk[i].FKUserID)
+                                                        @Html.TextBoxFor(m => m.UserLoclnk[i].LocationName, new { @readonly = true, @tabindex = "-1" })
+                                                        @Html.HiddenFor(m => m.UserLoclnk[i].FkLocationID)
                                                     </td>
                                                     <td>
                                                         @Html.HiddenFor(x => x.UserLoclnk[i].ModeForm)

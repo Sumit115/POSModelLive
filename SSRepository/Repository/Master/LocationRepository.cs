@@ -182,8 +182,8 @@ namespace SSRepository.Repository.Master
                                    where (ad.FKLocationID == data.PKLocationID)
                                    select (new UserLocLnkModel
                                    {
-                                       FKLocationID = ad.FKLocationID,
-                                       FKUserID = ad.FKUserID,
+                                       FkLocationID = ad.FKLocationID,
+                                       FkUserID = ad.FKUserID,
                                        UserName = user.UserId,
                                    })).ToList();
             }
@@ -299,7 +299,7 @@ namespace SSRepository.Repository.Master
                 {
                     TblUserLocLnk locObj = new TblUserLocLnk();
                     locObj.FKLocationID = Tbl.PkLocationID;
-                    locObj.FKUserID = item.FKUserID;
+                    locObj.FKUserID = item.FkUserID;
                     if (item.ModeForm == 0)
                     {
                         lstAdd.Add(locObj);

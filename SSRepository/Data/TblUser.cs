@@ -24,7 +24,7 @@ namespace SSRepository.Data
 
         public long? FkBranchId { get; set; }
 
-        public long? FkRoleId { get; set; }
+        public long FkRoleId { get; set; }
 
         public DateTime? Expiredt { get; set; }
 

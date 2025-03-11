@@ -9,10 +9,13 @@ namespace SSRepository.Models
 {
     public partial class UserLocLnkModel
     {
-        public long FKUserID { get; set; }
-        public long FKLocationID { get; set; }
+        public long FkUserID { get; set; }
+        public long FkLocationID { get; set; }
 
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
+
+        public string? LocationName { get; set; }
+
         public long ModeForm { get; set; }
     }
 }

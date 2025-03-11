@@ -9,6 +9,8 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using static System.Net.Mime.MediaTypeNames;
 using System.Collections.Generic;
+using Azure;
+using static Handler;
 
 namespace SSRepository.Repository.Master
 {
@@ -56,20 +58,36 @@ namespace SSRepository.Repository.Master
                                    )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
-        public object GetDrpRole(int pageno, int pagesize, string search = "")
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "")
         {
             if (search != null) search = search.ToLower();
             if (search == null) search = "";
 
-            var result = GetList(pagesize, pageno, search);
+            var result = GetList(pageSize, pageNo, search);
 
-
-            return (from r in result
-                    select new
-                    {
-                        r.PkRoleId,
-                        r.RoleName
-                    }).ToList(); ;
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                return (from r in result
+                        select new
+                        {
+                            r.PkRoleId,
+                            r.RoleName
+                        }).ToList();
+            }
+            else if (EnCustomFlag == (int)Handler.en_CustomFlag.Filter)
+            {
+                return (from r in result
+                        select new
+                        {
+                            r.PkRoleId,
+                            r.RoleName
+                        }).ToList(); ;
+            }
+            else
+            {
+                return null;
+            }
+            
         }
 
         public RoleModel GetSingleRecord(long PkRoleId, bool IsAccess = false)

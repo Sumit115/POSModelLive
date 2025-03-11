@@ -37,7 +37,7 @@ namespace SSAdmin.Controllers
                 UserModel ds = _repository.ValidateUser(Convert.ToInt64(HttpContext.User.FindFirst("UserId")?.Value));
                 if (ds != null)
                 {
-                    HttpContext.Session.SetString("RoleId", (ds.FkRoleId ?? 0).ToString());
+                    HttpContext.Session.SetString("RoleId", ds.FkRoleId.ToString());
                     HttpContext.Session.SetString("IsAdmin", ds.IsAdmin.ToString());
 
                     Response.Redirect("/Dashboard");

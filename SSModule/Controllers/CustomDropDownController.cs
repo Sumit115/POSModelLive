@@ -91,6 +91,31 @@ namespace SSAdmin.Controllers
             return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
         }
 
+
+        [HttpPost]
+        public object Employee(int pageSize, int pageNo = 1, string search = "")
+        {
+            EmployeeRepository repository = new EmployeeRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
+        }
+
+
+        [HttpPost]
+        public object Location(int pageSize, int pageNo = 1, string search = "")
+        {
+
+            LocationRepository repository = new LocationRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
+        }
+
+        [HttpPost]
+        public object Role( int pageSize, int pageNo = 1, string search = "")
+        {
+
+            RoleRepository repository = new RoleRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
+        }
+
     }
 
 

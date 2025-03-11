@@ -4,57 +4,132 @@
     ViewData["Title"] = "User";
     ViewData["bdClass"] = "page";
 }
-<div class="p-3">
-    <form asp-action="Create" class="g-3" enctype="multipart/form-data">
+
+<div class="master-page-ui">
+    <form asp-action="Create" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="PkUserId" />
- 
+        <input type="hidden" asp-for="PkUserId" />
+
         <div class="row">
+            <div class="col-md-8">
+                <div class="form-group row">
+                    <label class="col-sm-2">User Id(Email)<span class="required">*</span> </label>
+                    <div class="col-md-6">
+                        <input asp-for="UserId" class="form-control" required />
+                        <span asp-validation-for="UserId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Password / Mobile<span class="required">*</span> </label>
+                    <div class="col-md-3">
+                        <input asp-for="Pwd" class="form-control" required />
+                        <span asp-validation-for="Pwd" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <input asp-for="Mobile" class="form-control" required />
+                        <span asp-validation-for="Mobile" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Status / Expiry Date<span class="required">*</span> </label>
+                    <div class="col-md-3">
+                        <input asp-for="Status" class="form-control" required />
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <input asp-for="Expiredt" class="form-control" required />
+                        <span asp-validation-for="Expiredt" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Role<span class="required">*</span></label>
+                    <div class="col-md-6">
+                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkRoleId" },{"name","Role"}, { "Class", "val-cus-drp" },
+                        { "value", Model.FkRoleId }, { "text", Model.Role }, { "uri", "Role" }, { "required", "required" },{ "placeholder", "Select Role"} })
+                        <span asp-validation-for="FkRoleId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Employee<span class="required">*</span> </label>
+                    <div class="col-md-6">
+                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkEmployeeId" },{"name","EmployeeName"}, { "Class", "val-cus-drp" },
+                        { "value", Model.FkEmployeeId }, { "text", Model.EmployeeName }, { "uri", "Employee" }, { "required", "required" },{ "placeholder", "Select Employee"} })
+                        <span asp-validation-for="FkEmployeeId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Branch<span class="required">*</span> </label>
+                    <div class="col-md-6">
+                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkBranchId" },{"name","BranchName"}, { "Class", "val-cus-drp" },
+                        { "value", Model.FkBranchId }, { "text", Model.BranchName }, { "uri", "Branch" }, { "required", "required" },{ "placeholder", "Select Branch"} })
 
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Employee </label>
-                    <select asp-for="FkEmployeeId" asp-items="@(new SelectList(ViewBag.EmployeeList,"PkEmployeeId","Name"))" class="form-control" id="FkEmployeeId">
-                    </select>
+                        <span asp-validation-for="FkBranchId" class="text-danger"></span>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Branch </label>
-                    <select asp-for="FkBranchId" asp-items="@(new SelectList(ViewBag.BranchList,"PkBranchId","BranchName"))" class="form-control" id="FkBranchId">
-                    </select>
-                </div>
-            </div>
+            <div class="col-sm-12">
+                <div class="tabs-ui-fmt mt-2" id="scrollfixheader">
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <button class="nav-link active" id="Locationtab-tab" data-bs-toggle="tab" data-bs-target="#Locationtab" type="button" role="tab" aria-controls="Locationtab" aria-selected="false" fdprocessedid="w66vj" tabindex="-1">Location</button>
 
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">User Id</label>
-                    <input asp-for="UserId" class="form-control" />
-                    <span asp-validation-for="UserId" class="text-danger"></span>
+                        </div>
+                    </nav>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Password</label>
-                    <input asp-for="Pwd" class="form-control" />
-                    <span asp-validation-for="Pwd" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Role </label>
-                    <select asp-for="FkRoleId" asp-items="@(new SelectList(ViewBag.RoleList,"PkRoleId","RoleName"))" class="form-control" id="FkRoleId">
-                    </select>
-                </div>
-            </div>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade active show" id="Locationtab" role="tabpanel" aria-labelledby="Locationtab-tab" tabindex="-1">
+                        <div class="row" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                            <div class="col-sm-12 mt-3">
+                                <div class="row form-group">
+                                    <div class="col-sm-4">
+                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkLocationID" }, { "Class", "val-cus-drp" },
+                                        { "value", "" }, { "text", "" }, { "uri", "Location" },{ "placeholder", "Select Location"} })
 
+                                    </div>
+                                    <div class="col-sm-1 ">
+                                        <span class="btn btn-success" onclick="AddLocation();">
+                                            <i class="bi bi-plus-lg"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-5 default-scroll-grid">
+                                <table id="tblUserLoc" class="table border tableheader-fixed">
+                                    <tbody class="md-height">
+
+                                        @if (Model.UserLoclnk != null)
+                                        {
+                                            for (int i = 0; i < Model.UserLoclnk.Count; i++)
+                                            {
+                                                <tr index="@i">
+                                                    <td>
+                                                        @Html.TextBoxFor(m => m.UserLoclnk[i].LocationName, new { @readonly = true, @tabindex = "-1" })
+                                                        @Html.HiddenFor(m => m.UserLoclnk[i].FkLocationID)
+                                                    </td>
+                                                    <td>
+                                                        @Html.HiddenFor(x => x.UserLoclnk[i].ModeForm)
+                                                        <button type="button" class="btn grid-close-btn" onclick="RowAction(this,@i,'del')">
+                                                            <i class="bi bi-x-circle"></i>
+                                                        </button>
+
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
 
         </div>
-
     </form>
 </div>
 
-@section Scripts{
+@section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
@@ -80,4 +155,4 @@
             };
         }
     </script>
-                }
+}
