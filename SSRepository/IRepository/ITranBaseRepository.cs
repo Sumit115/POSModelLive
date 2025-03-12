@@ -54,6 +54,7 @@ namespace SSRepository.IRepository
         object GetInvoiceBilty(long FkID, long FKSeriesId, long FkFormId);
 
         object GetPrintData(long PkId, long FkSeriesId);
+        object ApplyPromotion(TransactionModel model);
 
     }
 }

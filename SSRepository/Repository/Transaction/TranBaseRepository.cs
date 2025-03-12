@@ -858,6 +858,20 @@ namespace SSRepository.Repository.Transaction
             return model;
         }
 
+        public object ApplyPromotion(TransactionModel objmodel)
+        {
+            if (objmodel.ExtProperties.TranType == "S" && objmodel.IsTranChange && objmodel.TranAlias != "LINV" && objmodel.TranAlias != "LORD")
+            {
+                setPromotion(objmodel);
+
+                SetGridTotal(objmodel);
+                setPromotion_InvoiceValue(objmodel);
+
+               // objmodel.IsTranChange = false;
+            }
+            return objmodel;
+        }
+
         #region Promotion
         public void removePromotion(TransactionModel model)
         {
@@ -912,7 +926,7 @@ namespace SSRepository.Repository.Transaction
                                 //    _lst = model.TranDetails.Where(x => x.Qty >= itemPromo.PromotionApplyQty && x.FkProductId == itemPromo.FKProdID && (x.LinkSrNo <= 0 || x.LinkSrNo == null) && string.IsNullOrEmpty(x.PromotionType)).ToList();
                                 _lst = (from cou in model.TranDetails
                                         join promotionLnk in __dbContext.TblPromotionLnk on cou.FkProductId equals (Int64?)promotionLnk.FkLinkId //into _locationmpLnk
-                                        where promotionLnk.FkPromotionId == itemPromo.PkPromotionId
+                                        where promotionLnk.FkPromotionId == itemPromo.PkPromotionId && cou.ModeForm!=2
                                         && cou.Qty >= itemPromo.PromotionApplyQty
                                          && (cou.LinkSrNo <= 0 || cou.LinkSrNo == null) && string.IsNullOrEmpty(cou.PromotionType)
                                         orderby cou.Rate descending
@@ -923,7 +937,7 @@ namespace SSRepository.Repository.Transaction
                                 //     _lst = model.TranDetails.Where(x => x.Qty >= itemPromo.PromotionApplyQty && x.FKProdCatgId == itemPromo.FkProdCatgId && (x.LinkSrNo <= 0 || x.LinkSrNo == null) && string.IsNullOrEmpty(x.PromotionType)).ToList();
                                 _lst = (from cou in model.TranDetails
                                         join promotionLnk in __dbContext.TblPromotionLnk on cou.FKProdCatgId equals (Int64?)promotionLnk.FkLinkId //into _locationmpLnk
-                                        where promotionLnk.FkPromotionId == itemPromo.PkPromotionId
+                                        where promotionLnk.FkPromotionId == itemPromo.PkPromotionId && cou.ModeForm != 2
                                         && cou.Qty >= itemPromo.PromotionApplyQty
                                          && (cou.LinkSrNo <= 0 || cou.LinkSrNo == null) && string.IsNullOrEmpty(cou.PromotionType)
                                         orderby cou.Rate descending
@@ -934,7 +948,7 @@ namespace SSRepository.Repository.Transaction
                                 //   _lst = model.TranDetails.Where(x => x.Qty >= itemPromo.PromotionApplyQty && x.FkBrandId == itemPromo.FkBrandId && (x.LinkSrNo <= 0 || x.LinkSrNo == null) && string.IsNullOrEmpty(x.PromotionType)).ToList();
                                 _lst = (from cou in model.TranDetails
                                         join promotionLnk in __dbContext.TblPromotionLnk on cou.FkBrandId equals (Int64?)promotionLnk.FkLinkId //into _locationmpLnk
-                                        where promotionLnk.FkPromotionId == itemPromo.PkPromotionId
+                                        where promotionLnk.FkPromotionId == itemPromo.PkPromotionId && cou.ModeForm != 2
                                         && cou.Qty >= itemPromo.PromotionApplyQty
                                          && (cou.LinkSrNo <= 0 || cou.LinkSrNo == null) && string.IsNullOrEmpty(cou.PromotionType)
                                         orderby cou.Rate descending
@@ -996,7 +1010,7 @@ namespace SSRepository.Repository.Transaction
 
                             var _lstForApplyPromoCommon = (from cou in model.TranDetails
                                                            join promotionLnk in __dbContext.TblPromotionLnk on cou.FKProdCatgId equals (Int64?)promotionLnk.FkLinkId //into _locationmpLnk
-                                                           where promotionLnk.FkPromotionId == itemPromo.PkPromotionId && cou.Qty > 0
+                                                           where promotionLnk.FkPromotionId == itemPromo.PkPromotionId && cou.Qty > 0 && cou.ModeForm!=2
                                                         && (cou.LinkSrNo <= 0 || cou.LinkSrNo == null) && string.IsNullOrEmpty(cou.PromotionType)
                                                            orderby cou.Rate descending
                                                            select new

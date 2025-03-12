@@ -493,5 +493,17 @@ namespace SSAdmin.Areas
             }
 
         }
+
+        [HttpPost]
+        public JsonResult ApplyPromotion(TransactionModel model)
+        {
+            return Json(new
+            {
+                status = "success",
+                data = _repository.ApplyPromotion(model)
+            });
+
+        }
+
     }
 }

@@ -35,6 +35,9 @@ $(document).ready(function () {
         var $ul = $('#ul_Category li:first');
         BindCategoryProduct_Touch($($ul).find('a'));
     }
+    if (tranModel.ExtProperties.TranType == "S") {
+        $("#btnApplyPromotion").show();
+    } else { $("#btnApplyPromotion").hide(); }
     $(document.body).keyup(function (e) {
         if (e.keyCode == 120 && e.ctrlKey) {
             AutoFillLastRecord();
@@ -47,7 +50,13 @@ $(document).ready(function () {
         }
         return false;
     });
+    $('#btnApplyPromotion').click(function (e) {
 
+        if ($("#TranForm").valid()) {
+            ApplyPromotion()
+        }
+        return false;
+    });
 
 
     $(".FotChng").change(function () {
@@ -1589,3 +1598,31 @@ function AutoFillLastRecord() {
         alert('please insert any 1 record');
 }
 
+function ApplyPromotion() {
+    $(".loader").show();
+    tranModel.TranDetails = GetDataFromGrid();
+
+    $.ajax({
+        type: "POST",
+        url: Handler.currentPath() + 'ApplyPromotion',
+        data: { model: tranModel },
+        datatype: "json", success: function (res) {
+
+            if (res.status == "success") {
+                tranModel = res.data;
+
+                BindGrid('DDT', tranModel.TranDetails);
+
+                setFooterData(tranModel);
+                setPaymentDetail(tranModel);
+
+
+            }
+            else
+                alert(res.msg);
+
+            $(".loader").hide();
+
+        }
+    })
+}
