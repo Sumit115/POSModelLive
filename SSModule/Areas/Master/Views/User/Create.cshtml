@@ -33,7 +33,10 @@
                 <div class="form-group row">
                     <label class="col-sm-2">Status / Expiry Date<span class="required">*</span> </label>
                     <div class="col-md-3">
-                        <input asp-for="Status" class="form-control" required />
+                        <select class="form-select" asp-for="Status">
+                            <option value="A">Active</option>
+                            <option value="I">InActive</option>
+                        </select>
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>
                     <div class="col-md-3">
@@ -133,26 +136,6 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script>
-        $(document).ready(function () {
-            $('#btnServerSave').click(function (e) {
-                e.preventDefault();
-                $("form").submit();
-            });
-        })
-        UploadImage = (id) => {
-            var file = document.querySelector('input[id="file_' + id + '"]').files[0];
-            // $("#FileName").val(file.name);
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
-                //console.log(reader.result);
-                $("#" + id).val(reader.result);
-                $("#dummyimage_" + id).attr("src", reader.result);
-                $("#dummyimage_" + id).show();
-                //   $("#myImage").hide();
 
-            };
-        }
-    </script>
+    <script src="~/js/master/user.js"></script>
 }

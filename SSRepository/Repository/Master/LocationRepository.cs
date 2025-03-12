@@ -171,7 +171,7 @@ namespace SSRepository.Repository.Master
                         FKBranchID = cou.FkBranchID,
                         Branch = cou.branchMas.BranchName,
                         IsAllAccount = cou.IsAllAccount,
-                        FKUserID = cou.FKUserID,
+                        UserName = cou.UserMas.UserId,
                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
 
                     })).FirstOrDefault();
@@ -331,8 +331,8 @@ namespace SSRepository.Repository.Master
                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Email", Fields="Email",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Fax", Fields="Fax",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Website", Fields="Website",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="User",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="FKUserID",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
 
                         };
             return list;

@@ -55,6 +55,8 @@ namespace SSRepository.Data
 
         public virtual TblLocalityMas localityMas { get; set; }
 
+        public virtual TblUserMas UserMas { get; set; }
+
         public virtual ICollection<TblUserLocLnk> LocationUsers { get; set; }
     }
 }
