@@ -225,7 +225,7 @@
                                                                     @Html.TextBoxFor(m => m.AccountDtl_lst[i].type, new { @readonly = true, @tabindex = "-1" })
                                                                 </td>
                                                                 <td class="p-2 d-flex">
-                                                                    @Html.HiddenFor(x => x.AccountLocation_lst[i].ModeForm)
+                                                                    @Html.HiddenFor(x => x.AccountDtl_lst[i].ModeForm)
                                                                     <button type="button" class="btn grid-close-btn" onclick="RowAction(this,@i,'del')">
                                                                         <i class="bi bi-x-circle"></i>
                                                                     </button>
