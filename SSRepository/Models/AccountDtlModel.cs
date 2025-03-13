@@ -18,7 +18,7 @@ namespace SSRepository.Models
         public DateTime? CurrBalDate { get; set; }
         public string? type { get; set; }
 
-        public int  Mode { get; set; }
+        public long ModeForm { get; set; }
         public string? Location { get; set; }
 
 

@@ -14,7 +14,7 @@
                 <div class="form-group row">
                     <label class="col-sm-2">Group<span class="required">*</span> </label>
                     <div class="col-md-6">
-                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkAccountGroupId" },{"name","AccountGroup"}, { "Class", "val-cus-drp" },
+                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkAccountGroupId" },{"name","AccountGroupName"}, { "Class", "val-cus-drp" },
                         { "value", Model.FkAccountGroupId }, { "text", Model.AccountGroupName }, { "uri", "AccountGroup" }, { "required", "required" },{ "placeholder", "Select Group"} })
                         @*                        <select asp-for="FkAccountGroupId" asp-items="@(new SelectList(ViewBag.AccountGroupList,"PkAccountGroupId","AccountGroupName"))" class="form-control" id="FkAccountGroupId">
                         </select>*@
@@ -24,14 +24,14 @@
                 <div class="form-group row">
                     <label class="col-sm-2">Name<span class="required">*</span> </label>
                     <div class="col-md-6">
-                        <input asp-for="Account" class="form-control" />
+                        <input asp-for="Account" class="form-control" maxlength="100" />
                         <span asp-validation-for="Account" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2">Alias</label>
                     <div class="col-md-3">
-                        <input asp-for="Alias" class="form-control" />
+                        <input asp-for="Alias" class="form-control" maxlength="25" />
                         <span asp-validation-for="Alias" class="text-danger"></span>
                     </div>
                     <div class="col-md-3">
@@ -110,22 +110,29 @@
                                         <div class="row form-group">
                                             <label class="col-sm-4">Address</label>
                                             <div class="col-md-8">
-                                                <textarea asp-for="Address" class="form-control"></textarea>
+                                                <textarea asp-for="Address" class="form-control" maxlength="200"></textarea>
                                                 <span asp-validation-for="Address" class="text-danger"></span>
                                             </div>
                                         </div>
                                         <div class="row form-group">
                                             <label class="col-sm-4">Station</label>
                                             <div class="col-sm-8">
-                                                <input asp-for="Station" class="form-control" />
-                                                <span asp-validation-for="Station" class="text-danger"></span>
+                                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkStationId" },{"name","Station"}, { "Class", "val-cus-drp" },
+                                                { "value", Model.FkStationId }, { "text", Model.Station }, { "uri", "Station" },{ "placeholder", "Select Station"} })
+
+                                                @* <input asp-for="Station" class="form-control" />
+                                                <span asp-validation-for="Station" class="text-danger"></span>*@
                                             </div>
                                         </div>
                                         <div class="row form-group">
                                             <label class="col-sm-4">Locality</label>
                                             <div class="col-sm-8">
-                                                <input asp-for="Locality" class="form-control" />
+                                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkLocalityId" },{"name","Locality"}, { "Class", "val-cus-drp" },
+                                                { "value", Model.FkLocalityId }, { "text", Model.Locality }, { "uri", "Locality" },{ "placeholder", "Select Locality"} })
+
+                                                @* <input asp-for="Locality" class="form-control" />
                                                 <span asp-validation-for="Locality" class="text-danger"></span>
+                                                *@
                                             </div>
                                         </div>
 
@@ -140,7 +147,7 @@
                                             <label class="col-sm-4">Phone</label>
 
                                             <div class="col-sm-8">
-                                                <input asp-for="Phone1" class="form-control  input-number" />
+                                                <input asp-for="Phone1" class="form-control  input-number" maxlength="10" pattern="Mobile" />
                                                 <span asp-validation-for="Phone1" class="text-danger"></span>
                                             </div>
                                         </div>
@@ -170,14 +177,14 @@
                                                     <tr>
                                                         <td>
                                                             <div class="form-group">
-                                                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkLocationId_OpBal" },{ "name", "Location_OpBal" }, { "Class", "val-cus-drp" },
+                                                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkBranchId_OpBal" }, { "Class", "val-cus-drp" },
                                                                 { "value", "" }, { "text", "" }, { "uri", "Branch" },{ "placeholder", "Select Location"} })
 
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div class="form-group">
-                                                                <input id="OpeningBalance" class="form-control input-Amount" type="text" />
+                                                                <input id="OpeningBalance" class="form-control input-Amount" type="text" max="100000000" maxlength="9" value="0" />
                                                             </div>
                                                         </td>
 
@@ -218,10 +225,10 @@
                                                                     @Html.TextBoxFor(m => m.AccountDtl_lst[i].type, new { @readonly = true, @tabindex = "-1" })
                                                                 </td>
                                                                 <td class="p-2 d-flex">
-                                                                    @Html.HiddenFor(x => x.AccountDtl_lst[i].Mode)
-                                                                    <span class="action-icon" onclick="UpdateAccountDtl(this,'@i','edit')"><i class="fa fa-edit"></i></span>
-                                                                    &nbsp; | &nbsp; <span class="action-icon" onclick="UpdateAccountDtl(this,' @i ','del')"><i class="fa fa-trash"></i></span>
-
+                                                                    @Html.HiddenFor(x => x.AccountLocation_lst[i].ModeForm)
+                                                                    <button type="button" class="btn grid-close-btn" onclick="RowAction(this,@i,'del')">
+                                                                        <i class="bi bi-x-circle"></i>
+                                                                    </button>
                                                                 </td>
                                                             </tr>
 
@@ -248,7 +255,7 @@
                                             <div class="row form-group">
                                                 <label for="exampleInputEmail1" class="License1 control-label col-sm-4">License @No</label>
                                                 <div class=" col-md-8 ">
-                                                    <input id="@("AccountLicDtl_lst_"+i+"_Description")" name="AccountLicDtl_lst[@i].Description" type="text" value="@(_data!=null?_data.Description:"")" class="form-control">
+                                                    <input id="@("AccountLicDtl_lst_"+i+"_Description")" name="AccountLicDtl_lst[@i].Description" type="text" value="@(_data!=null?_data.Description:"")" class="form-control" maxlength="50">
                                                     <input id="@("AccountLicDtl_lst_"+i+"_No")" name="AccountLicDtl_lst[@i].No" type="hidden" value="@No">
                                                     <input id="@("AccountLicDtl_lst_"+i+"_PKAccountLicDtlId")" name="AccountLicDtl_lst[@i].PKAccountLicDtlId" type="hidden" value="@(_data!=null?_data.PKAccountLicDtlId:0)">
 
@@ -440,72 +447,59 @@
         //}
     </script>
 
-    <script>
+    <script> 
         function addOpeningBalance() {
-            debugger;
-            var rowCount = $('#tblOpeningBalance tbody tr').length;
-            var index = $("#hidLocationIndex").val();
-            var Exists = false;
-
-            var locid = $("#FkLocationId_OpBal").val();
-            if (locid > 0) {
-                $('#tblOpeningBalance tbody tr').each(function (ind) {
-
-                    if ($("#AccountDtl_lst_" + ind + "__FKLocationID").val() === locid && index !== ind.toString() && $("#AccountDtl_lst_" + ind + "__Mode").val() != '2') {
-                        alert("Already Exists");
-                        Exists = true;
+            var foundL = false;
+            if ($("#drpFkBranchId_OpBal").val().replace('"', '').replace('"', '') == "") {
+                Alertdialog("Please Select Location");
+                return false;
+            } else if ($("#OpeningBalance").val()== "") {
+                Alertdialog("Please Enter Opening Balance");
+                return false;
+            }
+            else {
+                $('#tblOpeningBalance tbody tr').each(function (index) {
+                    var val = $('#AccountDtl_lst_' + index + '__FKLocationID').val();
+                    var vald = $("#AccountDtl_lst_" + index + "__ModeForm").val();
+                    if (val == $("#FkBranchId_OpBal").val()) {
+                        foundL = true;
+                        $("#AccountDtl_lst_" + index + "__OpBal").val($("#OpeningBalance").val());
+                        $("#AccountDtl_lst_" + index + "__type").val($("#sltCrAmt").val().replace('"', ''));
+                        if (vald == '2') { 
+                            RowAction($("#AccountDtl_lst_" + index + "__ModeForm").next(), index, 'undo'); 
+                        };
                     }
                 });
-                if (!Exists) {
 
+                if (foundL == false) {
+                    var i = $('#tblOpeningBalance tbody tr').length;
+                    var html = `<tr index="${i}">
+                             <td>
+                                 <input id="AccountDtl_lst_${i}__BranchName" name="AccountDtl_lst[${i}].BranchName" type="text" value="${$("#drpFkBranchId_OpBal").val().replace('"', '').replace('"', '')}" tabindex="-1" readonly="readonly" />
+                                         <input id="AccountDtl_lst_${i}__FKLocationID" name="AccountDtl_lst[${i}].FKLocationID" type="hidden" value="${$("#FkBranchId_OpBal").val()}" />
 
-                    if (index === "") {
-                        var html = '<tr index="' + rowCount + '">';
-                        html += '<td class="p-2">  <input readonly="true" id="AccountDtl_lst_' + rowCount + '__Location" name="AccountDtl_lst[' + rowCount + '].Location" type="text" value="' + $("#Location_OpBal").val() + '" tabindex="-1"> ';
-                        html += ' <input id="AccountDtl_lst_' + rowCount + '__FKLocationID" name="AccountDtl_lst[' + rowCount + '].FKLocationID" type="hidden" value="' + locid + '"> </td>';
+                             </td>
+                              <td> <input id="AccountDtl_lst_${i}__OpBal" name="AccountDtl_lst[${i}].OpBal" type="text" value="${$("#OpeningBalance").val()}" tabindex="-1" readonly="readonly" />
 
-                        html += '<td class="p-2">  <input readonly="true" id="AccountDtl_lst_' + rowCount + '__OpBal" name="AccountDtl_lst[' + rowCount + '].OpBal" type="text" value="' + $("#OpeningBalance").val() + '" tabindex="-1"> </td>';
-                        html += '<td class="p-2">  <input readonly="true" id="AccountDtl_lst_' + rowCount + '__type" name="AccountDtl_lst[' + rowCount + '].type" type="text" value="' + $("#sltCrAmt").val() + '" tabindex="-1"> </td>';
-                        html += '<td class="p-2 d-flex"> <input id="AccountDtl_lst_' + rowCount + '__Mode" name="AccountDtl_lst[' + rowCount + '].Mode" type="hidden" value="0"> <span class="action-icon" onclick="UpdateAccountDtl(this,' + rowCount + ',\'edit\')"><i class="fa fa-edit" /></span> ';
-                        html += ' &nbsp; | &nbsp; <span class="action-icon" onclick="UpdateAccountDtl(this,' + rowCount + ',\'del\')"><i class="fa fa-trash" /></span> </td>';
+                             </td>
+                                      <td>
+                                   <input id="AccountDtl_lst_${i}__type" name="AccountDtl_lst[${i}].type" type="text" value="${$("#sltCrAmt").val().replace('"', '')}" tabindex="-1" readonly="readonly" />
 
-                        html += '</tr>';
-                        console.log(html);
-                        $("#tblOpeningBalance tbody").append(html);
-                    } else {
-
-                        $("#AccountDtl_lst_" + index + "__Location").val($("#Location_OpBal").val());
-                        $("#AccountDtl_lst_" + index + "__FKLocationID").val($("#FkLocationId_OpBal").val());
-                        $("#AccountDtl_lst_" + index + "__OpBal").val($("#OpeningBalance").val());
-                        $("#AccountDtl_lst_" + index + "__type").val($("#sltCrAmt").val());
-                        //  $("#AccountDtl_lst_" + index + "__Mode").val('1');
-
-                    }
-                    $("#OpeningBalance").val('0.0');
-                    $("#FkLocationId_OpBal").val('');
-                    $("#Location_OpBal").val('');
-                    $("#hidLocationIndex").val('');
-                    //$("#FklocalityGridId").prop('selectedIndex', 0);
-                    //DropDownReset('FklocalityGridId');
+                                     </td>
+                             <td>
+                                 <input id="AccountDtl_lst_${i}__ModeForm" name="AccountDtl_lst[${i}].ModeForm" type="hidden" value="0" />
+                                 <button type="button" class="btn grid-close-btn" onclick="RowAction(this,${i},\'del\')">
+                                     <i class="bi bi-x-circle"></i>
+                                 </button>
+                             </td>
+                             </tr>`;
+                    $("#tblOpeningBalance tbody").append(html);
                 }
             }
-            else { alert("Select Location"); }
-            // }
-            return false;
-        }
 
-        function UpdateAccountDtl(obj, index, action) {
-            if (action === 'edit') {
-                $("#hidLocationIndex").val(index);
-                $("#FkLocationId_OpBal").val($("#AccountDtl_lst_" + index + "__FKLocationID").val());
-                $("#Location_OpBal").val($("#AccountDtl_lst_" + index + "__Location").val());
-                $("#OpeningBalance").val($("#AccountDtl_lst_" + index + "__OpBal").val());
-                $("#sltCrAmt").val($("#AccountDtl_lst_" + index + "__type").val());
-                $(obj).closest('tr').removeClass('tbl-delete');
-            } else if (action === 'del') {
-                $(obj).closest('tr').addClass('tbl-delete');
-                $("#AccountDtl_lst_" + index + "__Mode").val('2');
-            }
+            DropDownReset('FkBranchId_OpBal');
+            $("#OpeningBalance").val('0.0');
+            return false;
         }
     </script>
     <script>
@@ -530,18 +524,18 @@
                 if (foundL == false) {
                     var i = $('#tblBranchLoc tbody tr').length;
                     var html = `<tr index="${i}">
-                                <td>
-                                    <input id="AccountLocation_lst_${i}__BranchName" name="AccountLocation_lst[${i}].BranchName" type="text" value="${$("#drpFkBranchId").val().replace('"', '').replace('"', '')}" tabindex="-1" readonly="readonly" />
-                                            <input id="AccountLocation_lst_${i}__FKLocationID" name="AccountLocation_lst[${i}].FKLocationID" type="hidden" value="${$("#FkBranchId").val()}" />
+                                                                <td>
+                                                                    <input id="AccountLocation_lst_${i}__BranchName" name="AccountLocation_lst[${i}].BranchName" type="text" value="${$("#drpFkBranchId").val().replace('"', '').replace('"', '')}" tabindex="-1" readonly="readonly" />
+                                                                            <input id="AccountLocation_lst_${i}__FKLocationID" name="AccountLocation_lst[${i}].FKLocationID" type="hidden" value="${$("#FkBranchId").val()}" />
 
-                                </td>
-                                <td>
-                                    <input id="AccountLocation_lst_${i}__ModeForm" name="AccountLocation_lst[${i}].ModeForm" type="hidden" value="0" />
-                                    <button type="button" class="btn grid-close-btn" onclick="RowAction(this,${i},\'del\')">
-                                        <i class="bi bi-x-circle"></i>
-                                    </button>
-                                </td>
-                                </tr>`;
+                                                                </td>
+                                                                <td>
+                                                                    <input id="AccountLocation_lst_${i}__ModeForm" name="AccountLocation_lst[${i}].ModeForm" type="hidden" value="0" />
+                                                                    <button type="button" class="btn grid-close-btn" onclick="RowAction(this,${i},\'del\')">
+                                                                        <i class="bi bi-x-circle"></i>
+                                                                    </button>
+                                                                </td>
+                                                                </tr>`;
                     $("#tblBranchLoc tbody").append(html);
                 }
             }
@@ -551,15 +545,16 @@
         }
 
         function RowAction(obj, index, action) {
+            debugger;
             if (action == 'del') {
-                $(obj).attr('onclick', "RowAction(this,${i},\'undo\')");
+                $(obj).attr('onclick', `RowAction(this,${i},\'undo\')`);
                 $(obj).html('<i class="bi bi-arrow-counterclockwise"></i>');
                 $(obj).closest('tr').addClass('tbl-delete');
                 $(obj).prev("input[id$='__ModeForm']").val('2');
                 $(obj).closest('tr').find(".action-icon").css("pointer-events", "none");
             }
             else if (action == 'undo') {
-                $(obj).attr('onclick', "RowAction(this,${i},'del')")
+                $(obj).attr('onclick', `RowAction(this,${i},\'del\')`)
                 $(obj).html('<i class="bi bi-x-circle"></i>');
                 $(obj).closest('tr').removeClass('tbl-delete');
                 $(obj).prev("input[id$='__ModeForm']").val('0');

@@ -299,6 +299,25 @@ namespace SSRepository.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             });
+
+            modelBuilder.Entity<TblAccountMas>(entity =>
+            { 
+
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKLocality)
+                   .WithMany()
+                   .HasForeignKey(e => e.FkLocalityId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKStation)
+                   .WithMany()
+                   .HasForeignKey(e => e.FkStationId)
+                   .OnDelete(DeleteBehavior.Restrict);
+            });
         }
     }
 }

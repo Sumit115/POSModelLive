@@ -65,7 +65,7 @@ namespace SSRepository.Models
         public string? DATE_MODIFIED { get; set; }
     }
 
-     
+
     public class ddl
     {
         public bool Selected { get; set; }

@@ -17,6 +17,8 @@ namespace SSRepository.Models
         [Required]
         public long FkAccountGroupId { get; set; }
         public string? Address { get; set; }
+        public long? FkStationId { get; set; }
+        public long? FkLocalityId { get; set; }
         public string? Station { get; set; }
         public string? Locality { get; set; }
         public string? Pincode { get; set; }

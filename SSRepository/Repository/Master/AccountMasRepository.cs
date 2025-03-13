@@ -42,6 +42,9 @@ namespace SSRepository.Repository.Master
                                           join CatPGrp in __dbContext.TblAccountGroupMas on cou.FkAccountGroupId equals CatPGrp.PkAccountGroupId
                                                           into tempAccGrp
                                           from AccGrp in tempAccGrp.DefaultIfEmpty()
+                                          join bankrp in __dbContext.TblBankMas on cou.FKBankID equals bankrp.PkBankId
+                                           into tempBank
+                                          from bank in tempBank.DefaultIfEmpty()
                                           where (EF.Functions.Like(cou.Account.Trim().ToLower(), search + "%"))
                                           orderby cou.PkAccountId
                                           select (new AccountMasModel
@@ -51,8 +54,10 @@ namespace SSRepository.Repository.Master
                                               Alias = cou.Alias,
                                               FkAccountGroupId = cou.FkAccountGroupId,
                                               Address = cou.Address,
-                                              Station = cou.Station,
-                                              Locality = cou.Locality,
+                                              FkStationId = cou.FkStationId,
+                                              Station = cou.FKStation.StationName,
+                                              FkLocalityId = cou.FkLocalityId,
+                                              Locality = cou.FKLocality.LocalityName,
                                               Pincode = cou.Pincode,
                                               Phone1 = cou.Phone1,
                                               Phone2 = cou.Phone2,
@@ -67,11 +72,14 @@ namespace SSRepository.Repository.Master
                                               PrintBrDtl = cou.PrintBrDtl,
                                               FKBankID = cou.FKBankID,
                                               AccountNo = cou.AccountNo,
+                                              BankName = bank.BankName,
+                                              IFSCCode = bank.IFSCCode,
                                               Status = cou.Status,
                                               DiscDate = cou.DiscDate,
                                               AccountGroupName = AccGrp.AccountGroupName,
                                               FKUserID = cou.FKUserID,
-                                              DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                                              DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                              UserName = cou.FKUser.UserId,
                                           }
                                          )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -97,12 +105,15 @@ namespace SSRepository.Repository.Master
                         Alias = cou.Alias,
                         FkAccountGroupId = cou.FkAccountGroupId,
                         Address = cou.Address,
-                        Station = cou.Station,
-                        Locality = cou.Locality,
+                        FkStationId = cou.FkStationId,
+                        Station = cou.FKStation.StationName,
+                        FkLocalityId = cou.FkLocalityId,
+                        Locality = cou.FKLocality.LocalityName,
                         Pincode = cou.Pincode,
                         Phone1 = cou.Phone1,
                         Phone2 = cou.Phone2,
                         Email = cou.Email,
+                        UserName = cou.FKUser.UserId,
                         //ApplyCostCenter = cou.ApplyCostCenter == null ? false : Convert.ToBoolean(cou.ApplyCostCenter),
                         //ApplyTCS = cou.ApplyTCS == null ? false : Convert.ToBoolean(cou.ApplyTCS),
                         //ApplyTDS = cou.ApplyTDS == null ? false : Convert.ToBoolean(cou.ApplyTDS),
@@ -134,7 +145,7 @@ namespace SSRepository.Repository.Master
                                               FKLocationID = ad.FKLocationID,
                                               OpBal = ad.OpBal == null ? 0 : Math.Abs(Convert.ToDecimal(ad.OpBal)),
                                               type = Convert.ToDecimal(ad.OpBal) >= 0 ? "Cr" : "Dr",
-                                              Mode = 1
+                                              ModeForm = 1
                                           })).ToList(),
                         AccountLicDtl_lst = (from ad in __dbContext.TblAccountLicDtl
                                                  // join loc in __dbContext.TblBranchMas on ad.FKLocationID equals loc.PkBranchId
@@ -224,6 +235,15 @@ namespace SSRepository.Repository.Master
             AccountMasModel model = (AccountMasModel)objmodel;
             string error = "";
             error = isAlreadyExist(model, Mode);
+            if (string.IsNullOrEmpty(error))
+            {
+                if (model.AccountLicDtl_lst != null)
+                { 
+                var _checkDates= model.AccountLicDtl_lst.Where(x=>x.ValidTill<x.IssueDate).ToList();
+                    if (_checkDates.Count > 0)
+                        error = "please enter valid Issue Date & Valid Till Date";
+                }
+            }
             return error;
 
         }
@@ -244,8 +264,8 @@ namespace SSRepository.Repository.Master
             Tbl.Account = model.Account;
             Tbl.FkAccountGroupId = model.FkAccountGroupId;
             Tbl.ModifiedDate = DateTime.Now;
-            Tbl.Station = model.Station;
-            Tbl.Locality = model.Locality;
+            Tbl.FkStationId = model.FkStationId;
+            Tbl.FkLocalityId = model.FkLocalityId;
             Tbl.Alias = model.Alias;
             Tbl.Address = model.Address;
             Tbl.Pincode = model.Pincode;
@@ -336,11 +356,17 @@ namespace SSRepository.Repository.Master
                 AddData(lstAddLocation, true);
 
 
+            var ul_dtl = (from x in __dbContext.TblAccountDtl
+                      where x.FkAccountId == Tbl.PkAccountId
+                      select x).ToList();
+
+            DeleteData(ul_dtl, true);
+
             if (model.AccountDtl_lst != null)
             {
-                List<TblAccountDtl> lstAdd = new List<TblAccountDtl>();
-                List<TblAccountDtl> lstEdit = new List<TblAccountDtl>();
-                List<TblAccountDtl> lstDel = new List<TblAccountDtl>();
+                List<TblAccountDtl> lstAddAccDtl = new List<TblAccountDtl>();
+                //List<TblAccountDtl> lstEdit = new List<TblAccountDtl>();
+               // List<TblAccountDtl> lstDel = new List<TblAccountDtl>();
                 foreach (var item in model.AccountDtl_lst)
                 {
                     TblAccountDtl locObj = new TblAccountDtl();
@@ -357,42 +383,43 @@ namespace SSRepository.Repository.Master
 
 
                     //   lstAdd.Add(locObj);
-                    if (item.Mode == 1)
-                    {
-                        locObj.ModifiedDate = DateTime.Now;
-                        locObj.CreationDate = Tbl.CreationDate;
-                        locObj.FKUserID = locObj.FKCreatedByID = Tbl.FKUserID;
-                        lstEdit.Add(locObj);
-                    }
-                    else if (item.Mode == 0)
+                    //if (item.Mode == 1)
+                    //{
+                    //    locObj.ModifiedDate = DateTime.Now;
+                    //    locObj.CreationDate = Tbl.CreationDate;
+                    //    locObj.FKUserID = locObj.FKCreatedByID = Tbl.FKUserID;
+                    //    lstEdit.Add(locObj);
+                    //}
+                    //else 
+                    if (item.ModeForm !=2)
                     {
                         //  locObj.PKAccountDtlId = getIdOfSeriesByEntity("PKAccountDtlId", null, Tbl, "TblAccountDtl");
                         locObj.ModifiedDate = DateTime.Now;
                         locObj.FKUserID = GetUserID();
                         locObj.FKCreatedByID = Tbl.FKUserID;
                         locObj.CreationDate = Tbl.ModifiedDate;
-                        lstAdd.Add(locObj);
+                        lstAddAccDtl.Add(locObj);
                     }
 
-                    else
-                    {
-                        var res1 = (from x in __dbContext.TblAccountDtl
-                                    where x.FKLocationID == locObj.FKLocationID && x.FkAccountId == locObj.FkAccountId
-                                    select x).Count();
-                        if (res1 > 0)
-                        {
-                            lstDel.Add(locObj);
-                        }
-                    }
+                    //else
+                    //{
+                    //    var res1 = (from x in __dbContext.TblAccountDtl
+                    //                where x.FKLocationID == locObj.FKLocationID && x.FkAccountId == locObj.FkAccountId
+                    //                select x).Count();
+                    //    if (res1 > 0)
+                    //    {
+                    //        lstDel.Add(locObj);
+                    //    }
+                    //}
 
                 }
 
-                if (lstDel.Count() > 0)
-                    DeleteData(lstDel, true);
-                if (lstEdit.Count() > 0)
-                    UpdateData(lstEdit, true);
-                if (lstAdd.Count() > 0)
-                    AddData(lstAdd, true);
+                //if (lstDel.Count() > 0)
+                //    DeleteData(lstDel, true);
+                //if (lstEdit.Count() > 0)
+                //    UpdateData(lstEdit, true);
+                if (lstAddAccDtl.Count() > 0)
+                    AddData(lstAddAccDtl, true);
             }
 
             if (model.AccountLicDtl_lst != null)
@@ -444,22 +471,33 @@ namespace SSRepository.Repository.Master
                     AddData(lstAdd, true);
             }
         }
+         
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
             var list = new List<ColumnStructure>
             {
-                new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Account ", Fields="Account",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Account Group", Fields="AccountGroupName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Alias", Fields="Alias",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Address", Fields="Address",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Station", Fields="Station",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Locality", Fields="Locality",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Pincode", Fields="Pincode",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Phone", Fields="Phone1",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Mobile", Fields="Phone2",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=10, Orderby =11, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-            };
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Account", Fields="Account",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Account Group",    Fields="AccountGroupName",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Alias",    Fields="Alias",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Email",    Fields="Email",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Mobile",  Fields="Phone2",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Address",  Fields="Address",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Pincode",  Fields="Pincode",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Station", Fields="Station",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Locality",   Fields="Locality",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Phone", Fields="Phone1",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Bank", Fields="BankName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Acc. No", Fields="AccountNo",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="IFSC", Fields="IFSCCode",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+
+                        };
             return list;
         }
 

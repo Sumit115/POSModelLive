@@ -14,8 +14,8 @@ namespace SSRepository.Data
         public string? Alias { get; set; }
         public long FkAccountGroupId { get; set; }
         public string? Address { get; set; }
-        public string? Station { get; set; }
-        public string? Locality { get; set; }
+        public long? FkStationId { get; set; }
+        public long? FkLocalityId { get; set; }
         public string? Pincode { get; set; }
         public string? Phone1 { get; set; }
         public string? Phone2 { get; set; }
@@ -34,6 +34,9 @@ namespace SSRepository.Data
         public string? Status { get; set; }
         public DateTime? DiscDate { get; set; }
 
+        public virtual TblUserMas FKUser { get; set; }
+        public virtual TblLocalityMas? FKLocality { get; set; }
+        public virtual TblStationMas? FKStation { get; set; }
 
     }
 }
