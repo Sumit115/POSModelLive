@@ -28,7 +28,7 @@ namespace SSRepository.Repository.Report
         }
         public string GroupByColumn(long FormId, string GridName = "")
         {
-            var data = new GridLayoutRepository(__dbContext, _contextAccessor).GetSingleRecord(1, FormId, GridName, ColumnList(GridName));
+            var data = new GridLayoutRepository(__dbContext, _contextAccessor).GetSingleRecord( FormId, GridName, ColumnList(GridName));
             List<ColumnStructure> _cs = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData);
             string clm = "CategoryName,NameToDisplay,Location,Batch,MRP,StockDays,Barcode";
             List<string> columnlist = clm.Split(',').ToList().Where(x => _cs.Where(y => y.Fields == x && y.IsActive == 1).ToList().Count > 0).ToList();

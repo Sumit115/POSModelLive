@@ -61,7 +61,7 @@ namespace SSRepository.Repository.Transaction
         }
         public object SetLastSeries(TransactionModel model, long UserId, string TranAlias, string DocumentType)
         {
-            var BillingLocation = SysDefaults_byLogin().BillingLocation.Split(',').ToList();
+            var BillingLocation = ObjSysDefault.BillingLocation.Split(',').ToList();
             var obj = (from cou in __dbContext.TblPurchaseInvoicetrn
                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
                        where cou.FKUserID == UserId && ser.TranAlias == TranAlias

@@ -63,7 +63,7 @@ namespace SSRepository.Repository.Master
                         Fax = Loc.Fax,
                         Email = Loc.Email,
                         Website = Loc.Website,
-                        FKUserID = Loc.FKUserID,
+                        UserName = Loc.UserMas.UserId,
                         DATE_MODIFIED = Loc.ModifiedDate.ToString("dd-MMM-yyyy")
                     }
                    )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
@@ -90,7 +90,7 @@ namespace SSRepository.Repository.Master
             }
             else if (EnCustomFlag == (int)Handler.en_CustomFlag.Filter)
             {
-                var BillingLocation = SysDefaults_byLogin().BillingLocation.Split(',').ToList(); 
+                var BillingLocation = ObjSysDefault.BillingLocation.Split(',').ToList(); 
                 if (search != null) search = search.ToLower();
                 pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
                 return ((from cou in __dbContext.TblLocationMas
@@ -316,22 +316,21 @@ namespace SSRepository.Repository.Master
             int Orderby = 1;
             var list = new List<ColumnStructure>
             {
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Location", Fields="Location",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Location", Fields="Location",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Alias",    Fields="Alias",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Branch",    Fields="Branch",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Account",    Fields="Account",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Branch",    Fields="Branch",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Account",    Fields="Account",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="IsBillingLocation", Fields="IsBillingLocation",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
 
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Address",  Fields="Address",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Pincode",  Fields="Pincode",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Station", Fields="Station",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Station", Fields="Station",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Address",  Fields="Address",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Pincode",  Fields="Pincode",Width=8,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Station", Fields="Station",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Locality",   Fields="Locality",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Phone2", Fields="Phone2",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Email", Fields="Email",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Email", Fields="Email",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Fax", Fields="Fax",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Website", Fields="Website",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="FKUserID",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
 
                         };

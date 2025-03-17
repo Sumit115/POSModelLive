@@ -7,7 +7,7 @@ namespace SSRepository.IRepository
 
     public interface ILoginRepository:IBaseRepository
     {
-        UserModel ValidateUser(long UserId);
+        bool ValidateUser(long UserId);
 
         string UserMenu(long UserId);
         void Logout();

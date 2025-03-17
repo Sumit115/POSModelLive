@@ -24,50 +24,45 @@ namespace SSRepository.Repository
         }
 
 
-        public UserModel ValidateUser(long UserId)
+        public bool ValidateUser(long UserId)
         {
 
             UserModel data = new UserRepository(__dbContext, _contextAccessor).GetSingleRecord(UserId);
-            SysDefaults Sys = GetSysDefaults();
+            if (data != null && data.PkUserId > 0)
+            {
+                SysDefaults Sys = GetSysDefaults();
 
-            var result = (from c in __dbContext.TblUserLocLnk
-                          where c.FKUserID == UserId
-                          select (new
-                          {
-                              c.FKLocationID,
-                              c.FKLocation.IsBillingLocation
-                          })
-                       ).ToList();
+                var result = (from c in __dbContext.TblUserLocLnk
+                              where c.FKUserID == UserId
+                              select (new
+                              {
+                                  c.FKLocationID,
+                                  c.FKLocation.IsBillingLocation
+                              })
+                           ).ToList();
 
 
-            Sys.BillingLocation = string.Join(",", result.Where(x => x.IsBillingLocation == true).Select(r => r.FKLocationID));
-            Sys.Location = string.Join(",", result.Select(r => r.FKLocationID));
-              
-            SaveFile("sysdefaults.json", JsonConvert.SerializeObject(Sys));
+                Sys.BillingLocation = string.Join(",", result.Where(x => x.IsBillingLocation == true).Select(r => r.FKLocationID));
+                Sys.Location = string.Join(",", result.Select(r => r.FKLocationID));
+                Sys.FkRoleId = data.FkRoleId;
+                Sys.IsAdmin = data.IsAdmin;
 
-            RoleModel role = new RoleRepository(__dbContext, _contextAccessor).GetSingleRecord(data.FkRoleId, true);
-            SaveFile("menulist.json", JsonConvert.SerializeObject(role.RoleDtls));
-            return data;
+                SaveFile("sysdefaults.json", JsonConvert.SerializeObject(Sys));
+
+                RoleModel role = new RoleRepository(__dbContext, _contextAccessor).GetSingleRecord(data.FkRoleId, true);
+                SaveFile("menulist.json", JsonConvert.SerializeObject(role.RoleDtls));
+                return true;
+            }
+            else {  return false; }
         }
 
 
         private void SaveFile(string FileName, string Data)
         {
 
-            string path = Path.Combine("wwwroot", "Data");
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            path = Path.Combine(path, Convert.ToString(_contextAccessor.HttpContext.User.FindFirst("CompanyName")?.Value ?? ""));
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-
-            path = Path.Combine(path, Convert.ToString(_contextAccessor.HttpContext.User.FindFirst("UserId")?.Value ?? ""));
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            string filePath = Path.Combine(path, FileName);
+            string companyName = _contextAccessor.HttpContext.Session.GetString("CompanyName") ?? "";
+            string userId = _contextAccessor.HttpContext.Session.GetString("UserID") ?? "";
+            string filePath = Path.Combine("wwwroot", "Data", companyName, userId, FileName);
 
             FileInfo file = new FileInfo(filePath);
             if (file.Exists)

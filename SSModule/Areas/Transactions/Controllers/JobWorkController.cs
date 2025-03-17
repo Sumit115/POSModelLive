@@ -50,7 +50,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
         {
 
             DataTable dtList = _repository.GetList(FDate, TDate, TranAlias, DocumentType, LocationFilter);
-            var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "", ColumnList());
+            var data = _gridLayoutRepository.GetSingleRecord( FKFormID, "", ColumnList());
             var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
             DataTable _gridColumn = Handler.ToDataTable(model);
 
@@ -72,8 +72,8 @@ namespace SSAdmin.Areas.Transactions.Controllers
         protected void BindViewBags(object Model)
         {
             ViewBag.Data = JsonConvert.SerializeObject(Model);
-            ViewBag.GridIn = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "dtl", ColumnList("dtl")).JsonData;
-            ViewBag.GridOut = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "rtn", ColumnList("rtn")).JsonData;
+            ViewBag.GridIn = _gridLayoutRepository.GetSingleRecord( FKFormID, "dtl", ColumnList("dtl")).JsonData;
+            ViewBag.GridOut = _gridLayoutRepository.GetSingleRecord( FKFormID, "rtn", ColumnList("rtn")).JsonData;
 
         }
         public void setDefault(TransactionModel model)

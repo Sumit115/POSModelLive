@@ -10,7 +10,7 @@ namespace SSRepository.IRepository
 {
     public interface IGridLayoutRepository : IRepository<TblGridStructer>
     {
-        TblGridStructer GetSingleRecord(long FkUserId, long FkFormId,string GridName, List<ColumnStructure> columns);
+        TblGridStructer GetSingleRecord(long FkFormId,string GridName, List<ColumnStructure> columns);
 
     }
 }

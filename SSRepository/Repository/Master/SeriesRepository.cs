@@ -99,7 +99,7 @@ namespace SSRepository.Repository.Master
         {
             if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
             {
-                var BillingLocation = SysDefaults_byLogin().BillingLocation.Split(',').ToList();
+                var BillingLocation = ObjSysDefault.BillingLocation.Split(',').ToList();
 
                 if (search != null) search = search.ToLower();
                 pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
@@ -123,7 +123,7 @@ namespace SSRepository.Repository.Master
             }
             else if (EnCustomFlag == (int)Handler.en_CustomFlag.Filter)
             {
-                var BillingLocation = SysDefaults_byLogin().BillingLocation.Split(',').ToList();
+                var BillingLocation = ObjSysDefault.BillingLocation.Split(',').ToList();
 
                 if (search != null) search = search.ToLower();
                 pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;

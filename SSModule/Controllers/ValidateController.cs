@@ -34,11 +34,14 @@ namespace SSAdmin.Controllers
 
                 HttpContext.Session.SetString("ConnectionString", Convert.ToString(HttpContext.User.FindFirst("ConnectionString")?.Value));
                 HttpContext.Session.SetString("UserID", Convert.ToString(HttpContext.User.FindFirst("UserId")?.Value));
-                UserModel ds = _repository.ValidateUser(Convert.ToInt64(HttpContext.User.FindFirst("UserId")?.Value));
-                if (ds != null)
+                HttpContext.Session.SetString("CompanyName", Convert.ToString(HttpContext.User.FindFirst("CompanyName")?.Value));
+                bool ds = _repository.ValidateUser(Convert.ToInt64(HttpContext.User.FindFirst("UserId")?.Value));
+                if (ds)
                 {
-                    HttpContext.Session.SetString("RoleId", ds.FkRoleId.ToString());
-                    HttpContext.Session.SetString("IsAdmin", ds.IsAdmin.ToString());
+
+                    HttpContext.Session.SetString("RoleId", _repository.ObjSysDefault.FkRoleId.ToString());
+                    HttpContext.Session.SetString("IsAdmin", _repository.ObjSysDefault.IsAdmin.ToString());
+                    HttpContext.Session.SetString("CompanyImage1", _repository.ObjSysDefault.CompanyImage1??"");
 
                     Response.Redirect("/Dashboard");
                 }
