@@ -124,7 +124,7 @@ namespace SSRepository.Repository.Master
                         FKUserID = cou.FKUserID,
                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                         AccountLocation_lst = (from ad in __dbContext.TblAccountLocLnk
-                                               join loc in __dbContext.TblBranchMas on ad.FKLocationID equals loc.PkBranchId
+                                               join loc in __dbContext.TblLocationMas on ad.FKLocationID equals loc.PkLocationID
                                                where (ad.FkAccountId == cou.PkAccountId)
                                                select (new AccountLocLnkModel
                                                {
@@ -132,23 +132,22 @@ namespace SSRepository.Repository.Master
                                                    FkAccountId = ad.FkAccountId,
                                                    FKLocationID = ad.FKLocationID,
                                                    ModeForm = 1,
-                                                   BranchName = loc.BranchName
+                                                   Location = loc.Location
                                                })).ToList(),
                         AccountDtl_lst = (from ad in __dbContext.TblAccountDtl
-                                          join loc in __dbContext.TblBranchMas on ad.FKLocationID equals loc.PkBranchId
+                                          join loc in __dbContext.TblLocationMas on ad.FKLocationID equals loc.PkLocationID
                                           where (ad.FkAccountId == cou.PkAccountId)
                                           select (new AccountDtlModel
                                           {
                                               PKAccountDtlId = ad.PKAccountDtlId,
                                               FkAccountId = ad.FkAccountId,
-                                              Location = loc.BranchName,
+                                              Location = loc.Location,
                                               FKLocationID = ad.FKLocationID,
                                               OpBal = ad.OpBal == null ? 0 : Math.Abs(Convert.ToDecimal(ad.OpBal)),
                                               type = Convert.ToDecimal(ad.OpBal) >= 0 ? "Cr" : "Dr",
                                               ModeForm = 1
                                           })).ToList(),
-                        AccountLicDtl_lst = (from ad in __dbContext.TblAccountLicDtl
-                                                 // join loc in __dbContext.TblBranchMas on ad.FKLocationID equals loc.PkBranchId
+                        AccountLicDtl_lst = (from ad in __dbContext.TblAccountLicDtl 
                                              where (ad.FkAccountId == cou.PkAccountId)
                                              select (new AccountLicDtlModel
                                              {
@@ -238,8 +237,8 @@ namespace SSRepository.Repository.Master
             if (string.IsNullOrEmpty(error))
             {
                 if (model.AccountLicDtl_lst != null)
-                { 
-                var _checkDates= model.AccountLicDtl_lst.Where(x=>x.ValidTill<x.IssueDate).ToList();
+                {
+                    var _checkDates = model.AccountLicDtl_lst.Where(x => x.ValidTill < x.IssueDate).ToList();
                     if (_checkDates.Count > 0)
                         error = "please enter valid Issue Date & Valid Till Date";
                 }
@@ -357,8 +356,8 @@ namespace SSRepository.Repository.Master
 
 
             var ul_dtl = (from x in __dbContext.TblAccountDtl
-                      where x.FkAccountId == Tbl.PkAccountId
-                      select x).ToList();
+                          where x.FkAccountId == Tbl.PkAccountId
+                          select x).ToList();
 
             DeleteData(ul_dtl, true);
 
@@ -366,7 +365,7 @@ namespace SSRepository.Repository.Master
             {
                 List<TblAccountDtl> lstAddAccDtl = new List<TblAccountDtl>();
                 //List<TblAccountDtl> lstEdit = new List<TblAccountDtl>();
-               // List<TblAccountDtl> lstDel = new List<TblAccountDtl>();
+                // List<TblAccountDtl> lstDel = new List<TblAccountDtl>();
                 foreach (var item in model.AccountDtl_lst)
                 {
                     TblAccountDtl locObj = new TblAccountDtl();
@@ -391,7 +390,7 @@ namespace SSRepository.Repository.Master
                     //    lstEdit.Add(locObj);
                     //}
                     //else 
-                    if (item.ModeForm !=2)
+                    if (item.ModeForm != 2)
                     {
                         //  locObj.PKAccountDtlId = getIdOfSeriesByEntity("PKAccountDtlId", null, Tbl, "TblAccountDtl");
                         locObj.ModifiedDate = DateTime.Now;
@@ -428,9 +427,9 @@ namespace SSRepository.Repository.Master
                 List<TblAccountLicDtl> lstEdit = new List<TblAccountLicDtl>();
                 List<TblAccountLicDtl> lstDel = new List<TblAccountLicDtl>();
 
-                lstDel = (from x in __dbContext.TblAccountLicDtl
-                          where x.FkAccountId == Tbl.PkAccountId
-                          select x).ToList();
+                //lstDel = (from x in __dbContext.TblAccountLicDtl
+                //          where x.FkAccountId == Tbl.PkAccountId
+                //          select x).ToList();
 
 
 
@@ -459,7 +458,15 @@ namespace SSRepository.Repository.Master
                     {
                         //  locObj.PKAccountLicDtlId = getIdOfSeriesByEntity("PKAccountLicDtlId", null, Tbl, "TblAccountLicDtl");
                         locObj.ModifiedDate = DateTime.Now;
+                        locObj.FKUserID = Tbl.FKUserID;
+                        locObj.FKCreatedByID = Tbl.FKUserID;
+                        locObj.CreationDate = Tbl.ModifiedDate;
                         lstEdit.Add(locObj);
+                    }
+                    else
+                    {
+                        if (locObj.PKAccountLicDtlId > 0)
+                            lstDel.Add(locObj);
                     }
                 }
 
@@ -471,7 +478,24 @@ namespace SSRepository.Repository.Master
                     AddData(lstAdd, true);
             }
         }
-         
+        public string AutoGenerateAlias()
+        {
+            var str = "";
+            try
+            {
+                var _max = __dbContext.TblAccountMas.Where(x => !string.IsNullOrEmpty(x.Alias)).Max(x => Convert.ToInt64(x.Alias));
+                str = _max != null ? (_max + 1).ToString() : "1000";
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("Error converting data type nvarchar to bigint"))
+                    throw new Exception("auto generate failed. because existing records contains character in alias.");
+                else
+                    str = "1000";
+            }
+            return str;
+        }
+
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
             int index = 1;

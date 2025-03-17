@@ -74,10 +74,12 @@ namespace SSRepository.Repository.Master
         {
             if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
             {
-                 if (search != null) search = search.ToLower();
+                var BillingLocation = SysDefaults_byLogin().BillingLocation.Split(',').ToList();
+                if (search != null) search = search.ToLower();
                 pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
                 return ((from cou in __dbContext.TblLocationMas
                          where (EF.Functions.Like(cou.Location.Trim().ToLower(), Convert.ToString(search) + "%"))
+                          && BillingLocation.Contains(cou.PkLocationID.ToString())
                          orderby cou.Location
                          select (new
                          {

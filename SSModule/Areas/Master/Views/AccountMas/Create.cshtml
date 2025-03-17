@@ -35,9 +35,8 @@
                         <span asp-validation-for="Alias" class="text-danger"></span>
                     </div>
                     <div class="col-md-3">
-                        <button type="button" class="btn btn-warning">
+                        <button type="button" class="btn btn-warning" onclick="AutoGenerateAlias()">
                             <i class="bi bi-gear-fill me-2" style="color: black;"></i>Auto Generate
-
                         </button>
                     </div>
                 </div>
@@ -177,8 +176,8 @@
                                                     <tr>
                                                         <td>
                                                             <div class="form-group">
-                                                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkBranchId_OpBal" }, { "Class", "val-cus-drp" },
-                                                                { "value", "" }, { "text", "" }, { "uri", "Branch" },{ "placeholder", "Select Location"} })
+                                                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkLocationId_OpBal" }, { "Class", "val-cus-drp" },
+                                                                { "value", "" }, { "text", "" }, { "uri", "Location" },{ "placeholder", "Select Location"} })
 
                                                             </div>
                                                         </td>
@@ -309,19 +308,19 @@
                                     <div class="col-sm-12 mt-3">
                                         <div class="row form-group">
                                             <div class="col-sm-4">
-                                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkBranchId" }, { "Class", "val-cus-drp" },
-                                                { "value", "" }, { "text", "" }, { "uri", "Branch" },{ "placeholder", "Select Location"} })
+                                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkLocationId" }, { "Class", "val-cus-drp" },
+                                                { "value", "" }, { "text", "" }, { "uri", "Location" },{ "placeholder", "Select Location"} })
 
                                             </div>
                                             <div class="col-sm-1 ">
-                                                <span class="btn btn-success" onclick="AddBranch();">
+                                                <span class="btn btn-success" onclick="AddLocation();">
                                                     <i class="bi bi-plus-lg"></i>
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-sm-5 default-scroll-grid">
-                                        <table id="tblBranchLoc" class="table border tableheader-fixed">
+                                        <table id="tblLocationLoc" class="table border tableheader-fixed">
                                             <tbody class="md-height">
 
                                                 @if (Model.AccountLocation_lst != null)
@@ -330,7 +329,7 @@
                                                     {
                                                         <tr index="@i">
                                                             <td>
-                                                                @Html.TextBoxFor(m => m.AccountLocation_lst[i].BranchName, new { @readonly = true, @tabindex = "-1" })
+                                                                @Html.TextBoxFor(m => m.AccountLocation_lst[i].Location, new { @readonly = true, @tabindex = "-1" })
                                                                 @Html.HiddenFor(m => m.AccountLocation_lst[i].FKLocationID)
                                                                 @Html.HiddenFor(m => m.AccountLocation_lst[i].PKAccountLocLnkId)
                                                             </td>
@@ -447,13 +446,13 @@
         //}
     </script>
 
-    <script> 
+    <script>
         function addOpeningBalance() {
             var foundL = false;
-            if ($("#drpFkBranchId_OpBal").val().replace('"', '').replace('"', '') == "") {
+            if ($("#drpFkLocationId_OpBal").val().replace('"', '').replace('"', '') == "") {
                 Alertdialog("Please Select Location");
                 return false;
-            } else if ($("#OpeningBalance").val()== "") {
+            } else if ($("#OpeningBalance").val() == "") {
                 Alertdialog("Please Enter Opening Balance");
                 return false;
             }
@@ -461,12 +460,12 @@
                 $('#tblOpeningBalance tbody tr').each(function (index) {
                     var val = $('#AccountDtl_lst_' + index + '__FKLocationID').val();
                     var vald = $("#AccountDtl_lst_" + index + "__ModeForm").val();
-                    if (val == $("#FkBranchId_OpBal").val()) {
+                    if (val == $("#FkLocationId_OpBal").val()) {
                         foundL = true;
                         $("#AccountDtl_lst_" + index + "__OpBal").val($("#OpeningBalance").val());
                         $("#AccountDtl_lst_" + index + "__type").val($("#sltCrAmt").val().replace('"', ''));
-                        if (vald == '2') { 
-                            RowAction($("#AccountDtl_lst_" + index + "__ModeForm").next(), index, 'undo'); 
+                        if (vald == '2') {
+                            RowAction($("#AccountDtl_lst_" + index + "__ModeForm").next(), index, 'undo');
                         };
                     }
                 });
@@ -474,46 +473,46 @@
                 if (foundL == false) {
                     var i = $('#tblOpeningBalance tbody tr').length;
                     var html = `<tr index="${i}">
-                             <td>
-                                 <input id="AccountDtl_lst_${i}__BranchName" name="AccountDtl_lst[${i}].BranchName" type="text" value="${$("#drpFkBranchId_OpBal").val().replace('"', '').replace('"', '')}" tabindex="-1" readonly="readonly" />
-                                         <input id="AccountDtl_lst_${i}__FKLocationID" name="AccountDtl_lst[${i}].FKLocationID" type="hidden" value="${$("#FkBranchId_OpBal").val()}" />
+                                             <td>
+                                                 <input id="AccountDtl_lst_${i}__Location" name="AccountDtl_lst[${i}].Location" type="text" value="${$("#drpFkLocationId_OpBal").val().replace('"', '').replace('"', '')}" tabindex="-1" readonly="readonly" />
+                                                         <input id="AccountDtl_lst_${i}__FKLocationID" name="AccountDtl_lst[${i}].FKLocationID" type="hidden" value="${$("#FkLocationId_OpBal").val()}" />
 
-                             </td>
-                              <td> <input id="AccountDtl_lst_${i}__OpBal" name="AccountDtl_lst[${i}].OpBal" type="text" value="${$("#OpeningBalance").val()}" tabindex="-1" readonly="readonly" />
+                                             </td>
+                                              <td> <input id="AccountDtl_lst_${i}__OpBal" name="AccountDtl_lst[${i}].OpBal" type="text" value="${$("#OpeningBalance").val()}" tabindex="-1" readonly="readonly" />
 
-                             </td>
-                                      <td>
-                                   <input id="AccountDtl_lst_${i}__type" name="AccountDtl_lst[${i}].type" type="text" value="${$("#sltCrAmt").val().replace('"', '')}" tabindex="-1" readonly="readonly" />
+                                             </td>
+                                                      <td>
+                                                   <input id="AccountDtl_lst_${i}__type" name="AccountDtl_lst[${i}].type" type="text" value="${$("#sltCrAmt").val().replace('"', '')}" tabindex="-1" readonly="readonly" />
 
-                                     </td>
-                             <td>
-                                 <input id="AccountDtl_lst_${i}__ModeForm" name="AccountDtl_lst[${i}].ModeForm" type="hidden" value="0" />
-                                 <button type="button" class="btn grid-close-btn" onclick="RowAction(this,${i},\'del\')">
-                                     <i class="bi bi-x-circle"></i>
-                                 </button>
-                             </td>
-                             </tr>`;
+                                                     </td>
+                                             <td>
+                                                 <input id="AccountDtl_lst_${i}__ModeForm" name="AccountDtl_lst[${i}].ModeForm" type="hidden" value="0" />
+                                                 <button type="button" class="btn grid-close-btn" onclick="RowAction(this,${i},\'del\')">
+                                                     <i class="bi bi-x-circle"></i>
+                                                 </button>
+                                             </td>
+                                             </tr>`;
                     $("#tblOpeningBalance tbody").append(html);
                 }
             }
 
-            DropDownReset('FkBranchId_OpBal');
+            DropDownReset('FkLocationId_OpBal');
             $("#OpeningBalance").val('0.0');
             return false;
         }
     </script>
     <script>
-        function AddBranch() {
+        function AddLocation() {
             var foundL = false;
-            if ($("#drpFkBranchId").val().replace('"', '').replace('"', '') == "") {
+            if ($("#drpFkLocationId").val().replace('"', '').replace('"', '') == "") {
                 Alertdialog("Please Select Location");
                 return false;
             }
             else {
-                $('#tblBranchLoc tbody tr').each(function (index) {
+                $('#tblLocationLoc tbody tr').each(function (index) {
                     var val = $('#AccountLocation_lst_' + index + '__FKLocationID').val();
                     var vald = $("#AccountLocation_lst_" + index + "__ModeForm").val();
-                    if (val == $("#FkBranchId").val()) {
+                    if (val == $("#FkLocationId").val()) {
                         foundL = true;
                         if (vald == '2') {
                             RowAction($("#AccountLocation_lst_" + index + "__ModeForm").next(), index, 'undo');
@@ -522,25 +521,25 @@
                 });
 
                 if (foundL == false) {
-                    var i = $('#tblBranchLoc tbody tr').length;
+                    var i = $('#tblLocationLoc tbody tr').length;
                     var html = `<tr index="${i}">
-                                                                <td>
-                                                                    <input id="AccountLocation_lst_${i}__BranchName" name="AccountLocation_lst[${i}].BranchName" type="text" value="${$("#drpFkBranchId").val().replace('"', '').replace('"', '')}" tabindex="-1" readonly="readonly" />
-                                                                            <input id="AccountLocation_lst_${i}__FKLocationID" name="AccountLocation_lst[${i}].FKLocationID" type="hidden" value="${$("#FkBranchId").val()}" />
+                                                                                <td>
+                                                                                    <input id="AccountLocation_lst_${i}__Location" name="AccountLocation_lst[${i}].Location" type="text" value="${$("#drpFkLocationId").val().replace('"', '').replace('"', '')}" tabindex="-1" readonly="readonly" />
+                                                                                            <input id="AccountLocation_lst_${i}__FKLocationID" name="AccountLocation_lst[${i}].FKLocationID" type="hidden" value="${$("#FkLocationId").val()}" />
 
-                                                                </td>
-                                                                <td>
-                                                                    <input id="AccountLocation_lst_${i}__ModeForm" name="AccountLocation_lst[${i}].ModeForm" type="hidden" value="0" />
-                                                                    <button type="button" class="btn grid-close-btn" onclick="RowAction(this,${i},\'del\')">
-                                                                        <i class="bi bi-x-circle"></i>
-                                                                    </button>
-                                                                </td>
-                                                                </tr>`;
-                    $("#tblBranchLoc tbody").append(html);
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input id="AccountLocation_lst_${i}__ModeForm" name="AccountLocation_lst[${i}].ModeForm" type="hidden" value="0" />
+                                                                                    <button type="button" class="btn grid-close-btn" onclick="RowAction(this,${i},\'del\')">
+                                                                                        <i class="bi bi-x-circle"></i>
+                                                                                    </button>
+                                                                                </td>
+                                                                                </tr>`;
+                    $("#tblLocationLoc tbody").append(html);
                 }
             }
 
-            DropDownReset('FkBranchId');
+            DropDownReset('FkLocationId');
             return false;
         }
 
@@ -560,6 +559,27 @@
                 $(obj).prev("input[id$='__ModeForm']").val('0');
                 $(obj).closest('tr').find(".action-icon").css("pointer-events", "all");
             }
+        }
+    </script>
+    <script>
+        function AutoGenerateAlias() {
+            $(".loader").show();
+            $.ajax({
+                type: "POST",
+                url: Handler.currentPath() + 'AutoGenerateAlias',
+                //data: { model: tranModel, rowIndex: rowIndex, fieldName: fieldName },
+                datatype: "json",
+                success: function (res) {
+                    debugger;
+                    if (res.status == "success") {
+                        $('#Alias').val(res.data);
+                    }
+                    else
+                        alert(res.msg);
+
+                    $(".loader").hide();
+                }
+            });
         }
     </script>
                 }

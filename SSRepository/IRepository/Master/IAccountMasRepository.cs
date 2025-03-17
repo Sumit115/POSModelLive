@@ -14,5 +14,6 @@ namespace SSRepository.IRepository.Master
         AccountMasModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);
+        string AutoGenerateAlias();
     }
 }

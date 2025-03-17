@@ -14,7 +14,7 @@ namespace SSRepository.Models
         public long FkAccountId { get; set; }
         public long FKLocationID { get; set; }
         public long ModeForm { get; set; }
-        public string? BranchName { get; set; }
+        public string? Location { get; set; }
 
     }
 }
