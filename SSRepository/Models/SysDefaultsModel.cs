@@ -54,5 +54,10 @@ namespace SSRepository.Models
         public string? FinYear { get; set; }
         public string BillingLocation { get; set; }
         public string Location { get; set; }
+
+        public long FkRoleId { get; set; }
+        public int IsAdmin { get; set; }
+
+
     }
 }

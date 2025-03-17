@@ -13,6 +13,7 @@ namespace SSRepository.IRepository
     }
     public interface IBaseRepository
     {
+        SysDefaults ObjSysDefault { get; }
         string GetSysDefaultsByKey(string SysDefKey);
         List<SysDefaultsModel> GetSysDefaultsList(string search = "");
         SysDefaults GetSysDefaults();

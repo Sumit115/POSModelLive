@@ -87,6 +87,17 @@ namespace SSRepository.Repository.Master
                         FkEmployeeId = cou.FkEmployeeId,
                         IsAdmin = cou.IsAdmin,
                     })).FirstOrDefault();
+            if (data != null)
+            {
+                data.UserLoclnk = (from ad in __dbContext.TblUserLocLnk
+                                   where (ad.FKUserID == data.PkUserId)
+                                   select (new UserLocLnkModel
+                                   {
+                                       FkLocationID = ad.FKLocationID,
+                                       FkUserID = ad.FKUserID,
+                                       LocationName = ad.FKLocation.Location,
+                                   })).ToList();
+            }
             return data;
         }
         public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1,  string search = "")
@@ -160,9 +171,16 @@ namespace SSRepository.Repository.Master
             TblUserMas Tbl = new TblUserMas();
             if (model.PkUserId > 0)
             {
-                var _entity = __dbContext.TblUserMas.Find(model.PkUserId);
-                if (_entity != null) { Tbl = _entity; }
-                else { throw new Exception("data not found"); }
+                var _entity = GetSingleRecord(model.PkUserId);
+
+                IList<TblUserLocLnk> userlnk = (from x in __dbContext.TblUserLocLnk
+                                                where x.FKUserID == model.PkUserId
+                                                select x).ToList();
+
+                if (userlnk.Any())
+                {
+                    DeleteData(userlnk, true);
+                }
             }
             Tbl.PkUserId = model.PkUserId;
             Tbl.UserId = model.UserId;
@@ -179,10 +197,9 @@ namespace SSRepository.Repository.Master
             Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
             {
-
                 Tbl.FKCreatedByID = Tbl.FKUserID;
                 Tbl.CreationDate = Tbl.ModifiedDate;
-                //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
+                Tbl.PkUserId = ID = getIdOfSeriesByEntity("PkUserId", null, Tbl, "TblUserMas");
                 AddData(Tbl, false);
             }
             else
@@ -193,6 +210,22 @@ namespace SSRepository.Repository.Master
                 AddMasterLog((long)Handler.Form.User, Tbl.PkUserId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.UserName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKUserID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
+            if (model.UserLoclnk != null)
+            {
+                List<TblUserLocLnk> lstAdd = new List<TblUserLocLnk>();
+                foreach (var item in model.UserLoclnk)
+                {
+                    TblUserLocLnk locObj = new TblUserLocLnk();
+                    locObj.FKLocationID = item.FkLocationID;
+                    locObj.FKUserID = Tbl.PkUserId;
+                    if (item.ModeForm == 0)
+                    {
+                        lstAdd.Add(locObj);
+                    }
+                }
+                if (lstAdd.Count > 0)
+                    AddData(lstAdd, true);
+            }
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {

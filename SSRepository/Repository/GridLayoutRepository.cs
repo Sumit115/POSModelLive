@@ -18,12 +18,14 @@ namespace SSRepository.Repository
         {
             
         }
-        public TblGridStructer GetSingleRecord(long FkUserId, long FkFormId,string GridName, List<ColumnStructure> columns)
+        public TblGridStructer GetSingleRecord( long FkFormId,string GridName, List<ColumnStructure> columns)
         {
             bool flag = true;
+            long FkUserId = GetUserID();
             TblGridStructer data = new TblGridStructer();
             var _entity = __dbContext.TblGridStructer
-                .Where(cou => cou.FkUserId == FkUserId && cou.FkFormId == FkFormId && (!string.IsNullOrEmpty(cou.GridName) ? cou.GridName : "") == (!string.IsNullOrEmpty(GridName) ? GridName : "")).FirstOrDefault();
+                .Where(cou => cou.FkUserId == FkUserId && cou.FkFormId == FkFormId 
+                && (!string.IsNullOrEmpty(cou.GridName) ? cou.GridName : "") == (!string.IsNullOrEmpty(GridName) ? GridName : "")).FirstOrDefault();
             if (_entity == null)
             {
 formbase:

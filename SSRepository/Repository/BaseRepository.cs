@@ -209,7 +209,35 @@ namespace SSRepository.Repository
             return Convert.ToInt64(_contextAccessor.HttpContext.Session.GetString("IsAdmin"));
         }
 
+        public SysDefaults ObjSysDefault
+        {
+            get
+            {
+                // Try to retrieve from session
+                var jsondataSysDefaults = _contextAccessor.HttpContext.Session.GetString("SysDefaults");
+                if (!string.IsNullOrEmpty(jsondataSysDefaults))
+                {
+                    return JsonConvert.DeserializeObject<SysDefaults>(jsondataSysDefaults);
+                }
+                else
+                {
+                    // Construct file path
+                    string companyName = _contextAccessor.HttpContext.User.FindFirst("CompanyName")?.Value ?? "";
+                    string userId = _contextAccessor.HttpContext.User.FindFirst("UserId")?.Value ?? "";
+                    string filePathSysDefaults = Path.Combine("wwwroot", "Data", companyName, userId, "sysdefaults.json");
+                    using (var fileStream = new FileStream(filePathSysDefaults, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    using (var reader = new StreamReader(fileStream))
+                    {
+                        jsondataSysDefaults = reader.ReadToEnd();
+                    }
+                    var model = JsonConvert.DeserializeObject<SysDefaults>(jsondataSysDefaults);
+                    _contextAccessor.HttpContext.Session.SetString("SysDefaults", jsondataSysDefaults);
+                    return model;
+                }
 
+
+            }
+        }
 
         #region Add/Update/Delete Data
         public virtual void AddData(object entity, bool IsRange)
@@ -343,7 +371,7 @@ namespace SSRepository.Repository
                 catch (Exception ex)
                 {
                     trans.Rollback();
-                    return ex.InnerException== null? ex.Message : ex.InnerException.Message;
+                    return ex.InnerException == null ? ex.Message : ex.InnerException.Message;
                 }
             }
         }
@@ -1023,32 +1051,7 @@ namespace SSRepository.Repository
             //else { return new typeof(T); }
         }
 
-        public SysDefaults SysDefaults_byLogin()
-        {
-            var model=new SysDefaults();
 
-            var jsondataSysDefaults = _contextAccessor.HttpContext.Session.GetString("SysDefaults");
-            if (jsondataSysDefaults != null)
-            {
-                model = JsonConvert.DeserializeObject<SysDefaults>(jsondataSysDefaults); 
-            }
-            else
-            {
-                string path = Path.Combine("wwwroot", "Data");
-                path = Path.Combine(path, Convert.ToString(_contextAccessor.HttpContext.User.FindFirst("CompanyName")?.Value ?? ""));
-                path = Path.Combine(path, Convert.ToString(_contextAccessor.HttpContext.User.FindFirst("UserId")?.Value ?? ""));
-
-                 string filePathSysDefaults = Path.Combine(path, "sysdefaults.json");
-                jsondataSysDefaults = System.IO.File.ReadAllText(filePathSysDefaults);
-                if (!string.IsNullOrEmpty(jsondataSysDefaults))
-                {
-                    model = JsonConvert.DeserializeObject<SysDefaults>(jsondataSysDefaults);
-                    _contextAccessor.HttpContext.Session.SetString("SysDefaults", jsondataSysDefaults);
-
-                }
-            }
-            return model;
-        }
 
     }
 

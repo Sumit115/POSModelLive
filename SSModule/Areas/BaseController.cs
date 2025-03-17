@@ -1,6 +1,7 @@
 ﻿using Azure;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
@@ -20,36 +21,24 @@ namespace SSAdmin.Areas
         
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            string path = Path.Combine("wwwroot", "Data");
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            path = Path.Combine(path, Convert.ToString(HttpContext.User.FindFirst("CompanyName")?.Value ?? ""));
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-
-            path = Path.Combine(path, Convert.ToString(HttpContext.User.FindFirst("UserId")?.Value ?? ""));
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            string filePath = Path.Combine(path, "menulist.json");
-
-            var jsondata = System.IO.File.ReadAllText(filePath);
-            if (!string.IsNullOrEmpty(jsondata))  
+            string menulist = "";
+            string companyName = HttpContext.Session.GetString("CompanyName")??"";
+            string userId = HttpContext.Session.GetString("UserID") ?? "";
+            string filePathSysDefaults = Path.Combine("wwwroot", "Data", companyName, userId, "menulist.json");
+            using (var fileStream = new FileStream(filePathSysDefaults, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var reader = new StreamReader(fileStream))
             {
-                var _lst = JsonConvert.DeserializeObject<List<MenuModel>>(jsondata);
+                menulist = reader.ReadToEnd();
+            }
+           
+            if (!string.IsNullOrEmpty(menulist))  
+            {
+                var _lst = JsonConvert.DeserializeObject<List<MenuModel>>(menulist);
                 ViewBag.Menulist = _lst;
             }
 
-            string filePathSysDefaults = Path.Combine(path, "sysdefaults.json");
-            var jsondataSysDefaults = System.IO.File.ReadAllText(filePathSysDefaults);
-            if (!string.IsNullOrEmpty(jsondataSysDefaults))
-            {
-                var _lst = JsonConvert.DeserializeObject<SysDefaults>(jsondataSysDefaults);
-                ViewBag.SysDefaults = _lst;
-            }
-
+            ViewBag.CompanyName = companyName;
+            ViewBag.CompanyImage1 = HttpContext.Session.GetString("CompanyImage1");
             ViewBag.Date = DateTime.Now; 
         }
 
@@ -75,7 +64,7 @@ namespace SSAdmin.Areas
         public async Task<JsonResult> GridStrucher(long FormId, string GridName = "")
         {
             if (FormId == 0) FormId = FKFormID;
-            var data = _gridLayoutRepository.GetSingleRecord(Convert.ToInt64(HttpContext.User.FindFirst("UserId")?.Value ?? ""), FormId, GridName, ColumnList(GridName));
+            var data = _gridLayoutRepository.GetSingleRecord( FormId, GridName, ColumnList(GridName));
             return new JsonResult(data);
         }
 

@@ -266,6 +266,11 @@ namespace SSRepository.Data
                     .WithMany()
                     .HasForeignKey(e => e.FkLocalityID)
                     .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.UserMas)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<TblUserLocLnk>(entity =>

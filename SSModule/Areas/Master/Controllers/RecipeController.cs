@@ -72,8 +72,8 @@ namespace SSAdmin.Areas.Master.Controllers
         protected void BindViewBags(object Model)
         {
             ViewBag.Data = JsonConvert.SerializeObject(Model);
-            ViewBag.GridIn = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "dtl", ColumnList("dtl")).JsonData;
-            ViewBag.GridOut = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "rtn", ColumnList("rtn")).JsonData;
+            ViewBag.GridIn = _gridLayoutRepository.GetSingleRecord( FKFormID, "dtl", ColumnList("dtl")).JsonData;
+            ViewBag.GridOut = _gridLayoutRepository.GetSingleRecord( FKFormID, "rtn", ColumnList("rtn")).JsonData;
 
         }
         public async Task<IActionResult> Create(long id, string pageview = "")

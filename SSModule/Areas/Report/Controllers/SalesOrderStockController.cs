@@ -51,7 +51,7 @@ namespace SSAdmin.Areas.Report.Controllers
         { 
             //_repository.ViewData("L", ProductFilter, "");
 
-            var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, "", ColumnList());
+            var data = _gridLayoutRepository.GetSingleRecord( FKFormID, "", ColumnList());
             var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
 
             var GroupByColumn = _repository.GroupByColumn(FKFormID, "");
@@ -90,7 +90,7 @@ namespace SSAdmin.Areas.Report.Controllers
             dr["StockQty"] = dtList.AsEnumerable().Sum(row => row.Field<decimal>("StockQty")); ;
             dtList.Rows.Add(dr);
 
-            var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, ReportType, ColumnList());
+            var data = _gridLayoutRepository.GetSingleRecord( FKFormID, ReportType, ColumnList());
             var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
             DataTable _gridColumn = Handler.ToDataTable(model);
 

@@ -59,7 +59,7 @@ namespace SSAdmin.Areas.Report.Controllers
 
             DataTable dtList = _repository.GetList(FromDate, ToDate, ReportType, TranAlias, "", VendorFilter, LocationFilter, SeriesFilter);
 
-            var data = _gridLayoutRepository.GetSingleRecord(1, FKFormID, ReportType, ColumnList());
+            var data = _gridLayoutRepository.GetSingleRecord( FKFormID, ReportType, ColumnList());
             var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
             DataTable _gridColumn = Handler.ToDataTable(model);
 
