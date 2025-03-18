@@ -34,7 +34,9 @@ namespace SSRepository.Data
 
         public int IsAdmin { get; set; }
 
-
+        public virtual TblEmployeeMas? FkEmployee { get; set; }
+        public virtual TblBranchMas? FkBranch { get; set; }
+        public virtual TblRoleMas? FkRole { get; set; }
         public virtual ICollection<TblUserLocLnk> LocationUsers { get; set; }
 
     }

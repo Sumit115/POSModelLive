@@ -29,7 +29,7 @@ namespace SSRepository.Models
         public long? FkBranchId { get; set; }
 
         public long FkRoleId { get; set; }
-        public string Role { get; set; }   
+        public string? Role { get; set; }   
 
         public DateTime? Expiredt { get; set; }
 

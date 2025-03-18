@@ -289,14 +289,14 @@ namespace SSRepository.Data
                     .WithMany()
                     .HasForeignKey(e => e.FKUserID)
                     .OnDelete(DeleteBehavior.Restrict);
-                
+
                 entity.HasOne(e => e.FKUser) // Navigation property
                .WithMany(l => l.LocationUsers)  // Navigation collection in TblUserMas
                .HasForeignKey(e => e.FKUserID) // FK in TblUserLocLnk
                .HasPrincipalKey(l => l.PkUserId) // Maps to correct PK in TblUserMas
                .OnDelete(DeleteBehavior.Restrict);
 
-                
+
                 entity.HasOne(e => e.FKLocation) // Navigation property
                 .WithMany(l => l.LocationUsers)  // Navigation collection in TblLocationMas
                 .HasForeignKey(e => e.FKLocationID) // FK in TblUserLocLnk
@@ -306,7 +306,7 @@ namespace SSRepository.Data
             });
 
             modelBuilder.Entity<TblAccountMas>(entity =>
-            { 
+            {
 
                 entity.HasOne(e => e.FKUser)
                     .WithMany()
@@ -321,6 +321,28 @@ namespace SSRepository.Data
                 entity.HasOne(e => e.FKStation)
                    .WithMany()
                    .HasForeignKey(e => e.FkStationId)
+                   .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TblUserMas>(entity =>
+            {
+                entity.Property(e => e.CreationDate)
+      .HasColumnType("datetime")
+      .ValueGeneratedOnAdd();
+
+                entity.HasOne(e => e.FkEmployee)
+                    .WithMany()
+                    .HasForeignKey(e => e.FkEmployeeId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FkBranch)
+                   .WithMany()
+                   .HasForeignKey(e => e.FkBranchId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FkRole)
+                   .WithMany()
+                   .HasForeignKey(e => e.FkRoleId)
                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
