@@ -26,12 +26,14 @@ namespace SSAdmin.Areas.Master.Controllers
         private readonly IAccountGroupRepository _repositoryAccountGroup;
         private readonly IBankRepository _repositoryBank;
         private readonly IBranchRepository _repositoryBranch;
-        public AccountMasController(IAccountMasRepository repository, IBranchRepository branchRepository, IBankRepository bankRepository, IAccountGroupRepository repositoryAccountGroup, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
+        private readonly IVendorRepository _Vendorrepository;
+        public AccountMasController(IAccountMasRepository repository, IBranchRepository branchRepository, IBankRepository bankRepository, IAccountGroupRepository repositoryAccountGroup, IVendorRepository vendorrepository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
             _repository = repository;
             _repositoryAccountGroup = repositoryAccountGroup;
             _repositoryBank = bankRepository;
             _repositoryBranch = branchRepository;
+            _Vendorrepository = vendorrepository;
             FKFormID = (long)Handler.Form.AccountMas;
         }
 
@@ -180,7 +182,8 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             catch (Exception ex)
             {
-                response = ex.Message;
+                response = "Delete Not Allowed";
+                //response = ex.Message;
                 //CommonCore.WriteLog(ex, "DeleteRecord", ControllerName, GetErrorLogParam());
                 //return CommonCore.SetError(ex.Message);
             }
@@ -189,26 +192,18 @@ namespace SSAdmin.Areas.Master.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AutoGenerateAlias()
+        public string GetAlias()
         {
-
+            string Return = string.Empty;
             try
             {
-                return Json(new
-                {
-                    status = "success",
-                    data = _repository.AutoGenerateAlias(),
-                });
+                Return = _Vendorrepository.GetAlias("account");
             }
             catch (Exception ex)
             {
-                return Json(new
-                {
-                    status = "error",
-                    msg = ex.Message,
-                });
+                ex.ToString();
             }
-
+            return Return;
         }
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {

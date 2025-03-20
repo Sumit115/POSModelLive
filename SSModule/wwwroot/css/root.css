@@ -92,7 +92,7 @@
 
 .page .f-ctrl, .Tran .f-ctrl {
     display: block !important;
-}
+} 
 .summary .f-ddl {
     display: block !important;
 }
@@ -122,7 +122,7 @@
     align-items: center;
 }
 
-.f-year, .f-ctrl, .f-list {
+.f-year, .f-ctrl, .f-list, .f-del {
     padding: 4px 7px;
     text-align: center;
     font-size: 14px;

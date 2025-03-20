@@ -36,9 +36,9 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<AccountGroupModel> data = (from cou in __dbContext.TblAccountGroupMas
-                                            join CatPGrp in __dbContext.TblAccountGroupMas on cou.FkAccountGroupId equals CatPGrp.PkAccountGroupId
-                                                            into tempAccGrp
-                                            from AccGrp in tempAccGrp.DefaultIfEmpty()
+                                            //join CatPGrp in __dbContext.TblAccountGroupMas on cou.FkAccountGroupId equals CatPGrp.PkAccountGroupId
+                                            //                into tempAccGrp
+                                            //from AccGrp in tempAccGrp.DefaultIfEmpty()
                                             where (EF.Functions.Like(cou.AccountGroupName.Trim().ToLower(), search + "%"))
                                             orderby cou.PkAccountGroupId
                                             select (new AccountGroupModel
@@ -46,14 +46,15 @@ namespace SSRepository.Repository.Master
                                                 PkAccountGroupId = cou.PkAccountGroupId,
                                                 AccountGroupName = cou.AccountGroupName,
                                                 FkAccountGroupId = cou.FkAccountGroupId,
-                                                PAccountGroupName = AccGrp.AccountGroupName,
+                                                PAccountGroupName = cou.FKAccountGroupMas.AccountGroupName,
                                                 GroupType = cou.GroupType,
                                                 GroupAlias = cou.GroupAlias,
                                                 NatureOfGroup = cou.NatureOfGroup,
                                                 PrintDtl = cou.PrintDtl,
                                                 NetCrDrBalanceForRpt = cou.NetCrDrBalanceForRpt,
                                                 FKUserID = cou.FKUserID,
-                                                DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                                                DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                                UserName = cou.FKUser.UserId,
                                             }
                                            )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -66,10 +67,7 @@ namespace SSRepository.Repository.Master
               
                 if (search != null) search = search.ToLower();
                 pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
-                return ((from cou in __dbContext.TblAccountGroupMas
-                         join CatPGrp in __dbContext.TblAccountGroupMas on cou.FkAccountGroupId equals CatPGrp.PkAccountGroupId
-                                         into tempAccGrp
-                         from AccGrp in tempAccGrp.DefaultIfEmpty()
+                return ((from cou in __dbContext.TblAccountGroupMas 
                          where (EF.Functions.Like(cou.AccountGroupName.Trim().ToLower(), search + "%"))
                          orderby cou.PkAccountGroupId
                          select (new
@@ -125,23 +123,18 @@ namespace SSRepository.Repository.Master
         public string DeleteRecord(long PkAccountGroupId)
         {
             string Error = "";
-            AccountGroupModel obj = GetSingleRecord(PkAccountGroupId);
-
-            //var Country = (from x in _context.TblStateMas
-            //               where x.FkcountryId == PkAccountGroupId
-            //               select x).Count();
-            //if (Country > 0)
-            //    Error += "Table Name -  StateMas : " + Country + " Records Exist";
-
-
+            AccountGroupModel oldModel = GetSingleRecord(PkAccountGroupId);
+             
             if (Error == "")
             {
                 var lst = (from x in __dbContext.TblAccountGroupMas
                            where x.PkAccountGroupId == PkAccountGroupId
                            select x).ToList();
                 if (lst.Count > 0)
+                {
                     __dbContext.TblAccountGroupMas.RemoveRange(lst);
-
+                    AddMasterLog((long)Handler.Form.AccountGroup, oldModel.PkAccountGroupId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.AccountGroupName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
+                }
                 //var imglst = (from x in _context.TblImagesDtl
                 //              where x.Fkid == PkAccountGroupId && x.FKSeriesID == __FormID
                 //              select x).ToList();
@@ -209,18 +202,21 @@ namespace SSRepository.Repository.Master
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
+            
             var list = new List<ColumnStructure>
             {
-                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Account Group", Fields="AccountGroupName",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                   new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Alias", Fields="GroupAlias",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                   new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Master Group", Fields="PAccountGroupName",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                   new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Group Type", Fields="GroupType_FullName",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                   new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Nature Of Group", Fields="NatureOfGroup_FullName",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Show Details In Report", Fields="PrintDtl_Status",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Net Cr/Dr Balance For Report", Fields="NetCrDrBalanceForRpt_Status",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-            };
+                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Account Group", Fields="AccountGroupName",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Alias", Fields="GroupAlias",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Master Group", Fields="PAccountGroupName",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Group Type", Fields="GroupType_FullName",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Nature Of Group", Fields="NatureOfGroup_FullName",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Show Details In Report", Fields="PrintDtl_Status",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Net Cr/Dr Balance For Report", Fields="NetCrDrBalanceForRpt_Status",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                   new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+   };
             return list;
         }
 

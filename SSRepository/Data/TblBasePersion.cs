@@ -61,5 +61,9 @@ namespace SSRepository.Data
         public decimal Disc { get; set; }
 
         public long? FkAccountID { get; set; }
+
+        public virtual TblUserMas FKUser { get; set; }
+        public virtual TblAccountMas FKAccount { get; set; }
+
     }
 }

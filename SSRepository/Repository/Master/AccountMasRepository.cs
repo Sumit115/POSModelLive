@@ -91,12 +91,12 @@ namespace SSRepository.Repository.Master
 
             AccountMasModel data = new AccountMasModel();
             data = (from cou in __dbContext.TblAccountMas
-                    join CatPGrp in __dbContext.TblAccountGroupMas on cou.FkAccountGroupId equals CatPGrp.PkAccountGroupId
-                     into tempAccGrp
-                    from AccGrp in tempAccGrp.DefaultIfEmpty()
-                    join bankrp in __dbContext.TblBankMas on cou.FKBankID equals bankrp.PkBankId
-                      into tempBank
-                    from bank in tempBank.DefaultIfEmpty()
+                    //join CatPGrp in __dbContext.TblAccountGroupMas on cou.FkAccountGroupId equals CatPGrp.PkAccountGroupId
+                    // into tempAccGrp
+                    //from AccGrp in tempAccGrp.DefaultIfEmpty()
+                    //join bankrp in __dbContext.TblBankMas on cou.FKBankID equals bankrp.PkBankId
+                    //  into tempBank
+                    //from bank in tempBank.DefaultIfEmpty()
                     where cou.PkAccountId == PkAccountId
                     select (new AccountMasModel
                     {
@@ -159,9 +159,9 @@ namespace SSRepository.Repository.Master
                                                  ValidTill = ad.ValidTill,
                                              })).ToList(),
 
-                        AccountGroupName = AccGrp.AccountGroupName,
-                        BankName = bank.BankName,
-                        IFSCCode = bank.IFSCCode,
+                        AccountGroupName = cou.FKAccountGroupMas.AccountGroupName,
+                        BankName = cou.FKBank.BankName,
+                        IFSCCode = cou.FKBank.IFSCCode,
                     })).FirstOrDefault();
             return data;
         }
@@ -191,7 +191,8 @@ namespace SSRepository.Repository.Master
             {
                 try
                 {
-
+                    AccountMasModel oldModel = GetSingleRecord(PkAccountId);
+                   
                     var lst = (from x in __dbContext.TblAccountMas
                                where x.PkAccountId == PkAccountId
                                select x).ToList();
@@ -215,6 +216,8 @@ namespace SSRepository.Repository.Master
                                            select x).ToList();
                     if (AccLocLicDtllst.Count > 0)
                         __dbContext.RemoveRange(AccLocLicDtllst);
+
+                    AddMasterLog((long)Handler.Form.AccountMas, PkAccountId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.Account, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
 
                     __dbContext.SaveChanges();
                     trans.Commit();

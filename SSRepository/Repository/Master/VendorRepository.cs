@@ -321,10 +321,14 @@ namespace SSRepository.Repository.Master
                 {
                     retVal = GetAlias("tblAccount_mas", "Alias");
                 }
-               
-               if (String.IsNullOrEmpty(retVal) || retVal == "0"|| retVal=="ABC")
+                else if (FormName == "accountgroup")
+                {
+                    retVal = GetAlias("tblAccountGroup_mas", "GroupAlias");
+                }
+
+                if (String.IsNullOrEmpty(retVal) || retVal == "0"|| retVal=="ABC")
                {
-                   retVal = "100000000000";
+                   retVal = "1000";
                }
                 retVal =Convert.ToString(Convert.ToInt64(retVal)+1);
               

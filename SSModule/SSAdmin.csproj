@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Areas\Master\Views\AccountMas\Create - Copy.cshtml" />
+    <Content Remove="Areas\Master\Views\AccountGroup\Create - Copy.cshtml" />
     <Content Remove="Areas\Master\Views\Company\List.cshtml" />
     <Content Remove="wwwroot\js\Master\Recipe.js" />
     <Content Remove="wwwroot\js\Master\User.js" />
@@ -39,9 +39,9 @@
  
 
   <ItemGroup>
+    <None Include="Areas\Master\Views\AccountGroup\Create - Copy.cshtml" />
     <None Include="Areas\Master\Views\AccountGroup\Create.cshtml" />
     <None Include="Areas\Master\Views\AccountGroup\List.cshtml" />
-    <None Include="Areas\Master\Views\AccountMas\Create - Copy.cshtml" />
     <None Include="Areas\Master\Views\AccountMas\Create.cshtml" />
     <None Include="Areas\Master\Views\AccountMas\List.cshtml" />
     <None Include="Areas\Master\Views\Area\Create.cshtml" />

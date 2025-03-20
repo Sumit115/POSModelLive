@@ -44,7 +44,8 @@ namespace SSRepository.Repository.Master
                                         BankName = cou.BankName,
                                         IFSCCode = cou.IFSCCode,
                                         FKUserID = cou.FKUserID,
-                                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                        UserName = cou.FKUser.UserId,
                                     }
                                    )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -111,7 +112,7 @@ namespace SSRepository.Repository.Master
         public string DeleteRecord(long PkBankId)
         {
             string Error = "";
-            BankModel obj = GetSingleRecord(PkBankId);
+            BankModel oldModel = GetSingleRecord(PkBankId);
 
             //var Country = (from x in _context.TblStateMas
             //               where x.FkcountryId == PkBankId
@@ -126,8 +127,11 @@ namespace SSRepository.Repository.Master
                            where x.PkBankId == PkBankId
                            select x).ToList();
                 if (lst.Count > 0)
+                {
                     __dbContext.TblBankMas.RemoveRange(lst);
 
+                    AddMasterLog((long)Handler.Form.Bank, oldModel.PkBankId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.BankName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
+                }
                 //var imglst = (from x in _context.TblImagesDtl
                 //              where x.Fkid == PkBankId && x.FKSeriesID == __FormID
                 //              select x).ToList();
@@ -140,6 +144,7 @@ namespace SSRepository.Repository.Master
                 //if (remarklst.Count > 0)
                 //    _context.RemoveRange(remarklst);
                 //AddMasterLog(obj, __FormID, GetBankID(), PkBankId, obj.FKBankID, obj.DATE_MODIFIED, true);
+
                 __dbContext.SaveChanges();
             }
 
@@ -190,14 +195,16 @@ namespace SSRepository.Repository.Master
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
             var list = new List<ColumnStructure>
             {
                  // new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Bank Name", Fields="BankName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="IFSC Code", Fields="IFSCCode",Width=40,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                      };
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Bank Name", Fields="BankName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="IFSC Code", Fields="IFSCCode",Width=40,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+          };
             return list;
         }
 

@@ -304,7 +304,18 @@ namespace SSRepository.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             });
-
+            modelBuilder.Entity<TblAccountGroupMas>(entity =>
+            {
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+               
+                entity.HasOne(e => e.FKAccountGroupMas)
+                       .WithMany()
+                       .HasForeignKey(e => e.FkAccountGroupId)
+                       .OnDelete(DeleteBehavior.Restrict);
+            });
             modelBuilder.Entity<TblAccountMas>(entity =>
             {
 
@@ -322,6 +333,23 @@ namespace SSRepository.Data
                    .WithMany()
                    .HasForeignKey(e => e.FkStationId)
                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKBank)
+                 .WithMany()
+                 .HasForeignKey(e => e.FKBankID)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKAccountGroupMas)
+                      .WithMany()
+                      .HasForeignKey(e => e.FkAccountGroupId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<TblBankMas>(entity =>
+            { 
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict); 
             });
 
             modelBuilder.Entity<TblUserMas>(entity =>
@@ -344,6 +372,32 @@ namespace SSRepository.Data
                    .WithMany()
                    .HasForeignKey(e => e.FkRoleId)
                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TblCustomerMas>(entity =>
+            {
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKAccount)
+                       .WithMany()
+                       .HasForeignKey(e => e.FkAccountID)
+                       .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TblVendorMas>(entity =>
+            {
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKAccount)
+                       .WithMany()
+                       .HasForeignKey(e => e.FkAccountID)
+                       .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

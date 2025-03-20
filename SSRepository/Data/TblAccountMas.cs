@@ -37,6 +37,8 @@ namespace SSRepository.Data
         public virtual TblUserMas FKUser { get; set; }
         public virtual TblLocalityMas? FKLocality { get; set; }
         public virtual TblStationMas? FKStation { get; set; }
+        public virtual TblBankMas? FKBank { get; set; }
+        public virtual TblAccountGroupMas  FKAccountGroupMas { get; set; }
 
     }
 }

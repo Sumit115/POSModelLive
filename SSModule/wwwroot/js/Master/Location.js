@@ -8,7 +8,8 @@ $(document).ready(function () {
     });
 })
 function GenerateAlias() {
-    if ($("#txtalias").val() == "") {
+    debugger;
+    if ($("#Alias").val() == "") {
         $.ajax({
             type: "POST",
             url: '/Master/Location/GetAlias',
@@ -16,7 +17,7 @@ function GenerateAlias() {
             datatype: "json",
             success: function (res) {
                 if (res != "") {
-                    $("#txtalias").val(res);
+                    $("#Alias").val(res);
                 }
             }
         });

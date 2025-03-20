@@ -10,6 +10,7 @@ using SSRepository.Repository.Master;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.Contracts;
+using System.IO;
 using System.Reflection;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -62,7 +63,14 @@ namespace SSRepository.Repository
 
             string companyName = _contextAccessor.HttpContext.Session.GetString("CompanyName") ?? "";
             string userId = _contextAccessor.HttpContext.Session.GetString("UserID") ?? "";
+
+            string path = Path.Combine("wwwroot", "Data", companyName, userId); 
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+
             string filePath = Path.Combine("wwwroot", "Data", companyName, userId, FileName);
+            
 
             FileInfo file = new FileInfo(filePath);
             if (file.Exists)

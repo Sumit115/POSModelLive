@@ -1,0 +1,103 @@
+﻿@model SSRepository.Models.AccountGroupModel
+
+@{
+    ViewData["Title"] = "Account Group";
+    ViewData["bdClass"] = "page";
+}
+<div class="p-3">
+    <form asp-action="Create" class="g-3" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PkAccountGroupId" />
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Master Group </label>
+                    <select asp-for="FkAccountGroupId" asp-items="@(new SelectList(ViewBag.AccountGroupList,"PkAccountGroupId","AccountGroupName"))" class="form-control" id="FkAccountGroupId">
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Group Type</label>
+                    <select class="form-control" asp-for="GroupType">
+                        <option value="">Select</option>
+                        <option value="B">Balance Sheet</option>
+                        <option value="P">Profit & Loss</option>
+                        <option value="T">Trading</option>
+                    </select>
+                    <span asp-validation-for="GroupType" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label class="control-label">Group Name</label>
+                    <input asp-for="AccountGroupName" class="form-control" />
+                    <span asp-validation-for="AccountGroupName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Group Alias</label>
+                    <input asp-for="GroupAlias" class="form-control" />
+                    <span asp-validation-for="GroupAlias" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Nature Of Group</label>
+                    <select class="form-control" asp-for="NatureOfGroup">
+                        <option value="">Select</option>
+                        <option value="A">Assests</option>
+                        <option value="L">Liabilities</option>
+                        <option value="I">Income</option>
+                        <option value="E">Expenses</option>
+                    </select>
+                    <span asp-validation-for="NatureOfGroup" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="d-flex">
+                        <div class="radio-class mr-3">
+                            <label class="label" for="PrintDtl">Show Details Of Report</label>
+                            <input asp-for="PrintDtl" class="radios__input" name="PrintDtl" type="checkbox"  >
+                        </div>
+
+                    </div>
+                    <span asp-validation-for="PrintDtl" class="text-danger"></span>
+
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="d-flex">
+                        <div class="radio-class mr-3">
+                            <label class="label" for="NetCrDrBalanceForRpt">Net Cr/Dr Balance For Reports</label>
+                            <input asp-for="NetCrDrBalanceForRpt" class="radios__input" name="NetCrDrBalanceForRpt" type="checkbox" >
+                        </div>
+
+                    </div>
+                    <span asp-validation-for="NetCrDrBalanceForRpt" class="text-danger"></span>
+
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            $('#btnServerSave').click(function (e) {
+                e.preventDefault();
+                $("form").submit();
+            });
+        })
+       
+    </script>
+                }

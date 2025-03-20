@@ -23,9 +23,11 @@ namespace SSAdmin.Areas.Master.Controllers
     public class AccountGroupController : BaseController
     {
         private readonly IAccountGroupRepository _repository;
-        public AccountGroupController(IAccountGroupRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
+        private readonly IVendorRepository _Vendorrepository;
+        public AccountGroupController(IAccountGroupRepository repository, IVendorRepository vendorrepository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
             _repository = repository;
+            _Vendorrepository = vendorrepository;
             FKFormID = (long)Handler.Form.AccountGroup;
         }
 
@@ -158,12 +160,27 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             catch (Exception ex)
             {
+                response = "Delete Not Allowed";
                 //CommonCore.WriteLog(ex, "DeleteRecord", ControllerName, GetErrorLogParam());
                 //return CommonCore.SetError(ex.Message);
             }
             return response;
         }
 
+        [HttpPost]
+        public string GetAlias()
+        {
+            string Return = string.Empty;
+            try
+            {
+                Return = _Vendorrepository.GetAlias("accountgroup");
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
+            return Return;
+        }
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {
             return _repository.ColumnList(GridName);

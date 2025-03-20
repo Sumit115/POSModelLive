@@ -2,33 +2,34 @@
 
 @{
     ViewData["Title"] = "Bank";
-    ViewData["bdClass"] = "page";
+    ViewData["bdClass"] = "page del";
 }
 
-<div class="p-3">
-    <form asp-action="Create" class="g-3" enctype="multipart/form-data">
+<div class="master-page-ui">
+    <form asp-action="Create" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="PkBankId" />
- 
         <div class="row">
+            <div class="col-md-8">
 
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Bank Name</label>
-                    <input asp-for="BankName" class="form-control" />
-                    <span asp-validation-for="BankName" class="text-danger"></span>
+                <div class="form-group row">
+                    <label class="col-sm-2">Bank Name<span class="required">*</span> </label>
+                    <div class="col-md-6">
+                        <input asp-for="BankName" class="form-control" maxlength="100" />
+                        <span asp-validation-for="BankName" class="text-danger"></span>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">IFSC Code</label>
-                    <input asp-for="IFSCCode" class="form-control" />
-                    <span asp-validation-for="IFSCCode" class="text-danger"></span>
+                <div class="form-group row">
+                    <label class="col-sm-2">IFSCCode</label>
+                    <div class="col-md-6">
+                        <input asp-for="IFSCCode" class="form-control" maxlength="25" />
+                        <span asp-validation-for="IFSCCode" class="text-danger"></span>
+                    </div>
                 </div>
-            </div>
 
+
+            </div>
         </div>
-       
     </form>
 </div>
 
@@ -36,13 +37,35 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-<script>
-       $(document).ready(function(){
+    <script>
+        $(document).ready(function () {
             $('#btnServerSave').click(function (e) {
                 e.preventDefault();
                 $("form").submit();
             });
-       })
+            if ($('#PkBankId').val() > 0)
+                $("#btnDeleteRecord").parent().show();
+
+            $('#btnDeleteRecord').click(function (e) {
+                let pk_Id = $("#PkBankId").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: Handler.currentPath() + 'DeleteRecord',
+                    data: { PKID: pk_Id },
+                    datatype: "json",
+                    success: function (res) {
+                        console.log(res);
+                        if (res == "") {
+                            window.location.href = Handler.currentPath() + "List";
+
+                        }
+                        else
+                            alert(res);
+                    }
+                })
+            });
+        })
         UploadImage = (id) => {
             var file = document.querySelector('input[id="file_' + id + '"]').files[0];
             // $("#FileName").val(file.name);
@@ -57,5 +80,7 @@
 
             };
         }
-</script>
+
+
+    </script>
 }
