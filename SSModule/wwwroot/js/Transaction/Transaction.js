@@ -17,18 +17,21 @@ $(document).ready(function () {
     if ((TranAlias == "SRTN" || TranAlias == "SCRN" || TranAlias == "SORD" || TranAlias == "LORD" || TranAlias == "PORD" || TranAlias == "PINV")) {
         $(".trn-barcode").hide();
     } else { $(".trn-barcode").show(); $("#txtSearchBarcode").focus(); }
+    debugger;
     if ((TranAlias == "SORD" || TranAlias == "LORD") && tranModel.PkId > 0) {
-        if (tranModel.TrnStatus.trim() == 'P' || tranModel.TrnStatus.trim() == 'C') {
+        if (tranModel.TrnStatus.trim() == 'P' || tranModel.TrnStatus.trim() == 'C') {  
             if (tranModel.TrnStatus.trim() == 'C') {
-                $("#btnServerSave,#btnClose").hide();
-                $("#btnOpen").show();
+                $("#btnServerSave").hide();
+                $("#btnClose").parent().hide();
+                $("#btnOpen").parent().show(); 
             } else {
-                $("#btnClose").show();
-                $("#btnOpen").hide();
+                $("#btnClose").parent().show(); 
+                $("#btnOpen").parent().hide();
             }
         }
-        else if (tranModel.TrnStatus.trim() == 'I') { $("#btnServerSave,#btnClose,#btnOpen").hide(); }
-    } else { $("#btnClose,#btnOpen").hide(); }
+        else if (tranModel.TrnStatus.trim() == 'I') { $("#btnServerSave").hide(); $("#btnOpen").parent().hide(); }
+    } else { $("#btnClose,#btnOpen").parent().hide(); }
+
     if (ControllerName == 'SalesInvoiceTouch') {
         $("#btnServerBack").attr('href', 'javascript:void(0)')
         $("#btnServerBack").click(function () { location.reload(); });

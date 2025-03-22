@@ -19,7 +19,9 @@ namespace SSRepository.Data
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime CreationDate { get; set; }
         public long FKCreatedByID { get; set; }
-        public long FKUserID { get; set; }
+        public long FKUserID { get; set; } 
+        public virtual TblUserMas FKUser { get; set; }
+
 
     }
     public class TblNon

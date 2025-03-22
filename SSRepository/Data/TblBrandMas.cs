@@ -9,6 +9,6 @@ namespace SSRepository.Data
        [Key]
         public long PkBrandId { get; set; }
         public string BrandName { get; set; }
-
+      
     }
 }

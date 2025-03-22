@@ -36,51 +36,6 @@
 @section Scripts{
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    <script>
-        $(document).ready(function () {
-            $('#btnServerSave').click(function (e) {
-                e.preventDefault();
-                $("form").submit();
-            });
-            if ($('#PkBankId').val() > 0)
-                $("#btnDeleteRecord").parent().show();
-
-            $('#btnDeleteRecord').click(function (e) {
-                let pk_Id = $("#PkBankId").val();
-
-                $.ajax({
-                    type: "POST",
-                    url: Handler.currentPath() + 'DeleteRecord',
-                    data: { PKID: pk_Id },
-                    datatype: "json",
-                    success: function (res) {
-                        console.log(res);
-                        if (res == "") {
-                            window.location.href = Handler.currentPath() + "List";
-
-                        }
-                        else
-                            alert(res);
-                    }
-                })
-            });
-        })
-        UploadImage = (id) => {
-            var file = document.querySelector('input[id="file_' + id + '"]').files[0];
-            // $("#FileName").val(file.name);
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
-                //console.log(reader.result);
-                $("#" + id).val(reader.result);
-                $("#dummyimage_" + id).attr("src", reader.result);
-                $("#dummyimage_" + id).show();
-                //   $("#myImage").hide();
-
-            };
-        }
-
-
-    </script>
+    }<script src="~/js/master/bank.js"></script>
+   
 }

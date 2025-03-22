@@ -16,8 +16,7 @@ namespace SSRepository.Data
         public string? NatureOfGroup { get; set; }
         public bool PrintDtl { get; set; }
         public bool NetCrDrBalanceForRpt { get; set; }
-
-        public virtual TblUserMas FKUser { get; set; }
+         
         public virtual TblAccountGroupMas? FKAccountGroupMas { get; set; }
     }
 }

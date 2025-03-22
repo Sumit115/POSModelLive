@@ -122,7 +122,7 @@
     align-items: center;
 }
 
-.f-year, .f-ctrl, .f-list, .f-del {
+.f-year, .f-ctrl, .f-list, .f-del, .f-status {
     padding: 4px 7px;
     text-align: center;
     font-size: 14px;

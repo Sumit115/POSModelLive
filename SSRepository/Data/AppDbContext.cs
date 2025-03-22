@@ -399,6 +399,44 @@ namespace SSRepository.Data
                        .HasForeignKey(e => e.FkAccountID)
                        .OnDelete(DeleteBehavior.Restrict);
             });
+
+            modelBuilder.Entity<TblBrandMas>(entity =>
+            { 
+
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+            });
+
+            modelBuilder.Entity<TblProductMas>(entity =>
+            {
+                entity.HasOne(e => e.FkBrand)
+                    .WithMany()
+                    .HasForeignKey(e => e.FkBrandId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+            });
+
+            modelBuilder.Entity<TblPromotionMas>(entity =>
+            {
+                entity.HasOne(e => e.FkBrand)
+                    .WithMany()
+                    .HasForeignKey(e => e.FkBrandId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+            });
         }
     }
 }

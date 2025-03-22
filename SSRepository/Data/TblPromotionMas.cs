@@ -44,5 +44,9 @@ namespace SSRepository.Data
         public long? FkBrandId { get; set; }
         public long SequenceNo { get; set; }
 
+        public virtual TblUserMas FKUser { get; set; }
+        public virtual TblBrandMas FkBrand { get; set; }
+
+
     }
 }

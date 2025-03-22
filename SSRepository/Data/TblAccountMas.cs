@@ -33,8 +33,7 @@ namespace SSRepository.Data
         public string? AccountNo { get; set; }
         public string? Status { get; set; }
         public DateTime? DiscDate { get; set; }
-
-        public virtual TblUserMas FKUser { get; set; }
+         
         public virtual TblLocalityMas? FKLocality { get; set; }
         public virtual TblStationMas? FKStation { get; set; }
         public virtual TblBankMas? FKBank { get; set; }

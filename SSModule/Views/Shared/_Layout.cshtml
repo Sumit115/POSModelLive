@@ -49,9 +49,11 @@
                         &nbsp;Delete
                     </button>
                   </li>
-                <li class="nav-item f-del" style="display:none">
-                    <a id="btnOpen" class="btn btn-sm btn-key-65" style="display:none;background: #288e8b !important;width: 87px;color: #fff;">Open</a>
-                    <a id="btnClose" class="btn btn-sm btn-key-65" style="display:none;background: #ffa500 !important;width: 87px;color: #fff;">Close</a>
+                <li class="nav-item f-status" style="display:none">
+                    <a id="btnOpen" class="btn btn-sm btn-key-65" style="background: #288e8b !important;width: 87px;color: #fff;">Open</a>
+                   </li>
+                <li class="nav-item  f-status" style="display:none">
+                     <a id="btnClose" class="btn btn-sm btn-key-65" style="background: #ffa500 !important;width: 87px;color: #fff;">Close</a>
                 </li>
                 <li class="nav-item f-ctrl" style="display:none">
                     <a id="btnApplyPromotion" class="btn btn-sm btn-key-65" style="display:none;background: #288e8b !important;width: 87px;color: #fff;">Apply Offer</a>
@@ -290,7 +292,7 @@
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
         $(document).ready(function () {
             //SideMenu();
-            $("#btnClose,#btnOpen").hide();
+            
             if ($('#hdPageType').val() == 'Log') { $("#btnServerSave").remove();
                 $("#btnDeleteRecord").parent().remove();
             }

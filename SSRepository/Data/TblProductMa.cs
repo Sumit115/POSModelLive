@@ -76,7 +76,8 @@ namespace SSRepository.Data
         public string? Image { get; set; }
         public string? HSNCode { get; set; }
         public Nullable<long> FKTaxID { get; set; }
-    
-         
+
+        public virtual TblUserMas FKUser { get; set; }
+        public virtual TblBrandMas FkBrand { get; set; }
     }
 }
