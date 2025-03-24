@@ -27,7 +27,7 @@ namespace SSRepository.Data
         public long? FkCustomerId { get; set; }
         public long? FkReferById { get; set; }
         public string PromotionApplyOn { get; set; }
-        public string? Promotion { get; set; }
+        public string  Promotion { get; set; }
         public decimal? PromotionApplyAmt { get; set; }
         public decimal? PromotionApplyQty { get; set; }
         public long? FkPromotionApplyUnitId { get; set; }
@@ -45,7 +45,7 @@ namespace SSRepository.Data
         public long SequenceNo { get; set; }
 
         public virtual TblUserMas FKUser { get; set; }
-        public virtual TblBrandMas FkBrand { get; set; }
+        public virtual TblBrandMas? FkBrand { get; set; }
 
 
     }

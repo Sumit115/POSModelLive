@@ -28,7 +28,7 @@ function View() {
                 datatype: "json",
                 success: function (res) {
                     console.log(res);
-                    if (res.status == "success") { 
+                    if (res.status == "success") {
                         bindGrid(GridId, res.data, IdProperty);
                     }
                     else
@@ -84,6 +84,20 @@ function bindGrid(GridId, data, IdProperty) {
         cg.outGrid.onContextMenu.subscribe(function (e, args) {
             e.preventDefault();
             var j = cg.outGrid.getCellFromEvent(e);
+
+            debugger;
+
+            var str = UDI.outGrid.getDataItem(j.row).TrnStatus;
+            str = str.replace('\u0000', '')
+            str = str.replace(/ /g, '');
+            str = str.replace(/\s+/g, '');
+            str = str.replace(' ', '');
+            var TrnStatus = Handler.isNullOrEmpty(str) ? "P" : str;
+            if (TrnStatus.indexOf("P") != -1 ) {
+                $("#contextMenu #contextConvertInvoice").show();
+            }
+            else { $("#contextMenu #contextConvertInvoice").hide(); }
+
             $("#contextMenu")
                 .data("row", j.row)
                 .css("top", e.pageY)
@@ -157,9 +171,15 @@ function bindGrid(GridId, data, IdProperty) {
 
             }
             else if (command == "ConvertInvoice") {
-                console.log(Handler.rootPath());
-                //window.location.href = Handler.currentPath() + "ConvertInvoice/" + type + "/" + pk_Id;
-                window.location.href = Handler.rootPath() + "Transactions/SalesInvoice/ConvertInvoice/" + pk_Id + "/" + FkSeriesId;
+                debugger;
+                var str = UDI.outGrid.getDataItem(row).TrnStatus;
+                var str = str.replace(/ /g, '');
+                var str = str.replace(/\s+/g, '');
+                var TrnStatus = Handler.isNullOrEmpty(str) ? "P" : str;
+                if (TrnStatus == 'P') {
+                    window.location.href = Handler.rootPath() + "Transactions/SalesInvoice/ConvertInvoice/" + pk_Id + "/" + FkSeriesId;
+                }
+                else { alert('Invalid Request'); }
             }
             else if (command == "ConvertLocationInvoice") {
                 console.log(Handler.rootPath());
@@ -270,13 +290,13 @@ function bindGrid(GridId, data, IdProperty) {
                 debugger;
                 console.log(UDI.outGrid.getDataItem(row));
                 var WebUrl = UDI.outGrid.getDataItem(row).WebUrl;
-               // var FKID = UDI.outGrid.getDataItem(row).FKID;
-                 // FKSeriseId = UDI.outGrid.getDataItem(row).FKSeriseId;
-                var baseurl = window.location.origin   + WebUrl.substring(0, WebUrl.indexOf("List"));
+                // var FKID = UDI.outGrid.getDataItem(row).FKID;
+                // FKSeriseId = UDI.outGrid.getDataItem(row).FKSeriseId;
+                var baseurl = window.location.origin + WebUrl.substring(0, WebUrl.indexOf("List"));
                 var _url = '';
                 if (WebUrl.indexOf("List/") != -1) {
                     var type = WebUrl.substring(WebUrl.indexOf("List/") + 5);
-                    _url = baseurl + "Create/" + type + "/" + pk_Id +  "?pageview=log";
+                    _url = baseurl + "Create/" + type + "/" + pk_Id + "?pageview=log";
                 }
                 else { _url = baseurl + "Create/" + pk_Id + "?pageview=log"; }
 

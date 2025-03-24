@@ -7,28 +7,7 @@ $(document).ready(function () {
             $("form").submit();
          }); 
 
-    if ($('#PkAccountGroupId').val() > 0)
-        $("#btnDeleteRecord").parent().show();
-
-    $('#btnDeleteRecord').click(function (e) {
-        let pk_Id = $("#PkAccountGroupId").val();
-
-        $.ajax({
-            type: "POST",
-            url: Handler.currentPath() + 'DeleteRecord',
-            data: { PKID: pk_Id },
-            datatype: "json",
-            success: function (res) {
-                console.log(res);
-                if (res == "") {
-                    window.location.href = Handler.currentPath() + "List";
-
-                }
-                else
-                    alert(res);
-            }
-        })
-    });
+     
 }) 
 
 function GenerateAlias() {

@@ -78,6 +78,6 @@ namespace SSRepository.Data
         public Nullable<long> FKTaxID { get; set; }
 
         public virtual TblUserMas FKUser { get; set; }
-        public virtual TblBrandMas FkBrand { get; set; }
+        public virtual TblBrandMas? FkBrand { get; set; }
     }
 }

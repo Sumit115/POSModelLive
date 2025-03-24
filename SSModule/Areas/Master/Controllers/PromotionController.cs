@@ -46,25 +46,36 @@ namespace SSAdmin.Areas.Master.Controllers
             _repositoryProduct = repositoryProduct;
             _repositoryCategory = repositoryCategory;
             _repositoryBrand = repositoryBrand;
-           // FKFormID = (long)Handler.Form.Promotion;
+            // FKFormID = (long)Handler.Form.Promotion;
         }
 
         public async Task<IActionResult> List(string id)
         {
             id = !string.IsNullOrEmpty(id) ? id : "Sales";
-            ViewBag.PromotionDuring = ViewBag.GridName =id;
-            ViewBag.FormId = id == "Sales"? (long)Handler.Form.SalesPromotion : (long)Handler.Form.PurchasePromotion;
+            ViewBag.PromotionDuring = ViewBag.GridName = id;
+            ViewBag.FormId = id == "Sales" ? (long)Handler.Form.SalesPromotion : (long)Handler.Form.PurchasePromotion;
             return View();
         }
 
         [HttpPost]
         public async Task<JsonResult> List(string PromotionDuring, int pageNo, int pageSize)
         {
-            return Json(new
+            try
             {
-                status = "success",
-                data = _repository.GetList(pageSize, pageNo, PromotionDuring)
-            });
+                return Json(new
+                {
+                    status = "success",
+                    data = _repository.GetList(pageSize, pageNo, PromotionDuring)
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = "error",
+                    msg = ex.Message,
+                });
+            }
         }
 
         public ActionResult Export(string PromotionDuring, int pageNo, int pageSize)
@@ -73,7 +84,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
             var _d = _repository.GetList(pageSize, pageNo, PromotionDuring);
             DataTable dtList = Handler.ToDataTable(_d);
-            var data = _gridLayoutRepository.GetSingleRecord( FKFormID, PromotionDuring, ColumnList());
+            var data = _gridLayoutRepository.GetSingleRecord(FKFormID, PromotionDuring, ColumnList());
             var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
             DataTable _gridColumn = Handler.ToDataTable(model);
 
@@ -85,7 +96,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    var Fname = PromotionDuring+ "-Promotion-List.xls";
+                    var Fname = PromotionDuring + "-Promotion-List.xls";
                     return File(stream.ToArray(), "application/ms-excel", Fname);// "Purchase-Invoice-List.xls");
                     // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
                 }
@@ -112,7 +123,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 {
                     ViewBag.PageType = "Edit";
                     Model = _repository.GetSingleRecord(id2);
-                     
+
                 }
                 else
                 {
@@ -126,7 +137,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 ModelState.AddModelError("", ex.Message);
             }
             //BindViewBags(0, tblBankMas);
-           // ViewBag.UnitList = _repository.UnitList();
+            // ViewBag.UnitList = _repository.UnitList();
             return View(Model);
         }
 
@@ -169,7 +180,7 @@ namespace SSAdmin.Areas.Master.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
             }
-         //   ViewBag.UnitList = _repository.UnitList();
+            //   ViewBag.UnitList = _repository.UnitList();
             ViewBag.PromotionDuring = model.PromotionDuring;
 
             return View(model);
@@ -209,11 +220,11 @@ namespace SSAdmin.Areas.Master.Controllers
         }
         [HttpPost]
         public object FkLocationId(int pageSize, int pageNo = 1, string search = "")
-       {
+        {
 
             return _repositoryLocation.GetDrpLocation(pageSize, pageNo, search);
         }
-     
+
         [HttpPost]
         public object FkPromotionProdId(int pageSize, int pageNo = 1, string search = "")
         {
@@ -229,7 +240,7 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             return _repositoryBrand.GetDrpBrand(pageSize, pageNo, search);
         }
-     
+
         [HttpPost]
         public object FkProductId(int pageSize, int pageNo = 1, string search = "")
         {
