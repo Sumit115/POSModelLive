@@ -10,7 +10,7 @@ namespace SSRepository.Models
 {
      public class BankModel : BaseModel
     {
-        public long PkBankId { get; set; }
+        public long PKID { get; set; }
         [Required]
         public string BankName { get; set; }
         public string? IFSCCode { get; set; }

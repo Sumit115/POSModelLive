@@ -385,7 +385,7 @@ namespace SSRepository.Repository.Master
         {
             object md = new AccountMasModel()
             {
-                PkAccountId = 0,
+                PKID = 0,
                 Account = model.Name,
                 FkAccountGroupId = 1,
                 //Station = model.Station,

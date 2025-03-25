@@ -25,7 +25,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.Account))
             {
                 cnt = (from x in __dbContext.TblAccountMas
-                       where x.Account == model.Account && x.PkAccountId != model.PkAccountId
+                       where x.Account == model.Account && x.PkAccountId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Section  Name Already Exits";
@@ -49,7 +49,7 @@ namespace SSRepository.Repository.Master
                                           orderby cou.PkAccountId
                                           select (new AccountMasModel
                                           {
-                                              PkAccountId = cou.PkAccountId,
+                                              PKID = cou.PkAccountId,
                                               Account = cou.Account,
                                               Alias = cou.Alias,
                                               FkAccountGroupId = cou.FkAccountGroupId,
@@ -100,7 +100,7 @@ namespace SSRepository.Repository.Master
                     where cou.PkAccountId == PkAccountId
                     select (new AccountMasModel
                     {
-                        PkAccountId = cou.PkAccountId,
+                        PKID = cou.PkAccountId,
                         Account = cou.Account,
                         Alias = cou.Alias,
                         FkAccountGroupId = cou.FkAccountGroupId,
@@ -173,7 +173,7 @@ namespace SSRepository.Repository.Master
                 return (from r in result
                         select new
                         {
-                            r.PkAccountId,
+                            r.PKID,
                             r.Account
                         }).ToList();
             }
@@ -253,16 +253,16 @@ namespace SSRepository.Repository.Master
         {
             AccountMasModel model = (AccountMasModel)objmodel;
             TblAccountMas Tbl = new TblAccountMas();
-            if (model.PkAccountId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblAccountMas.Find(model.PkAccountId);
+                var _entity = __dbContext.TblAccountMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
 
 
             }
 
-            Tbl.PkAccountId = model.PkAccountId;
+            Tbl.PkAccountId = model.PKID;
             Tbl.Account = model.Account;
             Tbl.FkAccountGroupId = model.FkAccountGroupId;
             Tbl.ModifiedDate = DateTime.Now;

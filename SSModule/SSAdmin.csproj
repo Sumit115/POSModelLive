@@ -9,15 +9,19 @@
   <ItemGroup>
     <Compile Remove="Model1\**" />
     <Compile Remove="wwwroot\Admin\**" />
+    <Compile Remove="wwwroot\Database\**" />
     <Compile Remove="wwwroot\lib\**" />
     <Content Remove="Model1\**" />
     <Content Remove="wwwroot\Admin\**" />
+    <Content Remove="wwwroot\Database\**" />
     <Content Remove="wwwroot\lib\**" />
     <EmbeddedResource Remove="Model1\**" />
     <EmbeddedResource Remove="wwwroot\Admin\**" />
+    <EmbeddedResource Remove="wwwroot\Database\**" />
     <EmbeddedResource Remove="wwwroot\lib\**" />
     <None Remove="Model1\**" />
     <None Remove="wwwroot\Admin\**" />
+    <None Remove="wwwroot\Database\**" />
     <None Remove="wwwroot\lib\**" />
   </ItemGroup>
 
@@ -26,7 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Areas\Master\Views\AccountGroup\Create - Copy.cshtml" />
     <Content Remove="Areas\Master\Views\Company\List.cshtml" />
     <Content Remove="wwwroot\js\Master\Recipe.js" />
     <Content Remove="wwwroot\js\Master\User.js" />
@@ -39,7 +42,6 @@
  
 
   <ItemGroup>
-    <None Include="Areas\Master\Views\AccountGroup\Create - Copy.cshtml" />
     <None Include="Areas\Master\Views\AccountGroup\Create.cshtml" />
     <None Include="Areas\Master\Views\AccountGroup\List.cshtml" />
     <None Include="Areas\Master\Views\AccountMas\Create.cshtml" />
@@ -308,16 +310,6 @@
     <None Include="wwwroot\assets\libs\typeahead.js\dist\bloodhound.min.js" />
     <None Include="wwwroot\assets\libs\typeahead.js\dist\typeahead.jquery.min.js" />
     <None Include="wwwroot\assets\libs\wnumb\wNumb.min.js" />
-    <None Include="wwwroot\Database\SQL-SalesInvoiceAddUpd-24-11-2024-01-09-AM.sql" />
-    <None Include="wwwroot\Database\SQL-usp_PurchaseInvoiceAddUpd-24-11-2024-01-15-AM.sql" />
-    <None Include="wwwroot\Database\SQL-usp_PurchaseInvoiceDetailAddUpd-24-11-2024-01-16-AM.sql" />
-    <None Include="wwwroot\Database\SQL-usp_PurchaseOrderAddUpd-24-11-2024-01-16-AM.sql" />
-    <None Include="wwwroot\Database\SQL-usp_PurchaseOrderDetailAddUpd-24-11-2024-01-17-AM.sql" />
-    <None Include="wwwroot\Database\SQL-usp_SalesInvoiceDetailAddUpd-24-11-2024-01-10-AM.sql" />
-    <None Include="wwwroot\Database\SQL-usp_SalesOrderAddUpd-24-11-2024-01-11-AM.sql" />
-    <None Include="wwwroot\Database\SQL-usp_SalesOrderDetailAddUpd-24-11-2024-01-14-AM.sql" />
-    <None Include="wwwroot\Database\SQLQuery-24-11-2024-01-08-AM.sql" />
-    <None Include="wwwroot\Database\SQLQuery1.sql" />
     <None Include="wwwroot\js\CustomDropDown.js" />
     <None Include="wwwroot\js\Common.js" />
     <None Include="wwwroot\js\jquery-ui.js" />

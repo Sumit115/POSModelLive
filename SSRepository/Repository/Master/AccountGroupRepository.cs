@@ -22,7 +22,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.AccountGroupName))
             {
                 cnt = (from x in __dbContext.TblAccountGroupMas
-                       where x.AccountGroupName == model.AccountGroupName && x.PkAccountGroupId != model.PkAccountGroupId
+                       where x.AccountGroupName == model.AccountGroupName && x.PkAccountGroupId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Section Group Name Already Exits";
@@ -43,7 +43,7 @@ namespace SSRepository.Repository.Master
                                             orderby cou.PkAccountGroupId
                                             select (new AccountGroupModel
                                             {
-                                                PkAccountGroupId = cou.PkAccountGroupId,
+                                                PKID = cou.PkAccountGroupId,
                                                 AccountGroupName = cou.AccountGroupName,
                                                 FkAccountGroupId = cou.FkAccountGroupId,
                                                 PAccountGroupName = cou.FKAccountGroupMas.AccountGroupName,
@@ -91,7 +91,7 @@ namespace SSRepository.Repository.Master
                     where cou.PkAccountGroupId == PkAccountGroupId
                     select (new AccountGroupModel
                     {
-                        PkAccountGroupId = cou.PkAccountGroupId,
+                        PKID = cou.PkAccountGroupId,
                         AccountGroupName = cou.AccountGroupName,
                         FkAccountGroupId = cou.FkAccountGroupId,
                         GroupType = cou.GroupType,
@@ -111,11 +111,11 @@ namespace SSRepository.Repository.Master
 
             var result = GetList(pageSize, pageNo, search);
 
-            result.Insert(0, new AccountGroupModel { PkAccountGroupId = 0, AccountGroupName = "Select" });
+            result.Insert(0, new AccountGroupModel { PKID = 0, AccountGroupName = "Select" });
             return (from r in result
                     select new
                     {
-                        r.PkAccountGroupId,
+                        r.PKID,
                         r.AccountGroupName
                     }).ToList();
         }
@@ -133,7 +133,7 @@ namespace SSRepository.Repository.Master
                 if (lst.Count > 0)
                 {
                     __dbContext.TblAccountGroupMas.RemoveRange(lst);
-                    AddMasterLog((long)Handler.Form.AccountGroup, oldModel.PkAccountGroupId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.AccountGroupName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
+                    AddMasterLog((long)Handler.Form.AccountGroup, oldModel.PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.AccountGroupName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 }
                 //var imglst = (from x in _context.TblImagesDtl
                 //              where x.Fkid == PkAccountGroupId && x.FKSeriesID == __FormID
@@ -165,14 +165,14 @@ namespace SSRepository.Repository.Master
         {
             AccountGroupModel model = (AccountGroupModel)objmodel;
             TblAccountGroupMas Tbl = new TblAccountGroupMas();
-            if (model.PkAccountGroupId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblAccountGroupMas.Find(model.PkAccountGroupId);
+                var _entity = __dbContext.TblAccountGroupMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkAccountGroupId = model.PkAccountGroupId;
+            Tbl.PkAccountGroupId = model.PKID;
             Tbl.FkAccountGroupId = model.FkAccountGroupId;
             Tbl.GroupType = model.GroupType;
             Tbl.AccountGroupName = model.AccountGroupName;

@@ -10,7 +10,7 @@ namespace SSRepository.Models
 {
     public class AccountGroupModel : BaseModel
     { 
-        public long PkAccountGroupId { get; set; }
+        public long PKID { get; set; }
         public long? FkAccountGroupId { get; set; }
         public string? GroupType { get; set; }
 

@@ -21,7 +21,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.BankName))
             {
                 cnt = (from x in __dbContext.TblBankMas
-                       where x.BankName == model.BankName && x.PkBankId != model.PkBankId
+                       where x.BankName == model.BankName && x.PkBankId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Bank Name Exits";
@@ -40,7 +40,7 @@ namespace SSRepository.Repository.Master
                                     orderby cou.PkBankId
                                     select (new BankModel
                                     {
-                                        PkBankId = cou.PkBankId,
+                                        PKID = cou.PkBankId,
                                         BankName = cou.BankName,
                                         IFSCCode = cou.IFSCCode,
                                         FKUserID = cou.FKUserID,
@@ -82,7 +82,7 @@ namespace SSRepository.Repository.Master
                     where cou.PkBankId == PkBankId
                     select (new BankModel
                     {
-                        PkBankId = cou.PkBankId,
+                        PKID = cou.PkBankId,
                         BankName = cou.BankName,
                         IFSCCode = cou.IFSCCode,
                         FKUserID = cou.FKUserID,
@@ -98,15 +98,15 @@ namespace SSRepository.Repository.Master
 
             var result = GetList(pageSize, pageno, search);
 
-            result.Insert(0, new BankModel { PkBankId = 0, BankName = "Select" });
+            result.Insert(0, new BankModel { PKID = 0, BankName = "Select" });
 
             return (from r in result
                     select new
                     {
-                        r.PkBankId,
+                        r.PKID,
                         r.BankName,
                         r.IFSCCode
-                    }).ToList().OrderBy(x => x.PkBankId).ToList();
+                    }).ToList().OrderBy(x => x.PKID).ToList();
         }
 
         public string DeleteRecord(long PkBankId)
@@ -130,7 +130,7 @@ namespace SSRepository.Repository.Master
                 {
                     __dbContext.TblBankMas.RemoveRange(lst);
 
-                    AddMasterLog((long)Handler.Form.Bank, oldModel.PkBankId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.BankName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
+                    AddMasterLog((long)Handler.Form.Bank, oldModel.PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.BankName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 }
                 //var imglst = (from x in _context.TblImagesDtl
                 //              where x.Fkid == PkBankId && x.FKSeriesID == __FormID
@@ -163,14 +163,14 @@ namespace SSRepository.Repository.Master
         {
             BankModel model = (BankModel)objmodel;
             TblBankMas Tbl = new TblBankMas();
-            if (model.PkBankId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblBankMas.Find(model.PkBankId);
+                var _entity = __dbContext.TblBankMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkBankId = model.PkBankId;
+            Tbl.PkBankId = model.PKID;
             Tbl.BankName = model.BankName;
             Tbl.IFSCCode = model.IFSCCode;
             Tbl.ModifiedDate = DateTime.Now;

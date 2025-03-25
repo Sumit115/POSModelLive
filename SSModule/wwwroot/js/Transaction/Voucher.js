@@ -84,8 +84,8 @@ function BindGrid(GridId, data) {
                 DrpIndex[fl] = kk;
                 switch (fl) {
                     case "AccountName_Text":
-                        cg.setOptionArray(kk, AccountList, "AccountName", false, "Account", "PkAccountId", "1");
-                        arrmapData.push({ data: AccountList, textColumn: "AccountName_Text", srcValueColumn: "AccountName_Text", destValueColumn: "PkAccountId", destTextColumn: "Account" });
+                        cg.setOptionArray(kk, AccountList, "AccountName", false, "Account", "PKID", "1");
+                        arrmapData.push({ data: AccountList, textColumn: "AccountName_Text", srcValueColumn: "AccountName_Text", destValueColumn: "PKID", destTextColumn: "Account" });
                         break
 
                 }
@@ -172,7 +172,7 @@ function BindGrid(GridId, data) {
             if (args.cell != undefined) {
                 var field = cg.columns[args.cell].field;
 
-                var PkAccountId = args.grid.getDataItem(args.row)["PkAccountId"];
+                var PKID = args.grid.getDataItem(args.row)["PKID"];
                 var SrNo = args.grid.getDataItem(args.row)["SrNo"];
 
 

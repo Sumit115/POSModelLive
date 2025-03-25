@@ -8,7 +8,7 @@
 <div class="master-page-ui">
     <form asp-action="Create" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkAccountId" />
+        <input type="hidden" asp-for="PKID" />
         <div class="row">
             <div class="col-md-8">
                 <div class="form-group row">
@@ -16,8 +16,7 @@
                     <div class="col-md-6">
                         @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkAccountGroupId" },{"name","AccountGroupName"}, { "Class", "val-cus-drp" },
                         { "value", Model.FkAccountGroupId }, { "text", Model.AccountGroupName }, { "uri", "AccountGroup" }, { "required", "required" },{ "placeholder", "Select Group"} })
-                        @*                        <select asp-for="FkAccountGroupId" asp-items="@(new SelectList(ViewBag.AccountGroupList,"PkAccountGroupId","AccountGroupName"))" class="form-control" id="FkAccountGroupId">
-                        </select>*@
+      
                         <span asp-validation-for="FkAccountGroupId" class="text-danger"></span>
                     </div>
                 </div>
@@ -362,9 +361,7 @@
                                             <div class="col-sm-6">
                                                 @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKBankID" },{"name","Bank"}, { "Class", "val-cus-drp" },
                                                 { "value", Model.FKBankID }, { "text", Model.BankName }, { "uri", "Bank" }, { "required", "required" },{ "placeholder", "Select Bank"} })
-                                                @*
-                                                <select asp-for="FKBankID" asp-items="@(new SelectList(ViewBag.BankMasList,"PkBankId","BankName"))" class="form-control" id="FKBankID" onchange="FillIFSC()">
-                                                </select>*@
+                                                 
                                             </div>
 
                                         </div>

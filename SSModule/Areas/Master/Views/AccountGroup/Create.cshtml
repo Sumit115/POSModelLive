@@ -7,7 +7,7 @@
 <div class="master-page-ui">
     <form asp-action="Create" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkAccountGroupId" />
+        <input type="hidden" asp-for="PKID" />
         <div class="row">
             <div class="col-md-8">
                 <div class="form-group row">
@@ -15,8 +15,7 @@
                     <div class="col-md-6">
                         @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkAccountGroupId" } , { "Class", "val-cus-drp" },
                         { "value", Model.FkAccountGroupId }, { "text", Model.PAccountGroupName }, { "uri", "AccountGroup" },  { "placeholder", "Select Group"} })
-                        @*                        <select asp-for="FkAccountGroupId" asp-items="@(new SelectList(ViewBag.AccountGroupList,"PkAccountGroupId","AccountGroupName"))" class="form-control" id="FkAccountGroupId">
-                        </select>*@
+            
                         <span asp-validation-for="FkAccountGroupId" class="text-danger"></span>
                     </div>
                 </div>

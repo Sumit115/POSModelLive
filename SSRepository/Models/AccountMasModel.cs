@@ -10,7 +10,7 @@ namespace SSRepository.Models
 {
     public partial class AccountMasModel : BaseModel
     {
-        public long PkAccountId { get; set; }
+        public long PKID { get; set; }
         [Required]
         public string? Account { get; set; }
         public string? Alias { get; set; }

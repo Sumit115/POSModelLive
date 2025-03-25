@@ -101,7 +101,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Bank</label>
-                                    <select asp-for="FKBankChequeID" asp-items="@(new SelectList(ViewBag.BankList,"PkBankId","BankName"))" class="form-control paymentDtl" id="FKBankChequeID">
+                                    <select asp-for="FKBankChequeID" asp-items="@(new SelectList(ViewBag.BankList,"PKID","BankName"))" class="form-control paymentDtl" id="FKBankChequeID">
                                         <option value="">Select</option>
                                     </select>
                                 </div>
@@ -129,7 +129,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label> CARD</label>
-                                    <select asp-for="FKBankCreditCardID" asp-items="@(new SelectList(ViewBag.BankList,"PkBankId","BankName"))" class="form-control paymentDtl" id="FKBankCreditCardID">
+                                    <select asp-for="FKBankCreditCardID" asp-items="@(new SelectList(ViewBag.BankList,"PKID","BankName"))" class="form-control paymentDtl" id="FKBankCreditCardID">
                                         <option value="">Select</option>
                                     </select>
 

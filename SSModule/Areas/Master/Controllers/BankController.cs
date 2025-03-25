@@ -108,11 +108,11 @@ namespace SSAdmin.Areas.Master.Controllers
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
-                    if (model.PkBankId > 0)
+                    if (model.PKID > 0)
                     {
                         Mode = "Edit";
                     }
-                    Int64 ID = model.PkBankId;
+                    Int64 ID = model.PKID;
                     string error = await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {
@@ -143,7 +143,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
-        public string DeleteRecord(long PKID)
+        public string Delete(long PKID)
         {
             string response = "";
             try
