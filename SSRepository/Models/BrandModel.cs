@@ -10,7 +10,7 @@ namespace SSRepository.Models
 {
      public class BrandModel : BaseModel
     {
-        public long PkBrandId { get; set; }
+        public long PKID { get; set; }
         [Required]
         public string BrandName { get; set; }
          

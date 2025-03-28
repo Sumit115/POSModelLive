@@ -27,11 +27,25 @@
                             <span asp-validation-for="ConcernPersonName" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label class="control-label">Concern Person Mobile </label>
                             <input asp-for="ConcernPersonMobile" class="form-control input-number trn" maxlength="10" pattern="Mobile" />
                             <span asp-validation-for="ConcernPersonMobile" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Booking Station</label>
+                            <input asp-for="BookingStation" class="form-control trn" maxlength="50" />
+                            <span asp-validation-for="BookingStation" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Transport Name</label>
+                            <input asp-for="TransportName" class="form-control trn" maxlength="50" />
+                            <span asp-validation-for="TransportName" class="text-danger"></span>
                         </div>
                     </div>
                 </div>

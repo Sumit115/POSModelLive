@@ -21,7 +21,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.UnitName))
             {
                 cnt = (from x in __dbContext.TblUnitMas
-                       where x.UnitName == model.UnitName && x.PkUnitId != model.PkUnitId
+                       where x.UnitName == model.UnitName && x.PkUnitId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Unit Name Exits";
@@ -40,10 +40,11 @@ namespace SSRepository.Repository.Master
                                       orderby cou.PkUnitId
                                       select (new UnitModel
                                       {
-                                          PkUnitId = cou.PkUnitId,
+                                          PKID = cou.PkUnitId,
                                           UnitName = cou.UnitName, 
                                           FKUserID = cou.FKUserID,
                                           DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                          UserName = cou.FKUser.UserId,
                                       }
                                      )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -58,7 +59,7 @@ namespace SSRepository.Repository.Master
                     where cou.PkUnitId == PkUnitId
                     select (new UnitModel
                     {
-                        PkUnitId = cou.PkUnitId,
+                        PKID = cou.PkUnitId,
                         UnitName = cou.UnitName,
                         FKUserID = cou.FKUserID,
                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
@@ -77,7 +78,7 @@ namespace SSRepository.Repository.Master
             return (from r in result
                     select new
                     {
-                        r.PkUnitId,
+                        r.PKID,
                         r.UnitName
                     }).ToList(); ;
         }
@@ -85,15 +86,7 @@ namespace SSRepository.Repository.Master
         public string DeleteRecord(long PkUnitId)
         {
             string Error = "";
-            UnitModel obj = GetSingleRecord(PkUnitId);
-
-            //var Country = (from x in _context.TblStateMas
-            //               where x.FkcountryId == PkUnitId
-            //               select x).Count();
-            //if (Country > 0)
-            //    Error += "Table Name -  StateMas : " + Country + " Records Exist";
-
-
+            UnitModel oldModel = GetSingleRecord(PkUnitId); 
             if (Error == "")
             {
                 var lst = (from x in __dbContext.TblUnitMas
@@ -101,19 +94,8 @@ namespace SSRepository.Repository.Master
                            select x).ToList();
                 if (lst.Count > 0)
                     __dbContext.TblUnitMas.RemoveRange(lst);
-
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkUnitId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkUnitId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetUnitID(), PkUnitId, obj.FKUnitID, obj.DATE_MODIFIED, true);
+              
+                AddMasterLog((long)Handler.Form.Unit, PkUnitId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.UnitName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -132,14 +114,14 @@ namespace SSRepository.Repository.Master
         {
             UnitModel model = (UnitModel)objmodel;
             TblUnitMas Tbl = new TblUnitMas();
-            if (model.PkUnitId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblUnitMas.Find(model.PkUnitId);
+                var _entity = __dbContext.TblUnitMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkUnitId = model.PkUnitId;
+            Tbl.PkUnitId = model.PKID;
             Tbl.UnitName = model.UnitName;
             Tbl.ModifiedDate = DateTime.Now;
             Tbl.FKUserID = GetUserID();
@@ -162,13 +144,16 @@ namespace SSRepository.Repository.Master
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
             var list = new List<ColumnStructure>
-            {
+             {
                  // new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Unit Name", Fields="UnitName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-            };
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Name", Fields="UnitName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+             };
+             
             return list;
         }
 

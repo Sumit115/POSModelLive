@@ -21,7 +21,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.BrandName))
             {
                 cnt = (from x in __dbContext.TblBrandMas
-                       where x.BrandName == model.BrandName && x.PkBrandId != model.PkBrandId
+                       where x.BrandName == model.BrandName && x.PkBrandId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Brand Name Exits";
@@ -40,7 +40,7 @@ namespace SSRepository.Repository.Master
                                      orderby cou.PkBrandId
                                      select (new BrandModel
                                      {
-                                         PkBrandId = cou.PkBrandId,
+                                         PKID = cou.PkBrandId,
                                          BrandName = cou.BrandName,
                                          FKUserID = cou.FKUserID,
                                          DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
@@ -59,7 +59,7 @@ namespace SSRepository.Repository.Master
                     where cou.PkBrandId == PkBrandId
                     select (new BrandModel
                     {
-                        PkBrandId = cou.PkBrandId,
+                        PKID = cou.PkBrandId,
                         BrandName = cou.BrandName,
                         FKUserID = cou.FKUserID,
                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
@@ -79,7 +79,7 @@ namespace SSRepository.Repository.Master
             return (from r in result
                     select new
                     {
-                        r.PkBrandId,
+                        r.PKID,
                         r.BrandName
                     }).ToList(); ;
         }
@@ -97,7 +97,7 @@ namespace SSRepository.Repository.Master
                 if (lst.Count > 0)
                     __dbContext.TblBrandMas.RemoveRange(lst);
 
-                AddMasterLog((long)Handler.Form.Brand, oldModel.PkBrandId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.BrandName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
+                AddMasterLog((long)Handler.Form.Brand, oldModel.PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.BrandName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -116,14 +116,14 @@ namespace SSRepository.Repository.Master
         {
             BrandModel model = (BrandModel)objmodel;
             TblBrandMas Tbl = new TblBrandMas();
-            if (model.PkBrandId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblBrandMas.Find(model.PkBrandId);
+                var _entity = __dbContext.TblBrandMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkBrandId = model.PkBrandId;
+            Tbl.PkBrandId = model.PKID;
             Tbl.BrandName = model.BrandName;
             Tbl.ModifiedDate = DateTime.Now;
             Tbl.FKUserID = GetUserID();

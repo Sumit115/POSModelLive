@@ -137,6 +137,8 @@ namespace SSRepository.Models
 
         public char TaxType { get; set; } = 'I';
         public int IsLock { get; set; } = 1;//For Delete 
+        public string? BookingStation { get; set; }
+        public string? TransportName { get; set; }
 
     }
 

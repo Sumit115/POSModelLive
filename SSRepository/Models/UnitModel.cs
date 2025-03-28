@@ -10,7 +10,7 @@ namespace SSRepository.Models
 {
      public class UnitModel : BaseModel
     {
-        public long PkUnitId { get; set; }
+        public long PKID { get; set; }
         [Required]
         public string UnitName { get; set; }
          

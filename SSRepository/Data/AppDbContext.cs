@@ -417,6 +417,11 @@ namespace SSRepository.Data
                     .HasForeignKey(e => e.FkBrandId)
                     .OnDelete(DeleteBehavior.Restrict);
 
+                entity.HasOne(e => e.FkUnit)
+                   .WithMany()
+                   .HasForeignKey(e => e.FkUnitId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
                 entity.HasOne(e => e.FKUser)
                     .WithMany()
                     .HasForeignKey(e => e.FKUserID)
@@ -430,6 +435,16 @@ namespace SSRepository.Data
                     .WithMany()
                     .HasForeignKey(e => e.FkBrandId)
                     .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+            });
+
+            modelBuilder.Entity<TblUnitMas>(entity =>
+            {
 
                 entity.HasOne(e => e.FKUser)
                     .WithMany()
