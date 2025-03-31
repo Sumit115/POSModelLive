@@ -168,7 +168,7 @@ namespace SSRepository.Repository.Master
         {
 
             BranchModel model = (BranchModel)objmodel;
-            string error = "";
+            string error = "nbbnn";
             error = isAlreadyExist(model, Mode);
             return error;
 
