@@ -53,8 +53,6 @@ namespace SSAdmin.Controllers
         //public object FKSeriesId(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
         //{
         //    return _seriesRepository.CustomList(1, pageSize, pageNo, search, TranAlias, DocumentType);
-
-
         //}
 
 

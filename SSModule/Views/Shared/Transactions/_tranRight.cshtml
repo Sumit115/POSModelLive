@@ -7,7 +7,7 @@
 
 
 <div class="right-header-bar">
-    <button class="icon-button" type="button" id="btnAboutSupport" tooltip="About" flow="left" fdprocessedid="sv5v8o">
+    <button class="icon-button" type="button" id="btnAboutSupport" data-bs-toggle="tooltip" data-bs-placement="left" title="About">
         <i class="bi bi-info-circle-fill"></i>
     </button>
     <partial name="~/Views/Shared/Transactions/_image.cshtml" />
@@ -17,11 +17,11 @@
 
     @if (Model.ExtProperties.PostInAc || flag == true)
     {
-        <button class="icon-button" type="button" onclick="VoucherDetail()" tooltip="receipt" flow="left" fdprocessedid="sv5v8o">
+        <button class="icon-button" type="button" onclick="VoucherDetail()" data-bs-toggle="tooltip" data-bs-placement="left" title="Voucher">
             <i class="fas fa-receipt"></i>
         </button>
         <partial name="~/Views/Shared/Transactions/_PaymentInfo.cshtml" />
-        <button class="icon-button" type="button" onclick="showpopupPrintOption()" tooltip="print barcode" flow="left" fdprocessedid="sv5v8o">
+        <button class="icon-button" type="button" onclick="showpopupPrintOption()" data-bs-toggle="tooltip" data-bs-placement="left" title="print barcode">
             <i class="fas fa-barcode"></i>
         </button>
 
@@ -32,10 +32,10 @@
     }
     @if (Model.ExtProperties.TranAlias == "SORD" || Model.ExtProperties.TranAlias == "LORD" || flag == true)
     {
-        <a href="/excelfile/format/demo_csv_artical.csv" target="_blank" title="CSV Format Download" class="icon-button">
+        <a href="/excelfile/format/demo_csv_artical.csv" target="_blank" class="icon-button" data-bs-toggle="tooltip" data-bs-placement="left" title="Download CSV Format">
             <i class="bi bi-upload"></i>
         </a>
-        <button class="icon-button" type="button" onclick="$('#ExcelFile').click()" tooltip="Upload CSV File" flow="left" fdprocessedid="sv5v8o">
+        <button class="icon-button" type="button" onclick="$('#ExcelFile').click()" data-bs-toggle="tooltip" data-bs-placement="left" title="Upload CSV File" >
             <i class="bi bi-download"></i>
         </button>
 
