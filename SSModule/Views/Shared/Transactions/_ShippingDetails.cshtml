@@ -1,0 +1,245 @@
+﻿@model SSRepository.Models.TransactionModel
+
+@{
+    Layout = null;
+}
+
+<button class="icon-button" type="button" onclick="$('.model-ShippingDetails').modal('toggle');" tooltip="Shipping Details" flow="left" fdprocessedid="sv5v8o">
+    <i class="bi bi-truck"></i>
+</button>
+
+<div class="modal model-ShippingDetails">
+    <div class="modal-dialog" role="document" style="width: 57% !important;max-width: 100%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Shipping Detail</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id="ShippingDetailsView" class="col-sm-12 row pd-0">
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Bilty No.</label>
+                                <input type="text" asp-for="BiltyNo" class="form-control shippingDtl trn" maxlength="30" />
+
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group  border-textbox">
+                                <label>Bilty Date</label>
+                                <input type="Date" asp-for="BiltyDate" class="form-control shippingDtl trn" />
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Transport Name</label>
+                                <input type="text" asp-for="TransportName" class="form-control shippingDtl trn" maxlength="50" />
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>No Of Cases</label>
+                                <input type="text" asp-for="NoOfCases" class="form-control  input-number shippingDtl trn" />
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Freight Type</label>
+                                <select asp-for="FreightType" class="form-control shippingDtl trn form-select">
+                                    <option value="FOB_To_Pay">FOB_To_Pay</option>
+                                    <option selected="selected" value="FOB_Paid(Add)">FOB_Paid(Add)</option>
+                                    <option value="FOR_To_Pay(Less)">FOR_To_Pay(Less)</option>
+                                    <option value="FOR_Paid">FOR_Paid</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Freight Amount</label>
+                                <input type="text" asp-for="FreightAmt" class="form-control  input-number shippingDtl trn" />
+                            </div>
+                        </div>
+                        <div class="col-sm-12"></div>
+
+                        <div class="col-sm-6 d-flex" style="gap: 5px;align-items: baseline;">
+                            <span class="mr-2 d-block">Address</span>
+                            <span>  <input class="form-check-input SameAsBilling" role="switch" type="checkbox"></span>
+                            <span>Same as billing address</span>
+                        </div>
+
+                        <div class="form-group shippingFormRow col-sm-12 ">
+                            <textarea asp-for="ShipingAddress" class="w-100 form-control shippingDtl trn" style="height: 80px;" maxlength="500"></textarea>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-6 fieldset-box">
+                        <fieldset>
+                            <legend>Payment Terms</legend>
+                            <div>
+                                <div class="row">
+                                    <div class="col-sm-12 p-0">
+                                        <div class="form-group">
+                                            <label>Payment Mode</label>
+                                            <select class="form-control shippingDtl trn form-select" asp-for="PaymentMode">
+                                                <option value="C">COD</option>
+                                                <option value="R">Credit</option>
+                                                <option value="T">Credit Card</option>
+                                                <option value="H">Cheque</option>
+                                                <option value="D">Direct</option>
+                                                <option value="U">Document Retain</option>
+                                                <option value="B">Through Bank</option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12 mt-3 p-0">
+                                        <div class="form-group">
+                                            <label>Bank</label>
+                                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKBankThroughBankID" } , { "name", "BankThroughBankName" } , { "Class", "val-cus-drp" }, { "event", "setBankThroughBank()" },
+                                            { "value", Model.FKBankThroughBankID }, { "text", Model.BankThroughBankName }, { "uri", "Bank" }, { "required", "required" },{ "placeholder", "Select Bank"}
+                                            ,{ "parentid", "" }, { "ExtraParam", "" }})
+
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Delivery Date</label>
+                                            <input class="form-control shippingDtl trn" asp-for="DeliveryDate" type="date">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Mode</label>
+                                            <select class="form-control shippingDtl trn form-select" asp-for="ShippingMode">
+                                                <option value="">Select</option>
+                                                <option value="P">Pickup</option>
+                                                <option value="D">Delivery</option>
+                                                <option value="C">Complete</option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Payment Days</label>
+                                            <input class="form-control shippingDtl trn  input-number" asp-for="PaymentDays" type="text">
+                                        </div>
+                                    </div>
+                                </div> 
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="col-sm-6 fieldset-box">
+                        <fieldset>
+                            <legend>E-Way Bill Details</legend>
+                            <div>
+
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>E-Way Bill No.</label>
+                                            <input asp-for="EWayDetail.EWayNo" class="form-control EwayDtl" maxlength="50" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>E-Way Date</label>
+                                            <input autocomplete="off" class="form-control EwayDtl" asp-for="EWayDetail.EWayDate" type="Date">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Vehicel No.</label>
+                                            <input asp-for="EWayDetail.VehicleNo" class="form-control EwayDtl" type="text" maxlength="20">
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Trans Doc No.</label>
+                                            <input asp-for="EWayDetail.TransDocNo" class="form-control EwayDtl" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Trans Doc Date </label>
+                                            <input autocomplete="off" class="form-control EwayDtl" asp-for="EWayDetail.TransDocDate" type="date" maxlength="20">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Trans Mode</label>
+                                            <select autocomplete="off" class="form-control EwayDtl form-select" asp-for="EWayDetail.TransMode">
+                                                <option value="Road">Road</option>
+                                                <option value="Rail">Rail</option>
+                                                <option value="Air">Air</option>
+                                                <option value="Ship">Ship</option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Supply Type</label>
+                                            <select autocomplete="off" class="form-control EwayDtl form-select" asp-for="EWayDetail.SupplyType">
+                                                <option value="Supply">Supply</option>
+                                                <option value="Import">Import</option>
+                                                <option value="Export">Export</option>
+                                                <option value="Job Work">Job Work</option>
+                                                <option value="For Own Use">For Own Use</option>
+                                                <option value="Job Work Return">Job Work Return</option>
+                                                <option value="Sales Return">Sales Return</option>
+                                                <option value="Others">Others</option>
+                                                <option value="SKD/CKD">SKD/CKD</option>
+                                                <option value="Line Sales">Line Sales</option>
+                                                <option value="Recipient Not Known">Recipient Not Known</option>
+                                                <option value="Exhibition or Fairs">Exhibition or Fairs</option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Distance</label>
+                                            <input asp-for="EWayDetail.Distance" class="form-control EwayDtl input-number" type="text">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>Vehicle Type</label>
+                                            <select autocomplete="off" class="form-control EwayDtl form-select" asp-for="EWayDetail.VehicleType">
+                                                <option value="Regular">Regular</option>
+                                                <option value="ODC">ODC</option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="$('.model-ShippingDetails').modal('toggle');">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>

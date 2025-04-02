@@ -78,6 +78,10 @@ $(document).ready(function () {
         var fieldName = $(this).attr("id");
         tranModel[fieldName] = $(this).val();
     });
+    $(".EwayDtl").change(function () {
+        var fieldName = $(this).attr("id").replace('EWayDetail_','');
+        tranModel.EWayDetail[fieldName] = $(this).val();
+    });
     $(".paymentDtl").change(function () {
 
         var fieldName = $(this).attr("id");
@@ -1294,6 +1298,23 @@ function setSeries() {
                 tranModel = res.data;
                 $("#FKSeriesId").val(FKSeriesId);
                 $('#PartyCredit').val(tranModel.PartyCredit);
+            }
+            else
+                alert(res.msg);
+        }
+    });
+}
+
+function setBankThroughBank() {
+    var FKBankThroughBankID = $("#FKBankThroughBankID").val();
+    $.ajax({
+        type: "POST",
+        url: Handler.currentPath() + 'SetBankThroughBank',
+        data: { model: tranModel, FKBankThroughBankID: FKBankThroughBankID },
+        datatype: "json",
+        success: function (res) {
+            if (res.status == "success") {
+                tranModel = res.data; 
             }
             else
                 alert(res.msg);

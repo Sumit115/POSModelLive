@@ -26,6 +26,10 @@
         </button>
 
     }
+    @if (Model.ExtProperties.TranAlias=="SINV")
+    {
+        <partial name="~/Views/Shared/Transactions/_ShippingDetails.cshtml" />
+    }
     @if (Model.ExtProperties.TranAlias == "SORD" || Model.ExtProperties.TranAlias == "LORD" || flag == true)
     {
         <a href="/excelfile/format/demo_csv_artical.csv" target="_blank" title="CSV Format Download" class="icon-button">

@@ -23,6 +23,7 @@ namespace SSRepository.Models
             UniqIdDetails = new List<BarcodeUniqVM>();
             UniqIdReturnDetails = new List<BarcodeUniqVM>();
             Branch = new BranchModel();
+            EWayDetail = new EWayDetailModel();
             EntryDate = DateTime.Now;
             GRDate = DateTime.Now;
         }
@@ -108,7 +109,7 @@ namespace SSRepository.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime ModifiedDate { get; set; }
-       // public DateTime CreationDate { get; set; }
+        // public DateTime CreationDate { get; set; }
         public long FKUserId { get; set; }
         public ExtPropertie ExtProperties { get; set; }
 
@@ -137,9 +138,27 @@ namespace SSRepository.Models
 
         public char TaxType { get; set; } = 'I';
         public int IsLock { get; set; } = 1;//For Delete 
-        public string? BookingStation { get; set; }
-        public string? TransportName { get; set; }
+        public string? BookingStation { get; set; } 
 
+        public string? BiltyNo { get; set; }
+        //[DataType(DataType.Date)]
+        //[DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime BiltyDate { get; set; }
+        public string TransportName { get; set; }
+        public long? NoOfCases { get; set; }
+        public string? FreightType { get; set; }
+        public decimal? FreightAmt { get; set; }
+        public string? ShipingAddress { get; set; }
+        public string? PaymentMode { get; set; }
+        public long? FKBankThroughBankID { get; set; }
+        public string?  BankThroughBankName { get; set; }
+        //[DataType(DataType.Date)]
+        //[DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? DeliveryDate { get; set; }
+        public string? ShippingMode { get; set; }
+        public int? PaymentDays { get; set; }
+        public List<EWayDetailModel> EWayDetails { get; set; }
+        public EWayDetailModel EWayDetail { get; set; }
     }
 
     public class ExtPropertie
@@ -158,4 +177,18 @@ namespace SSRepository.Models
         public string Barcode { get; set; }
     }
 
+    public class EWayDetailModel
+    {
+        public long FKID { get; set; }
+        public long FkSeriesId { get; set; }
+        public string? EWayNo { get; set; }
+        public DateTime? EWayDate { get; set; }
+        public string? VehicleNo { get; set; }
+        public string? TransDocNo { get; set; }
+        public DateTime? TransDocDate { get; set; }
+        public string? TransMode { get; set; }
+        public string? SupplyType { get; set; }
+        public decimal? Distance { get; set; }
+        public string? VehicleType { get; set; }
+    }
 }

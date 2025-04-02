@@ -269,6 +269,18 @@ namespace SSAdmin.Areas
 
         }
 
+        [HttpPost]
+        public JsonResult SetBankThroughBank(TransactionModel model, long FKBankThroughBankID)
+        {
+            return Json(new
+            {
+                status = "success",
+                data = _repository.SetBankThroughBank(model, FKBankThroughBankID)
+            });
+
+        }
+
+
         //[HttpPost]
         //public async Task<JsonResult> InvoiceProductList(long FkPartyId, long FKInvoiceID, DateTime? InvoiceDate = null)
         //{

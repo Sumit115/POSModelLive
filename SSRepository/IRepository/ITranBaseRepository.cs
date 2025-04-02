@@ -38,6 +38,7 @@ namespace SSRepository.IRepository
         List<SeriesModel> SeriesList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "");
 
         object SetSeries(TransactionModel model, long FKSeriesId);
+        object SetBankThroughBank(TransactionModel model, long FKBankThroughBankID);
         object SetLastSeries(TransactionModel model, long UserId, string TranAlias, string DocumentType);
 
 

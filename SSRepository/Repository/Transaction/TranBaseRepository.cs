@@ -214,6 +214,14 @@ namespace SSRepository.Repository.Transaction
         }
         public void setDefaultBeforeSave(TransactionModel model)
         {
+            model.FreightType = string.IsNullOrEmpty(model.FreightType) ? "FOB_Paid(Add)" : model.FreightType;
+            model.PaymentMode = string.IsNullOrEmpty(model.PaymentMode) ? "C" : model.PaymentMode;
+            if (model.EWayDetail != null)
+            {
+                model.EWayDetail.SupplyType = string.IsNullOrEmpty(model.EWayDetail.SupplyType) ? "Supply" : model.EWayDetail.SupplyType;
+                model.EWayDetail.TransMode = string.IsNullOrEmpty(model.EWayDetail.TransMode) ? "Road" : model.EWayDetail.TransMode;
+                model.EWayDetail.VehicleType = string.IsNullOrEmpty(model.EWayDetail.VehicleType) ? "Regular" : model.EWayDetail.VehicleType;
+            }
             if (model.TranDetails != null)
             {
                 // var _branch = new BranchRepository(__dbContext).GetSingleRecord(model.FKLocationID);
@@ -562,8 +570,17 @@ namespace SSRepository.Repository.Transaction
                                 data.Branch = data.BranchDetails.FirstOrDefault();
                             }
                         }
+                        if (data.EWayDetails != null)
+                        {
+                            if (data.EWayDetails.Count > 0)
+                            {
+                                data.EWayDetail = data.EWayDetails.FirstOrDefault();
+                            }
+                        }
                         CalculateExe_For_Update(data);
                         SetSeries(data, data.FKSeriesId);
+                        if (data.FKBankThroughBankID > 0)
+                            SetBankThroughBank(data, (long)data.FKBankThroughBankID);
                     }
 
                 }
@@ -867,7 +884,7 @@ namespace SSRepository.Repository.Transaction
                 SetGridTotal(objmodel);
                 setPromotion_InvoiceValue(objmodel);
 
-               // objmodel.IsTranChange = false;
+                // objmodel.IsTranChange = false;
             }
             return objmodel;
         }
@@ -926,7 +943,7 @@ namespace SSRepository.Repository.Transaction
                                 //    _lst = model.TranDetails.Where(x => x.Qty >= itemPromo.PromotionApplyQty && x.FkProductId == itemPromo.FKProdID && (x.LinkSrNo <= 0 || x.LinkSrNo == null) && string.IsNullOrEmpty(x.PromotionType)).ToList();
                                 _lst = (from cou in model.TranDetails
                                         join promotionLnk in __dbContext.TblPromotionLnk on cou.FkProductId equals (Int64?)promotionLnk.FkLinkId //into _locationmpLnk
-                                        where promotionLnk.FkPromotionId == itemPromo.PkPromotionId && cou.ModeForm!=2
+                                        where promotionLnk.FkPromotionId == itemPromo.PkPromotionId && cou.ModeForm != 2
                                         && cou.Qty >= itemPromo.PromotionApplyQty
                                          && (cou.LinkSrNo <= 0 || cou.LinkSrNo == null) && string.IsNullOrEmpty(cou.PromotionType)
                                         orderby cou.Rate descending
@@ -1010,7 +1027,7 @@ namespace SSRepository.Repository.Transaction
 
                             var _lstForApplyPromoCommon = (from cou in model.TranDetails
                                                            join promotionLnk in __dbContext.TblPromotionLnk on cou.FKProdCatgId equals (Int64?)promotionLnk.FkLinkId //into _locationmpLnk
-                                                           where promotionLnk.FkPromotionId == itemPromo.PkPromotionId && cou.Qty > 0 && cou.ModeForm!=2
+                                                           where promotionLnk.FkPromotionId == itemPromo.PkPromotionId && cou.Qty > 0 && cou.ModeForm != 2
                                                         && (cou.LinkSrNo <= 0 || cou.LinkSrNo == null) && string.IsNullOrEmpty(cou.PromotionType)
                                                            orderby cou.Rate descending
                                                            select new
@@ -1567,7 +1584,32 @@ namespace SSRepository.Repository.Transaction
                                 )).FirstOrDefault();
             return data;
         }
+        public object SetBankThroughBank(TransactionModel model, long FKBankThroughBankID)
+        {
+            var obj = GetBank(FKBankThroughBankID);
+            if (obj != null)
+            {
+                model.BankThroughBankName = obj.BankName == null ? "" : obj.BankName.ToString();
+                model.FKBankThroughBankID = FKBankThroughBankID;
+            }
+            model.IsTranChange = true;
 
+            return model;
+        }
+
+        public BankModel? GetBank(long BankId)
+        {
+            BankModel? data = (from cou in __dbContext.TblBankMas
+                               where cou.PkBankId == BankId
+                               select (new BankModel
+                               {
+                                   PKID = cou.PkBankId,
+                                   BankName = cou.BankName,
+                                   IFSCCode = cou.IFSCCode,
+                               }
+                                )).FirstOrDefault();
+            return data;
+        }
         public List<ProdLotDtlModel> Get_ProductLotDtlList(int PKProductId, string Batch, string Color)
         {
 

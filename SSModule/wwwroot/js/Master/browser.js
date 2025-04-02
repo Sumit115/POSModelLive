@@ -44,6 +44,7 @@ function View() {
 function bindGrid(GridId, data, IdProperty) {
 
     Common.Grid(parseInt(FormId), GridName, function (s) {
+        console.log(s);
         var cg = new coGrid("#" + GridId);
         UDI = cg;
         cg.setColumnHeading(s.ColumnHeading);
