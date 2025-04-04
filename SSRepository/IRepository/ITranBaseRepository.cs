@@ -54,6 +54,9 @@ namespace SSRepository.IRepository
         string SaveInvoiceBilty(long FkUserId,long FkID, long FKSeriesId, long FkFormId, string BiltyNo, string Image);
         object GetInvoiceBilty(long FkID, long FKSeriesId, long FkFormId);
 
+        string SaveInvoiceShippingDetail(TransactionModel JsonData);
+        object GetInvoiceShippingDetail(long FkID, long FKSeriesId);
+
         object GetPrintData(long PkId, long FkSeriesId);
         object ApplyPromotion(TransactionModel model);
 

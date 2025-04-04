@@ -474,20 +474,38 @@ namespace SSAdmin.Areas
         public JsonResult GetInvoiceBilty(long FkID, long FKSeriesId, long FormId)
         {
             if (FormId == 0) FormId = FKFormID;
+
+            var model = _repository.GetInvoiceShippingDetail(FkID, FKSeriesId);
+            var htmlString = "";
+            ViewData.Model = model; 
+
+            using (StringWriter sw = new StringWriter())
+            {
+                 IView view = viewEngine.GetView("", "~/Views/shared/transactions/_shippingdetails.cshtml", isMainPage: false).View;
+                ViewContext viewContext = new ViewContext(ControllerContext, view, ViewData, TempData, sw, new HtmlHelperOptions());
+
+                view.RenderAsync(viewContext).Wait();
+
+                htmlString = sw.GetStringBuilder().ToString();
+            }
+
             return Json(new
             {
                 status = "success",
-                data = _repository.GetInvoiceBilty(FkID, FKSeriesId, FormId)
+                //data = _repository.GetInvoiceShippingDetail(FkID, FKSeriesId)
+                htmlString,
             });
 
         }
 
         [HttpPost]
-        public JsonResult SaveInvoiceBilty(long FkID, long FKSeriesId, long FormId, string BiltyNo, string Image)
+        public JsonResult SaveInvoiceBilty(TransactionModel model)
         {
-            if (FormId == 0) FormId = FKFormID;
+           // if (FormId == 0) FormId = FKFormID;
 
-            var error = _repository.SaveInvoiceBilty(LoginId, FkID, FKSeriesId, FormId, BiltyNo, Image);
+            // var error = _repository.SaveInvoiceBilty(LoginId, FkID, FKSeriesId, FormId, BiltyNo, Image);
+            var error = _repository.SaveInvoiceShippingDetail(model);
+
             if (string.IsNullOrEmpty(error))
             {
                 return Json(new

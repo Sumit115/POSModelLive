@@ -111,6 +111,14 @@ $(document).ready(function () {
     $("#PartyMobile").change(function () {
         GetWalkingCustomerDetail($(this).val());
     });
+    $('#btnSaveShippDtl').click(function (e) {
+        $('.model-ShippingDetails').modal('toggle')
+    });
+    $("input[name=SameAsBilling]").change(function () {
+         if ($(this).prop('checked') == true) {
+             $("#ShipingAddress").val($("#PartyAddress").val());
+        }
+    });
 });
 
 function Load() {

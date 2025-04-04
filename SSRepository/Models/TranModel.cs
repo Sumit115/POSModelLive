@@ -143,8 +143,8 @@ namespace SSRepository.Models
         public string? BiltyNo { get; set; }
         //[DataType(DataType.Date)]
         //[DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime BiltyDate { get; set; }
-        public string TransportName { get; set; }
+        public DateTime? BiltyDate { get; set; }
+        public string? TransportName { get; set; }
         public long? NoOfCases { get; set; }
         public string? FreightType { get; set; }
         public decimal? FreightAmt { get; set; }

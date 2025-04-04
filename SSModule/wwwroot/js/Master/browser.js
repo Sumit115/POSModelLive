@@ -27,7 +27,7 @@ function View() {
                 data: _d,
                 datatype: "json",
                 success: function (res) {
-                    console.log(res);
+                   // console.log(res);
                     if (res.status == "success") {
                         bindGrid(GridId, res.data, IdProperty);
                     }
@@ -44,7 +44,7 @@ function View() {
 function bindGrid(GridId, data, IdProperty) {
 
     Common.Grid(parseInt(FormId), GridName, function (s) {
-        console.log(s);
+       // console.log(s);
         var cg = new coGrid("#" + GridId);
         UDI = cg;
         cg.setColumnHeading(s.ColumnHeading);
@@ -86,7 +86,7 @@ function bindGrid(GridId, data, IdProperty) {
             e.preventDefault();
             var j = cg.outGrid.getCellFromEvent(e);
 
-            debugger;
+            
 
             var str = UDI.outGrid.getDataItem(j.row).TrnStatus;
             str = str.replace('\u0000', '')
@@ -139,7 +139,7 @@ function bindGrid(GridId, data, IdProperty) {
                     data: { PKID: pk_Id },
                     datatype: "json",
                     success: function (res) {
-                        console.log(res);
+                       // console.log(res);
                         if (res == "") {
                             View()
                         }
@@ -172,7 +172,7 @@ function bindGrid(GridId, data, IdProperty) {
 
             }
             else if (command == "ConvertInvoice") {
-                debugger;
+                
                 var str = UDI.outGrid.getDataItem(row).TrnStatus;
                 var str = str.replace(/ /g, '');
                 var str = str.replace(/\s+/g, '');
@@ -183,7 +183,7 @@ function bindGrid(GridId, data, IdProperty) {
                 else { alert('Invalid Request'); }
             }
             else if (command == "ConvertLocationInvoice") {
-                console.log(Handler.rootPath());
+               // console.log(Handler.rootPath());
                 //window.location.href = Handler.currentPath() + "ConvertInvoice/" + type + "/" + pk_Id;
                 window.location.href = Handler.rootPath() + "Transactions/LocationTransferInvoice/ConvertInvoice/" + pk_Id + "/" + FkSeriesId;
             }
@@ -196,73 +196,77 @@ function bindGrid(GridId, data, IdProperty) {
                     data: { FkID: pk_Id, FKSeriesId: FkSeriesId, FormId: FormId },
                     datatype: "json",
                     success: function (res) {
-                        console.log(res);
+                       // console.log(res);
                         if (res.status == "success") {
 
                             var htm = '';
-                            htm += '<div class="mb-4 card">';
-                            htm += '   <div class="card-body"> ';
-                            htm += '       <div class="row mb-3"> ';
-                            htm += '           <div class="col-md-6"> ';
-                            htm += '               <div class="card-title">Invoice Bilty</div> ';
-                            htm += '           </div>';
-                            htm += '           <div class="col-md-6 text-center"> ';
-                            // htm += '               <input type="button" id="btnSelectBarcode" value="Done" class="btn btn-success" />';
-                            htm += '           </div> ';
-                            htm += '       </div> ';
-                            htm += '       <div class="row mb-3"> ';
-                            htm += '           <div class="col-md-12"> ';
-                            htm += '           <div class="form-group"> ';
-                            htm += '           <label class="control-label">Bilty No</label> ';
-                            htm += '               <input type="text" id="txtBiltyNo" value="" class="form-control" />';
-                            htm += '           </div>';
-                            htm += '           </div>';
+                            //htm += '<div class="mb-4 card">';
+                            //htm += '   <div class="card-body"> ';
+                            //htm += '       <div class="row mb-3"> ';
+                            //htm += '           <div class="col-md-6"> ';
+                            //htm += '               <div class="card-title">Invoice Bilty</div> ';
+                            //htm += '           </div>';
+                            //htm += '           <div class="col-md-6 text-center"> ';
+                            //// htm += '               <input type="button" id="btnSelectBarcode" value="Done" class="btn btn-success" />';
+                            //htm += '           </div> ';
+                            //htm += '       </div> ';
+                            //htm += '       <div class="row mb-3"> ';
+                            
+                            htm += res.htmlString;
 
-                            htm += '        <div class="col-md-4">';
-                            htm += '         <div class="form-group">';
-                            htm += '       <label class="control-label">Bilty Image</label>';
-                            htm += '       <input type="file" id="file_BiltyImage" onchange="return UploadImage(' + "'BiltyImage'" + ')" accept="image/*" class="requied d-block" autocomplete="off">';
-
-                            htm += '       <input type="hidden" id="BiltyImage" name="BiltyImage" value="" autocomplete="off">';
-                            htm += '       <img id="dummyimage_BiltyImage" class="img-md img-avatar" style="height: 50px;width: 50px; display:none">';
-
-                            htm += '       <span class="text-danger field-validation-valid" data-valmsg-for="BiltyImage" data-valmsg-replace="true"></span>';
-                            htm += '     </div>';
-                            htm += '    </div>';
-
-                            htm += '       </div> ';
+                            //htm += '       </div> ';
                             htm += '       <div class="row">';
                             htm += '           <div class="col-md-12 text-center"> ';
                             htm += '               <input type="hidden" id="hdFkID" value="0" class="form-control" />';
                             htm += '               <input type="hidden" id="hdFkSeriesId" value="0" class="form-control" />';
-                            htm += '               <input type="button" id="btnSubmitBilty" value="Submit" class="btn btn-success" />';
+                        //    htm += '               <input type="button" id="btnSubmitBilty" value="Submit" class="btn btn-success" />';
                             htm += '           </div> ';
 
                             htm += '          </div>  ';
-                            htm += '   </div>';
-                            htm += '   </div>';
+                            //htm += '   </div>';
+                            //htm += '   </div>';
 
                             Handler.popUp(htm, { width: "400px", height: "250px" }, function () {
                                 $("#hdFkID").val(pk_Id);
-                                $("#hdFkSeriesId").val(FkSeriesId);
-                                $("#txtBiltyNo").val(res.data.BiltyNo);
-                                $("#BiltyImage").val(res.data.Image);
-                                if (res.data.Image != '') {
-                                    $("#dummyimage_BiltyImage").attr("src", res.data.Image);
-                                    $("#dummyimage_BiltyImage").show();
-                                }
-                                $("#btnSubmitBilty").off("click").on("click", function () {
+                                $("#hdFkSeriesId").val(FkSeriesId); 
+                                $('.model-ShippingDetails').show();
+                                 GlobleDropDownBind('.model-ShippingDetails');
+                                $("#drpListFKBankThroughBankID").removeAttr('event');
 
+                                $("#btnSaveShippDtl").off("click").on("click", function () {
+                                   //$(this).closest(".popup_d").hide();
+
+                                    //alert();
+                                    var model = {};
+                                    model.PkId = $("#hdFkID").val();
+                                    model.FKSeriesId = $("#hdFkSeriesId").val();
+                                    model.BiltyNo = $("#BiltyNo ").val();
+                                    model.BiltyDate = $("#BiltyDate").val();
+                                    model.TransportName = $("#TransportName").val();
+                                    model.NoOfCases = $("#NoOfCases").val();
+                                    model.FreightType = $("#FreightType").val();
+                                    model.FreightAmt = $("#FreightAmt").val();
+                                    model.ShipingAddress = $("#ShipingAddress").val();
+                                    model.PaymentMode = $("#PaymentMode").val();
+                                    model.FKBankThroughBankID = $("#FKBankThroughBankID").val();
+                                    model.DeliveryDate = $("#DeliveryDate").val();
+                                    model.ShippingMode = $("#ShippingMode").val();
+                                    model.PaymentDays = $("#PaymentDays").val();
+                                    model.EWayDetail = {};
+                                    model.EWayDetail.EWayNo = $("#EWayDetail_EWayNo").val();
+                                    model.EWayDetail.EWayDate = $("#EWayDetail_EWayDate").val();
+                                    model.EWayDetail.VehicleNo = $("#EWayDetail_VehicleNo").val();
+                                    model.EWayDetail.TransDocNo = $("#EWayDetail_TransDocNo").val();
+                                    model.EWayDetail.TransDocDate = $("#EWayDetail_TransDocDate").val();
+                                    model.EWayDetail.TransMode = $("#EWayDetail_TransMode").val();
+                                    model.EWayDetail.SupplyType = $("#EWayDetail_SupplyType").val();
+                                    model.EWayDetail.Distance = $("#EWayDetail_Distance").val();
+                                    model.EWayDetail.VehicleType = $("#EWayDetail_VehicleType").val(); 
+                                    console.log(model);
                                     $.ajax({
                                         type: "POST",
                                         url: Handler.currentPath() + 'SaveInvoiceBilty',
-                                        data: {
-                                            FkID: $("#hdFkID").val(),
-                                            FKSeriesId: $("#hdFkSeriesId").val(),
-                                            FormId: $("#hdFormId").val(),
-                                            BiltyNo: $("#txtBiltyNo").val(),
-                                            Image: $("#BiltyImage").val(),
-                                        },
+                                        data: { model: model }, 
                                         datatype: "json",
                                         success: function (res) {
                                             if (res.status == "success") {
@@ -288,8 +292,8 @@ function bindGrid(GridId, data, IdProperty) {
 
             }
             else if (command == "ViewLog") {
-                debugger;
-                console.log(UDI.outGrid.getDataItem(row));
+                
+                //console.log(UDI.outGrid.getDataItem(row));
                 var WebUrl = UDI.outGrid.getDataItem(row).WebUrl;
                 // var FKID = UDI.outGrid.getDataItem(row).FKID;
                 // FKSeriseId = UDI.outGrid.getDataItem(row).FKSeriseId;

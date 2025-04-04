@@ -6,6 +6,7 @@ using SSRepository.Data;
 using SSRepository.Models;
 using SSRepository.Repository.Master;
 using System.Data;
+using System.Xml.Linq;
 
 namespace SSRepository.Repository.Transaction
 {
@@ -2211,6 +2212,73 @@ namespace SSRepository.Repository.Transaction
 
             return data;
         }
+        public object GetInvoiceShippingDetail(long FkID, long FKSeriesId)
+        {
+            var data = new TransactionModel();
+            DataSet ds = new DataSet();
+            string JsonData = "";
+            using (SqlConnection con = new SqlConnection(conn))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("usp_SalesInvoiceShippingDetailById", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@PkId", FkID);
+                cmd.Parameters.AddWithValue("@FkSeriesId", FKSeriesId);
+                cmd.Parameters.Add(new SqlParameter("@JsonData", SqlDbType.NVarChar, int.MaxValue, ParameterDirection.Output, false, 0, 10, "JsonData", DataRowVersion.Default, null));
+                cmd.Parameters.Add(new SqlParameter("@ErrMsg", SqlDbType.NVarChar, int.MaxValue, ParameterDirection.Output, false, 0, 10, "ErrMsg", DataRowVersion.Default, null));
+                SqlDataAdapter adp = new SqlDataAdapter(cmd);
+                adp.Fill(ds);
+
+                JsonData = Convert.ToString(cmd.Parameters["@JsonData"].Value);
+               // ErrMsg = Convert.ToString(cmd.Parameters["@ErrMsg"].Value);
+                con.Close();
+            }
+            if (!string.IsNullOrEmpty(JsonData))
+            {
+                List<TransactionModel> aa = JsonConvert.DeserializeObject<List<TransactionModel>>(JsonData);
+                if (aa != null)
+                {
+                    data = aa[0]; 
+                    if (data.EWayDetails != null)
+                    {
+                        if (data.EWayDetails.Count > 0)
+                        {
+                            data.EWayDetail = data.EWayDetails.FirstOrDefault();
+                        }
+                    } 
+                    if (data.FKBankThroughBankID > 0)
+                        SetBankThroughBank(data, (long)data.FKBankThroughBankID);
+                }
+
+            }
+            return data;
+        }
+        public string SaveInvoiceShippingDetail(TransactionModel JsonData)
+        {
+            string error = "";
+            try
+            {
+
+                using (SqlConnection con = new SqlConnection(conn))
+                {
+                    //con.Open();
+                    if (con.State == ConnectionState.Closed)
+                    {
+                        con.Open();
+                    }
+                    SqlCommand cmd = new SqlCommand("usp_SalesInvoiceShippingDetailAddUpd", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@JsonData", JsonConvert.SerializeObject(JsonData));
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+
+            }
+            catch (Exception ex) { error = ex.Message; }
+
+            return error;
+        }
+
         //AddImagesAndRemark(obj.PkcountryId, obj.FKCustomerID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
 
         public object GetPrintData(long PkId, long FkSeriesId)

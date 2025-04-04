@@ -3,11 +3,10 @@
 @{
     Layout = null;
 }
-
-<button class="icon-button" type="button" onclick="$('.model-ShippingDetails').modal('toggle');" tooltip="Shipping Details" flow="left" fdprocessedid="sv5v8o">
-    <i class="bi bi-truck"></i>
+ 
+<button class="icon-button" type="button" onclick="$('.model-ShippingDetails').modal('toggle');" data-bs-toggle="tooltip" data-bs-placement="left" title="Shipping Details">
+    <i class="fas fa-truck"></i>
 </button>
-
 <div class="modal model-ShippingDetails">
     <div class="modal-dialog" role="document" style="width: 57% !important;max-width: 100%;">
         <div class="modal-content">
@@ -66,7 +65,7 @@
 
                         <div class="col-sm-6 d-flex" style="gap: 5px;align-items: baseline;">
                             <span class="mr-2 d-block">Address</span>
-                            <span>  <input class="form-check-input SameAsBilling" role="switch" type="checkbox"></span>
+                            <span>  <input class="form-check-input SameAsBilling" name="SameAsBilling" type="checkbox"></span>
                             <span>Same as billing address</span>
                         </div>
 
@@ -238,7 +237,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="$('.model-ShippingDetails').modal('toggle');">Ok</button>
+                <button type="button" id="btnSaveShippDtl" class="btn btn-primary"  >Ok</button>
             </div>
         </div>
     </div>

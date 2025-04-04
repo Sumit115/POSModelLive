@@ -90,6 +90,7 @@ namespace SSRepository.Data
         public virtual DbSet<TblJobWorktrn> TblJobWorktrn { get; set; } = null!;
         public virtual DbSet<TblJobWorkdtl> TblJobWorkdtl { get; set; } = null!;
         public virtual DbSet<TblMasterLogDtl> TblMasterLogDtl { get; set; } = null!;
+        public virtual DbSet<TblEWayDtlLnk> TblEWayDtlLnk { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -452,6 +453,12 @@ namespace SSRepository.Data
                     .OnDelete(DeleteBehavior.Restrict);
 
             });
+
+            modelBuilder.Entity<TblEWayDtlLnk>(entity =>
+            {
+                entity.HasKey(e => new { e.FKID, e.FkSeriesId }); 
+            });
+
         }
     }
 }
