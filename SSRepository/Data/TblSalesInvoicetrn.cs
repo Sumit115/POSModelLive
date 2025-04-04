@@ -48,9 +48,7 @@ namespace SSRepository.Data
         public string? PartyAddress { get; set; } 
         public string? PartyDob { get; set; }
         public string? PartyMarriageDate { get; set; }
-         public string? BookingStation { get; set; }
-
-        public string? BiltyNo { get; set; }
+         public string? BiltyNo { get; set; }
         //[DataType(DataType.Date)]
         //[DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? BiltyDate { get; set; }
