@@ -13,6 +13,8 @@ namespace SSRepository.Data
         [Required]
         [StringLength(50)]
         public string CategoryName { get; set; }
-        public long FkCategoryGroupId { get; set; }
+        public long FkCategoryGroupId { get; set; } 
+        public virtual TblCategoryGroupMas FKCategoryGroupMas { get; set; }
+
     }
 }

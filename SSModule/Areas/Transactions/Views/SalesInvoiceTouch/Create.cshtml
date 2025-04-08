@@ -25,7 +25,7 @@
                                 @foreach (SSRepository.Models.CategoryModel item in ViewBag.CategoryList)
                                 {
                                     <li class="nav-item">
-                                        <a data-itemid="@item.PkCategoryId" onclick="BindCategoryProduct_Touch(this)" href="javascript:void(0)" class="nav-link">
+                                        <a data-itemid="@item.PKID" onclick="BindCategoryProduct_Touch(this)" href="javascript:void(0)" class="nav-link">
                                             <span>@item.Category</span>
                                         </a>
                                     </li>

@@ -10,7 +10,7 @@ namespace SSRepository.Models
 {
     public class CategoryModel : BaseModel
     {
-        public long PkCategoryId { get; set; }
+        public long PKID { get; set; }
 
         [Required(ErrorMessage = "Name Required")]
         [StringLength(50)] 

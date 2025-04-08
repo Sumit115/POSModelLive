@@ -113,7 +113,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
-                    if (model.PkCategoryGroupId > 0)
+                    if (model.PKID > 0)
                     {
                         Mode = "Edit";
                     }
@@ -148,7 +148,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
-        public string DeleteRecord(long PKID)
+        public string Delete(long PKID)
         {
             string response = "";
             try
@@ -157,6 +157,7 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             catch (Exception ex)
             {
+                response = ex.InnerException.Message.Contains("The DELETE statement conflicted") ? "use in other transaction" : ex.Message;
                 //CommonCore.WriteLog(ex, "DeleteRecord", ControllerName, GetErrorLogParam());
                 //return CommonCore.SetError(ex.Message);
             }

@@ -21,7 +21,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.Category))
             {
                 cnt = (from x in __dbContext.TblCategoryMas
-                       where x.CategoryName == model.Category && x.PkCategoryId != model.PkCategoryId
+                       where x.CategoryName == model.Category && x.PkCategoryId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Section Name Already Exits";
@@ -35,18 +35,19 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<CategoryModel> data = (from cou in __dbContext.TblCategoryMas
-                                        join catGrp in __dbContext.TblCategoryGroupMas on cou.FkCategoryGroupId equals catGrp.PkCategoryGroupId
+                                        //join catGrp in __dbContext.TblCategoryGroupMas on cou.FkCategoryGroupId equals catGrp.PkCategoryGroupId
                                         where (EF.Functions.Like(cou.CategoryName.Trim().ToLower(), Convert.ToString(search) + "%"))
                                         && (CategoryGroupId == 0 || cou.FkCategoryGroupId == CategoryGroupId)
                                         orderby cou.PkCategoryId
                                         select (new CategoryModel
                                         {
-                                            PkCategoryId = cou.PkCategoryId,
+                                            PKID = cou.PkCategoryId,
                                             Category = cou.CategoryName,
                                             FkCategoryGroupId = cou.FkCategoryGroupId,
-                                            GroupName = catGrp.CategoryGroupName,
+                                            GroupName = cou.FKCategoryGroupMas.CategoryGroupName,
                                             FKUserID = cou.FKUserID,
-                                            DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                                            DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                            UserName=cou.FKUser.UserId,
                                         }
                                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -63,7 +64,7 @@ namespace SSRepository.Repository.Master
             return (from r in result
                     select new
                     {
-                        r.PkCategoryId,
+                        r.PKID,
                         r.Category,
                         r.GroupName,
                     }).ToList(); ;
@@ -77,9 +78,10 @@ namespace SSRepository.Repository.Master
                     where cou.PkCategoryId == PkCategoryId
                     select (new CategoryModel
                     {
-                        PkCategoryId = cou.PkCategoryId,
+                        PKID = cou.PkCategoryId,
                         Category = cou.CategoryName,
                         FkCategoryGroupId = cou.FkCategoryGroupId,
+                        GroupName = cou.FKCategoryGroupMas.CategoryGroupName,
                         FKUserID = cou.FKUserID,
                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                         CategorySize_lst = (from ad in __dbContext.TblCategorySizeLnk
@@ -98,35 +100,25 @@ namespace SSRepository.Repository.Master
         public string DeleteRecord(long PkCategoryId)
         {
             string Error = "";
-            CategoryModel obj = GetSingleRecord(PkCategoryId);
-
-            //var Country = (from x in _context.TblStateMas
-            //               where x.FkcountryId == PkCategoryId
-            //               select x).Count();
-            //if (Country > 0)
-            //    Error += "Table Name -  StateMas : " + Country + " Records Exist";
-
-
+            CategoryModel oldModel = GetSingleRecord(PkCategoryId);
+             
             if (Error == "")
             {
+                var sizelst = (from x in __dbContext.TblCategorySizeLnk
+                              where x.FkCategoryId == PkCategoryId  
+                              select x).ToList();
+                if (sizelst.Count > 0)
+                    __dbContext.RemoveRange(sizelst);
+
                 var lst = (from x in __dbContext.TblCategoryMas
                            where x.PkCategoryId == PkCategoryId
                            select x).ToList();
                 if (lst.Count > 0)
                     __dbContext.TblCategoryMas.RemoveRange(lst);
 
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkCategoryId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
+                
+                AddMasterLog((long)Handler.Form.Category, oldModel.PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Category, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
 
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkCategoryId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetCategoryID(), PkCategoryId, obj.FKCategoryID, obj.DATE_MODIFIED, true);
                 __dbContext.SaveChanges();
             }
 
@@ -145,14 +137,14 @@ namespace SSRepository.Repository.Master
         {
             CategoryModel model = (CategoryModel)objmodel;
             TblCategoryMas Tbl = new TblCategoryMas();
-            if (model.PkCategoryId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblCategoryMas.Find(model.PkCategoryId);
+                var _entity = __dbContext.TblCategoryMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkCategoryId = model.PkCategoryId;
+            Tbl.PkCategoryId = model.PKID;
             Tbl.CategoryName = model.Category;
             Tbl.FkCategoryGroupId = model.FkCategoryGroupId;
             Tbl.ModifiedDate = DateTime.Now;
@@ -229,13 +221,15 @@ namespace SSRepository.Repository.Master
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
             var list = new List<ColumnStructure>
             {
-                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Section Name", Fields="Category",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Section Group", Fields="GroupName",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-               };
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Section Name", Fields="Category",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Section Group", Fields="GroupName",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+            };
             return list;
         }
 

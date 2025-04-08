@@ -379,28 +379,7 @@
         }
     </script>
     <script>
-        function GetCategory() {
-            var Id = $("#FkCatGroupId").val();
-            $("#FkCatId").empty();
-            if (Id > 0) {
-                var d = JSON.stringify({ pageNo: 1, pageSize: 1000 });
-                $.ajax({
-                    type: "POST",
-                    url: '/Master/Category/GetDrpCategoryByGroupId',
-                    data: { CategoryGroupId: Id },
-                    datatype: "json",
-                    success: function (res) {
-                        console.log(res);
-                        $(res).each(function (i, v) {
-                            $("#FkCatId").append("<option value='" + v.PkCategoryId + "'>" + v.CategoryName + "</option>");
-                        });
-                    }
-                })
-
-            } else {
-                $("#FkCatId").append("<option value=''>-Select-</option>");
-            }
-        }
+         
 
         function GetBarCode() {
 

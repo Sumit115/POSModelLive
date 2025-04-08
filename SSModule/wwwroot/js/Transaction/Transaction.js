@@ -1552,7 +1552,7 @@ function BindCategoryProduct_Touch($cntrl) {
     $.ajax({
         type: "POST",
         url: Handler.currentPath() + 'GetProductListByCat',
-        data: { PkCategoryId: id },
+        data: { FkCategoryId: id },
         datatype: "json",
         success: function (res) {
             if (res.status == "success") {

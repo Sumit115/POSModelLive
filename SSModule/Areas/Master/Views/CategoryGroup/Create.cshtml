@@ -3,18 +3,20 @@
 @{
     ViewData["Title"] = "Section Group";
     ViewData["bdClass"] = "page";
-    }
+}
 <div class="p-3">
     <form asp-action="Create" class="g-3" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkCategoryGroupId" />
- 
+        <input type="hidden" asp-for="PKID" />
+
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label">Parent Section Group </label>
-                    <select asp-for="FkCategoryGroupId" asp-items="@(new SelectList(ViewBag.CategoryGroupList,"PkCategoryGroupId","CategoryGroupName"))" class="form-control" id="FkCategoryGroupId">
-                    </select>
+                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkCategoryGroupId" },{"name","CategoryGroup"}, { "Class", "val-cus-drp" }, { "event", "" },
+                    { "value", Model.FkCategoryGroupId }, { "text", Model.PCategoryGroupName }, { "uri", "CategoryGroup" }, { "required", "" },{ "placeholder", "Select Group"}
+                    ,{ "parentid", "" }, { "ExtraParam", "" }})
+
                 </div>
             </div>
             <div class="col-md-6">
@@ -24,9 +26,9 @@
                     <span asp-validation-for="CategoryGroupName" class="text-danger"></span>
                 </div>
             </div>
-          
+
         </div>
-       
+
     </form>
 </div>
 
@@ -34,26 +36,6 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-<script>
-       $(document).ready(function(){
-            $('#btnServerSave').click(function (e) {
-                e.preventDefault();
-                $("form").submit();
-            });
-       })
-        UploadImage = (id) => {
-            var file = document.querySelector('input[id="file_' + id + '"]').files[0];
-            // $("#FileName").val(file.name);
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
-                //console.log(reader.result);
-                $("#" + id).val(reader.result);
-                $("#dummyimage_" + id).attr("src", reader.result);
-                $("#dummyimage_" + id).show();
-                //   $("#myImage").hide();
+    <script src="~/js/master/categorygroup.js"></script>
 
-            };
-        }
-</script>
-                }
+  }

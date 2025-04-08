@@ -80,5 +80,6 @@ namespace SSRepository.Data
         public virtual TblUserMas FKUser { get; set; }
         public virtual TblBrandMas? FkBrand { get; set; }
         public virtual TblUnitMas? FkUnit { get; set; }
+        public virtual TblCategoryMas? FkCategory { get; set; }
     }
 }

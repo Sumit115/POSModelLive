@@ -94,7 +94,7 @@
                                 Original for Reciver
                             </span>
                             <span style="width: 25%;display: inline-block;">
-                                E-Way No:
+                                E-Way No:@Model.EWayDetail.EWayNo
                             </span>
                             <span style="text-align: end;width: 21%;display: inline-block;">
                                 Date :
@@ -120,10 +120,10 @@
                     <h3> : </h3>
                 </td>
                 <td style="width: 25%;padding-top: 10px;" colspan="2">
-                    <h3>Transportation Mode</h3>
+                    <h3>Transportation Name</h3>
                 </td>
                 <td style="width: 25%;padding-top: 10px;" colspan="2">
-                    <h3> : </h3>
+                    <h3> : @Model.TransportName</h3>
                 </td>
             </tr>
             <tr>
@@ -133,12 +133,16 @@
                 <td style="width: 25%;border-right: 1px solid #000;">
                     <h3> : @Model.SeriesName@Model.EntryNo</h3>
                 </td>
-                <td style="width: 25%;" colspan="2">
-                    <h3> </h3>
-                </td>
-                <td style="width: 25%;" colspan="2">
-                    <h3>   </h3>
-                </td>
+                @if (!string.IsNullOrEmpty(Model.BookingStation))
+                {
+
+                    <td style="width: 25%;padding-top: 10px;" colspan="2">
+                        <h3>Booking Station</h3>
+                    </td>
+                    <td style="width: 25%;padding-top: 10px;" colspan="2">
+                        <h3> : @Model.BookingStation</h3>
+                    </td>
+                }
             </tr>
             <tr>
                 <td style="width: 25%;">

@@ -49,6 +49,16 @@ namespace SSAdmin.Controllers
             BankRepository repository = new BankRepository(_dbContext, _contextAccessor);
             return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
         }
+
+        [HttpPost]
+        public object CategoryGroup(int pageSize, int pageNo = 1, string search = "")
+        {
+
+            CategoryGroupRepository repository = new CategoryGroupRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
+        }
+
+
         //[HttpPost]
         //public object FKSeriesId(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
         //{

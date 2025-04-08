@@ -76,11 +76,11 @@ namespace SSAdmin.Areas.Transactions.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProductListByCat(long PkCategoryId)
+        public JsonResult GetProductListByCat(long FkCategoryId)
         {
             try
             {
-                var data = _repositoryProduct.GetList(1000,1,"",PkCategoryId);
+                var data = _repositoryProduct.GetList(1000,1,"", FkCategoryId);
                 return Json(new
                 {
                     status = "success",
