@@ -15,7 +15,7 @@ namespace SSRepository.IRepository.Master
 
         PartyModel GetSingleRecord(long PkID);
 
-        string DeleteRecord(long PKID);
-
+        string DeleteRecord(long PKID); 
+        string GetAlias(string FormName = "");
     }
 }

@@ -151,14 +151,14 @@ namespace SSRepository.Repository.Transaction
                     throw new Exception("Account Not Found");
                 }
 
-                if (objmodel.CreditCard && (objmodel.CreditCardAmt < 0 || objmodel.CreditCardNo == "" || objmodel.CreditCardDate == null || objmodel.FKBankCreditCardID == null))
-                    throw new Exception("Please Enter Valid Card Detail");
+                //if (objmodel.CreditCard && (objmodel.CreditCardAmt < 0 || objmodel.CreditCardNo == "" || objmodel.CreditCardDate == null || objmodel.FKBankCreditCardID == null))
+                //    throw new Exception("Please Enter Valid Card Detail");
 
-                if (objmodel.Cheque && (objmodel.ChequeAmt < 0 || objmodel.ChequeNo == "" || objmodel.ChequeDate == null || objmodel.FKBankChequeID == null))
-                    throw new Exception("Please Enter Valid Cheque Detail");
+                //if (objmodel.Cheque && (objmodel.ChequeAmt < 0 || objmodel.ChequeNo == "" || objmodel.ChequeDate == null || objmodel.FKBankChequeID == null))
+                //    throw new Exception("Please Enter Valid Cheque Detail");
 
-                if (objmodel.Credit && (objmodel.CreditAmt < 0 || objmodel.CreditDate == null || objmodel.FKPostAccID == null))
-                    throw new Exception("Please Enter Valid Credit Detail");
+                //if (objmodel.Credit && (objmodel.CreditAmt < 0 || objmodel.CreditDate == null || objmodel.FKPostAccID == null))
+                //    throw new Exception("Please Enter Valid Credit Detail");
 
 
                 //if (objmodel.VoucherDetails != null)
@@ -562,7 +562,7 @@ namespace SSRepository.Repository.Transaction
                     if (aa != null)
                     {
                         data = aa[0];
-                        data.TrnStatus = data.TrnStatus.Trim().Replace("\0", "");
+                        data.TrnStatus = data.TrnStatus.Trim().Replace("\0", "").Replace(" ", "");
                         data.IsTranChange = true;
                         if (data.BranchDetails != null)
                         {
@@ -1443,7 +1443,7 @@ namespace SSRepository.Repository.Transaction
                 var lst = rep.GetList(pageSize, pageNo, search).ToList()
                     .Select(cou => new PartyModel()
                     {
-                        PkId = cou.PKLocationID,
+                        PKID = cou.PKLocationID,
                         Email = cou.Email,
                         Mobile = cou.Phone1,
                         Address = cou.Address,
@@ -1502,7 +1502,7 @@ namespace SSRepository.Repository.Transaction
                                 where cou.PkVendorId == PkVendorId
                                 select (new PartyModel
                                 {
-                                    PkId = cou.PkVendorId,
+                                    PKID = cou.PkVendorId,
                                     Name = cou.Name,
                                     Mobile = cou.Mobile,
                                     Address = cou.Address,
@@ -1519,7 +1519,7 @@ namespace SSRepository.Repository.Transaction
                                 where cou.PkCustomerId == PkId
                                 select (new PartyModel
                                 {
-                                    PkId = cou.PkCustomerId,
+                                    PKID = cou.PkCustomerId,
                                     Name = cou.Name,
                                     Mobile = cou.Mobile,
                                     Address = cou.Address,
@@ -1536,7 +1536,7 @@ namespace SSRepository.Repository.Transaction
                                 where cou.PkLocationID == PkLocationID
                                 select (new PartyModel
                                 {
-                                    PkId = cou.PkLocationID,
+                                    PKID = cou.PkLocationID,
                                     Name = cou.Location,
                                     Mobile = cou.Phone1,
                                     Address = cou.Address,

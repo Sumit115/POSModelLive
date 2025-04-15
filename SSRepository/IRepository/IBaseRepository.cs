@@ -27,5 +27,6 @@ namespace SSRepository.IRepository
         DashboardSummaryModel usp_DashboardSummary(int Month);
         MasterLogDtlModel GetMasterLog(long PKMasterLogID);
         T GetMasterLog<T>(long PKMasterLogID);
+        string GetAlias(string FormName = "");
     }
 }

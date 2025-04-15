@@ -208,7 +208,7 @@ namespace SSAdmin.Areas.Master.Controllers
             string Return = string.Empty;
             try
             {
-                Return = _VendorRepository.GetAlias("product");
+                Return = _repository.GetAlias("product");
             }
             catch (Exception ex)
             {

@@ -1052,6 +1052,69 @@ namespace SSRepository.Repository
         }
 
 
+        public string GetAlias(string FormName = "")
+        {
+            string retVal = "";
+            try
+            {
+                if (FormName == "product")
+                {
+                    retVal = GetAlias("tblProduct_mas", "Alias");
+                }
+                else if (FormName == "location")
+                {
+                    retVal = GetAlias("tblLocation_mas", "Alias");
+                }
+                else if (FormName == "account")
+                {
+                    retVal = GetAlias("tblAccount_mas", "Alias");
+                }
+                else if (FormName == "accountgroup")
+                {
+                    retVal = GetAlias("tblAccountGroup_mas", "GroupAlias");
+                }
+                else if (FormName == "customer")
+                {
+                    retVal = GetAlias("tblCustomer_mas", "Code");
+                }
+                else if (FormName == "vendor")
+                {
+                    retVal = GetAlias("tblVendor_mas", "Code");
+                }
+
+                if (String.IsNullOrEmpty(retVal) || retVal == "0" || retVal == "ABC")
+                {
+                    retVal = "1000";
+                }
+                retVal = Convert.ToString(Convert.ToInt64(retVal) + 1);
+
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
+            return retVal;
+        }
+        public string GetAlias(string TableName, string ColumnName)
+        {
+            string returnAlias = string.Empty;
+            using (SqlConnection con = new SqlConnection(conn))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("uspGetAlias", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@TableName", TableName);
+                cmd.Parameters.AddWithValue("@ColumnName", ColumnName);
+
+                SqlParameter outputParameter = new SqlParameter("@Alias", SqlDbType.NVarChar, 20);
+                outputParameter.Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(outputParameter);
+                returnAlias = Convert.ToString(cmd.ExecuteScalar());
+                con.Close();
+            }
+            return returnAlias;
+        }
+
 
     }
 

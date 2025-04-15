@@ -201,7 +201,7 @@ function fnCustomDropDown(hid) {
             var arrParentId = hiParent.split(',');
             $(arrParentId).each(function (index, item) {
                 if (item !== "" && item.length > 3) {
-                    data[item] = $("#" + item).val();
+                    data[item.replace('_In', '').replace('_Out', '')] = $("#" + item).val();
                 }
             });
         }

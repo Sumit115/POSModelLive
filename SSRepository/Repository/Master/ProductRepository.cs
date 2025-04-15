@@ -44,7 +44,7 @@ namespace SSRepository.Repository.Master
                                                              into tembrand
                                        from brand in tembrand.DefaultIfEmpty()
                                        where (EF.Functions.Like(cou.Product.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                       && cou.FKProdCatgId==(FkCatId>0?FkCatId:cou.FKProdCatgId)
+                                       && cou.FKProdCatgId == (FkCatId > 0 ? FkCatId : cou.FKProdCatgId)
                                        orderby cou.PkProductId
                                        select (new ProductModel
                                        {
@@ -127,7 +127,7 @@ namespace SSRepository.Repository.Master
                          {
                              PkProductId = cou.PkProductId,
                              Product = cou.Product,
-                             NameToDisplay = cou.NameToDisplay,  
+                             NameToDisplay = cou.NameToDisplay,
                          }
                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
             }
@@ -136,6 +136,55 @@ namespace SSRepository.Repository.Master
                 return null;
             }
         }
+        public object CustomList_Batch(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", long FKProductId = 0)
+        {
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblProdLotDtl
+                         where cou.FKProductId == FKProductId
+                         && EF.Functions.Like(cou.Batch.Trim().ToLower(), search + "%")
+                         orderby cou.PkLotId
+                         select (new
+                         {
+                             cou.PkLotId,
+                             cou.Batch,
+                             cou.Color,
+                         }
+                         )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public object CustomList_Color(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", long FKProductId = 0,string Batch="")
+        {
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblProdLotDtl
+                         where cou.FKProductId == FKProductId
+                        && EF.Functions.Like(cou.Color.Trim().ToLower(), search + "%")
+                          && (cou.Batch == Batch || Batch == "")
+                         orderby cou.PkLotId
+                         select (new 
+                         {
+                               cou.PkLotId,
+                               cou.Color,
+                               cou.Batch, 
+                         }
+                          )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else
+            {
+                return null;
+            }
+        }
+
 
         public List<ProductModel> GetListByPartyId_InSaleInvoice(int pageSize, int pageNo = 1, string search = "", long FkPartyId = 0, long FkInvoiceId = 0, DateTime? InvoiceDate = null)
         {
@@ -244,7 +293,7 @@ namespace SSRepository.Repository.Master
                         Genration = cou.Genration,
                         CodingScheme = cou.CodingScheme,
                         FkUnitId = cou.FkUnitId,
-                       CategoryName = cat.CategoryName,
+                        CategoryName = cat.CategoryName,
                         FKUserID = cou.FKUserID,
                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                     })).FirstOrDefault();
@@ -257,7 +306,7 @@ namespace SSRepository.Repository.Master
             if (search == null) search = "";
 
             var result = GetList(pageSize, pageNo, search);
-           // result.Insert(0, new ProductModel { PkProductId = 0, Product = "Select" });
+            // result.Insert(0, new ProductModel { PkProductId = 0, Product = "Select" });
 
 
             return (from r in result
@@ -379,7 +428,7 @@ namespace SSRepository.Repository.Master
                 {
                     Tbl.PkProductId = 1;
                 }
-               
+
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
                 AddData(Tbl, false);
             }
@@ -476,7 +525,7 @@ namespace SSRepository.Repository.Master
         }
 
         //GetProductDetail ->@barcode='' ,@productID,=0,@lotId=0
-        
+
         public string GetBarCode()
         {
             Int64 ProdBarcode;

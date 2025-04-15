@@ -11,18 +11,23 @@ $(document).ready(function () {
     //    }
     //    return false;
     //});
-    bindProduct_In();
-    bindBatch_In();
+    //bindProduct_In();
+    //bindBatch_In();
     bindColor_In();
-    bindProduct_Out();
-    bindBatch_Out();
+    //bindProduct_Out();
+    //bindBatch_Out();
     bindColor_Out();
     Load();
+
+    $('#btnServerSave').click(function (e) {
+        e.preventDefault();
+        $("form").submit();
+    });
 });
 function Load() {
-    var PkRecipeId = $("#PkRecipeId").val();
+    var PKID = $("#PKID").val();
     Model = JSON.parse($("#hdData").val());
-    if (PkRecipeId > 0) {
+    if (PKID > 0) {
 
         //BindGrid('DDT', JSON.parse($("#hdGridIn").val()), Model.VoucherDetails);
         //BindGrid('DDT', JSON.parse($("#hdGridOut").val()), Model.VoucherDetails);
@@ -37,7 +42,7 @@ function Load() {
 }
 
 function bindProduct_In() {
-    _Custdropdown["FkProductId_In"] = new CustomDDL("FkProductId_In", "#drpListFkProductId_In span");
+    _Custdropdown["FkProductId_In"] = new fnCustomDropDown("FkProductId_In");
 
     _Custdropdown.FkProductId_In.onLoad.call(function (arg) {
 
@@ -60,7 +65,7 @@ function bindProduct_In() {
     })
 }
 function bindBatch_In() {
-    _Custdropdown["Batch_In"] = new CustomDDL("Batch_In", "#drpListBatch_In span");
+    _Custdropdown["Batch_In"] = new CustomDDL("Batch_In");
 
     _Custdropdown.Batch_In.onLoad.call(function (arg) {
         if ($("#FkProductId_In").val() > 0) {
@@ -97,15 +102,17 @@ function bindColor_In() {
             
             var FkProductId = $("#FkProductId_In").val();
 
-            var data = { name: "Color", pageNo: 1, pageSize: 1000, search: request.term, RowParam: FkProductId, ExtraParam: "" };
-
+          //  var data = { name: "Color", pageNo: 1, pageSize: 1000, search: request.term, RowParam: FkProductId, ExtraParam: "" };
+            var data = { pageNo: 1, pageSize: 1000, search: request.term, FkProductId: FkProductId  };
+            console.log(data);
             $.ajax({
-                url: Handler.rootPath() + 'Transactions/PurchaseInvoice/trandtldropList',
+                url:  '/CustomDropDown/Color',
                 data: data,
-                async: false,
+                method: 'POST',
                 dataType: 'JSON',
+                async: false,
                 success: function (res) {
-                    
+                    console.log(res);
                     Handler.hide();
                     if (res.length > 0) {
                         response($.map(res, function (item) {
@@ -176,7 +183,7 @@ function AddProduct_In() {
 }
 //-----------------------------------OUT-----------------
 function bindProduct_Out() {
-    _Custdropdown["FkProductId_Out"] = new CustomDDL("FkProductId_Out", "#drpListFkProductId_Out span");
+    _Custdropdown["FkProductId_Out"] = new fnCustomDropDown("FkProductId_Out", "#drpListFkProductId_Out span");
 
     _Custdropdown.FkProductId_Out.onLoad.call(function (arg) {
 
@@ -743,7 +750,7 @@ function UpdateSize(obj, index, action) {
 
 //        if (flag) {
 
-//            _d.PkRecipeId = $('#PkRecipeId').val();
+//            _d.PKID = $('#PKID').val();
 //            _d.Recipe_dtl = GetDataFromGrid();
 
 //            if (_d.Recipe_dtl.length > 0) {

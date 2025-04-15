@@ -173,7 +173,7 @@ namespace SSAdmin.Areas.Master.Controllers
             string Return = string.Empty;
             try
             {
-                Return = _Vendorrepository.GetAlias("accountgroup");
+                Return = _repository.GetAlias("accountgroup");
             }
             catch (Exception ex)
             {

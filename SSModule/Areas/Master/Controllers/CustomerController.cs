@@ -100,11 +100,11 @@ namespace SSAdmin.Areas.Master.Controllers
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
-                    if (model.PkId > 0)
+                    if (model.PKID > 0)
                     {
                         Mode = "Edit";
                     }
-                    Int64 ID = model.PkId;
+                    Int64 ID = model.PKID;
                     string error = await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {
@@ -150,7 +150,21 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             return response;
         }
-        
+
+        [HttpPost]
+        public string GetAlias()
+        {
+            string Return = string.Empty;
+            try
+            {
+                Return = _repository.GetAlias("customer");
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
+            return Return;
+        }
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {
             return _repository.ColumnList(GridName);

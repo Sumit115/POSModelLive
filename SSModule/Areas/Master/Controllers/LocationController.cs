@@ -147,7 +147,7 @@ namespace SSAdmin.Areas.Master.Controllers
             string Return = string.Empty;
             try
             {
-                Return = _Vendorrepository.GetAlias("location");
+                Return = _repository.GetAlias("location");
             }
             catch (Exception ex)
             {

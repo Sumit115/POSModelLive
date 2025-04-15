@@ -7,7 +7,7 @@
 <div class="p-4">
     <form asp-action="Create" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkId" />
+        <input type="hidden" asp-for="PKID" />
         <input type="hidden" asp-for="IsAadharVerify" />
         <input type="hidden" asp-for="IsPanVerify" />
         <input type="hidden" asp-for="Status" />
@@ -16,7 +16,7 @@
                 <div class="form-group row">
                     <label class="col-sm-2">Name<span class="required">*</span></label>
                     <div class="col-md-6">
-                        <input asp-for="Name" class="form-control" placeholder="Enter Name" required/>
+                        <input asp-for="Name" class="form-control" placeholder="Enter Name" required />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                 </div>
@@ -163,64 +163,11 @@
         </div>
     </form>
 </div>
-
+<input type="hidden" id="hdCityId" value="@Model.FkCityId" />
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script>
-        $(document).ready(function () {
+    <script src="~/js/master/customer.js"></script>
 
-            Common.InputFormat();
-            BindCity(@Model.FkCityId);
-            $('#btnServerSave').click(function (e) {
-                e.preventDefault();
-                $("form").submit();
-            });
-        })
-        UploadImage = (id) => {
-            var file = document.querySelector('input[id="file_' + id + '"]').files[0];
-            // $("#FileName").val(file.name);
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
-                //console.log(reader.result);
-                $("#" + id).val(reader.result);
-                $("#dummyimage_" + id).attr("src", reader.result);
-                $("#dummyimage_" + id).show();
-                //   $("#myImage").hide();
-
-            };
-        }
-    </script>
-    <script>
-        function BindCity(CityId) {
-
-            var StateName = $("#StateName").val();
-            $("#FkCityId").empty();
-            //
-
-            if (StateName != '') {
-
-                $.ajax({
-                    type: "POST",
-                    url: '/Master/City/GetDrpCityByState',
-                    data: { State: StateName },
-                    datatype: "json",
-                    success: function (res) {
-                        console.log(res);
-                        $(res).each(function (i, v) {
-
-                            $("#FkCityId").append("<option value='" + v.PkCityId + "'>" + v.CityName + "</option>");
-                        });
-
-                        if (CityId > 0) {
-                            $("#FkCityId").val(CityId);
-                        }
-                    }
-                })
-
-            } else { $("#FkCityId").append("<option value=''>-Select-</option>"); }
-        }
-    </script>
 }

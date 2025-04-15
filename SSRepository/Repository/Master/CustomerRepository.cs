@@ -30,7 +30,7 @@ namespace SSRepository.Repository.Master
                                      orderby cou.PkCustomerId
                                      select (new PartyModel
                                      {
-                                         PkId = cou.PkCustomerId,
+                                         PKID = cou.PkCustomerId,
                                          Code = cou.Code,
                                          Name = cou.Name,
                                          Marital = cou.Marital,
@@ -107,7 +107,7 @@ namespace SSRepository.Repository.Master
                     where cou.PkCustomerId == PkCustomerId
                     select (new PartyModel
                     {
-                        PkId = cou.PkCustomerId,
+                        PKID = cou.PkCustomerId,
                         Code = cou.Code,
                         Name = cou.Name,
                         Marital = cou.Marital,
@@ -176,38 +176,20 @@ namespace SSRepository.Repository.Master
              
         }
 
-        public string DeleteRecord(long PkId)
+        public string DeleteRecord(long PKID)
         {
             string Error = "";
-            PartyModel obj = GetSingleRecord(PkId);
-
-            //var Country = (from x in _context.TblStateMas
-            //               where x.FkcountryId == PkCustomerId
-            //               select x).Count();
-            //if (Country > 0)
-            //    Error += "Table Name -  StateMas : " + Country + " Records Exist";
-
+            PartyModel oldModel = GetSingleRecord(PKID);
 
             if (Error == "")
             {
                 var lst = (from x in __dbContext.TblCustomerMas
-                           where x.PkCustomerId == PkId
+                           where x.PkCustomerId == PKID
                            select x).ToList();
                 if (lst.Count > 0)
                     __dbContext.TblCustomerMas.RemoveRange(lst);
 
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkCustomerId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkCustomerId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetCustomerID(), PkCustomerId, obj.FKCustomerID, obj.DATE_MODIFIED, true);
+                 AddMasterLog((long)Handler.Form.Customer, PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Name, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -243,7 +225,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.Mobile))
             {
                 cnt = (from x in __dbContext.TblCustomerMas
-                       where x.Mobile == model.Mobile && x.PkCustomerId != model.PkId
+                       where x.Mobile == model.Mobile && x.PkCustomerId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Mobile Already Exits !";
@@ -251,7 +233,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.Email))
             {
                 cnt = (from x in __dbContext.TblCustomerMas
-                       where x.Email == model.Email && x.PkCustomerId != model.PkId
+                       where x.Email == model.Email && x.PkCustomerId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Email Already Exits !";
@@ -259,7 +241,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.Code))
             {
                 cnt = (from x in __dbContext.TblCustomerMas
-                       where x.Code == model.Code && x.PkCustomerId != model.PkId
+                       where x.Code == model.Code && x.PkCustomerId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "ALIAS Already Exits !";
@@ -271,14 +253,14 @@ namespace SSRepository.Repository.Master
         {
             PartyModel model = (PartyModel)objmodel;
             TblCustomerMas Tbl = new TblCustomerMas();
-            if (model.PkId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblCustomerMas.Find(model.PkId);
+                var _entity = __dbContext.TblCustomerMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkCustomerId = model.PkId;
+            Tbl.PkCustomerId = model.PKID;
             Tbl.Name = model.Name;
             Tbl.Code = model.Code;
             Tbl.Marital = model.Marital;

@@ -10,7 +10,7 @@ namespace SSRepository.Models
 
     public class PartyModel : BaseModel
     {
-        public long PkId { get; set; }
+        public long PKID { get; set; }
 
         [StringLength(10)]
         [Display(Name = "Code")]

@@ -31,7 +31,7 @@ namespace SSRepository.Repository.Master
                                       orderby cou.PkRecipeId
                                       select (new RecipeModel
                                       {
-                                          PkRecipeId = cou.PkRecipeId,
+                                          PKID = cou.PkRecipeId,
                                           Name = cou.Name,
                                           FKUserID = cou.FKUserID,
                                           DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
@@ -48,7 +48,7 @@ namespace SSRepository.Repository.Master
                     where cou.PkRecipeId == PkRecipeId
                     select (new RecipeModel
                     {
-                        PkRecipeId = cou.PkRecipeId,
+                        PKID = cou.PkRecipeId,
                         Name = cou.Name,
                         FKUserID = cou.FKUserID,
                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
@@ -75,35 +75,23 @@ namespace SSRepository.Repository.Master
         public string DeleteRecord(long PkRecipeId)
         {
             string Error = "";
-            RecipeModel obj = GetSingleRecord(PkRecipeId);
-
-            //var Country = (from x in _context.TblStateMas
-            //               where x.FkcountryId == PkRecipeId
-            //               select x).Count();
-            //if (Country > 0)
-            //    Error += "Table Name -  StateMas : " + Country + " Records Exist";
-
+            RecipeModel oldModel = GetSingleRecord(PkRecipeId);
 
             if (Error == "")
             {
+                var lstdtl = (from x in __dbContext.TblRecipeDtl
+                           where x.FkRecipeId == PkRecipeId
+                           select x).ToList();
+                if (lstdtl.Count > 0)
+                    __dbContext.TblRecipeDtl.RemoveRange(lstdtl);
+
                 var lst = (from x in __dbContext.TblRecipeMas
                            where x.PkRecipeId == PkRecipeId
                            select x).ToList();
                 if (lst.Count > 0)
                     __dbContext.TblRecipeMas.RemoveRange(lst);
 
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkRecipeId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkRecipeId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetRecipeID(), PkRecipeId, obj.FKRecipeID, obj.DATE_MODIFIED, true);
+                AddMasterLog((long)Handler.Form.Recipe, PkRecipeId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.Name, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -136,14 +124,14 @@ namespace SSRepository.Repository.Master
         {
             RecipeModel model = (RecipeModel)objmodel;
             TblRecipeMas Tbl = new TblRecipeMas();
-            if (model.PkRecipeId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblRecipeMas.Find(model.PkRecipeId);
+                var _entity = __dbContext.TblRecipeMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkRecipeId = model.PkRecipeId;
+            Tbl.PkRecipeId = model.PKID;
             Tbl.Name = model.Name;
             Tbl.ModifiedDate = DateTime.Now;
             Tbl.FKUserID = GetUserID();

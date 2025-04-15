@@ -197,7 +197,7 @@ namespace SSAdmin.Areas.Master.Controllers
             string Return = string.Empty;
             try
             {
-                Return = _Vendorrepository.GetAlias("account");
+                Return = _repository.GetAlias("account");
             }
             catch (Exception ex)
             {

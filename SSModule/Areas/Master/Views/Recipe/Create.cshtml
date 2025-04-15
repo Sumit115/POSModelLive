@@ -17,7 +17,7 @@
 <div class="p-3">
     <form asp-action="Create" class="g-3" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkRecipeId" />
+        <input type="hidden" asp-for="PKID" />
         <input type="hidden" id="hdData" value="@ViewBag.Data" />
         <input type="hidden" id="hdGridIn" value="@ViewBag.GridIn" />
         <input type="hidden" id="hdGridOut" value="@ViewBag.GridOut" />
@@ -42,17 +42,17 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Product</label>
-                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkProductId_In" }, { "Class", "val-cus-drp" }, { "event", "" },
-                                    { "value", 0 }, { "ExtraParam", "" }, { "text", "" }, { "uri", "" } })
-
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkProductId_In" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                                    { "value", "" }, { "text", "" }, { "uri", "Product" }, { "required", "" },{ "placeholder", "Select Product"}
+                                    ,{ "parentid", "" }, { "ExtraParam", "" }}) 
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Batch</label>
-                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "Batch_In" }, { "Class", "val-cus-drp" }, { "event", "" },
-                                    { "value", 0 }, { "ExtraParam", "FkProductId_In" }, { "text", "" }, { "uri", "" } })
-
+                                     @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "Batch_In" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                                    { "value", "" }, { "text", "" }, { "uri", "Batch" }, { "required", "" },{ "placeholder", "Select Branch"}
+                                    ,{ "parentid", "FkProductId_In" }, { "ExtraParam", "" }})
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -69,7 +69,7 @@
                             </div>
                             <div class="col-md-1">
                                 <div class="form-group">
-                                    <input type="button" class="btn btn-warning" value="Add" onclick="AddProduct_In()" autocomplete="off">
+                                    <input type="button" class="btn btn-warning mt-4" value="Add" onclick="AddProduct_In()" autocomplete="off">
                                 </div>
                             </div>
 
@@ -85,7 +85,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="md-height">
-                                      @{
+                                        @{
                                             int index = -1;
                                         }
                                         @if (Model.Recipe_dtl != null)
@@ -105,7 +105,7 @@
                                                         <input id="Recipe_dtl_@(index)__FkProductId" name="Recipe_dtl[@(index)].FkProductId" type="hidden" value="@dtl[i].FkProductId">
                                                         <input id="Recipe_dtl_@(index)__Mode" name="Recipe_dtl[@(index)].Mode" type="hidden" value="1">
                                                         <input id="Recipe_dtl_@(index)__PkId" name="Recipe_dtl[@(index)].PkId" type="hidden" value="@dtl[i].PkId">
-                                                        <a href="Javascript:void(0)" class="action-icon" onclick="UpdateSize(this,@(index),'del')"><i class="fa fa-trash" ></i></a>
+                                                        <a href="Javascript:void(0)" class="action-icon" onclick="UpdateSize(this,@(index),'del')"><i class="fa fa-trash"></i></a>
                                                     </td>
 
                                                 </tr>
@@ -124,21 +124,20 @@
                     <div class="border p-2">
                         <h5>Out</h5>
                         <div class="row">
-
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Product</label>
-                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkProductId_Out" }, { "Class", "val-cus-drp" }, { "event", "" },
-                                    { "value", 0 }, { "ExtraParam", "" }, { "text", "" }, { "uri", "" } })
-
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkProductId_Out" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                                    { "value", "" }, { "text", "" }, { "uri", "Product" }, { "required", "" },{ "placeholder", "Select Product"}
+                                    ,{ "parentid", "" }, { "ExtraParam", "" }})
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Batch</label>
-                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "Batch_Out" }, { "Class", "val-cus-drp" }, { "event", "" },
-                                    { "value", 0 }, { "ExtraParam", "FkProductId_Out" }, { "text", "" }, { "uri", "" } })
-
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "Batch_Out" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                                    { "value", "" }, { "text", "" }, { "uri", "Batch" }, { "required", "" },{ "placeholder", "Select Branch"}
+                                    ,{ "parentid", "FkProductId_Out" }, { "ExtraParam", "" }})
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -155,7 +154,7 @@
                             </div>
                             <div class="col-md-1">
                                 <div class="form-group">
-                                    <input type="button" class="btn btn-warning" value="Add" onclick="AddProduct_Out()" autocomplete="off">
+                                    <input type="button" class="btn btn-warning mt-4" value="Add" onclick="AddProduct_Out()" autocomplete="off">
                                 </div>
                             </div>
 
@@ -171,7 +170,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="md-height">
-                                      
+
                                         @if (Model.Recipe_dtl != null)
                                         {
                                             var dtl = Model.Recipe_dtl.Where(x => x.TranType == "O").ToList();
@@ -187,9 +186,9 @@
                                                         <input id="Recipe_dtl_@(index)__TranType" name="Recipe_dtl[@(index)].TranType" type="hidden" value="@dtl[i].TranType">
                                                         <input id="Recipe_dtl_@(index)__SrNo" name="Recipe_dtl[@(index)].SrNo" type="hidden" class="SrNo" value="@dtl[i].SrNo">
                                                         <input id="Recipe_dtl_@(index)__FkProductId" name="Recipe_dtl[@(index)].FkProductId" type="hidden" value="@dtl[i].FkProductId">
-                                                         <input id="Recipe_dtl_@(index)__Mode" name="Recipe_dtl[@(index)].Mode" type="hidden" value="1">
+                                                        <input id="Recipe_dtl_@(index)__Mode" name="Recipe_dtl[@(index)].Mode" type="hidden" value="1">
                                                         <input id="Recipe_dtl_@(index)__PkId" name="Recipe_dtl[@(index)].PkId" type="hidden" value="@dtl[i].PkId">
-                                                      <a href="Javascript:void(0)" class="action-icon" onclick="UpdateSize(this,@(index),'del')"><i class="fa fa-trash"></i></a>
+                                                        <a href="Javascript:void(0)" class="action-icon" onclick="UpdateSize(this,@(index),'del')"><i class="fa fa-trash"></i></a>
                                                     </td>
 
                                                 </tr>
@@ -227,12 +226,5 @@
 
     <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
     <script src="~/js/master/recipe.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#btnServerSave').click(function (e) {
-                e.preventDefault();
-                $("form").submit();
-            });
-        })
-    </script>
+   
 }

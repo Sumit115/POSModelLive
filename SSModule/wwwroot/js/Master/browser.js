@@ -27,14 +27,14 @@ function View() {
                 data: _d,
                 datatype: "json",
                 success: function (res) {
-                   // console.log(res);
+                    // console.log(res);
                     if (res.status == "success") {
                         bindGrid(GridId, res.data, IdProperty);
                     }
                     else
                         alert(res.msg);
                 }
-            })
+            });
 
         }
         else
@@ -89,16 +89,18 @@ function bindGrid(GridId, data, IdProperty) {
             
 
             var str = UDI.outGrid.getDataItem(j.row).TrnStatus;
-            str = str.replace('\u0000', '')
-            str = str.replace(/ /g, '');
-            str = str.replace(/\s+/g, '');
-            str = str.replace(' ', '');
-            var TrnStatus = Handler.isNullOrEmpty(str) ? "P" : str;
-            if (TrnStatus.indexOf("P") != -1 ) {
-                $("#contextMenu #contextConvertInvoice").show();
-            }
-            else { $("#contextMenu #contextConvertInvoice").hide(); }
+            if (!Handler.isNullOrEmpty(str)) {
+                str = str.replace('\u0000', '')
+                str = str.replace(/ /g, '');
+                str = str.replace(/\s+/g, '');
+                str = str.replace(' ', '');
 
+                var TrnStatus = Handler.isNullOrEmpty(str) ? "P" : str;
+                if (TrnStatus.indexOf("P") != -1) {
+                    $("#contextMenu #contextConvertInvoice").show();
+                }
+                else { $("#contextMenu #contextConvertInvoice").hide(); }
+            }
             $("#contextMenu")
                 .data("row", j.row)
                 .css("top", e.pageY)
@@ -172,12 +174,13 @@ function bindGrid(GridId, data, IdProperty) {
 
             }
             else if (command == "ConvertInvoice") {
-                
+                debugger;
                 var str = UDI.outGrid.getDataItem(row).TrnStatus;
                 var str = str.replace(/ /g, '');
                 var str = str.replace(/\s+/g, '');
                 var TrnStatus = Handler.isNullOrEmpty(str) ? "P" : str;
-                if (TrnStatus == 'P') {
+               // if (TrnStatus == 'P') {
+                if (TrnStatus.indexOf('P') != -1) {
                     window.location.href = Handler.rootPath() + "Transactions/SalesInvoice/ConvertInvoice/" + pk_Id + "/" + FkSeriesId;
                 }
                 else { alert('Invalid Request'); }

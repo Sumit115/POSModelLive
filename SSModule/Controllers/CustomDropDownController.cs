@@ -52,13 +52,30 @@ namespace SSAdmin.Controllers
 
         [HttpPost]
         public object CategoryGroup(int pageSize, int pageNo = 1, string search = "")
-        {
-
+        { 
             CategoryGroupRepository repository = new CategoryGroupRepository(_dbContext, _contextAccessor);
             return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
         }
+        [HttpPost]
+        public object Product(int pageSize, int pageNo = 1, string search = "")
+        {
 
+            ProductRepository repository = new ProductRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
+        }
 
+        [HttpPost]
+        public object Batch(long FkProductId,int pageSize, int pageNo = 1, string search = "")
+        { 
+            ProductRepository repository = new ProductRepository(_dbContext, _contextAccessor);
+            return repository.CustomList_Batch((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, FkProductId);
+        }
+        [HttpPost]
+        public object Color(long FkProductId, int pageSize, int pageNo = 1, string search = "", string Batch = "")
+        {
+            ProductRepository repository = new ProductRepository(_dbContext, _contextAccessor);
+            return repository.CustomList_Color((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, FkProductId, Batch);
+        }
         //[HttpPost]
         //public object FKSeriesId(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
         //{
