@@ -145,7 +145,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
-        public string DeleteRecord(long PKID)
+        public string Delete(long PKID)
         {
             string response = "";
             try

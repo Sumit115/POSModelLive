@@ -203,7 +203,22 @@ namespace SSRepository.Repository.Master
         {
             string Error = "";
             PartyModel oldModel = GetSingleRecord(PKID);
+            var purchaseOrderExist = (from cou in __dbContext.TblPurchaseOrdertrn
+                                  join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
+                                  where cou.FkPartyId == PKID && ser.TranAlias == "PORD"
+                                  select cou).Count();
+            if (purchaseOrderExist > 0)
+                Error += "use in other transaction";
 
+            if (Error == "")
+            {
+                var purchaseInvoiceExist = (from cou in __dbContext.TblPurchaseInvoicetrn
+                                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
+                                        where cou.FkPartyId == PKID && ser.TranAlias == "PINV"
+                                        select cou).Count();
+                if (purchaseInvoiceExist > 0)
+                    Error += "use in other transaction";
+            }
             if (Error == "")
             {
                 var lst = (from x in __dbContext.TblVendorMas

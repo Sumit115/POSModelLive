@@ -103,83 +103,117 @@ namespace SSRepository.Repository.Master
         public PartyModel GetSingleRecord(long PkCustomerId)
         {
 
-            PartyModel data  = (from cou in __dbContext.TblCustomerMas
-                    where cou.PkCustomerId == PkCustomerId
-                    select (new PartyModel
-                    {
-                        PKID = cou.PkCustomerId,
-                        Code = cou.Code,
-                        Name = cou.Name,
-                        Marital = cou.Marital,
-                        Gender = cou.Gender,
-                        Dob = cou.Dob,
-                        Email = cou.Email,
-                        Mobile = cou.Mobile,
-                        Aadhar = cou.Aadhar,
-                        Panno = cou.Panno,
-                        Gstno = cou.Gstno,
-                        Passport = cou.Passport,
-                        AadharCardFront = cou.AadharCardFront,
-                        AadharCardBack = cou.AadharCardBack,
-                        PanCard = cou.PanCard,
-                        Signature = cou.Signature,
-                        IsAadharVerify = cou.IsAadharVerify,
-                        IsPanVerify = cou.IsPanVerify,
-                        Status = cou.Status,
-                        Address = cou.Address,
-                        StateName = cou.StateName,
-                        FkCityId = cou.FkCityId,
-                        // City = city.CityName,
-                        Pin = cou.Pin,
-                        Disc = cou.Disc,
-                        FKUserID = cou.FKUserID,
-                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+            PartyModel data = (from cou in __dbContext.TblCustomerMas
+                               where cou.PkCustomerId == PkCustomerId
+                               select (new PartyModel
+                               {
+                                   PKID = cou.PkCustomerId,
+                                   Code = cou.Code,
+                                   Name = cou.Name,
+                                   Marital = cou.Marital,
+                                   Gender = cou.Gender,
+                                   Dob = cou.Dob,
+                                   Email = cou.Email,
+                                   Mobile = cou.Mobile,
+                                   Aadhar = cou.Aadhar,
+                                   Panno = cou.Panno,
+                                   Gstno = cou.Gstno,
+                                   Passport = cou.Passport,
+                                   AadharCardFront = cou.AadharCardFront,
+                                   AadharCardBack = cou.AadharCardBack,
+                                   PanCard = cou.PanCard,
+                                   Signature = cou.Signature,
+                                   IsAadharVerify = cou.IsAadharVerify,
+                                   IsPanVerify = cou.IsPanVerify,
+                                   Status = cou.Status,
+                                   Address = cou.Address,
+                                   StateName = cou.StateName,
+                                   FkCityId = cou.FkCityId,
+                                   // City = city.CityName,
+                                   Pin = cou.Pin,
+                                   Disc = cou.Disc,
+                                   FKUserID = cou.FKUserID,
+                                   DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
 
-                    })).SingleOrDefault();
+                               })).SingleOrDefault();
             return data;
         }
 
-          public object CustomDropDown(int pageSize, int pageNo = 1, string search = "")
+        public object CustomDropDown(int pageSize, int pageNo = 1, string search = "")
         {
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
-           return (from cou in __dbContext.TblCustomerMas
-                                     join _city in __dbContext.TblCityMas
-                                    on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
-                                    into _citytmp
-                                     from city in _citytmp.DefaultIfEmpty()
-                                     where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                     orderby cou.PkCustomerId
-                                     select  new
-                                     {
-                                         PkId = cou.PkCustomerId,
-                                         Name = cou.Name,
-                                         Code = cou.Code,
-                                         //Marital = cou.Marital,
-                                         //Gender = cou.Gender,
-                                         //Dob = cou.Dob,
-                                         Email = cou.Email,
-                                         Mobile = cou.Mobile,
-                                         //Aadhar = cou.Aadhar,
-                                         //Panno = cou.Panno,
-                                         //Gstno = cou.Gstno,
-                                         //IsAadharVerify = cou.IsAadharVerify,
-                                         //IsPanVerify = cou.IsPanVerify,
-                                         //Status = cou.Status,
-                                         Address = cou.Address,
-                                         //StateName = cou.StateName,
-                                         //FkCityId = cou.FkCityId,
-                                         City = city.CityName,
-                                        // Pin = cou.Pin,
-                                     }
-                                    ).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
-             
+            return (from cou in __dbContext.TblCustomerMas
+                    join _city in __dbContext.TblCityMas
+                   on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
+                   into _citytmp
+                    from city in _citytmp.DefaultIfEmpty()
+                    where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                    orderby cou.PkCustomerId
+                    select new
+                    {
+                        PkId = cou.PkCustomerId,
+                        Name = cou.Name,
+                        Code = cou.Code,
+                        //Marital = cou.Marital,
+                        //Gender = cou.Gender,
+                        //Dob = cou.Dob,
+                        Email = cou.Email,
+                        Mobile = cou.Mobile,
+                        //Aadhar = cou.Aadhar,
+                        //Panno = cou.Panno,
+                        //Gstno = cou.Gstno,
+                        //IsAadharVerify = cou.IsAadharVerify,
+                        //IsPanVerify = cou.IsPanVerify,
+                        //Status = cou.Status,
+                        Address = cou.Address,
+                        //StateName = cou.StateName,
+                        //FkCityId = cou.FkCityId,
+                        City = city.CityName,
+                        // Pin = cou.Pin,
+                    }
+                                     ).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+
         }
 
         public string DeleteRecord(long PKID)
         {
             string Error = "";
             PartyModel oldModel = GetSingleRecord(PKID);
+
+            var saleOrderExist = (from cou in __dbContext.TblSalesOrdertrn
+                                  join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
+                                  where cou.FkPartyId == PKID && ser.TranAlias == "SORD"
+                                  select cou).Count();
+            if (saleOrderExist > 0)
+                Error += "use in other transaction";
+
+            if (Error == "") {
+                var saleInvoiceExist = (from cou in __dbContext.TblSalesInvoicetrn
+                                      join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
+                                      where cou.FkPartyId == PKID && ser.TranAlias == "SINV"
+                                      select cou).Count();
+                if (saleInvoiceExist > 0)
+                    Error += "use in other transaction";
+            }
+            if (Error == "")
+            {
+                var saleCrNoteExist = (from cou in __dbContext.TblSalesCrNotetrn
+                                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
+                                        where cou.FkPartyId == PKID && (ser.TranAlias == "SCRN" || ser.TranAlias == "SRTN")
+                                        select cou).Count();
+                if (saleCrNoteExist > 0)
+                    Error += "use in other transaction";
+            }
+            if (Error == "")
+            {
+                var saleChallanExist = (from cou in __dbContext.TblSalesChallantrn
+                                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
+                                        where cou.FkPartyId == PKID && ser.TranAlias == "SPSL" 
+                                        select cou).Count();
+                if (saleChallanExist > 0)
+                    Error += "use in other transaction";
+            }
 
             if (Error == "")
             {
@@ -189,13 +223,13 @@ namespace SSRepository.Repository.Master
                 if (lst.Count > 0)
                     __dbContext.TblCustomerMas.RemoveRange(lst);
 
-                 AddMasterLog((long)Handler.Form.Customer, PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Name, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
+                AddMasterLog((long)Handler.Form.Customer, PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Name, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
             return Error;
         }
-        
+
         public override string ValidateData(object objmodel, string Mode)
         {
 
@@ -293,20 +327,20 @@ namespace SSRepository.Repository.Master
                 Tbl.IsPanVerify = 0;
                 Tbl.Status = 1;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj); 
-                Tbl.FkAccountID = SaveAndGetAccountId(model); 
+                Tbl.FkAccountID = SaveAndGetAccountId(model);
                 AddData(Tbl, false);
             }
             else
             {
 
                 PartyModel oldModel = GetSingleRecord(Tbl.PkCustomerId);
-                ID = Tbl.PkCustomerId; 
+                ID = Tbl.PkCustomerId;
                 UpdateData(Tbl, false);
                 AddMasterLog((long)Handler.Form.Customer, Tbl.PkCustomerId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Name, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
             //AddImagesAndRemark(obj.PkcountryId, obj.FKCustomerID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
-       
+
         private long SaveAndGetAccountId(PartyModel model)
         {
             object md = new AccountMasModel()
