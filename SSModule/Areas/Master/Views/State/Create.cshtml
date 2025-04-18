@@ -17,16 +17,7 @@
                     @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkCountryId" }, { "Class", "val-cus-drp" }, { "event", "" },
                     { "value", Model.FkCountryId }, { "text", Model.CountryName }, { "uri", "" } })
                 </div>
-            </div>
-       @*     <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Country </label>
-                    <select asp-for="FkCountryId" asp-items="@(new SelectList(ViewBag.CountryList,"PkCountryId","CountryName"))" class="form-control" id="FkStateId">
-                    </select>
-
-                    <span asp-validation-for="FkCountryId" class="text-danger"></span>
-                </div>
-            </div>*@
+            </div> 
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label">State</label>

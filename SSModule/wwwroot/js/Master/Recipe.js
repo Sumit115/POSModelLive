@@ -20,13 +20,15 @@ $(document).ready(function () {
     Load();
 
     $('#btnServerSave').click(function (e) {
+        debugger;
         e.preventDefault();
         $("form").submit();
     });
 });
 function Load() {
+    debugger;
     var PKID = $("#PKID").val();
-    Model = JSON.parse($("#hdData").val());
+   // Model = JSON.parse($("#hdData").val());
     if (PKID > 0) {
 
         //BindGrid('DDT', JSON.parse($("#hdGridIn").val()), Model.VoucherDetails);
@@ -156,8 +158,8 @@ function AddProduct_In() {
     if (FkProductId > 0) {
 
         var html = '<tr index="' + rowCount + '">';
-        html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Product" name="Recipe_dtl[' + rowCount + '].Product" type="text" value="' + $("#drpFkProductId_In").val() + '" tabindex="-1"> </td>';
-        html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Batch" name="Recipe_dtl[' + rowCount + '].Batch" type="text" value="' + $("#drpBatch_In").val() + '" tabindex="-1"> </td>';
+        html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Product" name="Recipe_dtl[' + rowCount + '].Product" type="text" value="' + $("#txtProductId_In").val() + '" tabindex="-1"> </td>';
+        html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Batch" name="Recipe_dtl[' + rowCount + '].Batch" type="text" value="' + $("#txtBatch_In").val() + '" tabindex="-1"> </td>';
         html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Color" name="Recipe_dtl[' + rowCount + '].Color" type="text" value="' + $("#Color_In").val() + '" tabindex="-1"> </td>';
         html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Qty" name="Recipe_dtl[' + rowCount + '].Qty" type="text" value="' + $("#Qty_In").val() + '" tabindex="-1"> </td>';
         html += '<td class="tabel-td-xs">';
@@ -289,8 +291,8 @@ function AddProduct_Out() {
     if (FkProductId > 0) {
 
         var html = '<tr index="' + rowCount + '">';
-        html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Product" name="Recipe_dtl[' + rowCount + '].Product" type="text" value="' + $("#drpFkProductId_Out").val() + '" tabindex="-1"> </td>';
-        html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Batch" name="Recipe_dtl[' + rowCount + '].Batch" type="text" value="' + $("#drpBatch_Out").val() + '" tabindex="-1"> </td>';
+        html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Product" name="Recipe_dtl[' + rowCount + '].Product" type="text" value="' + $("#txtProductId_Out").val() + '" tabindex="-1"> </td>';
+        html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Batch" name="Recipe_dtl[' + rowCount + '].Batch" type="text" value="' + $("#txtBatch_Out").val() + '" tabindex="-1"> </td>';
         html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Color" name="Recipe_dtl[' + rowCount + '].Color" type="text" value="' + $("#Color_Out").val() + '" tabindex="-1"> </td>';
         html += '<td class="tabel-td-xs">  <input  id="Recipe_dtl_' + rowCount + '__Qty" name="Recipe_dtl[' + rowCount + '].Qty" type="text" value="' + $("#Qty_Out").val() + '" tabindex="-1"> </td>';
         html += '<td class="tabel-td-xs">';

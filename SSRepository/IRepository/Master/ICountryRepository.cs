@@ -10,9 +10,7 @@ namespace SSRepository.IRepository.Master
 
         string isAlreadyExist(CountryModel tblBankMas, string Mode);
         List<CountryModel> GetList(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpCountry(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpTableCountry(int pageSize, int pageNo = 1, string search = "");
-        CountryModel GetSingleRecord(long PkID);
+         CountryModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);
     }

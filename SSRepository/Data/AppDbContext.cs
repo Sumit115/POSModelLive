@@ -311,7 +311,7 @@ namespace SSRepository.Data
                     .WithMany()
                     .HasForeignKey(e => e.FKUserID)
                     .OnDelete(DeleteBehavior.Restrict);
-               
+
                 entity.HasOne(e => e.FKAccountGroupMas)
                        .WithMany()
                        .HasForeignKey(e => e.FkAccountGroupId)
@@ -346,11 +346,11 @@ namespace SSRepository.Data
                       .OnDelete(DeleteBehavior.Restrict);
             });
             modelBuilder.Entity<TblBankMas>(entity =>
-            { 
+            {
                 entity.HasOne(e => e.FKUser)
                     .WithMany()
                     .HasForeignKey(e => e.FKUserID)
-                    .OnDelete(DeleteBehavior.Restrict); 
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<TblUserMas>(entity =>
@@ -386,6 +386,11 @@ namespace SSRepository.Data
                        .WithMany()
                        .HasForeignKey(e => e.FkAccountID)
                        .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKCity)
+                      .WithMany()
+                      .HasForeignKey(e => e.FkCityId)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<TblVendorMas>(entity =>
@@ -399,10 +404,15 @@ namespace SSRepository.Data
                        .WithMany()
                        .HasForeignKey(e => e.FkAccountID)
                        .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKCity)
+                       .WithMany()
+                       .HasForeignKey(e => e.FkCityId)
+                       .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<TblBrandMas>(entity =>
-            { 
+            {
 
                 entity.HasOne(e => e.FKUser)
                     .WithMany()
@@ -461,11 +471,11 @@ namespace SSRepository.Data
 
             modelBuilder.Entity<TblEWayDtlLnk>(entity =>
             {
-                entity.HasKey(e => new { e.FKID, e.FkSeriesId }); 
+                entity.HasKey(e => new { e.FKID, e.FkSeriesId });
             });
 
             modelBuilder.Entity<TblCategoryGroupMas>(entity =>
-            { 
+            {
                 entity.HasOne(e => e.FKUser)
                     .WithMany()
                     .HasForeignKey(e => e.FKUserID)
@@ -484,6 +494,22 @@ namespace SSRepository.Data
                   .HasForeignKey(e => e.FkCategoryGroupId)
                   .OnDelete(DeleteBehavior.Restrict);
 
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TblCityMas>(entity =>
+            {
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TblCountryMas>(entity =>
+            {
                 entity.HasOne(e => e.FKUser)
                     .WithMany()
                     .HasForeignKey(e => e.FKUserID)

@@ -107,11 +107,11 @@ namespace SSAdmin.Areas.Master.Controllers
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
-                    if (model.PkCityId > 0)
+                    if (model.PKID > 0)
                     {
                         Mode = "Edit";
                     }
-                    Int64 ID = model.PkCityId;
+                    Int64 ID = model.PKID;
                     string error = await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {
@@ -143,7 +143,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
-        public string DeleteRecord(long PKID)
+        public string Delete(long PKID)
         {
             string response = "";
             try
@@ -152,6 +152,7 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             catch (Exception ex)
             {
+                response = ex.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint") ? "use in other transaction" : ex.Message;
                 //CommonCore.WriteLog(ex, "DeleteRecord", ControllerName, GetErrorLogParam());
                 //return CommonCore.SetError(ex.Message);
             }

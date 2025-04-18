@@ -1,41 +1,41 @@
 ﻿$(document).ready(function () {
 
     Common.InputFormat();
-    BindCity();
+   // BindCity();
     $('#btnServerSave').click(function (e) {
         e.preventDefault();
         $("form").submit();
     });
 });
 
-function BindCity() {
-    debugger;
+//function BindCity() {
+//    debugger;
 
-    var StateName = $("#StateName").val();
-    $("#FkCityId").empty();
+//    var StateName = $("#StateName").val();
+//    $("#FkCityId").empty();
 
-    if (StateName != '') {
+//    if (StateName != '') {
 
-        $.ajax({
-            type: "POST",
-            url: '/Master/City/GetDrpCityByState',
-            data: { State: StateName },
-            datatype: "json",
-            success: function (res) {
-                console.log(res);
-                $(res).each(function (i, v) {
+//        $.ajax({
+//            type: "POST",
+//            url: '/Master/City/GetDrpCityByState',
+//            data: { State: StateName },
+//            datatype: "json",
+//            success: function (res) {
+//                console.log(res);
+//                $(res).each(function (i, v) {
 
-                    $("#FkCityId").append("<option value='" + v.PkCityId + "'>" + v.CityName + "</option>");
-                }); 
+//                    $("#FkCityId").append("<option value='" + v.PKID + "'>" + v.CityName + "</option>");
+//                }); 
 
-                if ($("#hdCityId").val() > 0) {
-                    $("#FkCityId").val($("#hdCityId").val());
-                }
-            }
-        })
+//                if ($("#hdCityId").val() > 0) {
+//                    $("#FkCityId").val($("#hdCityId").val());
+//                }
+//            }
+//        })
 
-    } else { $("#FkCityId").append("<option value=''>-Select-</option>"); }
-}
+//    } else { $("#FkCityId").append("<option value=''>-Select-</option>"); }
+//}
 
 function GenerateAlias() {
     if ($("#Code").val() == "") {

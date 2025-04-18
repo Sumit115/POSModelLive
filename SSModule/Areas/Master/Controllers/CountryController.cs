@@ -108,11 +108,11 @@ namespace SSAdmin.Areas.Master.Controllers
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
-                    if (model.PkCountryId > 0)
+                    if (model.PKID > 0)
                     {
                         Mode = "Edit";
                     }
-                    Int64 ID = model.PkCountryId;
+                    Int64 ID = model.PKID;
                     string error = await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {
@@ -143,7 +143,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
-        public string DeleteRecord(long PKID)
+        public string Delete(long PKID)
         {
             string response = "";
             try
@@ -156,15 +156,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 //return CommonCore.SetError(ex.Message);
             }
             return response;
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> GetDrpCountry()
-        {
-            var data = _repository.GetDrpCountry(1000);
-            return new JsonResult(data);
-        }
-
+        } 
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {
             return _repository.ColumnList(GridName);

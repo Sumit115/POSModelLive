@@ -5,32 +5,34 @@
     ViewData["bdClass"] = "page";
 }
 
-<div class="p-3">
-    <form asp-action="Create" class="g-3" enctype="multipart/form-data">
+<div class="master-page-ui">
+    <form asp-action="Create" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkCityId" />
-
+        <input type="hidden" asp-for="PKID" />
         <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">State Name </label>
-                    <select asp-for="StateName" asp-items="@(new SelectList(ViewBag.StateList,"Value","Text"))" class="form-control">
-                    </select>
-                    <span asp-validation-for="StateName" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">City Name</label>
-                    <input asp-for="CityName" class="form-control" />
-                    <span asp-validation-for="CityName" class="text-danger"></span>
-                </div>
-            </div>
+            <div class="col-md-8">
 
+                <div class="form-group row">
+                    <label class="col-sm-2">State Name<span class="required">*</span> </label>
+                    <div class="col-md-6">
+                        <select asp-for="StateName" asp-items="@(new SelectList(ViewBag.StateList,"Value","Text"))" class="form-control form-select">
+                        </select>
+                        <span asp-validation-for="StateName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">City Name</label>
+                    <div class="col-md-6">
+                        <input asp-for="CityName" class="form-control" />
+                        <span asp-validation-for="CityName" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+            </div>
         </div>
-
     </form>
-</div>
+</div> 
 
 @section Scripts{
     @{
@@ -42,20 +44,6 @@
                 e.preventDefault();
                 $("form").submit();
             });
-        })
-        UploadImage = (id) => {
-            var file = document.querySelector('input[id="file_' + id + '"]').files[0];
-            // $("#FileName").val(file.name);
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
-                //console.log(reader.result);
-                $("#" + id).val(reader.result);
-                $("#dummyimage_" + id).attr("src", reader.result);
-                $("#dummyimage_" + id).show();
-                //   $("#myImage").hide();
-
-            };
-        }
+        }) 
     </script>
 }

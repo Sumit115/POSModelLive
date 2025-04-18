@@ -224,12 +224,7 @@ namespace SSAdmin.Areas.Master.Controllers
           return Return;
         }
 
-        [HttpPost]
-        public object FkprodCatgId(int pageSize, int pageNo = 1, string search = "")
-        {
-            return _repository.prodCatgList(pageSize, pageNo, search);
-        }
-
+         
 
 
        

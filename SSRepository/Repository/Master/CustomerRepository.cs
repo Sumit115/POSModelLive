@@ -22,10 +22,10 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<PartyModel> data = (from cou in __dbContext.TblCustomerMas
-                                     join _city in __dbContext.TblCityMas
-                                    on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
-                                    into _citytmp
-                                     from city in _citytmp.DefaultIfEmpty()
+                                    // join _city in __dbContext.TblCityMas
+                                    //on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
+                                    //into _citytmp
+                                    // from city in _citytmp.DefaultIfEmpty()
                                      where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                      orderby cou.PkCustomerId
                                      select (new PartyModel
@@ -47,10 +47,12 @@ namespace SSRepository.Repository.Master
                                          Address = cou.Address,
                                          StateName = cou.StateName,
                                          FkCityId = cou.FkCityId,
-                                         City = city.CityName,
+                                         City = cou.FKCity.CityName,
                                          Pin = cou.Pin,
                                          FKUserID = cou.FKUserID,
-                                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                         UserName = cou.FKUser.UserId,
+
                                      }
                                     )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -129,7 +131,7 @@ namespace SSRepository.Repository.Master
                                    Address = cou.Address,
                                    StateName = cou.StateName,
                                    FkCityId = cou.FkCityId,
-                                   // City = city.CityName,
+                                   City = cou.FKCity.CityName,
                                    Pin = cou.Pin,
                                    Disc = cou.Disc,
                                    FKUserID = cou.FKUserID,
@@ -145,7 +147,7 @@ namespace SSRepository.Repository.Master
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             return (from cou in __dbContext.TblCustomerMas
                     join _city in __dbContext.TblCityMas
-                   on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
+                   on new { User = (int?)cou.FkCityId } equals new { User = (int?)_city.PkCityId }
                    into _citytmp
                     from city in _citytmp.DefaultIfEmpty()
                     where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
@@ -188,20 +190,21 @@ namespace SSRepository.Repository.Master
             if (saleOrderExist > 0)
                 Error += "use in other transaction";
 
-            if (Error == "") {
+            if (Error == "")
+            {
                 var saleInvoiceExist = (from cou in __dbContext.TblSalesInvoicetrn
-                                      join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
-                                      where cou.FkPartyId == PKID && ser.TranAlias == "SINV"
-                                      select cou).Count();
+                                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
+                                        where cou.FkPartyId == PKID && ser.TranAlias == "SINV"
+                                        select cou).Count();
                 if (saleInvoiceExist > 0)
                     Error += "use in other transaction";
             }
             if (Error == "")
             {
                 var saleCrNoteExist = (from cou in __dbContext.TblSalesCrNotetrn
-                                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
-                                        where cou.FkPartyId == PKID && (ser.TranAlias == "SCRN" || ser.TranAlias == "SRTN")
-                                        select cou).Count();
+                                       join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
+                                       where cou.FkPartyId == PKID && (ser.TranAlias == "SCRN" || ser.TranAlias == "SRTN")
+                                       select cou).Count();
                 if (saleCrNoteExist > 0)
                     Error += "use in other transaction";
             }
@@ -209,7 +212,7 @@ namespace SSRepository.Repository.Master
             {
                 var saleChallanExist = (from cou in __dbContext.TblSalesChallantrn
                                         join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
-                                        where cou.FkPartyId == PKID && ser.TranAlias == "SPSL" 
+                                        where cou.FkPartyId == PKID && ser.TranAlias == "SPSL"
                                         select cou).Count();
                 if (saleChallanExist > 0)
                     Error += "use in other transaction";
@@ -223,7 +226,7 @@ namespace SSRepository.Repository.Master
                 if (lst.Count > 0)
                     __dbContext.TblCustomerMas.RemoveRange(lst);
 
-                AddMasterLog((long)Handler.Form.Customer, PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Name, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
+                AddMasterLog((long)Handler.Form.Customer, PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.Name, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -378,22 +381,23 @@ namespace SSRepository.Repository.Master
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
             int index = 1;
+            int Orderby = 1;
             var list = new List<ColumnStructure>
             {
-                new ColumnStructure{ pk_Id=index++, Orderby =index++,  Heading ="Name", Fields="Name",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=index++, Orderby =index++,  Heading ="Code", Fields="Code",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=index++, Orderby =index++, Heading ="Address", Fields="Address",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=index++, Orderby =index++, Heading ="Email", Fields="Email",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=index++, Orderby =index++, Heading ="Mobile", Fields="Mobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=index++, Orderby =index++, Heading ="Aadhar", Fields="Aadhar",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=index++, Orderby =index++, Heading ="Gstno", Fields="Gstno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=index++, Orderby =index++, Heading ="Panno", Fields="Panno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=index++, Orderby =index++, Heading ="State", Fields="StateName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=index++, Orderby =index++, Heading ="City", Fields="City",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=index++, Orderby =index++, Heading ="Dob", Fields="Dob",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=index++, Orderby =index++, Heading ="User Name", Fields="Create Date",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                new ColumnStructure{ pk_Id=index++, Orderby =index++, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-            };
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Name", Fields="Name",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Code", Fields="Code",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Address", Fields="Address",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Email", Fields="Email",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Mobile", Fields="Mobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Aadhar", Fields="Aadhar",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Gstno", Fields="Gstno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Panno", Fields="Panno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="State", Fields="StateName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="City", Fields="City",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Dob", Fields="Dob",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+         };
             return list;
         }
 

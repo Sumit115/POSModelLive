@@ -320,14 +320,8 @@ namespace SSRepository.Repository.Master
         public string DeleteRecord(long PkProductId)
         {
             string Error = "";
-            ProductModel obj = GetSingleRecord(PkProductId);
-
-            //var Country = (from x in _context.TblStateMas
-            //               where x.FkcountryId == PkProductId
-            //               select x).Count();
-            //if (Country > 0)
-            //    Error += "Table Name -  StateMas : " + Country + " Records Exist";
-
+            ProductModel oldModel = GetSingleRecord(PkProductId);
+             
 
             if (Error == "")
             {
@@ -335,21 +329,10 @@ namespace SSRepository.Repository.Master
                            where x.PkProductId == PkProductId
                            select x).ToList();
                 if (lst.Count > 0)
-                    __dbContext.TblProductMas.RemoveRange(lst);
+                    __dbContext.TblProductMas.RemoveRange(lst); 
 
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkProductId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkProductId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetProductID(), PkProductId, obj.FKProductID, obj.DATE_MODIFIED, true);
-                __dbContext.SaveChanges();
+                AddMasterLog((long)Handler.Form.Product, PkProductId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.Product, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
+                 __dbContext.SaveChanges();
             }
 
             return Error;

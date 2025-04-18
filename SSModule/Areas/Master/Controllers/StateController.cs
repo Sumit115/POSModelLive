@@ -174,12 +174,6 @@ namespace SSAdmin.Areas.Master.Controllers
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {
             return _repository.ColumnList(GridName);
-        }
-
-        [HttpPost]
-        public object FkCountryId(int pageSize, int pageNo = 1, string search = "")
-        {
-            return _repositoryCountry.GetDrpTableCountry(pageSize, pageNo, search);
-        }
+        } 
     }
 }

@@ -15,9 +15,9 @@
                         <div class="form-group row">
                             <label class="col-sm-2">Section</label>
                             <div class="col-md-6">
-                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKProdCatgId" }, { "Class", "form-control" }, { "event", "" },
-                                { "value", Model.FKProdCatgId }, { "text", Model.CategoryName }, { "uri", "" }})
-                                <span asp-validation-for="FKProdCatgId" class="text-danger"></span>
+                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKProdCatgId" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                        { "value", Model.FKProdCatgId }, { "text", Model.CategoryName}, { "uri", "Category" }, { "required", "required" },{ "placeholder", "Select Section"}
+                        ,{ "parentid", "" }, { "ExtraParam", "" }}) 
                             </div>
                         </div>
                         <div class="form-group row">

@@ -55,7 +55,7 @@ namespace SSRepository.Data
 
         public string? Address { get; set; }
         public string? StateName { get; set; }
-        public int? FkCityId { get; set; }
+        public long? FkCityId { get; set; }
         public string? Pin { get; set; }
 
         public decimal Disc { get; set; }
@@ -63,7 +63,8 @@ namespace SSRepository.Data
         public long? FkAccountID { get; set; }
 
         public virtual TblUserMas FKUser { get; set; }
-        public virtual TblAccountMas FKAccount { get; set; }
+        public virtual TblAccountMas? FKAccount { get; set; }
+        public virtual TblCityMas? FKCity { get; set; }
 
     }
 }

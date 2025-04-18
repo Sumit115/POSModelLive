@@ -22,7 +22,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.CityName))
             {
                 cnt = (from x in __dbContext.TblCityMas
-                       where x.CityName == model.CityName && x.PkCityId != model.PkCityId
+                       where x.CityName == model.CityName && x.PkCityId != model.PKID
                        && x.StateName == model.StateName
                        select x).Count();
                 if (cnt > 0)
@@ -42,17 +42,16 @@ namespace SSRepository.Repository.Master
                                     orderby cou.PkCityId
                                     select (new CityModel
                                     {
-                                        PkCityId = cou.PkCityId,
+                                        PKID = cou.PkCityId,
                                         CityName = cou.CityName,
                                         StateName = cou.StateName,
                                         FKUserID = cou.FKUserID,
-                                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                        UserName = cou.FKUser.UserId,
                                     }
                                    )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
-        }
-
-
+        } 
         public CityModel GetSingleRecord(long PkCityId)
         {
 
@@ -61,7 +60,7 @@ namespace SSRepository.Repository.Master
                     where cou.PkCityId == PkCityId
                     select (new CityModel
                     {
-                        PkCityId = cou.PkCityId,
+                        PKID = cou.PkCityId,
                         CityName = cou.CityName,
                         StateName = cou.StateName,
                         FKUserID = cou.FKUserID,
@@ -70,6 +69,30 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             return data;
         }
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "",string StateName="")
+        {
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblCityMas
+                         where (EF.Functions.Like(cou.CityName.Trim().ToLower(), search + "%"))
+                         && (cou.StateName== StateName || StateName=="")
+                         orderby cou.CityName
+                         select (new
+                         {
+                             cou.PkCityId,
+                             cou.CityName,
+                             cou.StateName,
+                         }
+                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public object GetDrpCity(int pageno, int pagesize, string search = "")
         {
             if (search != null) search = search.ToLower();
@@ -81,7 +104,7 @@ namespace SSRepository.Repository.Master
             return (from r in result
                     select new
                     {
-                        r.PkCityId,
+                        r.PKID,
                         r.CityName
                     }).ToList(); ;
         }
@@ -98,38 +121,20 @@ namespace SSRepository.Repository.Master
                     }).ToList();
         }
 
-        public string DeleteRecord(long PkCityId)
+        public string DeleteRecord(long PKID)
         {
             string Error = "";
-            CityModel obj = GetSingleRecord(PkCityId);
-
-            //var Country = (from x in _context.TblStateMas
-            //               where x.FkcountryId == PkCityId
-            //               select x).Count();
-            //if (Country > 0)
-            //    Error += "Table Name -  StateMas : " + Country + " Records Exist";
-
+            CityModel oldModel = GetSingleRecord(PKID); 
 
             if (Error == "")
             {
                 var lst = (from x in __dbContext.TblCityMas
-                           where x.PkCityId == PkCityId
+                           where x.PkCityId == PKID
                            select x).ToList();
                 if (lst.Count > 0)
                     __dbContext.TblCityMas.RemoveRange(lst);
 
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkCityId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkCityId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetCityID(), PkCityId, obj.FKCityID, obj.DATE_MODIFIED, true);
+                AddMasterLog((long)Handler.Form.City, PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.CityName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -148,14 +153,14 @@ namespace SSRepository.Repository.Master
         {
             CityModel model = (CityModel)objmodel;
             TblCityMas Tbl = new TblCityMas();
-            if (model.PkCityId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblCityMas.Find(model.PkCityId);
+                var _entity = __dbContext.TblCityMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkCityId = model.PkCityId;
+            Tbl.PkCityId = model.PKID;
             Tbl.CityName = model.CityName;
             Tbl.StateName = model.StateName;
 
@@ -181,14 +186,17 @@ namespace SSRepository.Repository.Master
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
             var list = new List<ColumnStructure>
             {
                  // new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="State Name", Fields="StateName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="City Name", Fields="CityName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                      };
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="State Name", Fields="StateName",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="City Name", Fields="CityName",Width=40,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+          };
+            
             return list;
         }
 

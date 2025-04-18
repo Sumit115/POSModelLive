@@ -38,7 +38,7 @@ function BindCity(CityId) {
                 console.log(res);
                 $(res).each(function (i, v) {
 
-                    $("#FkCityId").append("<option value='" + v.PkCityId + "'>" + v.CityName + "</option>");
+                    $("#FkCityId").append("<option value='" + v.PKID + "'>" + v.CityName + "</option>");
                 });
 
                 if (CityId > 0) {

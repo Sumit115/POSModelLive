@@ -56,7 +56,7 @@ namespace SSRepository.Models
 
         public string? Address { get; set; }
         public string? StateName { get; set; }
-        public int? FkCityId { get; set; }
+        public long? FkCityId { get; set; }
         public string? City { get; set; }
         public string? Pin { get; set; }
 

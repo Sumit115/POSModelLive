@@ -10,21 +10,19 @@
     <div class="col-md-3">
         <div class="form-group">
             <label class="control-label">Article <span asp-validation-for="FKProductId" class="text-danger"></span></label>
-            @await Html.PartialAsync("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKProductId" }, { "Class", "form-control" }, { "event", "ViewProductLot()" },
-            { "value", Model.FKProductId }, { "text", Model.ProductName }, { "uri", "" }})
+            @await Html.PartialAsync("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKProductId" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "ViewProductLot()" },
+            { "value", Model.FKProductId }, { "text", Model.ProductName}, { "uri", "Product" }, { "required", "" },{ "placeholder", "Select Product"}
+            ,{ "parentid", "" }, { "ExtraParam", "" }})
         </div>
     </div>
 </div>
 <div class="p-3">
     <form asp-action="Create" class="g-3" enctype="multipart/form-data" style="display:none;">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkLotId" />
-
+        <input type="hidden" asp-for="PkLotId" /> 
         <div class="row">
             <div class="col-md-12">
-                <div class="row">
-
-
+                <div class="row"> 
                     <div class="col-md-2">
                         <div class="form-group">
                             <label class="control-label">Lot  No  <span asp-validation-for="LotNo" class="text-danger"></span></label>

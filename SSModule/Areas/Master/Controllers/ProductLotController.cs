@@ -103,11 +103,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
 
-        [HttpPost]
-        public object FKProductId(int pageSize, int pageNo = 1, string search = "")
-        {
-            return _productRepository.GetList(pageSize, pageNo, search);
-        }
+     
 
         [HttpPost]
         public string GetSingleRecord(long fkProdId)

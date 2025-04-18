@@ -43,7 +43,7 @@ namespace SSRepository.Repository.Master
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<EmployeeModel> data = (from cou in __dbContext.TblEmployeeMas
                                         join _city in __dbContext.TblCityMas
-                                       on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
+                                       on new { User = (int?)cou.FkCityId } equals new { User = (int?)_city.PkCityId }
                                        into _citytmp from city in _citytmp.DefaultIfEmpty()
                                             // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                         orderby cou.PkEmployeeId

@@ -128,7 +128,7 @@ namespace SSRepository.Repository.Master
                 if (lst.Count > 0)
                     __dbContext.TblCategoryGroupMas.RemoveRange(lst);
 
-                AddMasterLog((long)Handler.Form.CategoryGroup, oldModel.PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.CategoryGroupName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
+                AddMasterLog((long)Handler.Form.CategoryGroup, oldModel.PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.CategoryGroupName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -156,7 +156,7 @@ namespace SSRepository.Repository.Master
 
             Tbl.PkCategoryGroupId = model.PKID;
             Tbl.CategoryGroupName = model.CategoryGroupName;
-            Tbl.FkCategoryGroupId = model.FkCategoryGroupId;
+            Tbl.FkCategoryGroupId = model.FkCategoryGroupId>0? model.FkCategoryGroupId:null;
             Tbl.ModifiedDate = DateTime.Now;
             Tbl.FKCreatedByID = 1;
             if (Mode == "Create")

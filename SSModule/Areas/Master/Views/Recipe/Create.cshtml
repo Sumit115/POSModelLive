@@ -42,7 +42,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Product</label>
-                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkProductId_In" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkProductId_In" },{"name","txtProductId_In"}, { "Class", "val-cus-drp" }, { "event", "" },
                                     { "value", "" }, { "text", "" }, { "uri", "Product" }, { "required", "" },{ "placeholder", "Select Product"}
                                     ,{ "parentid", "" }, { "ExtraParam", "" }}) 
                                 </div>
@@ -50,7 +50,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Batch</label>
-                                     @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "Batch_In" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "Batch_In" },{"name","txtBatch_In"}, { "Class", "val-cus-drp" }, { "event", "" },
                                     { "value", "" }, { "text", "" }, { "uri", "Batch" }, { "required", "" },{ "placeholder", "Select Branch"}
                                     ,{ "parentid", "FkProductId_In" }, { "ExtraParam", "" }})
                                 </div>
@@ -127,7 +127,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Product</label>
-                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkProductId_Out" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkProductId_Out" },{"name","txtProductId_Out"}, { "Class", "val-cus-drp" }, { "event", "" },
                                     { "value", "" }, { "text", "" }, { "uri", "Product" }, { "required", "" },{ "placeholder", "Select Product"}
                                     ,{ "parentid", "" }, { "ExtraParam", "" }})
                                 </div>
@@ -135,7 +135,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Batch</label>
-                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "Batch_Out" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "Batch_Out" },{"name","txtBatch_Out"}, { "Class", "val-cus-drp" }, { "event", "" },
                                     { "value", "" }, { "text", "" }, { "uri", "Batch" }, { "required", "" },{ "placeholder", "Select Branch"}
                                     ,{ "parentid", "FkProductId_Out" }, { "ExtraParam", "" }})
                                 </div>

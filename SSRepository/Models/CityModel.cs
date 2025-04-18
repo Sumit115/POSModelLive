@@ -10,7 +10,7 @@ namespace SSRepository.Models
 {
      public class CityModel : BaseModel
     {
-        public long PkCityId { get; set; }
+        public long PKID { get; set; }
         [Required]
         public string CityName { get; set; }
 

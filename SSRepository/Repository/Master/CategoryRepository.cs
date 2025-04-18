@@ -52,6 +52,31 @@ namespace SSRepository.Repository.Master
                                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "")
+        {
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                var BillingLocation = ObjSysDefault.BillingLocation.Split(',').ToList();
+
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblCategoryMas
+                             //join _tranAlias in GetDrpTranAlias().ToList() on cou.TranAlias equals _tranAlias.Value
+                         where EF.Functions.Like(cou.CategoryName.Trim().ToLower(), search + "%")
+                         orderby cou.CategoryName
+                         select (new
+                         {
+                             cou.PkCategoryId,
+                             cou.CategoryName,
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public object GetDrpCategory(int pageSize, int pageNo = 1, string search = "")
         {
             if (search != null) search = search.ToLower();
@@ -117,7 +142,7 @@ namespace SSRepository.Repository.Master
                     __dbContext.TblCategoryMas.RemoveRange(lst);
 
                 
-                AddMasterLog((long)Handler.Form.Category, oldModel.PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.Category, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
+                AddMasterLog((long)Handler.Form.Category, oldModel.PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.Category, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
 
                 __dbContext.SaveChanges();
             }

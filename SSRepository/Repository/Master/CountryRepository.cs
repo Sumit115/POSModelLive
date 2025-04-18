@@ -21,7 +21,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.CountryName))
             {
                 cnt = (from x in __dbContext.TblCountryMas
-                       where x.CountryName == model.CountryName && x.PkCountryId != model.PkCountryId
+                       where x.CountryName == model.CountryName && x.PkCountryId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Section Name Already Exits";
@@ -39,11 +39,12 @@ namespace SSRepository.Repository.Master
                                        orderby cou.PkCountryId
                                        select (new CountryModel
                                        {
-                                           PkCountryId = cou.PkCountryId,
+                                           PKID = cou.PkCountryId,
                                            CountryName = cou.CountryName,
                                            CapitalName = cou.CapitalName,
                                            FKUserID = cou.FKUserID,
-                                           DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                                           DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                           UserName = cou.FKUser.UserId,
                                        }
                                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -58,77 +59,52 @@ namespace SSRepository.Repository.Master
                     where cou.PkCountryId == PkCountryId
                     select (new CountryModel
                     {
-                        PkCountryId = cou.PkCountryId,
+                        PKID = cou.PkCountryId,
                         CountryName = cou.CountryName,
                         CapitalName = cou.CapitalName,
                         FKUserID = cou.FKUserID,
-                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                        UserName = cou.FKUser.UserId,
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpCountry(int pagesize, int pageno, string search = "")
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "")
         {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetList(pagesize, pageno, search);
-
-            result.Insert(0, new CountryModel { PkCountryId = 0, CountryName = "Select" });
-            return (from r in result
-                    select new
-                    {
-                        r.PkCountryId,
-                        r.CountryName
-                    }).ToList();
-        }
-        public object GetDrpTableCountry(int pagesize, int pageno, string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetList(pagesize, pageno, search);
-
-            return (from r in result
-                    select new
-                    {
-                        r.PkCountryId,
-                        r.CountryName,
-                        r.CapitalName
-                    }).ToList();
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblCountryMas
+                         where (EF.Functions.Like(cou.CountryName.Trim().ToLower(), search + "%")) 
+                         orderby cou.CountryName
+                         select (new
+                         {
+                             cou.PkCountryId,
+                             cou.CountryName,
+                             cou.CapitalName,
+                         }
+                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        public string DeleteRecord(long PkCountryId)
+        public string DeleteRecord(long PKID)
         {
             string Error = "";
-            CountryModel obj = GetSingleRecord(PkCountryId);
-
-            //var Country = (from x in _context.TblStateMas
-            //               where x.FkcountryId == PkCountryId
-            //               select x).Count();
-            //if (Country > 0)
-            //    Error += "Table Name -  StateMas : " + Country + " Records Exist";
-
-
+            CountryModel oldModel = GetSingleRecord(PKID);
+             
             if (Error == "")
             {
                 var lst = (from x in __dbContext.TblCountryMas
-                           where x.PkCountryId == PkCountryId
+                           where x.PkCountryId == PKID
                            select x).ToList();
                 if (lst.Count > 0)
                     __dbContext.TblCountryMas.RemoveRange(lst);
 
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkCountryId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkCountryId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetCountryID(), PkCountryId, obj.FKCountryID, obj.DATE_MODIFIED, true);
+                AddMasterLog((long)Handler.Form.Country, PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.CountryName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -147,14 +123,14 @@ namespace SSRepository.Repository.Master
         {
             CountryModel model = (CountryModel)objmodel;
             TblCountryMas Tbl = new TblCountryMas();
-            if (model.PkCountryId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblCountryMas.Find(model.PkCountryId);
+                var _entity = __dbContext.TblCountryMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkCountryId = model.PkCountryId;
+            Tbl.PkCountryId = model.PKID;
             Tbl.CountryName = model.CountryName;
             Tbl.CapitalName = model.CapitalName;
             Tbl.ModifiedDate = DateTime.Now;
@@ -179,17 +155,17 @@ namespace SSRepository.Repository.Master
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
             var list = new List<ColumnStructure>
             {
-                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Country", Fields="CountryName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=2, Orderby =1, Heading ="Capital", Fields="CapitalName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                        };
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Country", Fields="CountryName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Capital", Fields="CapitalName",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+          };
             return list;
-        }
-
-
+        } 
     }
 }
 

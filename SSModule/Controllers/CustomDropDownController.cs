@@ -56,6 +56,13 @@ namespace SSAdmin.Controllers
             CategoryGroupRepository repository = new CategoryGroupRepository(_dbContext, _contextAccessor);
             return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
         }
+
+        [HttpPost]
+        public object Category(int pageSize, int pageNo = 1, string search = "")
+        {
+            CategoryRepository repository = new CategoryRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
+        }
         [HttpPost]
         public object Product(int pageSize, int pageNo = 1, string search = "")
         {
@@ -75,6 +82,13 @@ namespace SSAdmin.Controllers
         {
             ProductRepository repository = new ProductRepository(_dbContext, _contextAccessor);
             return repository.CustomList_Color((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, FkProductId, Batch);
+        }
+       
+        [HttpPost]
+        public object City(long FkProductId, int pageSize, int pageNo = 1, string search = "", string StateName = "")
+        {
+            CityRepository repository = new CityRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, StateName);
         }
         //[HttpPost]
         //public object FKSeriesId(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")

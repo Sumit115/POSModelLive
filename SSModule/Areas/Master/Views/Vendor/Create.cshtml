@@ -45,15 +45,14 @@
                 <div class="form-group row">
                     <label class="col-sm-2">State / City</label>
                     <div class="col-md-3">
-                        <select asp-for="StateName" asp-items="@(new SelectList(ViewBag.StateList,"Value","Text"))" class="form-select" onchange="BindCity()">
+                        <select asp-for="StateName" asp-items="@(new SelectList(ViewBag.StateList,"Value","Text"))" class="form-select"  >
                         </select>
                         <span asp-validation-for="StateName" class="text-danger"></span>
                     </div>
                     <div class="col-md-3">
-                        <select asp-for="FkCityId" class="form-select">
-                            <option value="">-Select-</option>
-                        </select>
-                        <span asp-validation-for="FkCityId" class="text-danger"></span>
+                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkCityId" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                        { "value", Model.FkCityId }, { "text", Model.City}, { "uri", "City" }, { "required", "required" },{ "placeholder", "Select City"}
+                        ,{ "parentid", "StateName" }, { "ExtraParam", "" }})
                     </div>
                 </div>
                 <div class="form-group row">
@@ -195,8 +194,7 @@
         </div>
     </form>
 </div> 
-<input type="hidden" id="hdCityId" value="@Model.FkCityId" />
-
+ 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
