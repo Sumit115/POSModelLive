@@ -83,10 +83,8 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             catch (Exception ex)
             {
-                //CommonCore.WriteLog(ex, "Create Get ", ControllerName, GetErrorLogParam());
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(0, tblBankMas);
             ViewBag.StateList = Handler.GetDrpState();
             return View(Model);
         }
