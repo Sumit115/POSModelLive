@@ -5,61 +5,73 @@
     ViewData["bdClass"] = "page";
 }
 
-<div class="p-3">
-    <form asp-action="Create" class="g-3" enctype="multipart/form-data">
+<div class="master-page-ui">
+    <form asp-action="Create" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkStateId" />
-
+        <input type="hidden" asp-for="PKID" />
         <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="d-block pb-1">Country</label>
-                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkCountryId" }, { "Class", "val-cus-drp" }, { "event", "" },
-                    { "value", Model.FkCountryId }, { "text", Model.CountryName }, { "uri", "" } })
-                </div>
-            </div> 
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">State</label>
-                    <input asp-for="StateName" class="form-control" />
-                    <span asp-validation-for="StateName" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Capital</label>
-                    <input asp-for="CapitalName" class="form-control" />
-                    <span asp-validation-for="CapitalName" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">State Code</label>
-                    <input asp-for="StateCode" class="form-control" maxlength="2" />
-                    <span asp-validation-for="StateCode" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-md-4" >
-                <div class="form-group">
-                    <label class="control-label">State Type</label>
-                    <div class="d-flex">
-                        <div class="radio-class mr-3">
-                            <input asp-for="StateType" class="radios__input" name="StateType" id="StateTypeState" type="radio" value="State" checked>
-                            <label class="label" for="StateTypeState">State</label>
-                        </div>
-                        <div class="radios__item mr-3">
-                            <input asp-for="StateType" class="radios__input" name="StateType" id="StateTypeUnionTerritory" type="radio" value="Union Territory">
-                            <label class="label" for="StateTypeUnionTerritory">Union Territory</label>
-                        </div>
+            <div class="col-md-8">
+                <div class="form-group row">
+                    <label class="col-sm-2">Country*</label>
+                    <div class="col-md-6">
+                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkCountryId" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                        { "value", Model.FkCountryId }, { "text", Model.CountryName}, { "uri", "Country" }, { "required", "required" },{ "placeholder", "Select Country"}
+                        ,{ "parentid", "StateName" }, { "ExtraParam", "" }})
+                        <span asp-validation-for="FkCountryId" class="text-danger"></span>
                     </div>
-                    <span asp-validation-for="StateType" class="text-danger"></span>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">State<span class="required">*</span> </label>
+                    <div class="col-md-6">
+                        <input asp-for="StateName" class="form-control" maxlength="100" />
+                        <span asp-validation-for="StateName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Capital</label>
+                    <div class="col-md-6">
+                        <input asp-for="CapitalName" class="form-control" maxlength="100" />
+                        <span asp-validation-for="CapitalName" class="text-danger"></span>
+                    </div> 
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">State Code</label>
+                    <div class="col-md-6">
+                        <input asp-for="StateCode" class="form-control" maxlength="2" />
+                        <span asp-validation-for="StateCode" class="text-danger"></span>
+                    </div>
 
                 </div>
+                 
             </div>
+            <div class="col-sm-4 show-checkbox-ui-sl-page">
+                <div class="col-sm-8">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center form-check form-switch">
+                            <label class="form-check-label" for="IsBillingLocation">State Type</label>
+                            <span>
+                                <div class="d-flex align-items-center form-check form-switch">
+                                    <span>  <input asp-for="StateType" class="form-check-input" role="switch" id="StateTypeState" type="radio" value="State" checked></span>
+                                    <label class="form-check-label ms-1" for="StateTypeState">State</label>
+                                </div>
+
+                                <div class="d-flex align-items-center form-check form-switch">
+                                    <span>  <input asp-for="StateType" class="form-check-input" role="switch" id="StateTypeUnionTerritory" type="radio" value="Union Territory"></span>
+                                    <label class="form-check-label ms-1" for="StateTypeUnionTerritory">Union Territory</label>
+                                </div>
+                            </span>
+                        </li>
+                        
+
+                    </ul>
+                </div>
+            </div>
+
+
+
         </div>
     </form>
 </div>
-
 
 @section Scripts {
     @{
@@ -72,20 +84,6 @@
                 e.preventDefault();
                 $("form").submit();
             });
-        })
-        UploadImage = (id) => {
-            var file = document.querySelector('input[id="file_' + id + '"]').files[0];
-            // $("#FileName").val(file.name);
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
-                //console.log(reader.result);
-                $("#" + id).val(reader.result);
-                $("#dummyimage_" + id).attr("src", reader.result);
-                $("#dummyimage_" + id).show();
-                //   $("#myImage").hide();
-
-            };
-        }
+        }) 
     </script>
 }

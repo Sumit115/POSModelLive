@@ -159,6 +159,11 @@ namespace SSRepository.Models
         public int? PaymentDays { get; set; }
         public List<EWayDetailModel> EWayDetails { get; set; }
         public EWayDetailModel EWayDetail { get; set; }
+
+        public long FKReferById { get; set; }
+        public string ReferByName { get; set; }
+        public long FKSalesPerId { get; set; }
+        public string SalesPerName { get; set; }
     }
 
     public class ExtPropertie

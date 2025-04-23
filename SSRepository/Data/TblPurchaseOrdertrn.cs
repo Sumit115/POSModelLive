@@ -42,6 +42,8 @@ namespace SSRepository.Data
         public string? InvStatus { get; set; }
         public bool DraftMode { get; set; }
         public string? TrnStatus { get; set; }
+        public long? FKReferById { get; set; }
+        public long? FKSalesPerId { get; set; }
 
     }
 }

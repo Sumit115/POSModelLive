@@ -1081,7 +1081,14 @@ namespace SSRepository.Repository
                 {
                     retVal = GetAlias("tblVendor_mas", "Code");
                 }
-
+                else if (FormName == "referby")
+                {
+                    retVal = GetAlias("tblReferBy_mas", "Code");
+                }
+                else if (FormName == "employee")
+                {
+                    retVal = GetAlias("tblEmployee_mas", "Code");
+                }
                 if (String.IsNullOrEmpty(retVal) || retVal == "0" || retVal == "ABC")
                 {
                     retVal = "1000";

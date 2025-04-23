@@ -58,9 +58,18 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label class="control-label">Refer By </label>
+                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKReferById" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "setReferBy()" },
+                            { "value", Model.FKReferById }, { "text", Model.ReferByName}, { "uri", "ReferBy" }, { "required", "" },{ "placeholder", "Select ReferBy"}
+                            ,{ "parentid", "" }, { "ExtraParam", "" }})
 
-                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKReferById" }, { "Class", "val-cus-drp" }, { "event", "setSeries()" },
-                            { "value", "" }, { "text", "" }, { "uri", "" }})
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Sales Person</label>
+                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKSalesPerId" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "setSalesPer()" },
+                            { "value", Model.FKSalesPerId }, { "text", Model.SalesPerName}, { "uri", "Employee" }, { "required", "" },{ "placeholder", "Select Sales Person"}
+                            ,{ "parentid", "" }, { "ExtraParam", "" }})
 
                         </div>
                     </div>

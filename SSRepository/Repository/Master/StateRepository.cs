@@ -21,7 +21,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.StateName))
             {
                 cnt = (from x in __dbContext.TblStateMas
-                       where x.StateName == model.StateName && x.PkStateId != model.PkStateId
+                       where x.StateName == model.StateName && x.PkStateId != model.PKID
                        && x.FkCountryId == model.FkCountryId
                        select x).Count();
                 if (cnt > 0)
@@ -31,158 +31,93 @@ namespace SSRepository.Repository.Master
             return error;
         }
 
-        public List<StateModel> GetList(int pageSize, int pageNo = 1, string search = "")
+        public List<StateModel> GetList(int pageSize, int pageNo = 1, string search = "", long FkCountryId = 0)
         {
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<StateModel> data = (from cou in __dbContext.TblStateMas
-                                     join catGrp in __dbContext.TblCountryMas on cou.FkCountryId equals catGrp.PkCountryId
-
-                                     // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                     where (EF.Functions.Like(cou.StateName.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                       && (FkCountryId == 0 || cou.FkCountryId == FkCountryId)
                                      orderby cou.PkStateId
                                      select (new StateModel
                                      {
-                                         PkStateId = cou.PkStateId,
-                                         
+                                         PKID = cou.PkStateId, 
                                          StateName = cou.StateName,
                                          CapitalName = cou.CapitalName,
                                          StateType = cou.StateType,
                                          StateCode = cou.StateCode,
                                          FkCountryId = cou.FkCountryId,
-                                         CountryName = catGrp.CountryName,
+                                         CountryName = cou.FKCountry.CountryName,
                                          FKUserID = cou.FKUserID,
-                                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                         UserName = cou.FKUser.UserId,
                                      }
                                     )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
-
-        public List<StateModel> GetListByGroupId(long CountryId, int pageSize, int pageNo = 1, string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
-            List<StateModel> data = (from cou in __dbContext.TblStateMas
-                                     join catGrp in __dbContext.TblCountryMas on cou.FkCountryId equals catGrp.PkCountryId
-                                     where cou.FkCountryId == CountryId
-                                     // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                     orderby cou.PkStateId
-                                     select (new StateModel
-                                     {
-                                         PkStateId = cou.PkStateId,                                         
-                                         StateName = cou.StateName,
-                                         CapitalName = cou.CapitalName,
-                                         StateType = cou.StateType,
-                                         StateCode = cou.StateCode,
-                                         FkCountryId = cou.FkCountryId,
-                                         CountryName = catGrp.CountryName,
-                                         FKUserID = cou.FKUserID,
-                                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
-                                     }
-                                    )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
-            return data;
-        }
-
+         
         public StateModel GetSingleRecord(long PkStateId)
         {
 
             StateModel data = new StateModel();
             data = (from cou in __dbContext.TblStateMas
-                    join catGrp in __dbContext.TblCountryMas on cou.FkCountryId equals catGrp.PkCountryId
+                   // join catGrp in __dbContext.TblCountryMas on cou.FkCountryId equals catGrp.PkCountryId
                     where cou.PkStateId == PkStateId
                     select (new StateModel
                     {
-                        PkStateId = cou.PkStateId,
+                        PKID = cou.PkStateId,
                         StateName = cou.StateName,
                         CapitalName = cou.CapitalName,
                         StateType = cou.StateType,
                         StateCode = cou.StateCode,
                         FkCountryId = cou.FkCountryId,
-                        CountryName = catGrp.CountryName,
+                        CountryName = cou.FKCountry.CountryName,
                         FKUserID = cou.FKUserID,
-                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                        UserName = cou.FKUser.UserId,
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpState(int pagesize, int pageno, string search = "")
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", long FkCountryId = 0)
         {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            { 
 
-            var result = GetList(pagesize, pageno, search);
-
-            result.Insert(0, new StateModel { PkStateId = 0, StateName = "Select" });
-            return (from r in result
-                    select new
-                    {
-                        r.PkStateId,
-                        r.StateName
-                    }).ToList();
-        }
-        public object GetDrpTableState(int pagesize, int pageno, string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetList(pagesize, pageno, search);
-
-            return (from r in result
-                    select new
-                    {
-                        r.PkStateId,
-                        State = r.StateName,
-                        Capital = r.CapitalName,
-                        Code = r.StateCode,
-                        r.StateType
-                    }).ToList();
-        }
-        public object GetDrpStateByGroupId(long CountryId, int pagesize, int pageno, string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetListByGroupId(CountryId, pagesize, pageno, search);
-
-            result.Insert(0, new StateModel { PkStateId = 0, StateName = "Select" });
-            return (from r in result
-                    select new
-                    {
-                        r.PkStateId,
-                        r.StateName
-                    }).ToList();
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return (from cou in __dbContext.TblStateMas
+                        where (EF.Functions.Like(cou.StateName.Trim().ToLower(), Convert.ToString(search) + "%"))
+                          && (FkCountryId == 0 || cou.FkCountryId == FkCountryId)
+                         orderby cou.StateName
+                         select (new
+                         {
+                             cou.PkStateId,
+                             cou.StateName,
+                             cou.CapitalName,
+                             cou.FKCountry.CountryName,
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        public string DeleteRecord(long PkStateId)
+        public string DeleteRecord(long PKID)
         {
             string Error = "";
-            StateModel obj = GetSingleRecord(PkStateId);
-
-            //var Country = (from x in _context.TblStateMas
-            //               where x.FkcountryId == PkStateId
-            //               select x).Count();
-            //if (Country > 0)
-            //    Error += "Table Name -  StateMas : " + Country + " Records Exist";
-
+            StateModel oldModel = GetSingleRecord(PKID); 
 
             if (Error == "")
             {
                 var lst = (from x in __dbContext.TblStateMas
-                           where x.PkStateId == PkStateId
+                           where x.PkStateId == PKID
                            select x).ToList();
                 if (lst.Count > 0)
                     __dbContext.TblStateMas.RemoveRange(lst);
 
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkStateId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkStateId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetStateID(), PkStateId, obj.FKStateID, obj.DATE_MODIFIED, true);
+                AddMasterLog((long)Handler.Form.State, PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.StateName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -201,14 +136,14 @@ namespace SSRepository.Repository.Master
         {
             StateModel model = (StateModel)objmodel;
             TblStateMas Tbl = new TblStateMas();
-            if (model.PkStateId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblStateMas.Find(model.PkStateId);
+                var _entity = __dbContext.TblStateMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkStateId = model.PkStateId;
+            Tbl.PkStateId = model.PKID;
             Tbl.StateName = model.StateName;
             Tbl.FkCountryId = model.FkCountryId;
             Tbl.CapitalName = model.CapitalName;
@@ -236,37 +171,22 @@ namespace SSRepository.Repository.Master
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
             var list = new List<ColumnStructure>
             {
-              new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="State", Fields="StateName",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-              new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Capital", Fields="CapitalName",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-              new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Type", Fields="StateType",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-               new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Country", Fields="CountryName",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-               new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                        };
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="State", Fields="StateName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Capital", Fields="CapitalName",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Type", Fields="StateType",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Country", Fields="CountryName",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+          };
+             
             return list;
         }
 
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 

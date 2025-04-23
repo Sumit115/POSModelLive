@@ -85,11 +85,27 @@ namespace SSAdmin.Controllers
         }
        
         [HttpPost]
+        public object Country(long FkProductId, int pageSize, int pageNo = 1, string search = "")
+        {
+            CountryRepository repository = new CountryRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
+        }
+
+
+        [HttpPost]
         public object City(long FkProductId, int pageSize, int pageNo = 1, string search = "", string StateName = "")
         {
             CityRepository repository = new CityRepository(_dbContext, _contextAccessor);
             return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, StateName);
         }
+
+        [HttpPost]
+        public object ReferBy(int pageSize, int pageNo = 1, string search = "")
+        {
+            ReferByRepository repository = new ReferByRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
+        }
+
         //[HttpPost]
         //public object FKSeriesId(int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
         //{

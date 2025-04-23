@@ -45,6 +45,8 @@ namespace SSRepository.Data
         public DateTime? OrderScheduleDate { get; set; } 
         public string? ConcernPersonName { get; set; }
         public string? ConcernPersonMobile { get; set; }
+        public long? FKReferById { get; set; }
+        public long? FKSalesPerId { get; set; }
 
     }
 }

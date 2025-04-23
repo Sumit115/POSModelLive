@@ -9,11 +9,8 @@ namespace SSRepository.IRepository.Master
          List<ColumnStructure> ColumnList(string GridName = "");
 
         string isAlreadyExist(StateModel tblBankMas, string Mode);
-        List<StateModel> GetList(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpState(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpTableState(int pageSize, int pageNo = 1, string search = "");
-
-        object GetDrpStateByGroupId(long CountryId, int pageSize, int pageNo = 1, string search = "");
+        List<StateModel> GetList(int pageSize, int pageNo = 1, string search = "", long FkCountryId = 0);
+ 
         StateModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);

@@ -110,11 +110,11 @@ namespace SSAdmin.Areas.Master.Controllers
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
-                    if (model.PkEmployeeId > 0)
+                    if (model.PKID > 0)
                     {
                         Mode = "Edit";
                     }
-                    Int64 ID = model.PkEmployeeId;
+                    Int64 ID = model.PKID;
                     string error = await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {
@@ -146,7 +146,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
-        public string DeleteRecord(long PKID)
+        public string Delete(long PKID)
         {
             string response = "";
             try
@@ -159,6 +159,21 @@ namespace SSAdmin.Areas.Master.Controllers
                 //return CommonCore.SetError(ex.Message);
             }
             return response;
+        }
+
+        [HttpPost]
+        public string GetAlias()
+        {
+            string Return = string.Empty;
+            try
+            {
+                Return = _repository.GetAlias("employee");
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
+            return Return;
         }
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {

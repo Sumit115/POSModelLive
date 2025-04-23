@@ -14,5 +14,7 @@ namespace SSRepository.Data
         public string? CapitalName { get; set; }
         public string? StateType { get; set; }
         public string? StateCode { get; set; }
+        public virtual TblCountryMas FKCountry { get; set; }
+
     }
 }

@@ -176,10 +176,6 @@ namespace SSAdmin.Areas.Master.Controllers
             return _repository.ColumnList(GridName);
         }
 
-        [HttpPost]
-        public object FkStateId(int pageSize, int pageNo = 1, string search = "")
-        {
-            return _repositoryState.GetDrpTableState(pageSize, pageNo, search);
-        }
+       
     }
 }

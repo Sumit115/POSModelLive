@@ -48,9 +48,7 @@ namespace SSRepository.Repository.Master
                                        }
                                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
-        }
-
-
+        } 
         public CountryModel GetSingleRecord(long PkCountryId)
         {
 

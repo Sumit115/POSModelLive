@@ -16,8 +16,7 @@ namespace SSRepository.Data
         public System.TimeSpan EntryTime { get; set; }
         public long FkPartyId { get; set; }
         public string? CustomerRegNo { get; set; }
-        public string? CustomerType { get; set; }
-        public Nullable<long> FKSalesPerID { get; set; }
+        public string? CustomerType { get; set; } 
         public Nullable<long> FKTaxID { get; set; }
         public bool DraftMode { get; set; }
         public bool Cash { get; set; }
@@ -74,8 +73,9 @@ namespace SSRepository.Data
         public Nullable<int> PaymentDays { get; set; }
         public Nullable<System.DateTime> DeliveryDate { get; set; }
         public Nullable<bool> ReverseCharge { get; set; }
-      
 
+        public long? FKReferById { get; set; }
+        public long? FKSalesPerId { get; set; }
         //public virtual tblAccount_mas tblAccount_mas { get; set; }
         //public virtual tblCustomer_mas tblCustomer_mas { get; set; }
         //public virtual tblEmployee_mas tblEmployee_mas { get; set; }

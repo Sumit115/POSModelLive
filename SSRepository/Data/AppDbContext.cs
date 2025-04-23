@@ -26,6 +26,7 @@ namespace SSRepository.Data
         public virtual DbSet<TblBranchMas> TblBranchMas { get; set; } = null!;
         public virtual DbSet<TblCompany> TblCompanies { get; set; } = null!;
         public virtual DbSet<TblEmployeeMas> TblEmployeeMas { get; set; } = null!;
+        public virtual DbSet<TblReferByMas> TblReferByMas { get; set; } = null!;
         public virtual DbSet<TblUserMas> TblUserMas { get; set; } = null!;
 
         public virtual DbSet<TblUserLocLnk> TblUserLocLnk { get; set; } = null!;
@@ -514,6 +515,32 @@ namespace SSRepository.Data
                     .WithMany()
                     .HasForeignKey(e => e.FKUserID)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TblStateMas>(entity =>
+            {
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKCountry)
+                   .WithMany()
+                   .HasForeignKey(e => e.FkCountryId)
+                   .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TblReferByMas>(entity =>
+            {
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKCity)
+                   .WithMany()
+                   .HasForeignKey(e => e.FkCityId)
+                   .OnDelete(DeleteBehavior.Restrict);
             });
 
         }

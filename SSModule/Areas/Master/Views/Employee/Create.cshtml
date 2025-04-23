@@ -7,7 +7,7 @@
 <div class="p-4">
     <form asp-action="Create" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkEmployeeId" />
+        <input type="hidden" asp-for="PKID" />
         <input type="hidden" asp-for="IsAadharVerify" />
         <input type="hidden" asp-for="IsPanVerify" />
         <input type="hidden" asp-for="Status" />
@@ -45,15 +45,14 @@
                 <div class="form-group row">
                     <label class="col-sm-2">State / City</label>
                     <div class="col-md-3">
-                        <select asp-for="StateName" asp-items="@(new SelectList(ViewBag.StateList,"Value","Text"))" class="form-select" onchange="BindCity()">
+                        <select asp-for="StateName" asp-items="@(new SelectList(ViewBag.StateList,"Value","Text"))" class="form-select"  >
                         </select>
                         <span asp-validation-for="StateName" class="text-danger"></span>
                     </div>
                     <div class="col-md-3">
-                        <select asp-for="FkCityId" class="form-select">
-                            <option value="">-Select-</option>
-                        </select>
-                        <span asp-validation-for="FkCityId" class="text-danger"></span>
+                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkCityId" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                        { "value", Model.FkCityId }, { "text", Model.City}, { "uri", "City" }, { "required", "required" },{ "placeholder", "Select City"}
+                        ,{ "parentid", "StateName" }, { "ExtraParam", "" }})
                     </div>
                 </div>
                 <div class="form-group row">
@@ -207,59 +206,6 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script>
-        $(document).ready(function () {
+    <script src="~/js/master/Employee.js"></script>
 
-            Common.InputFormat();
-            BindCity(@Model.FkCityId);
-            $('#btnServerSave').click(function (e) {
-                e.preventDefault();
-                $("form").submit();
-            });
-        })
-        UploadImage = (id) => {
-            var file = document.querySelector('input[id="file_' + id + '"]').files[0];
-            // $("#FileName").val(file.name);
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
-                //console.log(reader.result);
-                $("#" + id).val(reader.result);
-                $("#dummyimage_" + id).attr("src", reader.result);
-                $("#dummyimage_" + id).show();
-                //   $("#myImage").hide();
-
-            };
-        }
-    </script>
-    <script>
-        function BindCity(CityId) {
-            
-            var StateName = $("#StateName").val();
-            $("#FkCityId").empty();
-            //
-
-            if (StateName != '') {
-
-                $.ajax({
-                    type: "POST",
-                    url: '/Master/City/GetDrpCityByState',
-                    data: { State: StateName },
-                    datatype: "json",
-                    success: function (res) {
-                        console.log(res);
-                        $(res).each(function (i, v) {
-
-                            $("#FkCityId").append("<option value='" + v.PKID + "'>" + v.CityName + "</option>");
-                        });
-
-                        if (CityId > 0) {
-                            $("#FkCityId").val(CityId);
-                        }
-                    }
-                })
-
-            } else { $("#FkCityId").append("<option value=''>-Select-</option>"); }
-        }
-    </script>
       }

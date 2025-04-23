@@ -10,7 +10,7 @@ namespace SSRepository.Models
 {
     public class StateModel : BaseModel
     {
-        public long PkStateId { get; set; }
+        public long PKID { get; set; }
 
         [Required(ErrorMessage = "Name Required")]
         [StringLength(50)]

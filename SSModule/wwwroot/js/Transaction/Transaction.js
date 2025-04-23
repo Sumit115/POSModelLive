@@ -1313,6 +1313,14 @@ function setSeries() {
     });
 }
 
+function setReferBy() {
+     
+    tranModel["FKReferById"] = $("#FKReferById").val();
+}
+function setSalesPer() {
+
+    tranModel['FKSalesPerId'] = $("#FKSalesPerId").val();
+}
 function setBankThroughBank() {
     var FKBankThroughBankID = $("#FKBankThroughBankID").val();
     $.ajax({

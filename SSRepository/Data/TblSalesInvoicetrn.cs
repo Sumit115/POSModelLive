@@ -64,5 +64,7 @@ namespace SSRepository.Data
         public DateTime? DeliveryDate { get; set; }
         public string? ShippingMode { get; set; }
         public int? PaymentDays { get; set; }
+        public long? FKReferById { get; set; }
+        public long? FKSalesPerId { get; set; }
     }
 }

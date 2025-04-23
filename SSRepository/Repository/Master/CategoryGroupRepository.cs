@@ -58,9 +58,7 @@ namespace SSRepository.Repository.Master
         {
             if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
             {
-                var BillingLocation = ObjSysDefault.BillingLocation.Split(',').ToList();
-
-                if (search != null) search = search.ToLower();
+               if (search != null) search = search.ToLower();
                 pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
                 return ((from cou in __dbContext.TblCategoryGroupMas
                              //join _tranAlias in GetDrpTranAlias().ToList() on cou.TranAlias equals _tranAlias.Value

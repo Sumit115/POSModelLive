@@ -13,7 +13,7 @@ namespace SSRepository.Repository.Master
         public EmployeeRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
         }
-         
+
         public string isAlreadyExist(EmployeeModel model, string Mode)
         {
             dynamic cnt;
@@ -21,7 +21,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.Mobile))
             {
                 cnt = (from x in __dbContext.TblEmployeeMas
-                       where x.Mobile == model.Mobile && x.PkEmployeeId != model.PkEmployeeId
+                       where x.Mobile == model.Mobile && x.PkEmployeeId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Mobile Already Exits";
@@ -29,7 +29,7 @@ namespace SSRepository.Repository.Master
             else if (!string.IsNullOrEmpty(model.Email))
             {
                 cnt = (from x in __dbContext.TblEmployeeMas
-                       where x.Email == model.Email && x.PkEmployeeId != model.PkEmployeeId
+                       where x.Email == model.Email && x.PkEmployeeId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Email Already Exits";
@@ -42,52 +42,47 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<EmployeeModel> data = (from cou in __dbContext.TblEmployeeMas
-                                        join _city in __dbContext.TblCityMas
-                                       on new { User = (int?)cou.FkCityId } equals new { User = (int?)_city.PkCityId }
-                                       into _citytmp from city in _citytmp.DefaultIfEmpty()
-                                            // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                        orderby cou.PkEmployeeId
-                                        select (new EmployeeModel
-                                        {
-                                            PkEmployeeId = cou.PkEmployeeId,
-                                            Code = cou.Code,
-                                            Name = cou.Name,
-                                            Marital = cou.Marital,
-                                            Gender = cou.Gender,
-                                            Dob = cou.Dob,
-                                            Email = cou.Email,
-                                            Mobile = cou.Mobile,
-                                            Aadhar = cou.Aadhar,
-                                            Panno = cou.Panno,
-                                            Gstno = cou.Gstno,
-                                            IsAadharVerify = cou.IsAadharVerify,
-                                            IsPanVerify = cou.IsPanVerify,
-                                            Status = cou.Status,
-                                            Address = cou.Address,
-                                            StateName = cou.StateName,
-                                            FkCityId = cou.FkCityId,
-                                            City = city.CityName,
-                                            Pin = cou.Pin,
-                                            //Location = cou.Location,
-                                            Salary = cou.Salary,
-                                            Post = cou.Post,
-                                            FKUserID = cou.FKUserID,
-                                            DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
-                                        }
+                                       where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                       orderby cou.PkEmployeeId
+                                       select (new EmployeeModel
+                                       {
+                                           PKID = cou.PkEmployeeId,
+                                           Code = cou.Code,
+                                           Name = cou.Name,
+                                           Marital = cou.Marital,
+                                           Gender = cou.Gender,
+                                           Dob = cou.Dob,
+                                           Email = cou.Email,
+                                           Mobile = cou.Mobile,
+                                           Aadhar = cou.Aadhar,
+                                           Panno = cou.Panno,
+                                           Gstno = cou.Gstno,
+                                           IsAadharVerify = cou.IsAadharVerify,
+                                           IsPanVerify = cou.IsPanVerify,
+                                           Status = cou.Status,
+                                           Address = cou.Address,
+                                           StateName = cou.StateName,
+                                           FkCityId = cou.FkCityId,
+                                           City = cou.FKCity.CityName,
+                                           Pin = cou.Pin,
+                                           FKUserID = cou.FKUserID,
+                                           DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                           UserName = cou.FKUser.UserId,
+                                       }
                                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
 
 
-        public EmployeeModel GetSingleRecord(long PkEmployeeId)
+        public EmployeeModel GetSingleRecord(long PKID)
         {
 
             EmployeeModel data = new EmployeeModel();
             data = (from cou in __dbContext.TblEmployeeMas
-                    where cou.PkEmployeeId == PkEmployeeId
+                    where cou.PkEmployeeId == PKID
                     select (new EmployeeModel
                     {
-                        PkEmployeeId = cou.PkEmployeeId,
+                        PKID = cou.PkEmployeeId,
                         Code = cou.Code,
                         Name = cou.Name,
                         Marital = cou.Marital,
@@ -109,42 +104,51 @@ namespace SSRepository.Repository.Master
                         Address = cou.Address,
                         StateName = cou.StateName,
                         FkCityId = cou.FkCityId,
-                        //  City = city.CityName,
+                        City = cou.FKCity.CityName,
                         Pin = cou.Pin,
-                        //Location = cou.Location,
-                        Salary = cou.Salary,
-                        Post = cou.Post,
                         FKUserID = cou.FKUserID,
-                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                        UserName = cou.FKUser.UserId,
                     })).FirstOrDefault();
             return data;
         }
-       
-        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
-        {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
 
-            var result = GetList(pageSize, pageNo, search);
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "")
+        {
             if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
             {
-                return (from r in result
-                        select new
-                        {
-                            r.PkEmployeeId,
-                            r.Name,
-                            r.Post
-                        }).ToList();
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblEmployeeMas
+                         where EF.Functions.Like(cou.Name.Trim().ToLower(), search + "%")
+                         orderby cou.Name
+                         select (new
+                         {
+                             cou.PkEmployeeId, 
+                             cou.Name,
+                             cou.Code,
+                             cou.Email,
+                             cou.Mobile,
+                             cou.Address,
+                             cou.StateName,
+                             cou.Pin,
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
             }
             else if (EnCustomFlag == (int)Handler.en_CustomFlag.Filter)
             {
-                return (from r in result
-                        select new
-                        {
-                            r.PkEmployeeId,
-                            r.Name,
-                            r.Post
-                        }).ToList();
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblEmployeeMas
+                         where EF.Functions.Like(cou.Name.Trim().ToLower(), search + "%")
+                         orderby cou.Name
+                         select (new
+                         {
+                             cou.PkEmployeeId,
+                             PkId = cou.PkEmployeeId,
+                             cou.Name,
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
             }
             else
             {
@@ -152,38 +156,62 @@ namespace SSRepository.Repository.Master
             }
         }
 
-        public string DeleteRecord(long PkEmployeeId)
+        public string DeleteRecord(long PKID)
         {
             string Error = "";
-            EmployeeModel obj = GetSingleRecord(PkEmployeeId);
-
-            //var Country = (from x in _context.TblStateMas
-            //               where x.FkcountryId == PkEmployeeId
-            //               select x).Count();
-            //if (Country > 0)
-            //    Error += "Table Name -  StateMas : " + Country + " Records Exist";
-
+            EmployeeModel oldModel = GetSingleRecord(PKID);
+            var purchaseOrderExist = (from cou in __dbContext.TblPurchaseOrdertrn
+                                      join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
+                                      where cou.FKSalesPerId == PKID && ser.TranAlias == "PORD"
+                                      select cou).Count();
+            if (purchaseOrderExist > 0)
+                Error += "use in other transaction";
 
             if (Error == "")
             {
+                var purchaseInvoiceExist = (from cou in __dbContext.TblPurchaseInvoicetrn
+                                            join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
+                                            where cou.FKSalesPerId == PKID && ser.TranAlias == "PINV"
+                                            select cou).Count();
+                if (purchaseInvoiceExist > 0)
+                    Error += "use in other transaction";
+            }
+            if (Error == "")
+            {
+                var salesInvoiceExist = (from cou in __dbContext.TblSalesInvoicetrn
+                                         join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
+                                         where cou.FKSalesPerId == PKID && ser.TranAlias == "SINV"
+                                         select cou).Count();
+                if (salesInvoiceExist > 0)
+                    Error += "use in other transaction";
+            }
+            if (Error == "")
+            {
+                var salesOrderExist = (from cou in __dbContext.TblSalesOrdertrn
+                                       join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
+                                       where cou.FKSalesPerId == PKID && ser.TranAlias == "SORD"
+                                       select cou).Count();
+                if (salesOrderExist > 0)
+                    Error += "use in other transaction";
+            }
+            if (Error == "")
+            {
+                var salesCrNoteExist = (from cou in __dbContext.TblSalesCrNotetrn
+                                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
+                                        where cou.FKSalesPerId == PKID && (ser.TranAlias == "SRTN" || ser.TranAlias == "SCRN")
+                                        select cou).Count();
+                if (salesCrNoteExist > 0)
+                    Error += "use in other transaction";
+            }
+            if (Error == "")
+            {
                 var lst = (from x in __dbContext.TblEmployeeMas
-                           where x.PkEmployeeId == PkEmployeeId
+                           where x.PkEmployeeId == PKID
                            select x).ToList();
                 if (lst.Count > 0)
                     __dbContext.TblEmployeeMas.RemoveRange(lst);
 
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkEmployeeId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkEmployeeId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetEmployeeID(), PkEmployeeId, obj.FKEmployeeID, obj.DATE_MODIFIED, true);
+                AddMasterLog((long)Handler.Form.Employee, PKID, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.Name, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -202,14 +230,14 @@ namespace SSRepository.Repository.Master
         {
             EmployeeModel model = (EmployeeModel)objmodel;
             TblEmployeeMas Tbl = new TblEmployeeMas();
-            if (model.PkEmployeeId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblEmployeeMas.Find(model.PkEmployeeId);
+                var _entity = __dbContext.TblEmployeeMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkEmployeeId = model.PkEmployeeId;
+            Tbl.PkEmployeeId = model.PKID;
             Tbl.Name = model.Name;
             Tbl.Marital = model.Marital;
             Tbl.Gender = model.Gender;
@@ -257,24 +285,24 @@ namespace SSRepository.Repository.Master
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
             var list = new List<ColumnStructure>
             {
-                  
-                 new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Code", Fields="Code",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Name", Fields="Name",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                //new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Father Name", Fields="FatherName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                //new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Mother Name", Fields="MotherName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Marital", Fields="Marital",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Gender", Fields="Gender",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Dob", Fields="Dob",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Email", Fields="Email",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Mobile", Fields="Mobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Aadhar", Fields="Aadhar",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Panno", Fields="Panno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Gstno", Fields="Gstno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=12, Orderby =14, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=13, Orderby =15, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
- };
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Name", Fields="Name",Width=15,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Code", Fields="Code",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Address", Fields="Address",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Email", Fields="Email",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Mobile", Fields="Mobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Aadhar", Fields="Aadhar",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Gstno", Fields="Gstno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Panno", Fields="Panno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="State", Fields="StateName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="City", Fields="City",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Dob", Fields="Dob",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+         };
             return list;
         }
 

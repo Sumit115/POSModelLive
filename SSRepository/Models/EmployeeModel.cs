@@ -9,7 +9,7 @@ namespace SSRepository.Models
 {
      public class EmployeeModel : BaseModel
     {
-        public long PkEmployeeId { get; set; }
+        public long PKID { get; set; }
         
         [StringLength(10)]
         [Display(Name = "Code")]

@@ -50,7 +50,7 @@ namespace SSRepository.Repository.Master
                                          // on new { User = (int?)cou.FkCityId } equals new { User = (int?)_city.PkCityId }
                                          // into _citytmp
                                          //from city in _citytmp.DefaultIfEmpty()
-                                         // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                          where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                      orderby cou.PkVendorId
                                      select (new PartyModel
                                      {
