@@ -7,18 +7,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Option\Data\**" />
+    <Compile Remove="Areas\Option\Models\**" />
     <Compile Remove="Model1\**" />
     <Compile Remove="wwwroot\Admin\**" />
     <Compile Remove="wwwroot\Database\**" />
     <Compile Remove="wwwroot\lib\**" />
+    <Content Remove="Areas\Option\Data\**" />
+    <Content Remove="Areas\Option\Models\**" />
     <Content Remove="Model1\**" />
     <Content Remove="wwwroot\Admin\**" />
     <Content Remove="wwwroot\Database\**" />
     <Content Remove="wwwroot\lib\**" />
+    <EmbeddedResource Remove="Areas\Option\Data\**" />
+    <EmbeddedResource Remove="Areas\Option\Models\**" />
     <EmbeddedResource Remove="Model1\**" />
     <EmbeddedResource Remove="wwwroot\Admin\**" />
     <EmbeddedResource Remove="wwwroot\Database\**" />
     <EmbeddedResource Remove="wwwroot\lib\**" />
+    <None Remove="Areas\Option\Data\**" />
+    <None Remove="Areas\Option\Models\**" />
     <None Remove="Model1\**" />
     <None Remove="wwwroot\Admin\**" />
     <None Remove="wwwroot\Database\**" />
@@ -89,11 +97,13 @@
     <None Include="Areas\Master\Views\Vendor\List.cshtml" />
     <None Include="Areas\Master\Views\Zone\Create.cshtml" />
     <None Include="Areas\Master\Views\Zone\List.cshtml" />
-    <None Include="Areas\Master\Views\_ViewImports.cshtml" />
-    <None Include="Areas\Master\Views\_ViewStart.cshtml" />
+    <None Include="Areas\Master\_ViewImports.cshtml" />
+    <None Include="Areas\Master\_ViewStart.cshtml" />
     <None Include="Areas\Report\Views\PurchaseStock\List.cshtml" />
     <None Include="Areas\Report\Views\RateEndStock\List.cshtml" />
     <None Include="Areas\Report\Views\SalesStock\List.cshtml" />
+    <None Include="Areas\Report\_ViewImports.cshtml" />
+    <None Include="Areas\Report\_ViewStart.cshtml" />
     <None Include="Areas\Transactions\Views\ContraVoucher\Create.cshtml" />
     <None Include="Areas\Transactions\Views\ContraVoucher\List.cshtml" />
     <None Include="Areas\Transactions\Views\JournalVoucher\Create.cshtml" />
@@ -116,8 +126,8 @@
     <None Include="Areas\Transactions\Views\SalesOrder\List.cshtml" />
     <None Include="Areas\Transactions\Views\SalesReturn\Create.cshtml" />
     <None Include="Areas\Transactions\Views\SalesReturn\List.cshtml" />
-    <None Include="Areas\Transactions\Views\_ViewImports.cshtml" />
-    <None Include="Areas\Transactions\Views\_ViewStart.cshtml" />
+    <None Include="Areas\Transactions\_ViewImports.cshtml" />
+    <None Include="Areas\Transactions\_ViewStart.cshtml" />
     <None Include="Views\Auth\Index.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <None Include="Views\Shared\partial\_Grid.cshtml" />
@@ -128,7 +138,11 @@
     <None Include="Views\Shared\Voucher\_tranFooter.cshtml" />
     <None Include="Views\Shared\Voucher\_tranGrid.cshtml" />
     <None Include="Views\Shared\Voucher\_tranHeader.cshtml" />
+    <None Include="Views\Shared\_sidebarMenu.cshtml" />
     <None Include="Views\Shared\_DropDown.cshtml" />
+    <None Include="Views\Shared\_LayoutMas.cshtml" />
+    <None Include="Views\Shared\_LayoutTrn.cshtml" />
+    <None Include="Views\Shared\_LayoutRpt.cshtml" />
     <None Include="Views\Shared\_WebLayout.cshtml" />
     <None Include="Views\Shared\_LayoutWeb.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml" />
@@ -452,8 +466,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Option\Data\" />
-    <Folder Include="Areas\Option\Models\" />
     <Folder Include="wwwroot\InvoicePDF\" />
     <Folder Include="wwwroot\logs\" />
   </ItemGroup>
