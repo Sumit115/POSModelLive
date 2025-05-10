@@ -1,0 +1,58 @@
+﻿@model SSRepository.Models.TransactionModel
+
+@{
+    ViewData["Title"] = "Create";
+    ViewData["bdClass"] = "Salepage Tran";
+}
+
+<div style="display: flex;justify-content: space-between;overflow: hidden;">
+    <div class="Tran-page-ui">
+        <form id="TranForm" class="form">
+            <partial name="~/Views/Shared/Transactions/_tranHeader.cshtml" />
+            <div class="col-md-12">
+                <h5 class="pt-3">Return Detail</h5>
+            </div>
+            <div class="col-md-12">
+                <div id="DDTReturn" class="DDT">
+                </div>
+            </div>
+            <div class="col-md-12">
+                <h5 class="pt-3">Replacement Detail</h5>
+            </div>
+            <partial name="~/Views/Shared/Transactions/_tranGrid.cshtml" />
+         @*   <partial name="~/Views/Shared/Transactions/_tranFooter.cshtml" />*@
+            <div class="col-md-12 trn-footer mt-5">
+                <div class="row"> 
+                     <div class="col-md-2"></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Replacement Amount </label>
+                            <input asp-for="NetAmtOut" class="form-control" readonly="readonly" />
+                            <span asp-validation-for="NetAmtOut" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label">Return Amount </label>
+                            <input asp-for="NetAmtIn" class="form-control" readonly="readonly" />
+                            <span asp-validation-for="NetAmtIn" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <partial name="~/Views/Shared/Transactions/_tranRight.cshtml" />
+</div>
+
+<input type="hidden" id="hdControllerName" value="SalesChallan" />
+<partial name="~/Views/Shared/Transactions/_tranInfo.cshtml" />
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/js/transaction/transaction.js"></script>
+
+}

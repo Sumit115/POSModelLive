@@ -282,11 +282,11 @@ namespace SSAdmin.Areas
 
 
         //[HttpPost]
-        //public async Task<JsonResult> InvoiceProductList(long FkPartyId, long FKInvoiceID, DateTime? InvoiceDate = null)
+        //public async Task<JsonResult> InvoiceProductList(int pageSize, int pageNo = 1, string search = "",long FkPartyId=0, long FKInvoiceID = 0, DateTime? InvoiceDate = null)
         //{
         //    try
         //    {
-        //        var data = _repository.ProductList(FkPartyId, FKInvoiceID, "",InvoiceDate);
+        //        var data = _repository.ProductList(pageSize, pageNo, search,FkPartyId, FKInvoiceID,  InvoiceDate);
         //        return new JsonResult(data);
         //    }
         //    catch (Exception ex) { return new JsonResult(new object()); }
@@ -307,8 +307,14 @@ namespace SSAdmin.Areas
         public object trandtldropList(int pageSize, int pageNo = 1, string search = "", string name = "", string RowParam = "", string ExtraParam = "")
         {
             int value = 0;
-            if (name == "Product")
+            if (name == "Product" &&  (RowParam.Contains("undefined") || ExtraParam.Contains("undefined") || string.IsNullOrEmpty(RowParam) || string.IsNullOrEmpty(ExtraParam) || ExtraParam=="0"))
                 return _repository.ProductList(pageSize, pageNo, search);
+            if (name == "Product" && !string.IsNullOrEmpty(RowParam) && !string.IsNullOrEmpty(ExtraParam))
+            {
+                string[] _r = RowParam.Split("~");
+                string[] _e = ExtraParam.Split("~");
+
+                return _repository.ProductList(pageSize, pageNo, search, Convert.ToInt64(_e[0]), Convert.ToInt64(_r[0]), null); }
             else if (name == "Batch" && int.TryParse(RowParam, out value))
                 return _repository.ProductBatchList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
             else if (name == "Color")
@@ -331,6 +337,16 @@ namespace SSAdmin.Areas
                 else
                     return null;
                 //return _repository.ProductMRPList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
+            }
+            else if (name == "FKInvoiceID_Text")
+            {
+                string[] _e = ExtraParam.Split("~");
+                if (int.TryParse(_e[0], out value))
+                {
+                    return _repository.InvoiceList(Convert.ToInt64(_e[0]), null);
+                }
+                else
+                    return null;
             }
             else
                 return null;

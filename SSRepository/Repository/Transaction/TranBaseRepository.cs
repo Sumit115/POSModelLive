@@ -467,7 +467,8 @@ namespace SSRepository.Repository.Transaction
                     oldJsonData = GetData(JsonData.PkId, JsonData.FKSeriesId, ref ErrMsg);
 
                 var aa = JsonConvert.SerializeObject(JsonData);
-
+                //JsonData.FKReferById = JsonData.FKReferById > 0 ? JsonData.FKReferById : null;
+                //JsonData.FKSalesPerId = JsonData.FKSalesPerId > 0 ? JsonData.FKSalesPerId : null;
 
                 using (SqlConnection con = new SqlConnection(conn))
                 {
@@ -639,10 +640,10 @@ namespace SSRepository.Repository.Transaction
                         }
                         break;
                     case "ProductReturn":
-                        setReturnProduct(model, model.TranDetails[rowIndex]);
+                        setReturnProduct(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
                         break;
-                    case "FKInvoiceID":
-                        setInvoiceinfo(model, model.TranDetails[rowIndex]);
+                    case "Inum":
+                        setInvoiceinfo(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
                         break;
                     case "Qty":
                     case "FreeQty":
@@ -894,9 +895,9 @@ namespace SSRepository.Repository.Transaction
         public void removePromotion(TransactionModel model)
         {
             model.TranDetails.Where(x => x.LinkSrNo > 0 || x.PromotionType == "IVFP").ToList().ForEach(x => x.ModeForm = 2);
-            model.TranDetails.Where(x => x.PromotionType == "PFPT" || x.PromotionType == "CFPT" || x.PromotionType == "BFPT").ToList().ForEach(x => { x.PromotionType = ""; });
+            model.TranDetails.Where(x => x.PromotionType == "PFPT" || x.PromotionType == "CFPT" || x.PromotionType == "BFPT" || x.PromotionType == "CFRT" || x.PromotionType == "PFRT").ToList().ForEach(x => { x.PromotionType = ""; });
             model.TranDetails.Where(x => x.PromotionType == "PFQT" || x.PromotionType == "CFQT" || x.PromotionType == "BFQT").ToList().ForEach(x => { x.FreeQty = 0; x.PromotionType = ""; });
-            model.TranDetails.Where(x => x.PromotionType == "PTDT" || x.PromotionType == "CTDT" || x.PromotionType == "BTDT" || x.PromotionType == "XOXT").ToList().ForEach(x => { x.TradeDisc = 0; x.TradeDiscAmt = 0; x.PromotionType = ""; });
+            model.TranDetails.Where(x => x.PromotionType == "PTDT" || x.PromotionType == "CTDT" || x.PromotionType == "BTDT" || x.PromotionType == "XOXT" || x.PromotionType == "CFRT" || x.PromotionType == "PFRT").ToList().ForEach(x => { x.TradeDisc = 0; x.TradeDiscAmt = 0; x.PromotionType = ""; });
             model.TranDetails.Where(x => !string.IsNullOrEmpty(x.PromotionType)).ToList().ForEach(x => { x.PromotionType = ""; });
             //model.TranDetails.Where(x => !string.IsNullOrEmpty(x.PromotionType)).ToList().ForEach(x => x.PromotionType = "");
         }
@@ -1018,7 +1019,23 @@ namespace SSRepository.Repository.Transaction
                                         else if (itemPromo.PromotionApplyOn == "Brand") { item.PromotionType = "BTDT"; }
 
                                     }
+                                    else if (itemPromo.Promotion == "Flat Rate" && item.Rate >= itemPromo.PromotionApplyAmt && itemPromo.PromotionApplyAmt2 >= item.Rate)
+                                    {
+                                        var dic = item.Rate - itemPromo.PromotionAmt;
+                                        if (dic > 0)
+                                        {
+                                            item.TradeDisc = (decimal)(dic /item.Rate) * 100;
+                                        }
+                                        else
+                                        {
+                                            item.TradeDisc = 100;
+                                        }
+                                        item.TradeDiscAmt = 0;
+                                        CalculateExe(model, item);
+                                        if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PFRT"; }
+                                        else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CFRT"; } 
 
+                                    }
                                 }
                             }
 
@@ -1142,7 +1159,10 @@ namespace SSRepository.Repository.Transaction
                             join series in __dbContext.TblSeriesMas on sale.FKSeriesId equals series.PkSeriesId
                             join cou in __dbContext.TblProductMas on saledtl.FkProductId equals cou.PkProductId
                             where sale.FkPartyId == model.FkPartyId
-                            && saledtl.SrNo == detail.InvoiceSrNo
+                            //   && saledtl.SrNo == detail.InvoiceSrNo
+                            && sale.FKSeriesId == detail.FKInvoiceSrID
+                            && saledtl.FkId == detail.FKInvoiceID
+                            && saledtl.FkProductId == detail.FkProductId
                             select (new
                             {
                                 sale,
@@ -1279,8 +1299,8 @@ namespace SSRepository.Repository.Transaction
 
         public void SetGridTotal(TransactionModel model)
         {
-            model.GrossAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TaxableAmt), 2) + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.TaxableAmt), 2);
-            model.TaxAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.GstAmt), 2) + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.GstAmt), 2);
+            model.GrossAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TaxableAmt), 2);// + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.TaxableAmt), 2);
+            model.TaxAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.GstAmt), 2);//+ Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.GstAmt), 2);
             model.CashDiscountAmt = 0;
             if (model.CashDiscType == "R" && model.CashDiscount > 0 && model.CashDiscount <= model.GrossAmt)
             {
@@ -1294,10 +1314,13 @@ namespace SSRepository.Repository.Transaction
             {
                 model.CashDiscount = 0;
             }
-            model.TradeDiscAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2) + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2);
+            model.TradeDiscAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2);// + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2);
             model.TotalDiscount = model.CashDiscountAmt + model.TradeDiscAmt;
-            decimal NetAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2) + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);
+            decimal NetAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);// + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);
             model.NetAmt = Math.Round((NetAmt - model.CashDiscountAmt) + model.Shipping + model.OtherCharge - model.RoundOfDiff, 2);
+
+            model.NetAmtIn =  Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);
+            model.NetAmtOut = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2) ;
 
         }
 
@@ -2069,6 +2092,30 @@ namespace SSRepository.Repository.Transaction
                 list = new List<ColumnStructure>
                 {
                     new ColumnStructure{ pk_Id=1,   Orderby =1,  Heading ="InvoiceDate",  Fields="InvoiceDate",         Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="D1"  },
+                    new ColumnStructure{ pk_Id=2,   Orderby =2,  Heading ="FKInvoiceID",  Fields="FKInvoiceID_Text",    Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
+                    new ColumnStructure{ pk_Id=3,   Orderby =3,  Heading ="ArticalNo",    Fields="Product",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
+                    new ColumnStructure{ pk_Id=4,   Orderby =4,  Heading ="Size",         Fields="Batch",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
+                    new ColumnStructure{ pk_Id=5,   Orderby =5,  Heading ="Color",        Fields="Color",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
+                    new ColumnStructure{ pk_Id=6,   Orderby =6,  Heading ="MRP",          Fields="MRP",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
+                    new ColumnStructure{ pk_Id=7,   Orderby =7,  Heading ="Rate",         Fields="Rate",                Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""},
+                    new ColumnStructure{ pk_Id=8,   Orderby =8,  Heading ="QTY",          Fields="Qty",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
+                    new ColumnStructure{ pk_Id=9,   Orderby =9,  Heading ="Free Qty",     Fields="FreeQty",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
+                    new ColumnStructure{ pk_Id=10,  Orderby =10, Heading ="Disc %",       Fields="TradeDisc",           Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
+                    new ColumnStructure{ pk_Id=12,  Orderby =12, Heading ="Disc Amt",     Fields="TradeDiscAmt",        Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=13,  Orderby =13, Heading ="Disc Type",    Fields="TradeDiscType",       Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=14,  Orderby =14, Heading ="Gross Amt",    Fields="GrossAmt",            Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=15,  Orderby =15, Heading ="GST Rate",     Fields="GstRate",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=16,  Orderby =16, Heading ="GST Amount",   Fields="GstAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=17,  Orderby =17, Heading ="Net Amount",   Fields="NetAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=18,  Orderby =18, Heading ="Barcode",      Fields="Barcode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=19,  Orderby =19, Heading ="Del",          Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" }
+
+                };
+            }
+            else if (TranType == "R2")
+            {
+                list = new List<ColumnStructure>
+                {
                     new ColumnStructure{ pk_Id=2,   Orderby =2,  Heading ="FKInvoiceID",  Fields="FKInvoiceID_Text",    Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
                     new ColumnStructure{ pk_Id=3,   Orderby =3,  Heading ="ArticalNo",    Fields="Product",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
                     new ColumnStructure{ pk_Id=4,   Orderby =4,  Heading ="Size",         Fields="Batch",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },

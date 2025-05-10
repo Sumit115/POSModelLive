@@ -28,5 +28,6 @@ namespace SSRepository.IRepository
         MasterLogDtlModel GetMasterLog(long PKMasterLogID);
         T GetMasterLog<T>(long PKMasterLogID);
         string GetAlias(string FormName = "");
+        string GenrateTableScript(string ConnectionString,string tableName);
     }
 }

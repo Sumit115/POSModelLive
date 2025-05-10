@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SSRepository.Data;
@@ -13,6 +14,9 @@ using System.IO;
 using System.Numerics;
 using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
+using System.Reflection.PortableExecutable;
+using System.Text;
+using static Handler;
 
 namespace SSRepository.Repository
 {
@@ -1122,6 +1126,164 @@ namespace SSRepository.Repository
             return returnAlias;
         }
 
+        public string GenrateTableScript(string ConnectionString,string tableName)
+        {
+             StringBuilder sb = new StringBuilder();
+            sb.Append("\n\n--Drop Constraint\n");
+            sb.Append(Generate_DropConstraintScript(ConnectionString,tableName));
+            sb.Append("\n\n--Add Constraint\n");
+            sb.Append(Generate_ConstraintScript(ConnectionString, tableName));
+            sb.Append("\n\n--Insert Data\n");
+            sb.Append(Generate_InsertData(ConnectionString, tableName));
+
+            string filename = tableName+"_"+DateTime.Now.Ticks + ".txt"; 
+
+
+           // return SaveFile(filename, sb.ToString());//sb.ToString();
+
+            string path = Path.Combine("wwwroot", "Script");
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path); 
+
+            string filePath = Path.Combine("wwwroot", "Script", filename); 
+
+            FileInfo file = new FileInfo(filePath);
+            if (file.Exists)
+                file.Delete();
+            using (var fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+            {
+                using (var writer = new StreamWriter(fileStream))
+                {
+                    writer.Write(sb.ToString());
+                }
+            }
+
+            return "/Script/" + filename;
+        }
+
+        //public string Generate_DropConstraintScript(string tableName)
+        //{
+        //    DataTable dt = new DataTable();
+        //    StringBuilder sb = new StringBuilder();
+        //    using (SqlConnection con = new SqlConnection(conn))
+        //    {
+        //        con.Open();
+        //        string query = $"SELECT 'ALTER TABLE [' + OBJECT_NAME(f.parent_object_id) + '] DROP CONSTRAINT [' + f.name + '];' AS DropConstraintScript FROM sys.foreign_keys AS f WHERE   f.referenced_object_id = OBJECT_ID('{tableName}');";
+
+        //        using (SqlCommand cmd = new SqlCommand(query, con))
+        //        {
+        //            SqlDataAdapter da = new SqlDataAdapter(cmd);
+        //            da.Fill(dt);
+        //        }
+        //    }
+        //    if (dt.Rows.Count > 0)
+        //    {
+        //        foreach (DataRow dr in dt.Rows)
+        //        {
+        //            sb.Append(dr["DropConstraintScript"]);
+        //            sb.Append("\nGo\n");
+        //        }
+        //    }
+
+        //    return sb.ToString();
+        //}
+        public string Generate_DropConstraintScript(string ConnectionString, string tableName)
+        {
+            DataTable dt = new DataTable();
+            StringBuilder sb = new StringBuilder();
+            using (SqlConnection con = new SqlConnection(string.IsNullOrEmpty(ConnectionString)?conn:ConnectionString))
+            {
+                con.Open();
+                string query = $"DECLARE @sql NVARCHAR(MAX) = ''; SELECT @sql += 'ALTER TABLE [' + OBJECT_NAME(f.parent_object_id) + '] DROP CONSTRAINT [' + f.name + '];' + CHAR(13) + 'GO ' + CHAR(13) FROM sys.foreign_keys AS f WHERE  f.referenced_object_id = OBJECT_ID('{tableName}'); Select @sql as DropConstraintScript";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                }
+            }
+            if (dt.Rows.Count > 0)
+            {
+                sb.Append(dt.Rows[0]["DropConstraintScript"]);
+            }
+
+            return sb.ToString();
+        }
+
+        public string Generate_ConstraintScript(string ConnectionString, string tableName)
+        {
+            DataTable dt = new DataTable();
+            StringBuilder sb = new StringBuilder();
+            using (SqlConnection con = new SqlConnection(string.IsNullOrEmpty(ConnectionString) ? conn : ConnectionString))
+            {
+                con.Open();
+                string query = $"\r\nDECLARE @sql NVARCHAR(MAX) = '';\r\n\r\n\r\nSELECT \r\n  " +
+                    $" @sql +=  'ALTER TABLE [' + OBJECT_NAME(f.parent_object_id) + '] WITH CHECK ADD CONSTRAINT [' + f.name + '] FOREIGN KEY ([' + c.name + ']) REFERENCES [' + OBJECT_NAME(f.referenced_object_id) + '] ([' + rc.name + ']);'+ CHAR(13)+'GO ' \r\n   + CHAR(13)+'  ALTER TABLE [' + OBJECT_NAME(f.parent_object_id) + '] CHECK CONSTRAINT [' + f.name + '] '+ CHAR(13)+'GO '  + CHAR(13)\r\n \r\nFROM \r\n    sys.foreign_keys AS f\r\nJOIN \r\n    sys.foreign_key_columns AS fc ON f.object_id = fc.constraint_object_id\r\nJOIN \r\n    sys.columns AS c ON fc.parent_object_id = c.object_id AND fc.parent_column_id = c.column_id\r\nJOIN \r\n    sys.columns AS rc ON fc.referenced_object_id = rc.object_id AND fc.referenced_column_id = rc.column_id\r\nWHERE \r\n   " +
+                    $" f.referenced_object_id = OBJECT_ID('{tableName}');\r\n\r\n\r\n Select @sql as CreateConstraintScript";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                }
+            }
+            if (dt.Rows.Count > 0)
+            { 
+                    sb.Append(dt.Rows[0]["CreateConstraintScript"]); 
+            }
+
+            return sb.ToString();
+        }
+
+        public string Generate_InsertData(string ConnectionString, string tableName)
+        {
+            StringBuilder sb = new StringBuilder();
+            using (SqlConnection con = new SqlConnection(string.IsNullOrEmpty(ConnectionString) ? conn : ConnectionString))
+            {
+                con.Open();
+                string query = $"SELECT * FROM {tableName}";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        sb.Append($"\nINSERT INTO [dbo].[{tableName}] (");
+
+                        // Column Names
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            sb.Append(reader.GetName(i));
+                            if (i < reader.FieldCount - 1) sb.Append(", ");
+                        }
+
+                        sb.Append(") VALUES (");
+
+                        // Values
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            object value = reader.GetValue(i);
+
+                            if (value is DBNull)
+                                sb.Append("NULL");
+                            else if (value is string || value is DateTime)
+                                sb.Append($"'{value.ToString().Replace("'", "''")}'");
+                            else if (value is bool )
+                                sb.Append($"{Convert.ToInt32(value)}");
+                            else
+                                sb.Append(value);
+
+                            if (i < reader.FieldCount - 1) sb.Append(", ");
+                        }
+
+                        sb.AppendLine(");");
+                    }
+                }
+            }
+            return sb.ToString();
+        }
+
+       
 
     }
 

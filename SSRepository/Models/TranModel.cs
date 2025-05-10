@@ -81,7 +81,8 @@ namespace SSRepository.Models
         public decimal Shipping { get; set; }//txt 
         public decimal OtherCharge { get; set; }//=0
         public decimal NetAmt { get; set; }//txt //=GrossAmt+TaxAmt-TotalDiscount-RoundOfDiff+Shipping+OtherCharge
-
+        public decimal NetAmtOut { get; set; }
+        public decimal NetAmtIn { get; set; }
         public bool Cash { get; set; }
         public Nullable<decimal> CashAmt { get; set; }
         public bool Credit { get; set; }
@@ -160,9 +161,9 @@ namespace SSRepository.Models
         public List<EWayDetailModel> EWayDetails { get; set; }
         public EWayDetailModel EWayDetail { get; set; }
 
-        public long FKReferById { get; set; }
+        public long? FKReferById { get; set; }
         public string ReferByName { get; set; }
-        public long FKSalesPerId { get; set; }
+        public long? FKSalesPerId { get; set; }
         public string SalesPerName { get; set; }
     }
 

@@ -60,4 +60,12 @@ namespace SSRepository.Models
 
 
     }
+
+    public class ScriptVM
+    {
+
+        public string? ConnectionString { get; set; }
+        public string TableName { get; set; }
+
+    }
 }

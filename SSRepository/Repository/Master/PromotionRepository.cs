@@ -54,6 +54,7 @@ namespace SSRepository.Repository.Master
                                              PromotionApplyOn = cou.PromotionApplyOn,
                                              Promotion = cou.Promotion,
                                              PromotionApplyAmt = cou.PromotionApplyAmt,
+                                             PromotionApplyAmt2 = cou.PromotionApplyAmt2,
                                              PromotionApplyQty = cou.PromotionApplyQty,
                                              FkPromotionApplyUnitId = cou.FkPromotionApplyUnitId,
                                              FKLotID = cou.FKLotID,
@@ -114,6 +115,7 @@ namespace SSRepository.Repository.Master
                         PromotionApplyOn = cou.PromotionApplyOn,
                         Promotion = cou.Promotion,
                         PromotionApplyAmt = cou.PromotionApplyAmt,
+                        PromotionApplyAmt2 = cou.PromotionApplyAmt2,
                         PromotionApplyQty = cou.PromotionApplyQty,
                         FkPromotionApplyUnitId = cou.FkPromotionApplyUnitId,
                         FKLotID = cou.FKLotID,
@@ -263,6 +265,7 @@ namespace SSRepository.Repository.Master
             Tbl.PromotionApplyOn = model.PromotionApplyOn;
             Tbl.Promotion = model.Promotion;
             Tbl.PromotionApplyAmt = model.PromotionApplyAmt;
+            Tbl.PromotionApplyAmt2 = model.PromotionApplyAmt2;
             Tbl.PromotionApplyQty = model.PromotionApplyQty;
             Tbl.FkPromotionApplyUnitId = model.FkPromotionApplyUnitId > 0 ? model.FkPromotionApplyUnitId : null;
             Tbl.FKLotID = model.FKLotID > 0 ? model.FKLotID : null;

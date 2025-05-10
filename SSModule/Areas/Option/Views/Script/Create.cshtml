@@ -1,0 +1,56 @@
+﻿@model SSRepository.Models.ScriptVM
+
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["bdClass"] = "page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="p-3">
+    <form asp-action="Create" class="form-horizontal g-3" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <!-- Post -->
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">TableName</label>
+            <div class="col-md-3">
+                <input asp-for="TableName" class="form-control" />
+                <span asp-validation-for="TableName" class="text-danger"></span>
+            </div>
+            <label class="col-sm-2 col-form-label">ConnectionString</label>
+            <div class="col-md-5">
+                <input asp-for="ConnectionString" class="form-control" />
+                <span asp-validation-for="ConnectionString" class="text-danger"></span>
+            </div>
+        </div> 
+    </form>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Script</label>
+        <div class="col-md-12">
+            @if (!string.IsNullOrEmpty(ViewBag.TableScriptFile))
+            {
+                <a href="@ViewBag.TableScriptFile" download>Download now!</a>
+            } 
+        </div>
+    </div>
+</div> 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+
+        $(document).ready(function () {
+           
+            Common.InputFormat();
+           
+            $('#btnServerSave').click(function (e) {
+                e.preventDefault();
+                $("form").submit();
+            });
+        })
+        
+
+    </script>
+    
+}

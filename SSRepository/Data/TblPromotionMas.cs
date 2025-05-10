@@ -29,6 +29,7 @@ namespace SSRepository.Data
         public string PromotionApplyOn { get; set; }
         public string  Promotion { get; set; }
         public decimal? PromotionApplyAmt { get; set; }
+        public decimal? PromotionApplyAmt2 { get; set; }
         public decimal? PromotionApplyQty { get; set; }
         public long? FkPromotionApplyUnitId { get; set; }
         public long? FKLotID { get; set; }//Hide FOr Nor

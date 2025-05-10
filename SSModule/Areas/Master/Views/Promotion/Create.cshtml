@@ -185,6 +185,7 @@
                                 @*     <option value="Scheme Discount">Scheme Discount (%)</option>
                                 *@
                                 <option value="Free Point">Free Point</option>
+                                <option value="Flat Rate">Flat Rate</option>
                             </select>
 
                         </div>
@@ -197,6 +198,11 @@
                         <label>Amount</label>
                         <input type="text" asp-for="PromotionApplyAmt" class="form-control" />
                         <span asp-validation-for="PromotionApplyAmt" class="text-danger"></span>
+                    </div>
+                    <div class=" col-md-4">
+                        <label>To Amount</label>
+                        <input type="text" asp-for="PromotionApplyAmt2" class="form-control" />
+                        <span asp-validation-for="PromotionApplyAmt2" class="text-danger"></span>
                     </div>
                     <div class=" col-md-4">
                         <label>Qty</label>
@@ -218,8 +224,8 @@
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-12">
-                        <h4 id="divheadingApplyOn" >Apply On</h4>
-                    </div> 
+                        <h4 id="divheadingApplyOn">Apply On</h4>
+                    </div>
                     <div class="col-md-12" id="div_PromotionLnk">
                         <div class="border p-2">
                             @* <h5>Location</h5>*@
@@ -352,6 +358,7 @@
 
     <script>
         function hideShow(Ischange) {
+            debugger;
             var _applyOn = $("#PromotionApplyOn").val();
             var _promotion = $("#Promotion").val();
             $("#div_Promotionddl,#div_FreeProductSingle").show();
@@ -359,7 +366,7 @@
 
 
             if (Ischange) {
-                $("#FKProductId,#FKCategoryId,#FkBrandId,#FkPromotionProdId,#PromotionApplyAmt,#PromotionApplyQty,#PromotionAmt,#PromotionQty").val('0');
+                $("#FKProductId,#FKCategoryId,#FkBrandId,#FkPromotionProdId,#PromotionApplyAmt,#PromotionApplyAmt2,#PromotionApplyQty,#PromotionAmt,#PromotionQty").val('0');
                 $("#drpFKProductId,#drpFKCategoryId,#drpFkBrandId,#drpFkPromotionProdId").val('');
                 $("#FkPromotionApplyUnitId,FkPromotionUnitId").val('1')
                 $("#Promotion option[value*='Free Point']").prop('disabled', true);
@@ -370,9 +377,17 @@
                 // $("#tblPromotionLnk tbody").hide('');
                 $('#tblPromotionLnk tbody').html('');
             }
+            if (_applyOn == "Product" || _applyOn == "Category") {
+                $("#Promotion option[value*='Flat Rate']").prop('disabled', false);
+            } else {
+                $("#Promotion option[value*='Flat Rate']").prop('disabled', true);
+                if (_promotion == 'Flat Rate'){
+                    $("#Promotion").val('Free Product');
+                    _promotion='Free Product';
+            }}
             $("#divheading").text(_promotion);
 
-            $("#PromotionApplyAmt,#PromotionApplyQty,#PromotionAmt,#FkPromotionApplyUnitId,#drpFkPromotionProdId,#PromotionQty,#FkPromotionUnitId").attr("readonly", "readonly");
+            $("#PromotionApplyAmt,#PromotionApplyAmt2,#PromotionApplyQty,#PromotionAmt,#FkPromotionApplyUnitId,#drpFkPromotionProdId,#PromotionQty,#FkPromotionUnitId").attr("readonly", "readonly");
             if (_applyOn == "Product" || _applyOn == "Category" || _applyOn == "Brand") {
                 $("#divheadingApplyOn").text("Apply On");
 
@@ -390,16 +405,19 @@
                 else if (_promotion == "Free Point") {
                     $("#PromotionApplyAmt,#PromotionAmt").removeAttr("readonly");
                 }
-            } 
+                else if (_promotion == "Flat Rate" && _applyOn != "Brand") {
+                    $("#PromotionApplyAmt,#PromotionApplyAmt2,#PromotionAmt").removeAttr("readonly");
+                }
+            }
             else if (_applyOn == "Invoice Value") {
-                $("#divheadingApplyOn").text(""); 
+                $("#divheadingApplyOn").text("");
                 $("#PromotionApplyAmt").removeAttr("readonly");
                 $("#Promotion option[value*='Free Point']").prop('disabled', false);
                 $("#Promotion option[value*='Free Qty'],#Promotion option[value*='Trade Discount']").prop('disabled', true);
 
                 if (_promotion == "Free Product" || _promotion == "Free Qty") {
                     $("#drpFkPromotionProdId,#PromotionQty").removeAttr("readonly");
-                } 
+                }
                 else if (_promotion == "Trade Discount" || _promotion == "Scheme Discount") {
                     $("#PromotionAmt").removeAttr("readonly");
                 }
@@ -407,7 +425,7 @@
                     $("#PromotionAmt").removeAttr("readonly");
                 }
 
-               
+
             }
             else if (_applyOn == "XonX") {
 
@@ -417,7 +435,7 @@
                 $("#PromotionApplyQty,#FkPromotionApplyUnitId,#PromotionQty").removeAttr("readonly");
                 $("#tblPromotionLnkHeading").text("Category");
 
-            } 
+            }
         }
 
     </script>
@@ -488,7 +506,7 @@
     </script>
     <script>
         function addPromotionLnk() {
-            var _PromotionLnkFor=$("#tblPromotionLnkHeading").text();
+            var _PromotionLnkFor = $("#tblPromotionLnkHeading").text();
             var rowCount = $('#tblPromotionLnk tbody tr').length;
 
 
@@ -552,4 +570,3 @@
         }
     </script>
 }
- 

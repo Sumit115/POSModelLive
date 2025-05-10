@@ -9,31 +9,17 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Net.Http.Headers;
 using SSRepository.Repository.Master;
-using Azure;
-using System.Xml.Linq;
-using System.Runtime.ConstrainedExecution;
 
 namespace SSRepository.Repository.Transaction
 {
-    public class SalesInvoiceRepository : TranBaseRepository, ISalesInvoiceRepository
+    public class SalesReplacementRepository : SalesInvoiceRepository, ISalesReplacementRepository
     {
-        public SalesInvoiceRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
+        public SalesReplacementRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
             SPAddUpd = "usp_SalesInvoiceAddUpd";
             SPList = "usp_SalesInvoiceList";
-            SPById = "usp_SalesInvoiceById";
+            SPById = "usp_SalesReplacementById";
         }
-
-        public override string ValidData(TransactionModel objmodel)
-        {
-
-            TransactionModel model = (TransactionModel)objmodel;
-            string error = "";
-            // error = isAlreadyExist(model, "");
-            return error;
-
-        }
-
 
         public object SetLastSeries(TransactionModel model, long UserId, string TranAlias, string DocumentType)
         {
@@ -72,30 +58,14 @@ namespace SSRepository.Repository.Transaction
             return model;
         }
 
-        public object InvoiceListByPartyId_Date(long FkPartyId, DateTime? InvoiceDate = null)
-        {
-
-            var data = (from sale in __dbContext.TblSalesInvoicetrn
-                        join c in __dbContext.TblSeriesMas on sale.FKSeriesId equals c.PkSeriesId
-                        where sale.FkPartyId == FkPartyId && sale.EntryDate.Date == (InvoiceDate != null ? InvoiceDate.Value.Date : sale.EntryDate.Date)
-                        orderby sale.EntryDate
-                        select (new
-                        {
-                            FKInvoiceID = sale.PkId,
-                            Inum = c.Series + sale.EntryNo,
-                        }
-                       )).ToList();
-            return data;
-        }
-        public long GetIdbyEntryNo(long EntryNo, long FKSeriesId)
-        {
-            var obj = __dbContext.TblSalesInvoicetrn.Where(x => x.EntryNo == EntryNo && x.FKSeriesId == FKSeriesId).FirstOrDefault();
-            return obj != null ? obj.PkId : 0;
-        }
-        public virtual List<ColumnStructure> ColumnList(string GridName = "")
+        public override List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>();
-            if (GridName.ToString().ToLower() == "dtl")
+            if (GridName.ToString().ToLower() == "rtn")
+            {
+                list = TrandtlColumnList("R2");
+            }
+            else if (GridName.ToString().ToLower() == "dtl")
             {
                 list = TrandtlColumnList("S");
             }
@@ -103,7 +73,7 @@ namespace SSRepository.Repository.Transaction
             {
                 list = new List<ColumnStructure>
                 {
-                 new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="", Fields="sno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="P" },
+                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="", Fields="sno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="P" },
                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="#", Fields="sno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Date", Fields="Entrydt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Party Name", Fields="PartyName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },

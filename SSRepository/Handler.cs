@@ -85,6 +85,7 @@ public class Handler
         JobWork = 118,
         JobWorkIssue = 119,
         JobWorkReceive = 120,
+        SalesReplacement = 121,
 
         //200-report
         SalesStock = 200,
@@ -136,6 +137,7 @@ public class Handler
         SPSL,//Sales Challan
         SRTN,//Sales Return
         SCRN,//Sales Cr Note
+        SGRN,//Sales Replacement
 
         PINV,//Purchase Invoice
         PORD,//Purchase Order
