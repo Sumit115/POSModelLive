@@ -12,5 +12,7 @@ namespace SSRepository.Data
          
         public string StationName { get; set; }
         public long FkDistrictId { get; set; }
+        public virtual TblDistrictMas FKDistrict { get; set; }
+
     }
 }

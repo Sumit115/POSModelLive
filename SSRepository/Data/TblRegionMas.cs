@@ -13,6 +13,7 @@ namespace SSRepository.Data
         public string RegionName { get; set; }
         public long FkZoneId { get; set; }
         public string? Description { get; set; }
+        public TblZoneMas FKZone{ get; set; }
 
     }
 }

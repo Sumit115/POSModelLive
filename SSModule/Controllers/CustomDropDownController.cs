@@ -85,20 +85,43 @@ namespace SSAdmin.Controllers
         }
        
         [HttpPost]
-        public object Country(long FkProductId, int pageSize, int pageNo = 1, string search = "")
+        public object Country(int pageSize, int pageNo = 1, string search = "")
         {
             CountryRepository repository = new CountryRepository(_dbContext, _contextAccessor);
             return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
         }
 
+        [HttpPost]
+        public object State(int pageSize, int pageNo = 1, string search = "", int FkCountryId=0)
+        {
+            StateRepository repository = new StateRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, FkCountryId);
+        } 
 
         [HttpPost]
-        public object City(long FkProductId, int pageSize, int pageNo = 1, string search = "", string StateName = "")
+        public object City(int pageSize, int pageNo = 1, string search = "", string StateName = "")
         {
             CityRepository repository = new CityRepository(_dbContext, _contextAccessor);
             return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, StateName);
         }
-
+        [HttpPost]
+        public object District(int pageSize, int pageNo = 1, string search = "", int FkStateId = 0)
+        {
+            DistrictRepository repository = new DistrictRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, FkStateId);
+        }
+        [HttpPost]
+        public object Station(int pageSize, int pageNo = 1, string search = "", int FkDistrictId = 0)
+        {
+            StationRepository repository = new StationRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, FkDistrictId);
+        }
+        [HttpPost]
+        public object Zone(int pageSize, int pageNo = 1, string search = "")
+        {
+            ZoneRepository repository = new ZoneRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
+        }
         [HttpPost]
         public object ReferBy(int pageSize, int pageNo = 1, string search = "")
         {

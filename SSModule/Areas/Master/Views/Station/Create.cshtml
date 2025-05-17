@@ -8,26 +8,30 @@
 <div class="p-3">
     <form asp-action="Create" class="g-3" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkStationId" />
-
+        <input type="hidden" asp-for="PKID" />
         <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">District</label>
-                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkDistrictId" }, { "Class", "val-cus-drp" }, { "event", "" },
-                    { "value", Model.FkDistrictId }, { "text", Model.DistrictName }, { "uri", "" } })
+            <div class="col-md-8">
+                <div class="form-group row">
+                    <label class="col-sm-2">District<span class="required">*</span></label>
+                    <div class="col-md-6">
+                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkDistrictId" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                        { "value", Model.FkDistrictId }, { "text", Model.DistrictName}, { "uri", "District" }, { "required", "required" },{ "placeholder", "Select District"}
+                        ,{ "parentid", "StateName" }, { "ExtraParam", "" }})
+                    </div>
+                </div>
 
-                    <span asp-validation-for="FkDistrictId" class="text-danger"></span>
+                <div class="form-group row">
+                    <label class="col-sm-2">Station Name*</label>
+                    <div class="col-md-6">
+                        <input asp-for="StationName" class="form-control" />
+                        <span asp-validation-for="StationName" class="text-danger"></span>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Station Name</label>
-                    <input asp-for="StationName" class="form-control" />
-                    <span asp-validation-for="StationName" class="text-danger"></span>
-                </div>
+
             </div>
         </div>
+
+       
     </form>
 </div>
 

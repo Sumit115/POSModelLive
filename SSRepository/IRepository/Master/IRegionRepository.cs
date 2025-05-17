@@ -9,10 +9,8 @@ namespace SSRepository.IRepository.Master
          List<ColumnStructure> ColumnList(string GridName = "");
 
         string isAlreadyExist(RegionModel tblBankMas, string Mode);
-        List<RegionModel> GetList(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpRegion(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpRegionByZoneId(long ZoneId, int pageSize, int pageNo = 1, string search = "");
-        object GetDrpTableRegion(int pageSize, int pageNo = 1, string search = "");
+        List<RegionModel> GetList(int pageSize, int pageNo = 1, string search = "",long FkZoneId=0);
+       
         RegionModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);

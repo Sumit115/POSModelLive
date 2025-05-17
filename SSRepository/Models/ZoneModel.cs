@@ -10,7 +10,7 @@ namespace SSRepository.Models
 {
     public class ZoneModel : BaseModel
     {
-        public long PkZoneId { get; set; }
+        public long PKID { get; set; }
 
         [Required(ErrorMessage = "Name Required")]
         [StringLength(50)]

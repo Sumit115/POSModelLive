@@ -12,5 +12,7 @@ namespace SSRepository.Data
          
         public string DistrictName { get; set; }
         public long FkStateId { get; set; }
+        public virtual TblStateMas FKState { get; set; }
+
     }
 }

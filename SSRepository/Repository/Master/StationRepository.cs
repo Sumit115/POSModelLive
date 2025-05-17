@@ -21,7 +21,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.StationName))
             {
                 cnt = (from x in __dbContext.TblStationMas
-                       where x.StationName == model.StationName && x.PkStationId != model.PkStationId
+                       where x.StationName == model.StationName && x.PkStationId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Section Name Already Exits";
@@ -30,23 +30,23 @@ namespace SSRepository.Repository.Master
             return error;
         }
 
-        public List<StationModel> GetList(int pageSize, int pageNo = 1, string search = "")
+        public List<StationModel> GetList(int pageSize, int pageNo = 1, string search = "",int FkDistrictId=0)
         {
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<StationModel> data = (from cou in __dbContext.TblStationMas
-                                       join catGrp in __dbContext.TblDistrictMas on cou.FkDistrictId equals catGrp.PkDistrictId
-
-                                       // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                       orderby cou.PkStationId
+                                       where (EF.Functions.Like(cou.StationName.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                         && (FkDistrictId == 0 || cou.FkDistrictId == FkDistrictId)
+                                       orderby cou.StationName 
                                        select (new StationModel
                                        {
-                                           PkStationId = cou.PkStationId,
+                                           PKID = cou.PkStationId,
                                            StationName = cou.StationName,
                                            FkDistrictId = cou.FkDistrictId,
-                                           DistrictName = catGrp.DistrictName,
+                                           DistrictName = cou.FKDistrict.DistrictName,
                                            FKUserID = cou.FKUserID,
-                                           DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                                           DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                           UserName = cou.FKUser.UserId,
                                        }
                                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -57,37 +57,35 @@ namespace SSRepository.Repository.Master
 
             StationModel data = new StationModel();
             data = (from cou in __dbContext.TblStationMas
-                    join catGrp in __dbContext.TblDistrictMas on cou.FkDistrictId equals catGrp.PkDistrictId
-                    where cou.PkStationId == PkStationId
+                     where cou.PkStationId == PkStationId
                     select (new StationModel
                     {
-                        PkStationId = cou.PkStationId,
+                        PKID = cou.PkStationId,
                         StationName = cou.StationName,
                         FkDistrictId = cou.FkDistrictId,
-                        DistrictName = catGrp.DistrictName,
+                        DistrictName = cou.FKDistrict.DistrictName,
                         FKUserID = cou.FKUserID,
-                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                        UserName = cou.FKUser.UserId,
                     })).FirstOrDefault();
             return data;
         }
 
-        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", long DistrictId = 0)
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", long FkDistrictId = 0)
         {
             if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
             {
                 if (search != null) search = search.ToLower();
                 pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
                 return (from cou in __dbContext.TblStationMas
-                        join catGrp in __dbContext.TblDistrictMas on cou.FkDistrictId equals catGrp.PkDistrictId
-                        where (DistrictId == 0 || cou.FkDistrictId == DistrictId)
-                        // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                        orderby cou.PkStationId
+                        where (EF.Functions.Like(cou.StationName.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                        && (FkDistrictId == 0 || cou.FkDistrictId == FkDistrictId)
+                        orderby cou.StationName
                         select (new
                         {
                             cou.PkStationId,
-                            cou.StationName,
-                            cou.FkDistrictId,
-                            catGrp.DistrictName
+                            cou.StationName, 
+                            cou.FKDistrict.DistrictName
                         }
        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             }
@@ -100,15 +98,9 @@ namespace SSRepository.Repository.Master
         public string DeleteRecord(long PkStationId)
         {
             string Error = "";
-            StationModel obj = GetSingleRecord(PkStationId);
+            StationModel oldModel = GetSingleRecord(PkStationId);
 
-            //var Country = (from x in _context.TblDistrictMas
-            //               where x.FkcountryId == PkStationId
-            //               select x).Count();
-            //if (Country > 0)
-            //    Error += "Table Name -  DistrictMas : " + Country + " Records Exist";
-
-
+            
             if (Error == "")
             {
                 var lst = (from x in __dbContext.TblStationMas
@@ -117,18 +109,7 @@ namespace SSRepository.Repository.Master
                 if (lst.Count > 0)
                     __dbContext.TblStationMas.RemoveRange(lst);
 
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkStationId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkStationId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetStationID(), PkStationId, obj.FKStationID, obj.DATE_MODIFIED, true);
+                AddMasterLog((long)Handler.Form.Station, PkStationId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.StationName,GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -147,14 +128,14 @@ namespace SSRepository.Repository.Master
         {
             StationModel model = (StationModel)objmodel;
             TblStationMas Tbl = new TblStationMas();
-            if (model.PkStationId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblStationMas.Find(model.PkStationId);
+                var _entity = __dbContext.TblStationMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkStationId = model.PkStationId;
+            Tbl.PkStationId = model.PKID;
             Tbl.StationName = model.StationName;
             Tbl.FkDistrictId = model.FkDistrictId;
 
@@ -179,14 +160,17 @@ namespace SSRepository.Repository.Master
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
             var list = new List<ColumnStructure>
             {
-                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="District", Fields="DistrictName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Station", Fields="StationName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                        };
-            return list;
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="District", Fields="DistrictName",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Station", Fields="StationName",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+          };
+
+         return list;
         }
 
 

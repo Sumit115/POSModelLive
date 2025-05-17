@@ -542,7 +542,53 @@ namespace SSRepository.Data
                    .HasForeignKey(e => e.FkCityId)
                    .OnDelete(DeleteBehavior.Restrict);
             });
+            modelBuilder.Entity<TblDistrictMas>(entity =>
+            {
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
 
+                entity.HasOne(e => e.FKState)
+                 .WithMany()
+                 .HasForeignKey(e => e.FkStateId)
+                 .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TblStationMas>(entity =>
+            {
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKDistrict)
+                 .WithMany()
+                 .HasForeignKey(e => e.FkDistrictId)
+                 .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TblZoneMas>(entity =>
+            {
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+                 
+            });
+
+            modelBuilder.Entity<TblRegionMas>(entity =>
+            {
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKZone)
+                 .WithMany()
+                 .HasForeignKey(e => e.FkZoneId)
+                 .OnDelete(DeleteBehavior.Restrict);
+            });
         }
     }
 }

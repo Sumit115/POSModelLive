@@ -38,7 +38,7 @@ namespace SSRepository.Repository.Master
             List<StateModel> data = (from cou in __dbContext.TblStateMas
                                      where (EF.Functions.Like(cou.StateName.Trim().ToLower(), Convert.ToString(search) + "%"))
                                        && (FkCountryId == 0 || cou.FkCountryId == FkCountryId)
-                                     orderby cou.PkStateId
+                                     orderby cou.StateName
                                      select (new StateModel
                                      {
                                          PKID = cou.PkStateId, 

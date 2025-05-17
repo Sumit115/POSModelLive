@@ -137,8 +137,12 @@ builder.Services.AddScoped<ILocationReceiveRepository, LocationReceiveRepository
 builder.Services.AddScoped<IJobWorkRepository, JobWorkRepository>();
 builder.Services.AddScoped<IJobWorkIssueRepository, JobWorkIssueRepository>();
 builder.Services.AddScoped<IJobWorkReceiveRepository, JobWorkReceiveRepository>();
-builder.Services.AddScoped<IEntryLogRepository, EntryLogRepository>(); 
+builder.Services.AddScoped<IEntryLogRepository, EntryLogRepository>();
 builder.Services.AddScoped<ISalesReplacementRepository, SalesReplacementRepository>();
+builder.Services.AddScoped<IDistrictRepository, DistrictRepository>();
+builder.Services.AddScoped<IStationRepository, StationRepository>();
+builder.Services.AddScoped<IZoneRepository, ZoneRepository>();
+builder.Services.AddScoped<IRegionRepository, RegionRepository>();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();

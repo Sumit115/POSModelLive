@@ -8,33 +8,36 @@
 <div class="p-3">
     <form asp-action="Create" class="g-3" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkRegionId" />
-
+        <input type="hidden" asp-for="PKID" />
         <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Zone</label>
-                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkZoneId" }, { "Class", "val-cus-drp" }, { "event", "" },
-                    { "value", Model.FkZoneId }, { "text", Model.ZoneName }, { "uri", "" } })
+            <div class="col-md-8">
+                <div class="form-group row">
+                    <label class="col-sm-2">Zone<span class="required">*</span></label>
+                    <div class="col-md-6">
+                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkZoneId" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                        { "value", Model.FkZoneId }, { "text", Model.ZoneName}, { "uri", "Zone" }, { "required", "required" },{ "placeholder", "Select Zone"}
+                        ,{ "parentid", "" }, { "ExtraParam", "" }})
+                    </div>
+                </div>
 
-                    <span asp-validation-for="FkZoneId" class="text-danger"></span>
+                <div class="form-group row">
+                    <label class="col-sm-2">Region Name*</label>
+                    <div class="col-md-6">
+                        <input asp-for="RegionName" class="form-control" />
+                        <span asp-validation-for="RegionName" class="text-danger"></span>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Region Name</label>
-                    <input asp-for="RegionName" class="form-control" />
-                    <span asp-validation-for="RegionName" class="text-danger"></span>
+                <div class="form-group row">
+                    <label class="col-sm-2">Description</label>
+                    <div class="col-md-6">
+                        <textarea asp-for="Description" class="form-control"></textarea>
+                        <span asp-validation-for="RegionName" class="text-danger"></span>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label class="control-label">Description</label>
-                    <textarea asp-for="Description" class="form-control"></textarea>
-                    <span asp-validation-for="RegionName" class="text-danger"></span>
-                </div>
+
             </div>
         </div>
+         
     </form>
 </div>
 
