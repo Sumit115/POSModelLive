@@ -1,0 +1,119 @@
+﻿@{
+    ViewData["Title"] = "Unique Barcode Tracking";
+    DateTime dt = ViewBag.Date;
+}
+<div class="p-1">
+    <div class="form-group row filter m-0 p-2 border-bottom">
+        <div class="col-md-8">
+            <div class="row"> 
+
+                <div class="col-md-2">
+                    <label class="p-0 m-0 mt-2">Barcode</label>
+                    <input name="Barcode" type="text" id="Barcode" class="form-control" maxlength="20" placeholder="Barcode" title="From Date*">
+                    <span class="field-validation-valid text-danger" data-valmsg-for="Barcode"></span>
+                </div>
+                <div class="col-md-2">
+                    <label class="p-0 m-0 mt-2">Sale Entry No From</label>
+                    <input name="SaleEntryNoFrom" type="text" id="SaleEntryNoFrom" class="form-control" placeholder="Sale Entry No From" title="Sale Entry No From">
+                    <span class="field-validation-valid text-danger" data-valmsg-for="SaleEntryNoFrom"></span>
+                </div>
+                <div class="col-md-2">
+                    <label class="p-0 m-0 mt-2">Sale Entry No To</label>
+                    <input name="SaleEntryNoTo" type="text" id="SaleEntryNoTo" class="form-control" placeholder="Sale Entry No To" title="Sale Entry No To*">
+                    <span class="field-validation-valid text-danger" data-valmsg-for="SaleEntryNoTo"></span>
+                </div>
+                <div class="col-md-2">
+                    <label class="p-0 m-0 mt-2">Sale From Date</label>
+                    <input name="SaleDateFrom" type="date" id="SaleDateFrom" class="form-control" maxlength="10" placeholder="From Date*" title="From Date*">
+                    <span class="field-validation-valid text-danger" data-valmsg-for="SaleDateFrom"></span>
+                </div>
+                <div class="col-md-2">
+                    <label class="p-0 m-0 mt-2">Sale To Date</label>
+                    <input name="SaleDateTo" type="date" id="SaleDateTo" class="form-control" maxlength="10" placeholder="To Date*" title="To Date*">
+                    <span class="field-validation-valid text-danger" data-valmsg-for="SaleDateTo"></span>
+                </div>
+                <div class="col-md-12"></div>
+                <div class="col-md-2">
+                    <label class="p-0 m-0 mt-2">Purchase Entry No From</label>
+                    <input name="PurchaseEntryNoFrom" type="text" id="PurchaseEntryNoFrom" class="form-control" placeholder="Purchase Entry No From" title="Purchase Entry No From">
+                    <span class="field-validation-valid text-danger" data-valmsg-for="PurchaseEntryNoFrom"></span>
+                </div>
+                <div class="col-md-2">
+                    <label class="p-0 m-0 mt-2">Purchase Entry No To</label>
+                    <input name="PurchaseEntryNoTo" type="text" id="PurchaseEntryNoTo" class="form-control" placeholder="Purchase Entry No To" title="Purchase Entry No To*">
+                    <span class="field-validation-valid text-danger" data-valmsg-for="PurchaseEntryNoTo"></span>
+                </div>
+                <div class="col-md-2">
+                    <label class="p-0 m-0 mt-2">Purchase From Date</label>
+                    <input name="PurchaseDateFrom" type="date" id="PurchaseDateFrom" class="form-control" maxlength="10" placeholder="From Date*" title="From Date*">
+                    <span class="field-validation-valid text-danger" data-valmsg-for="PurchaseDateFrom"></span>
+                </div>
+                <div class="col-md-2">
+                    <label class="p-0 m-0 mt-2">Purchase To Date</label>
+                    <input name="PurchaseDateTo" type="date" id="PurchaseDateTo" class="form-control" maxlength="10" placeholder="To Date*" title="To Date*">
+                    <span class="field-validation-valid text-danger" data-valmsg-for="PurchaseDateTo"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 text-right">
+            <div class="btn-group">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-funnel"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end" role="menu">
+                        <a href="#" class="dropdown-item" onclick="ShowFilter('Product')" title="Product"><i class="bi bi-funnel"></i> Product</a>
+                        <a href="#" class="dropdown-item" onclick="ShowFilter('SaleSeries')" title="Sale Series"><i class="bi bi-funnel"></i> Sale Series</a>
+                        <a href="#" class="dropdown-item" onclick="ShowFilter('PurchaseSeries')" title="Purchase Series"><i class="bi bi-funnel"></i> Purchase Series</a>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-info" onclick="Render('')" title="View"><i class="bi bi-send"></i> &nbsp;View</button>
+            <div class="btn-group">
+                <div class="dropdown page-context">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" fdprocessedid="etakpo">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end" role="menu">
+                        <a class="dropdown-item" onclick="Render('excel')"><i class="bi bi-download"></i>Export To Excel</a>
+                        <a class="dropdown-item" onclick="ShowGridColumn()"><i class="bi bi-ui-checks-grid"></i>Set Grid Layout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row m-0">
+        <div id="WUCHM" class="col-12 slick-grid">
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/report/report.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            RPTOption.IdProperty = IdProperty = "Barcode";
+            RPTOption.GridHeight = GridHeight = "80vh";
+            RPTOption.Controller = Controller = 'UniqueBarcodeTracking';
+
+            //var dt = new Date(@dt.Year, @dt.Month-1, @dt.Day+1);
+            //document.getElementById("FromDate").valueAsDate = dt;
+            //document.getElementById("ToDate").valueAsDate = dt;
+
+            //View();
+        });
+        function Render(Export) {
+            Common.Get(".filter", "", function (flag, _d) {
+                if (flag) {
+                    _d["ProductFilter"] = RPTFilter.Product.Filter;
+                    _d["SaleSeriesFilter"] = RPTFilter.SaleSeries.Filter;
+                    _d["PurchaseSeriesFilter"] = RPTFilter.PurchaseSeries.Filter;
+                    ViewData(_d, Export)
+                }
+            });
+        }
+    </script>
+
+
+}

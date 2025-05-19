@@ -95,6 +95,7 @@ public class Handler
         SalesTransaction = 205,
         PurchaseTransaction = 206,
         SalesOrderStock = 207,
+        UniqueBarcodeTracking = 208,
 
         //
         ImportStock = 300,

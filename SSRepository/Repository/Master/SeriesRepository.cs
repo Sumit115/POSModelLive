@@ -129,8 +129,10 @@ namespace SSRepository.Repository.Master
                 pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
                 return ((from cou in __dbContext.TblSeriesMas
                              //join _tranAlias in GetDrpTranAlias().ToList() on cou.TranAlias equals _tranAlias.Value
-                         where EF.Functions.Like(cou.Series.Trim().ToLower(), search + "%") 
-                         && BillingLocation.Contains(cou.FKLocationID.ToString())
+                         where EF.Functions.Like(cou.Series.Trim().ToLower(), search + "%")
+                          && (TranAlias == "" || cou.TranAlias == TranAlias)
+                         && (DocumentType == "" || cou.DocumentType == DocumentType)
+                        && BillingLocation.Contains(cou.FKLocationID.ToString())
                          orderby cou.PkSeriesId
                          select (new
                          {

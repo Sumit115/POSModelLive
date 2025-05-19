@@ -18,6 +18,8 @@ var RPTFilter = {
     Series: { Data: [], Filter: null, IdProperty: "PkSeriesId", Field: "Series" },
     State: { Data: [], Filter: null, IdProperty: "Value", Field: "Text" },
     TrnStatus: { Data: [{ Value: "P", Text: "Pending", tick: true }, { Value: "I", Text: "Invoice" }, { Value: "C", Text: "Close" }], Filter: '[{ "Text": "P" }]', IdProperty: "Value", Field: "Text" },
+    SaleSeries: { Data: [], Filter: null, IdProperty: "PkSeriesId", Field: "Series" },
+    PurchaseSeries: { Data: [], Filter: null, IdProperty: "PkSeriesId", Field: "Series" },
 
 };
 
@@ -98,12 +100,16 @@ function ShowFilter(type) {
         showpopupWithData();
     }
     else {
+
         var _d = {};
         _d["pageNo"] = RPTOption.pageNo;
         _d["pageSize"] = RPTOption.pageSize;
+        var action = type;
+        if (type == 'SaleSeries') { _d["TranAlias"] = 'SINV'; action = 'Series' }
+        if (type == 'PurchaseSeries') { _d["TranAlias"] = 'PINV'; action = 'Series' }
         $.ajax({
             type: "POST",
-            url: '/Filter/' + type ,
+            url: '/Filter/' + action ,
             data: _d,
             datatype: "json",
             success: function (res) {

@@ -22,10 +22,10 @@ namespace SSAdmin.Controllers
         }
 
         [HttpPost]
-        public object Series(int pageSize, int pageNo = 1, string search = "")
+        public object Series(int pageSize, int pageNo = 1, string search = "", string TranAlias = "")
         { 
             SeriesRepository repository = new SeriesRepository(_dbContext, _contextAccessor);
-            return repository.CustomList((int)Handler.en_CustomFlag.Filter, pageSize, pageNo, search, "", "");
+            return repository.CustomList((int)Handler.en_CustomFlag.Filter, pageSize, pageNo, search, TranAlias, "");
         }
 
         [HttpPost]
