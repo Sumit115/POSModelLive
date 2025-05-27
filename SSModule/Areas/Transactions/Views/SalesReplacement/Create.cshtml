@@ -8,20 +8,161 @@
 <div style="display: flex;justify-content: space-between;overflow: hidden;">
     <div class="Tran-page-ui">
         <form id="TranForm" class="form">
-            <partial name="~/Views/Shared/Transactions/_tranHeader.cshtml" />
+            <input type="hidden" id="FkPartyId" name="FkPartyId" />
+            <div class="row trn-header">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Mobile</label>
+                                        <input asp-for="PartyMobile" class="form-control input-number trn" maxlength="10" onchange="GetParty()" />
+                                        <span asp-validation-for="PartyMobile" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input asp-for="PartyName" class="form-control trn" />
+                                        <span asp-validation-for="PartyName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group row mb-2">
+                                        <label class="col-sm-1">Address</label>
+                                        <div class="col-md-11">
+                                            <textarea asp-for="PartyAddress" class="form-control trn" rows="2"></textarea>
+                                            <span asp-validation-for="PartyAddress" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 d-none">
+                                    <div class="form-group">
+                                        <label>GSTIN</label>
+                                        <input asp-for="PartyGSTN" class="form-control" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-4  d-none">
+                                    <div class="form-group">
+                                        <label>Credit</label>
+                                        <input asp-for="PartyCredit" class="form-control" value="0" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-4  d-none">
+                                    <div class="form-group">
+                                        <label>Balance</label>
+                                        <input name="PartyBalance" type="text" id="PartyBalance" class="form-control" value="0" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label">DOB</label>
+                                        <input type="Date" asp-for="PartyDob" class="form-control trn" />
+                                        @* @Html.TextBoxFor(m => m.GRDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" }) *@
+                                        <span asp-validation-for="PartyDob" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Marriage Date </label>
+                                        <input type="Date" asp-for="PartyMarriageDate" class="form-control trn" />
+                                        @* @Html.TextBoxFor(m => m.GRDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" }) *@
+                                        <span asp-validation-for="PartyMarriageDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label">Series </label>
+                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKSeriesId" },{"name","Series"}, { "Class", "val-cus-drp" }, { "event", "setSeries()" },
+                                        { "value", Model.FKSeriesId }, { "text", Model.SeriesName }, { "uri", "Series" }, { "required", "required" },{ "placeholder", "Select Series"}
+                                        ,{ "parentid", "TranAlias,DocumentType" }, { "ExtraParam", "" }})
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label">*Invoice No</label>
+                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "EntryNo" }, { "Class", "val-cus-drp" }, { "event", "setParty()" },
+                                        { "value", Model.EntryNo }, { "text", Model.EntryNo }, { "uri", "" } })
+                                        <span asp-validation-for="EntryNo" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Entry Date</label>
+                                        @*   @Html.TextBoxFor(m => m.EntryDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" })
+                                        *@
+                                        <input type="Date" asp-for="EntryDate" class="form-control trn" />
+                                        <span asp-validation-for="EntryDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label">GRNo </label>
+                                        <input asp-for="GRNo" class="form-control trn" />
+                                        <span asp-validation-for="GRNo" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label">GR Date </label>
+                                        <input type="Date" asp-for="GRDate" class="form-control trn" />
+                                        @* @Html.TextBoxFor(m => m.GRDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" }) *@
+                                        <span asp-validation-for="GRDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label">Rate/Discount Type </label>
+                                        <select id="RateDiscountType" class="form-control ratediscount">
+                                            <option value="LIR">Line Item Rs</option>
+                                            <option value="LIP">Line Item %</option>
+                                            <option value="F">Fix Rate</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label">Rate/Discount Value </label>
+                                        <input id="RateDiscountValue" class="form-control ratediscount" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-12">
-                <h5 class="pt-3">Return Detail</h5>
+                <h5 class="">Return Detail</h5>
+            </div>
+            <div class="col-md-12 trn-barcode">
+                <div class="form-group row mb-0">
+                    <div class="col-md-12 input-group ">
+                        <input type="text" id="txtSearchBarcodeReturn" class="form-control " placeholder="Barcode Search....">
+                      
+                    </div>
+                </div>
             </div>
             <div class="col-md-12">
                 <div id="DDTReturn" class="DDT">
                 </div>
             </div>
             <div class="col-md-12">
-                <h5 class="pt-3">Replacement Detail</h5>
+                <h5 class="">Replacement Detail</h5>
             </div>
             <partial name="~/Views/Shared/Transactions/_tranGrid.cshtml" />
          @*   <partial name="~/Views/Shared/Transactions/_tranFooter.cshtml" />*@
-            <div class="col-md-12 trn-footer mt-5">
+            <div class="bg-white col-md-12 mt-1 trn-footer">
                 <div class="row"> 
                      <div class="col-md-2"></div>
                     <div class="col-md-4">

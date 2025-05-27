@@ -105,15 +105,7 @@ namespace SSRepository.Repository.Master
         public string DeleteRecord(long PkLocalityId)
         {
             string Error = "";
-            LocalityModel obj = GetSingleRecord(PkLocalityId);
-
-            //var Country = (from x in _context.TblAreaMas
-            //               where x.FkcountryId == PkLocalityId
-            //               select x).Count();
-            //if (Country > 0)
-            //    Error += "Table Name -  AreaMas : " + Country + " Records Exist";
-
-
+            LocalityModel oldModel = GetSingleRecord(PkLocalityId); 
             if (Error == "")
             {
                 var lst = (from x in __dbContext.TblLocalityMas
@@ -122,18 +114,7 @@ namespace SSRepository.Repository.Master
                 if (lst.Count > 0)
                     __dbContext.TblLocalityMas.RemoveRange(lst);
 
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkLocalityId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkLocalityId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetLocalityID(), PkLocalityId, obj.FKLocalityID, obj.DATE_MODIFIED, true);
+                AddMasterLog((long)Handler.Form.Locality, PkLocalityId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.LocalityName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 

@@ -8,7 +8,7 @@ namespace SSRepository.IRepository
         string Create(TransactionModel model);
         DataTable GetList(string FromDate, string ToDate, string SeriesFilter, string DocumentType, string LocationFilter = "", string StateFilter = "");
         TransactionModel GetSingleRecord(long PkId, long FkSeriesId);
-        object BarcodeScan(TransactionModel model, string barcode,bool isCalGridTotal);
+        object BarcodeScan(TransactionModel model, string barcode, bool isCalGridTotal,bool IsReturn);
         object ProductTouch(TransactionModel model, long PkProductId);
         object AutoFillLastRecord(TransactionModel model);
 
@@ -25,6 +25,7 @@ namespace SSRepository.IRepository
         List<PartyModel> PartyList(int pageSize, int pageNo = 1, string search = "", string TranAlias = "");
 
         object SetParty(TransactionModel model, long FkPartyId);
+        object GetParty(TransactionModel model, string Mobile);
 
         List<ProductModel> ProductList(int pageSize, int pageNo = 1, string search = "", long FkPartyId = 0, long FkInvoiceId = 0, DateTime? InvoiceDate = null);
         List<ProdLotDtlModel> ProductBatchList(int pageSize, int pageNo = 1, string search = "", long PKProductId = 0);

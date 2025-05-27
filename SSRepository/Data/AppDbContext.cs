@@ -589,6 +589,19 @@ namespace SSRepository.Data
                  .HasForeignKey(e => e.FkZoneId)
                  .OnDelete(DeleteBehavior.Restrict);
             });
+
+            modelBuilder.Entity<TblAreaMas>(entity =>
+            {
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKRegion)
+                 .WithMany()
+                 .HasForeignKey(e => e.FkRegionId)
+                 .OnDelete(DeleteBehavior.Restrict);
+            });
         }
     }
 }

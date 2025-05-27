@@ -757,6 +757,23 @@ namespace SSRepository.Repository.Transaction
             }
             return dt;
         }
+        public DataTable GetProductReturn(string Barcode, Int64 FKLocationID, long ProductId, long LotId, string ProductName, bool ItemByBarcode, String TranAlias, Int64 FKPartyID = 0, long? FKOrderID = 0, long? FKOrderSrID = 0)
+        {
+
+            DataTable dt = new DataTable();
+            using (SqlConnection con = new SqlConnection(conn))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("usp_GetProductDetailReturn", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Barcode", Barcode);
+                cmd.Parameters.AddWithValue("@FKPartyID", FKPartyID); 
+                SqlDataAdapter adp = new SqlDataAdapter(cmd);
+                adp.Fill(dt);
+                con.Close();
+            }
+            return dt;
+        }
 
         private void SetProduct(TransactionModel model, TranDetails detail, DataTable dtProduct)
         {
@@ -815,54 +832,115 @@ namespace SSRepository.Repository.Transaction
                 detail.Rate = Convert.ToDecimal(dtProduct.Rows[0][model.BillingRate].ToString());
             }
         }
-        public object BarcodeScan(TransactionModel model, string Barcode, bool isCalGridTotal)
+        public object BarcodeScan(TransactionModel model, string Barcode, bool isCalGridTotal,bool IsReturn)
         {
-            DataTable dtProduct = GetProduct(Barcode, model.FKLocationID, 0, 0, "", false, model.TranAlias, model.FkPartyId, model.FKOrderID, model.FKOrderSrID);
-            if (dtProduct.Rows.Count > 0)
+            if (IsReturn)
             {
-                long FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                long FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
-                var drdetail = model.TranDetails.Where(x => x.FkProductId == FkProductId && x.FkLotId == FkLotId && x.ModeForm != 2)
-                    .FirstOrDefault();
-                if (drdetail != null)
+                DataTable dtProduct = GetProductReturn(Barcode, model.FKLocationID, 0, 0, "", false, model.TranAlias, model.FkPartyId, model.FKOrderID, model.FKOrderSrID);
+                if (dtProduct.Rows.Count > 0)
                 {
-                    int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == FkProductId && a.FkLotId == FkLotId && a.ModeForm != 2);
-                    SetProduct(model, drdetail, dtProduct);
-
-
-                    model.TranDetails[rowIndex].Qty += 1;
-                    CalculateExe(model, model.TranDetails[rowIndex]);
-                    // Check Product UNique/Lot/PRoduct
-                    var _check = model.UniqIdDetails.ToList().Where(x => x.Barcode == Barcode).FirstOrDefault();
-                    if (_check == null)
+                    if (model.FkPartyId <= 0)
                     {
-                        model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = model.TranDetails[rowIndex].SrNo, Barcode = Barcode });
+                        model.FkPartyId = Convert.ToInt64(dtProduct.Rows[0]["FkPartyId"].ToString());
+                        model.PartyName = dtProduct.Rows[0]["PartyName"].ToString();
+                        model.PartyMobile = dtProduct.Rows[0]["PartyMobile"].ToString();
+                        model.PartyAddress = dtProduct.Rows[0]["PartyAddress"].ToString();
+                        model.PartyDob = dtProduct.Rows[0]["PartyDob"].ToString();
+                        model.PartyMarriageDate = dtProduct.Rows[0]["PartyMarriageDate"].ToString();
                     }
-                }
-                else
-                {
-                    var detail = new TranDetails();
-                    TranDetailDefault(model, detail);
-                    SetProduct(model, detail, dtProduct);
-                    detail.Barcode = "Barcode";
-                    detail.BarcodeTest = Barcode;
 
-                    CalculateExe(model, detail);
-                    model.TranDetails.Add(detail);
+                    long FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+                    long FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
+                    var drdetail = model.TranReturnDetails.Where(x => x.FkProductId == FkProductId && x.FkLotId == FkLotId && x.ModeForm != 2)
+                        .FirstOrDefault();
+                    if (drdetail != null)
+                    {
+                        int rowIndex = model.TranReturnDetails.FindIndex(a => a.FkProductId == FkProductId && a.FkLotId == FkLotId && a.ModeForm != 2);
+                      
+                        SetProduct(model, drdetail, dtProduct);
+                         
 
-                    // Check Product UNique/Lot/PRoduct
-                    model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = detail.SrNo, Barcode = Barcode });
+                        CalculateExe(model, model.TranReturnDetails[rowIndex]);
+                        // Check Product UNique/Lot/PRoduct
+                        var _check = model.UniqIdDetails.ToList().Where(x => x.Barcode == Barcode).FirstOrDefault();
+                        if (_check == null)
+                        {
+                            model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = model.TranReturnDetails[rowIndex].SrNo, Barcode = Barcode });
+                        }
+                    }
+                    else
+                    {
+                        var detail = new TranDetails();
+                        TranDetailDefault(model, detail);
+                        SetProduct(model, detail, dtProduct);
+                        detail.Barcode = "Barcode";
+                        detail.BarcodeTest = Barcode;
+                  
+                        detail.FKInvoiceID = Convert.ToInt64(dtProduct.Rows[0]["FKInvoiceID"].ToString());
+                        detail.FKInvoiceSrID = Convert.ToInt64(dtProduct.Rows[0]["FKSeriesId"].ToString());
+                        detail.FKInvoiceID_Text = dtProduct.Rows[0]["FKInvoiceID_Text"].ToString();
+                  
+                        CalculateExe(model, detail);
+                        model.TranReturnDetails.Add(detail);
 
+                        // Check Product UNique/Lot/PRoduct
+                        model.UniqIdReturnDetails.Add(new BarcodeUniqVM() { SrNo = detail.SrNo, Barcode = Barcode });
+
+                    } 
                 }
-                if (isCalGridTotal)
-                {
-                    SetGridTotal(model);
-                    SetPaymentDetail(model);
-                }
+                else { throw new Exception("Data Not Found"); }
+
             }
-            else { throw new Exception("Data Not Found"); }
+            else
+            {
+                DataTable dtProduct = GetProduct(Barcode, model.FKLocationID, 0, 0, "", false, model.TranAlias, model.FkPartyId, model.FKOrderID, model.FKOrderSrID);
+                if (dtProduct.Rows.Count > 0)
+                {
+                    long FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+                    long FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
+                    var drdetail = model.TranDetails.Where(x => x.FkProductId == FkProductId && x.FkLotId == FkLotId && x.ModeForm != 2)
+                        .FirstOrDefault();
+                    if (drdetail != null)
+                    {
+                        int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == FkProductId && a.FkLotId == FkLotId && a.ModeForm != 2);
+                        SetProduct(model, drdetail, dtProduct);
+
+
+                        model.TranDetails[rowIndex].Qty += 1;
+                        CalculateExe(model, model.TranDetails[rowIndex]);
+                        // Check Product UNique/Lot/PRoduct
+                        var _check = model.UniqIdDetails.ToList().Where(x => x.Barcode == Barcode).FirstOrDefault();
+                        if (_check == null)
+                        {
+                            model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = model.TranDetails[rowIndex].SrNo, Barcode = Barcode });
+                        }
+                    }
+                    else
+                    {
+                        var detail = new TranDetails();
+                        TranDetailDefault(model, detail);
+                        SetProduct(model, detail, dtProduct);
+                        detail.Barcode = "Barcode";
+                        detail.BarcodeTest = Barcode;
+
+                        CalculateExe(model, detail);
+                        model.TranDetails.Add(detail);
+
+                        // Check Product UNique/Lot/PRoduct
+                        model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = detail.SrNo, Barcode = Barcode });
+
+                    } 
+                }
+                else { throw new Exception("Data Not Found"); }
+            }
+            if (isCalGridTotal)
+            {
+                SetGridTotal(model);
+                SetPaymentDetail(model);
+            }
             return model;
         }
+        
         public object ProductTouch(TransactionModel model, long PkProductId)
         {
             var detail = new TranDetails();
@@ -895,9 +973,9 @@ namespace SSRepository.Repository.Transaction
         public void removePromotion(TransactionModel model)
         {
             model.TranDetails.Where(x => x.LinkSrNo > 0 || x.PromotionType == "IVFP").ToList().ForEach(x => x.ModeForm = 2);
-            model.TranDetails.Where(x => x.PromotionType == "PFPT" || x.PromotionType == "CFPT" || x.PromotionType == "BFPT" || x.PromotionType == "CFRT" || x.PromotionType == "PFRT").ToList().ForEach(x => { x.PromotionType = ""; });
+            model.TranDetails.Where(x => x.PromotionType == "PFPT" || x.PromotionType == "CFPT" || x.PromotionType == "BFPT" || x.PromotionType == "CFRT" || x.PromotionType == "PFRT" || x.PromotionType == "CFQT" || x.PromotionType == "PFQT").ToList().ForEach(x => { x.PromotionType = ""; });
             model.TranDetails.Where(x => x.PromotionType == "PFQT" || x.PromotionType == "CFQT" || x.PromotionType == "BFQT").ToList().ForEach(x => { x.FreeQty = 0; x.PromotionType = ""; });
-            model.TranDetails.Where(x => x.PromotionType == "PTDT" || x.PromotionType == "CTDT" || x.PromotionType == "BTDT" || x.PromotionType == "XOXT" || x.PromotionType == "CFRT" || x.PromotionType == "PFRT").ToList().ForEach(x => { x.TradeDisc = 0; x.TradeDiscAmt = 0; x.PromotionType = ""; });
+            model.TranDetails.Where(x => x.PromotionType == "PTDT" || x.PromotionType == "CTDT" || x.PromotionType == "BTDT" || x.PromotionType == "XOXT" || x.PromotionType == "CFRT" || x.PromotionType == "PFRT" || x.PromotionType == "CFQT" || x.PromotionType == "PFQT").ToList().ForEach(x => { x.TradeDisc = 0; x.TradeDiscAmt = 0; x.PromotionType = ""; });
             model.TranDetails.Where(x => !string.IsNullOrEmpty(x.PromotionType)).ToList().ForEach(x => { x.PromotionType = ""; });
             //model.TranDetails.Where(x => !string.IsNullOrEmpty(x.PromotionType)).ToList().ForEach(x => x.PromotionType = "");
         }
@@ -1034,6 +1112,23 @@ namespace SSRepository.Repository.Transaction
                                         CalculateExe(model, item);
                                         if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PFRT"; }
                                         else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CFRT"; } 
+
+                                    }
+                                    else if (itemPromo.Promotion == "Flat Qty" && item.Qty >= itemPromo.PromotionApplyQty && itemPromo.PromotionApplyQty2 >= item.Qty)
+                                    {
+                                        var dic = item.Rate - itemPromo.PromotionAmt;
+                                        if (dic > 0)
+                                        {
+                                            item.TradeDisc = (decimal)(dic / item.Rate) * 100;
+                                        }
+                                        else
+                                        {
+                                            item.TradeDisc = 100;
+                                        }
+                                        item.TradeDiscAmt = 0;
+                                        CalculateExe(model, item);
+                                        if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PFQT"; }
+                                        else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CFQT"; }
 
                                     }
                                 }
@@ -1500,7 +1595,7 @@ namespace SSRepository.Repository.Transaction
             else if (model.ExtProperties.TranAlias == "PINV" || model.ExtProperties.TranAlias == "PORD" || model.ExtProperties.TranAlias == "PJ_O" || model.ExtProperties.TranAlias == "PJ_R" || model.ExtProperties.TranAlias == "PJ_I")
                 vendor = GetVendor(FkPartyId);
             else
-                vendor = GetCustomer(FkPartyId);
+                vendor = GetCustomer(FkPartyId,"");
 
             if (vendor != null)
             {
@@ -1511,6 +1606,32 @@ namespace SSRepository.Repository.Transaction
                 model.PartyStateName = vendor.StateName;
                 model.PartyCredit = 0;
                 model.FkPartyId = FkPartyId;
+                model.FKPostAccID = vendor.FkAccountID;
+                model.Account = vendor.Name;
+            }
+            model.IsTranChange = true;
+
+            return model;
+        }
+        public object GetParty(TransactionModel model, string  Mobile)
+        {
+            var vendor = new PartyModel();
+            if (model.ExtProperties.TranAlias == "LINV" || model.ExtProperties.TranAlias == "LORD")
+                vendor = GetLocation(0);
+            else if (model.ExtProperties.TranAlias == "PINV" || model.ExtProperties.TranAlias == "PORD" || model.ExtProperties.TranAlias == "PJ_O" || model.ExtProperties.TranAlias == "PJ_R" || model.ExtProperties.TranAlias == "PJ_I")
+                vendor = GetVendor(0);
+            else
+                vendor = GetCustomer(0, Mobile);
+
+            if (vendor != null)
+            {
+                model.PartyAddress = vendor.Address == null ? "" : vendor.Address.ToString();
+                model.PartyName = vendor.Name;
+                model.PartyGSTN = vendor.Gstno == null ? "" : vendor.Gstno.ToString();
+                model.PartyMobile = vendor.Mobile;
+                model.PartyStateName = vendor.StateName;
+                model.PartyCredit = 0;
+                model.FkPartyId = vendor.PKID;
                 model.FKPostAccID = vendor.FkAccountID;
                 model.Account = vendor.Name;
             }
@@ -1536,10 +1657,10 @@ namespace SSRepository.Repository.Transaction
                                )).FirstOrDefault();
             return data;
         }
-        public PartyModel? GetCustomer(long PkId)
+        public PartyModel? GetCustomer(long PkId,string Mobile)
         {
             PartyModel? data = (from cou in __dbContext.TblCustomerMas
-                                where cou.PkCustomerId == PkId
+                                where (cou.PkCustomerId == PkId || cou.Mobile == Mobile)
                                 select (new PartyModel
                                 {
                                     PKID = cou.PkCustomerId,

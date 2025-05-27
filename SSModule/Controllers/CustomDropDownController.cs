@@ -123,6 +123,18 @@ namespace SSAdmin.Controllers
             return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
         }
         [HttpPost]
+        public object Region(int pageSize, int pageNo = 1, string search = "", long FkZoneId = 0)
+        {
+            RegionRepository repository = new RegionRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, FkZoneId);
+        }
+        [HttpPost]
+        public object Area(int pageSize, int pageNo = 1, string search = "", long FkRegionId = 0)
+        {
+            AreaRepository repository = new AreaRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, FkRegionId);
+        }
+        [HttpPost]
         public object ReferBy(int pageSize, int pageNo = 1, string search = "")
         {
             ReferByRepository repository = new ReferByRepository(_dbContext, _contextAccessor);

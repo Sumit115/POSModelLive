@@ -100,8 +100,17 @@ $(document).ready(function () {
         //  PaymentDetail();
     });
     $("#txtSearchBarcode").change(function () {
+        
         if (tranModel.FKSeriesId > 0) {
-            BarcodeScan($(this).val());
+            BarcodeScan($(this).val(), false);
+            $(this).val('');
+            $(this).focus();
+        } else { alert('Select Series'); }
+    });
+    $("#txtSearchBarcodeReturn").change(function () {
+        
+        if (tranModel.FKSeriesId > 0) {
+            BarcodeScan($(this).val(), true);
             $(this).val('');
             $(this).focus();
         } else { alert('Select Series'); }
@@ -727,7 +736,7 @@ function BindGridReturn(GridId, data) {
                 var LinkSrNo = args.item["LinkSrNo"];
                 if (tranModel.FKSeriesId > 0) {
                     if (Handler.isNullOrEmpty(LinkSrNo) || LinkSrNo <= 0) {
-
+                        debugger;
                         if (field != "FKInvoiceID_Text" && field != "Product" && Common.isNullOrEmpty(args.item["Product"])) {
                             alert("Select Product Frist");
                             cgRtn_ClearRow(args)
@@ -818,7 +827,7 @@ function BindGridReturn(GridId, data) {
                 //if (Handler.isNullOrEmpty(LinkSrNo) || LinkSrNo <= 0 ) {
 
                 if (field == "Product") {
-                    debugger;
+                    
                     args.item["SrNo"] = 0;
                     if (TranAlias == 'SGRN' && !Common.isNullOrEmpty(args.item["FKInvoiceID"])) {
                         //var InvoiceSrNo = Common.isNullOrEmpty(args.item["ProductName"]) ? 0 : parseFloat(args.item["ProductName"]);
@@ -1224,24 +1233,36 @@ function Bind_cgGridUniqIdTextbox(args, rowIndex, _d) {
 
 
 }
-function BarcodeScan(barcode) {
+function BarcodeScan(barcode, IsReturn) {
+    
     $(".loader").show();
-    tranModel.TranDetails = GetDataFromGrid();
+    tranModel.TranDetails = GetDataFromGrid(false, IsReturn); 
+    tranModel.TranReturnDetails = tranModel.ExtProperties.TranAlias == "SGRN" ? GetDataFromGrid(false, true) : [];
 
     $.ajax({
         type: "POST",
         url: Handler.currentPath() + 'BarcodeScan',
-        data: { model: tranModel, barcode: barcode },
+        data: { model: tranModel, barcode: barcode, IsReturn: IsReturn },
         datatype: "json", success: function (res) {
             if (res.status == "success") {
                 tranModel = res.data;
                 //$(tranModel.TranDetails).each(function (i, v) {
                 //    v["ProductName"] = parseInt(v.FkProductId);
                 //});
-                BindGrid('DDT', tranModel.TranDetails);
+                if (!IsReturn) {
+                    setFooterData(tranModel);
+                    setPaymentDetail(tranModel);
+                    BindGrid('DDT', tranModel.TranDetails);
+                } else {
+                    
+                    BindGridReturn('DDTReturn', tranModel.TranReturnDetails);
+                    setHeaderData(tranModel);
+                }
+                //if (Handler.isNullOrEmpty(tranModel.TranDetails[rowIndex].PromotionType)) {
 
-                setFooterData(tranModel);
-                setPaymentDetail(tranModel);
+
+                //setFooterData(tranModel);
+                //setPaymentDetail(tranModel);
 
             }
             else
@@ -1318,32 +1339,6 @@ function cgRtn_ClearRow(args) {
     args.item["Barcode"] = "";
     args.item["CodingScheme"] = "";
     cgRtn.updateRefreshDataRow(args.row);
-}
-function BarcodeScan(barcode) {
-    $(".loader").show();
-    tranModel.TranDetails = GetDataFromGrid();
-
-    $.ajax({
-        type: "POST",
-        url: Handler.currentPath() + 'BarcodeScan',
-        data: { model: tranModel, barcode: barcode },
-        datatype: "json", success: function (res) {
-            if (res.status == "success") {
-                tranModel = res.data;
-                //$(tranModel.TranDetails).each(function (i, v) {
-                //    v["ProductName"] = parseInt(v.FkProductId);
-                //});
-                BindGrid('DDT', tranModel.TranDetails);
-
-                setFooterData(tranModel);
-                setPaymentDetail(tranModel);
-
-            }
-            else
-                alert(res.msg);
-            $(".loader").hide();
-        }
-    })
 }
 
 
@@ -1422,7 +1417,7 @@ function handleFileLoad(event) {
 function ColumnChange(args, rowIndex, fieldName, IsReturn) {
 
     tranModel.TranDetails = GetDataFromGrid(false, false);
-    tranModel.TranReturnDetails = tranModel.ExtProperties.TranAlias == "SGRN"?GetDataFromGrid(false, true):[];
+    tranModel.TranReturnDetails = tranModel.ExtProperties.TranAlias == "SGRN" ? GetDataFromGrid(false, true) : [];
     if ((IsReturn ? tranModel.TranReturnDetails.length : tranModel.TranDetails.length) > 0) {
         // if (Handler.isNullOrEmpty(tranModel.TranDetails[rowIndex].LinkSrNo) || tranModel.TranDetails[rowIndex].LinkSrNo <= 0 || fieldName == 'Delete') {
         $(".loader").show();
@@ -1541,11 +1536,16 @@ function PaymentPopup() {
     setPaymentDetail(tranModel)
     $('.model-paymentdetail').modal('toggle');
 }
+function setHeaderData(data) {
+    Common.Set(".trn-header", data, "");
+    return false;
+}
 
 function setFooterData(data) {
     Common.Set(".trn-footer", data, "");
     return false;
 }
+
 function setPaymentDetail(data) {
 
     Common.Set(".model-paymentdetail", data, "");
@@ -1628,7 +1628,7 @@ function setGridRowData(args, data, rowIndex, fieldName, IsReturn) {
 }
 
 function GetDataFromGrid(ifForsave, IsReturn) {
-    debugger;
+    
     var _d = [];
     if (IsReturn) {
         var arrayRtn = cgRtn.getData().filter(x => x.FkProductId > 0);
@@ -1711,7 +1711,7 @@ function SaveRecord() {
     Common.Get(".form", "", function (flag, _d) {
 
         if (flag) {
-            debugger;
+            
             tranModel.PkId = $('#PkId').val();
             tranModel.FkPartyId = $('#FkPartyId').val();
             tranModel.EntryDate = $('#EntryDate').val();
@@ -1719,7 +1719,7 @@ function SaveRecord() {
             tranModel.TranDetails = [];
             if ((tranModel.FkPartyId > 0) || (tranModel.ExtProperties.DocumentType == "C")) {
                 if (tranModel.FKSeriesId > 0) {
-                    debugger;
+                    
                     tranModel.TranDetails = GetDataFromGrid(true, false);
                     tranModel.TranReturnDetails = tranModel.ExtProperties.TranAlias == "SGRN" ? GetDataFromGrid(true, true) : [];
 
@@ -1820,7 +1820,36 @@ function setParty() {
         }
     });
 }
+function GetParty() {
 
+    var PartyMobile = $("#PartyMobile").val();
+    $.ajax({
+        type: "POST",
+        url: Handler.currentPath() + 'GetParty',
+        data: { model: tranModel, PartyMobile: PartyMobile },
+        datatype: "json",
+        success: function (res) {
+            if (res.status == "success") {
+                tranModel = res.data;
+                $('#FkPartyId').val(tranModel.FkPartyId);
+                $('#drpFkPartyId').val(tranModel.PartyName);
+                $('#PartyGSTN').val(tranModel.PartyGSTN);
+                $('#PartyName').val(tranModel.PartyName);
+               // $('#PartyMobile').val(tranModel.PartyMobile);
+                $('#PartyAddress').val(tranModel.PartyAddress);
+                $('#PartyCredit').val(tranModel.PartyCredit);
+
+                if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
+                    tranModel.TranDetails = [];
+                    BindGrid('DDT', tranModel.TranDetails);
+
+                }
+            }
+            else
+                alert(res.msg);
+        }
+    });
+}
 function setSeries() {
     var FKSeriesId = $("#FKSeriesId").val();
     $.ajax({
@@ -1866,7 +1895,7 @@ function setBankThroughBank() {
 }
 
 function trandtldropList(data) {
-
+    debugger;
     var output = []
     $.ajax({
         url: Handler.currentPath() + 'trandtldropList', data: data, async: false, dataType: 'JSON', success: function (result) {

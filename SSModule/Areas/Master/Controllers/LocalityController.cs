@@ -147,9 +147,8 @@ namespace SSAdmin.Areas.Master.Controllers
          //   ViewBag.AreaList = _repositoryArea.GetDrpArea(1000, 1);
             return View(model);
         }
-
         [HttpPost]
-        public string DeleteRecord(long PKID)
+        public string Delete(long PKID)
         {
             string response = "";
             try
@@ -158,6 +157,7 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             catch (Exception ex)
             {
+                response = ex.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint") ? "use in other transaction" : ex.Message;
                 //CommonCore.WriteLog(ex, "DeleteRecord", ControllerName, GetErrorLogParam());
                 //return CommonCore.SetError(ex.Message);
             }
@@ -169,10 +169,6 @@ namespace SSAdmin.Areas.Master.Controllers
             return _repository.ColumnList(GridName);
         }
 
-        [HttpPost]
-        public object FkAreaId(int pageSize, int pageNo = 1, string search = "")
-        {
-            return _repositoryArea.GetDrpTableArea(pageSize, pageNo, search);
-        }
+       
     }
 }

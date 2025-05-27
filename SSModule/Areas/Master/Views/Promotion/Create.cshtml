@@ -186,6 +186,7 @@
                                 *@
                                 <option value="Free Point">Free Point</option>
                                 <option value="Flat Rate">Flat Rate</option>
+                                <option value="Flat Qty">Flat Qty</option>
                             </select>
 
                         </div>
@@ -194,20 +195,25 @@
                         <h4>Qualifying</h4>
                     </div>
 
-                    <div class=" col-md-4">
+                    <div class=" col-md-3">
                         <label>Amount</label>
                         <input type="text" asp-for="PromotionApplyAmt" class="form-control" />
                         <span asp-validation-for="PromotionApplyAmt" class="text-danger"></span>
                     </div>
-                    <div class=" col-md-4">
+                    <div class=" col-md-3">
                         <label>To Amount</label>
                         <input type="text" asp-for="PromotionApplyAmt2" class="form-control" />
                         <span asp-validation-for="PromotionApplyAmt2" class="text-danger"></span>
                     </div>
-                    <div class=" col-md-4">
+                    <div class=" col-md-3">
                         <label>Qty</label>
                         <input type="text" asp-for="PromotionApplyQty" class="form-control" />
                         <span asp-validation-for="PromotionApplyQty" class="text-danger"></span>
+                    </div>
+                    <div class=" col-md-3">
+                        <label>To Qty</label>
+                        <input type="text" asp-for="PromotionApplyQty2" class="form-control" />
+                        <span asp-validation-for="PromotionApplyQty2" class="text-danger"></span>
                     </div>
                     @*<div class="col-md-4">
                     <div class="form-group">
@@ -366,7 +372,7 @@
 
 
             if (Ischange) {
-                $("#FKProductId,#FKCategoryId,#FkBrandId,#FkPromotionProdId,#PromotionApplyAmt,#PromotionApplyAmt2,#PromotionApplyQty,#PromotionAmt,#PromotionQty").val('0');
+                $("#FKProductId,#FKCategoryId,#FkBrandId,#FkPromotionProdId,#PromotionApplyAmt,#PromotionApplyAmt2,#PromotionApplyQty,#PromotionApplyQty2,#PromotionAmt,#PromotionQty").val('0');
                 $("#drpFKProductId,#drpFKCategoryId,#drpFkBrandId,#drpFkPromotionProdId").val('');
                 $("#FkPromotionApplyUnitId,FkPromotionUnitId").val('1')
                 $("#Promotion option[value*='Free Point']").prop('disabled', true);
@@ -378,16 +384,16 @@
                 $('#tblPromotionLnk tbody').html('');
             }
             if (_applyOn == "Product" || _applyOn == "Category") {
-                $("#Promotion option[value*='Flat Rate']").prop('disabled', false);
+                $("#Promotion option[value*='Flat Rate'],#Promotion option[value*='Flat Qty']").prop('disabled', false);
             } else {
-                $("#Promotion option[value*='Flat Rate']").prop('disabled', true);
-                if (_promotion == 'Flat Rate'){
+                $("#Promotion option[value*='Flat Rate'],#Promotion option[value*='Flat Qty']").prop('disabled', true);
+                if (_promotion == 'Flat Rate' || _promotion == 'Flat Qty') {
                     $("#Promotion").val('Free Product');
                     _promotion='Free Product';
             }}
             $("#divheading").text(_promotion);
 
-            $("#PromotionApplyAmt,#PromotionApplyAmt2,#PromotionApplyQty,#PromotionAmt,#FkPromotionApplyUnitId,#drpFkPromotionProdId,#PromotionQty,#FkPromotionUnitId").attr("readonly", "readonly");
+            $("#PromotionApplyAmt,#PromotionApplyAmt2,#PromotionApplyQty,#PromotionApplyQty2,#PromotionAmt,#FkPromotionApplyUnitId,#drpFkPromotionProdId,#PromotionQty,#FkPromotionUnitId").attr("readonly", "readonly");
             if (_applyOn == "Product" || _applyOn == "Category" || _applyOn == "Brand") {
                 $("#divheadingApplyOn").text("Apply On");
 
@@ -407,6 +413,9 @@
                 }
                 else if (_promotion == "Flat Rate" && _applyOn != "Brand") {
                     $("#PromotionApplyAmt,#PromotionApplyAmt2,#PromotionAmt").removeAttr("readonly");
+                }
+                else if (_promotion == "Flat Qty" && _applyOn != "Brand") {
+                    $("#PromotionApplyQty,#PromotionApplyQty2,#PromotionAmt").removeAttr("readonly");
                 }
             }
             else if (_applyOn == "Invoice Value") {

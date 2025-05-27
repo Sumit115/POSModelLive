@@ -27,6 +27,7 @@ using System.Data.OleDb;
 using System.Formats.Asn1;
 using System.IO;
 using System.IO.Pipes;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
@@ -115,14 +116,14 @@ namespace SSAdmin.Areas
 
         }
 
-        public JsonResult BarcodeScan(TransactionModel model, string barcode)
+        public JsonResult BarcodeScan(TransactionModel model, string barcode, bool IsReturn)
         {
             try
             {
                 return Json(new
                 {
                     status = "success",
-                    data = _repository.BarcodeScan(model, barcode, true)
+                    data = _repository.BarcodeScan(model, barcode, true, IsReturn)
                 });
 
             }
@@ -169,7 +170,7 @@ namespace SSAdmin.Areas
                 sno++;
                 try
                 {
-                    _repository.BarcodeScan(model, barcode, barcodelist.Count == sno ? true : false);
+                    _repository.BarcodeScan(model, barcode, barcodelist.Count == sno ? true : false, false);
                 }
                 catch (Exception ex) { }
             }
@@ -245,6 +246,15 @@ namespace SSAdmin.Areas
             });
 
         }
+        [HttpPost]
+        public JsonResult GetParty(TransactionModel model, string PartyMobile)
+        {
+            return Json(new
+            {
+                status = "success",
+                data = _repository.GetParty(model, PartyMobile)
+            }); 
+        }
 
         [HttpPost]
         public object FkPartyId(int pageSize, int pageNo = 1, string search = "")
@@ -307,14 +317,15 @@ namespace SSAdmin.Areas
         public object trandtldropList(int pageSize, int pageNo = 1, string search = "", string name = "", string RowParam = "", string ExtraParam = "")
         {
             int value = 0;
-            if (name == "Product" &&  (RowParam.Contains("undefined") || ExtraParam.Contains("undefined") || string.IsNullOrEmpty(RowParam) || string.IsNullOrEmpty(ExtraParam) || ExtraParam=="0"))
+            if (name == "Product" && (RowParam.Contains("undefined") || ExtraParam.Contains("undefined") || string.IsNullOrEmpty(RowParam) || string.IsNullOrEmpty(ExtraParam) || ExtraParam == "0"))
                 return _repository.ProductList(pageSize, pageNo, search);
             if (name == "Product" && !string.IsNullOrEmpty(RowParam) && !string.IsNullOrEmpty(ExtraParam))
             {
                 string[] _r = RowParam.Split("~");
                 string[] _e = ExtraParam.Split("~");
 
-                return _repository.ProductList(pageSize, pageNo, search, Convert.ToInt64(_e[0]), Convert.ToInt64(_r[0]), null); }
+                return _repository.ProductList(pageSize, pageNo, search, Convert.ToInt64(_e[0]), Convert.ToInt64(_r[0]), null);
+            }
             else if (name == "Batch" && int.TryParse(RowParam, out value))
                 return _repository.ProductBatchList(pageSize, pageNo, search, Convert.ToInt64(RowParam));
             else if (name == "Color")
@@ -493,11 +504,11 @@ namespace SSAdmin.Areas
 
             var model = _repository.GetInvoiceShippingDetail(FkID, FKSeriesId);
             var htmlString = "";
-            ViewData.Model = model; 
+            ViewData.Model = model;
 
             using (StringWriter sw = new StringWriter())
             {
-                 IView view = viewEngine.GetView("", "~/Views/shared/transactions/_shippingdetails.cshtml", isMainPage: false).View;
+                IView view = viewEngine.GetView("", "~/Views/shared/transactions/_shippingdetails.cshtml", isMainPage: false).View;
                 ViewContext viewContext = new ViewContext(ControllerContext, view, ViewData, TempData, sw, new HtmlHelperOptions());
 
                 view.RenderAsync(viewContext).Wait();
@@ -517,7 +528,7 @@ namespace SSAdmin.Areas
         [HttpPost]
         public JsonResult SaveInvoiceBilty(TransactionModel model)
         {
-           // if (FormId == 0) FormId = FKFormID;
+            // if (FormId == 0) FormId = FKFormID;
 
             // var error = _repository.SaveInvoiceBilty(LoginId, FkID, FKSeriesId, FormId, BiltyNo, Image);
             var error = _repository.SaveInvoiceShippingDetail(model);

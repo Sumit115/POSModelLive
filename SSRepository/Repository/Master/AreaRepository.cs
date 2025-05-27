@@ -21,7 +21,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.AreaName))
             {
                 cnt = (from x in __dbContext.TblAreaMas
-                       where x.AreaName == model.AreaName && x.PkAreaId != model.PkAreaId
+                       where x.AreaName == model.AreaName && x.PkAreaId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Section Name Already Exits";
@@ -30,128 +30,76 @@ namespace SSRepository.Repository.Master
             return error;
         }
 
-        public List<AreaModel> GetList(int pageSize, int pageNo = 1, string search = "")
+        public List<AreaModel> GetList(int pageSize, int pageNo = 1, string search = "", long FkRegionId = 0)
         {
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<AreaModel> data = (from cou in __dbContext.TblAreaMas
-                                        join catGrp in __dbContext.TblRegionMas on cou.FkRegionId equals catGrp.PkRegionId
-
-                                        // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                        orderby cou.PkAreaId
-                                        select (new AreaModel
-                                        {
-                                            PkAreaId = cou.PkAreaId,
-                                            AreaName = cou.AreaName,
-                                            Description = cou.Description,
-                                            FkRegionId = cou.FkRegionId,
-                                            RegionName = catGrp.RegionName,
-                                            FKUserID = cou.FKUserID,
-                                            DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
-                                        }
+                                    where (EF.Functions.Like(cou.AreaName.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                     && (FkRegionId == 0 || cou.FkRegionId == FkRegionId)
+                                    orderby cou.AreaName
+                                    select (new AreaModel
+                                    {
+                                        PKID = cou.PkAreaId,
+                                        AreaName = cou.AreaName,
+                                        Description = cou.Description,
+                                        FkRegionId = cou.FkRegionId,
+                                        RegionName = cou.FKRegion.RegionName,
+                                        FKUserID = cou.FKUserID,
+                                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                        UserName = cou.FKUser.UserId,
+                                    }
                                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
-
-        public List<AreaModel> GetListByGroupId(long RegionId, int pageSize, int pageNo = 1, string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
-            List<AreaModel> data = (from cou in __dbContext.TblAreaMas
-                                        join catGrp in __dbContext.TblRegionMas on cou.FkRegionId equals catGrp.PkRegionId
-                                        where cou.FkRegionId == RegionId
-                                        // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                        orderby cou.PkAreaId
-                                        select (new AreaModel
-                                        {
-                                            PkAreaId = cou.PkAreaId,
-                                            AreaName = cou.AreaName,
-                                            Description = cou.Description,
-                                            FkRegionId = cou.FkRegionId,
-                                            RegionName = catGrp.RegionName,
-                                            FKUserID = cou.FKUserID,
-                                            DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
-                                        }
-                                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
-            return data;
-        }
-
         public AreaModel GetSingleRecord(long PkAreaId)
         {
 
             AreaModel data = new AreaModel();
             data = (from cou in __dbContext.TblAreaMas
-                    join catGrp in __dbContext.TblRegionMas on cou.FkRegionId equals catGrp.PkRegionId
                     where cou.PkAreaId == PkAreaId
                     select (new AreaModel
                     {
-                        PkAreaId = cou.PkAreaId,
+                        PKID = cou.PkAreaId,
                         AreaName = cou.AreaName,
                         Description = cou.Description,
                         FkRegionId = cou.FkRegionId,
-                        RegionName = catGrp.RegionName,
+                        RegionName = cou.FKRegion.RegionName,
                         FKUserID = cou.FKUserID,
-                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                        UserName = cou.FKUser.UserId,
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpArea(int pagesize, int pageno, string search = "")
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", long FkRegionId = 0)
         {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
 
-            var result = GetList(pagesize, pageno, search);
-
-            result.Insert(0, new AreaModel { PkAreaId = 0, AreaName = "Select" });
-            return (from r in result
-                    select new
-                    {
-                        r.PkAreaId,
-                        r.AreaName
-                    }).ToList();
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblAreaMas
+                         where (EF.Functions.Like(cou.AreaName.Trim().ToLower(), Convert.ToString(search) + "%"))
+                          && (FkRegionId == 0 || cou.FkRegionId == FkRegionId)
+                         orderby cou.AreaName
+                         select (new
+                         {
+                             PkAreaId = cou.PkAreaId,
+                             AreaName = cou.AreaName,
+                             RegionName = cou.FKRegion.RegionName,
+                         }
+                      )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else
+            {
+                return null;
+            }
         }
-        public object GetDrpAreaByRegionId(long RegionId, int pagesize, int pageno, string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
 
-            var result = GetListByGroupId(RegionId, pagesize, pageno, search);
-
-            result.Insert(0, new AreaModel { PkAreaId = 0, AreaName = "Select" });
-            return (from r in result
-                    select new
-                    {
-                        r.PkAreaId,
-                        r.AreaName
-                    }).ToList();
-        }
-        public object GetDrpTableArea(int pagesize, int pageno, string search = "")
-        {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetList(pagesize, pageno, search);
-
-            return (from r in result
-                    select new
-                    {
-                        r.PkAreaId,
-                        Area = r.AreaName,
-                        r.Description,
-                        Region = r.RegionName,
-                    }).ToList();
-        }
         public string DeleteRecord(long PkAreaId)
         {
             string Error = "";
-            AreaModel obj = GetSingleRecord(PkAreaId);
-
-            //var Country = (from x in _context.TblRegionMas
-            //               where x.FkcountryId == PkAreaId
-            //               select x).Count();
-            //if (Country > 0)
-            //    Error += "Table Name -  RegionMas : " + Country + " Records Exist";
-
+            AreaModel oldModel = GetSingleRecord(PkAreaId);
 
             if (Error == "")
             {
@@ -161,18 +109,7 @@ namespace SSRepository.Repository.Master
                 if (lst.Count > 0)
                     __dbContext.TblAreaMas.RemoveRange(lst);
 
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkAreaId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkAreaId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetAreaID(), PkAreaId, obj.FKAreaID, obj.DATE_MODIFIED, true);
+                AddMasterLog((long)Handler.Form.Area, PkAreaId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.AreaName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -191,17 +128,17 @@ namespace SSRepository.Repository.Master
         {
             AreaModel model = (AreaModel)objmodel;
             TblAreaMas Tbl = new TblAreaMas();
-            if (model.PkAreaId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblAreaMas.Find(model.PkAreaId);
+                var _entity = __dbContext.TblAreaMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkAreaId = model.PkAreaId;
+            Tbl.PkAreaId = model.PKID;
             Tbl.AreaName = model.AreaName;
             Tbl.FkRegionId = model.FkRegionId;
-            Tbl.Description = model.Description; 
+            Tbl.Description = model.Description;
             Tbl.ModifiedDate = DateTime.Now;
             Tbl.FKUserID = GetUserID();
             if (Mode == "Create")
@@ -224,15 +161,18 @@ namespace SSRepository.Repository.Master
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
             var list = new List<ColumnStructure>
             {
-                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Region", Fields="RegionName",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Area", Fields="AreaName",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Description", Fields="Description",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=1, Orderby =4, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=1, Orderby =5, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                        };
-            return list;
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Region", Fields="RegionName",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Area", Fields="AreaName",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Description", Fields="Description",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+          };
+
+          return list;
         }
 
 
