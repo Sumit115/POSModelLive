@@ -145,7 +145,8 @@ builder.Services.AddScoped<IZoneRepository, ZoneRepository>();
 builder.Services.AddScoped<IRegionRepository, RegionRepository>();
 builder.Services.AddScoped<IUniqueBarcodeTrackingRepository, UniqueBarcodeTrackingRepository>();
 builder.Services.AddScoped<IAreaRepository, AreaRepository>();
-builder.Services.AddScoped<ILocalityRepository, LocalityRepository>();
+builder.Services.AddScoped<ILocalityRepository, LocalityRepository>(); 
+builder.Services.AddScoped<IGSTReportRepository, GSTReportRepository>();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();

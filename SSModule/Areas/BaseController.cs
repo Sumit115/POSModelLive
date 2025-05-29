@@ -21,11 +21,11 @@ namespace SSAdmin.Areas
         
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            string menulist = "";
+            string menulist = ""; 
             string companyName = HttpContext.Session.GetString("CompanyName")??"";
             string userId = HttpContext.Session.GetString("UserID") ?? "";
-            string filePathSysDefaults = Path.Combine("wwwroot", "Data", companyName, userId, "menulist.json");
-            using (var fileStream = new FileStream(filePathSysDefaults, FileMode.Open, FileAccess.Read, FileShare.Read))
+            string filePathmenulist = Path.Combine("wwwroot", "Data", companyName, userId, "menulist.json");
+            using (var fileStream = new FileStream(filePathmenulist, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (var reader = new StreamReader(fileStream))
             {
                 menulist = reader.ReadToEnd();
@@ -36,6 +36,7 @@ namespace SSAdmin.Areas
                 var _lst = JsonConvert.DeserializeObject<List<MenuModel>>(menulist);
                 ViewBag.Menulist = _lst;
             }
+             ViewBag.FinYear = _gridLayoutRepository.ObjSysDefault.FinYear;
 
             ViewBag.CompanyName = companyName;
             ViewBag.CompanyImage1 = HttpContext.Session.GetString("CompanyImage1");
