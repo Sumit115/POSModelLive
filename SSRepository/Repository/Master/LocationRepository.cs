@@ -21,10 +21,10 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.Location))
             {
                 cnt = (from x in __dbContext.TblLocationMas
-                       where x.Location == model.Location && x.PkLocationID != model.PKLocationID
+                       where x.Location == model.Location && x.PkLocationID != model.PKID
                        select x).Count();
                 if (cnt > 0)
-                    error = "Section Name Already Exits";
+                    error = "Location Name Already Exits";
             }
 
             return error;
@@ -39,10 +39,10 @@ namespace SSRepository.Repository.Master
 
             data = (from Loc in __dbContext.TblLocationMas
                     where (EF.Functions.Like(Loc.Location.Trim().ToLower(), Convert.ToString(search) + "%"))
-                    orderby Loc.PkLocationID
+                    orderby Loc.Location
                     select (new LocationModel
                     {
-                        PKLocationID = Loc.PkLocationID,
+                        PKID = Loc.PkLocationID,
                         Location = Loc.Location,
                         Alias = Loc.Alias,
                         Address = Loc.Address,
@@ -84,7 +84,7 @@ namespace SSRepository.Repository.Master
                          select (new
                          {
                              cou.PkLocationID,
-                             cou.Location, 
+                             cou.Location,
                              cou.Alias,
                              cou.Address,
                          }
@@ -92,7 +92,7 @@ namespace SSRepository.Repository.Master
             }
             else if (EnCustomFlag == (int)Handler.en_CustomFlag.Filter)
             {
-                var BillingLocation = ObjSysDefault.BillingLocation.Split(',').ToList(); 
+                var BillingLocation = ObjSysDefault.BillingLocation.Split(',').ToList();
                 if (search != null) search = search.ToLower();
                 pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
                 return ((from cou in __dbContext.TblLocationMas
@@ -120,7 +120,7 @@ namespace SSRepository.Repository.Master
 
             return (from Loc in __dbContext.TblLocationMas
                     where (EF.Functions.Like(Loc.Location.Trim().ToLower(), Convert.ToString(search) + "%"))
-                    orderby Loc.PkLocationID
+                    orderby Loc.Location
                     select (new
                     {
                         Loc.PkLocationID,
@@ -148,7 +148,7 @@ namespace SSRepository.Repository.Master
                     where cou.PkLocationID == PkLocationId
                     select (new LocationModel
                     {
-                        PKLocationID = cou.PkLocationID,
+                        PKID = cou.PkLocationID,
                         Location = cou.Location,
                         Address = cou.Address,
                         Alias = cou.Alias,
@@ -181,7 +181,7 @@ namespace SSRepository.Repository.Master
             {
                 data.UserLoclnk = (from ad in __dbContext.TblUserLocLnk
                                    join user in __dbContext.TblUserMas on ad.FKUserID equals user.PkUserId
-                                   where (ad.FKLocationID == data.PKLocationID)
+                                   where (ad.FKLocationID == data.PKID)
                                    select (new UserLocLnkModel
                                    {
                                        FkLocationID = ad.FKLocationID,
@@ -195,16 +195,30 @@ namespace SSRepository.Repository.Master
         public string DeleteRecord(long PkLocationId)
         {
             string Error = "";
-            LocationModel obj = GetSingleRecord(PkLocationId);
+            LocationModel oldModel = GetSingleRecord(PkLocationId);
 
 
-
+            //
+            //[]
+            var prdqtyBarcode = (from cou in __dbContext.TblProductQTYBarcode
+                                 where cou.FKLocationId == PkLocationId
+                                 select cou).Count();
+            if (prdqtyBarcode > 0)
+                Error = "use in other transaction";
             if (Error == "")
             {
+                //var prdStockdtl = (from cou in __dbContext.tblProdStock_Dtl
+                //                   where cou.FKLocationId == PkLocationId
+                //                   select cou).Count();
+                //if (prdStockdtl > 0)
+                //    Error = "use in other transaction";
+                //if (Error == "")
+                //{
                 var lstDeluserlink = (from x in __dbContext.TblUserLocLnk
                                       where x.FKLocationID == PkLocationId
                                       select x).ToList();
-                __dbContext.TblUserLocLnk.RemoveRange(lstDeluserlink);
+                if (lstDeluserlink.Count > 0)
+                    __dbContext.TblUserLocLnk.RemoveRange(lstDeluserlink);
 
                 var lst = (from x in __dbContext.TblLocationMas
                            where x.PkLocationID == PkLocationId
@@ -212,22 +226,10 @@ namespace SSRepository.Repository.Master
                 if (lst.Count > 0)
                     __dbContext.TblLocationMas.RemoveRange(lst);
 
-
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkLocationId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkLocationId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetLocationID(), PkLocationId, obj.FKLocationID, obj.DATE_MODIFIED, true);
+                AddMasterLog((long)Handler.Form.Location, PkLocationId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.Location, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
+                // }
             }
-
             return Error;
         }
         public override string ValidateData(object objmodel, string Mode)
@@ -243,12 +245,12 @@ namespace SSRepository.Repository.Master
         {
             LocationModel model = (LocationModel)objmodel;
             TblLocationMas Tbl = new TblLocationMas();
-            if (model.PKLocationID > 0)
+            if (model.PKID > 0)
             {
-                var _entity = GetSingleRecord(model.PKLocationID);
+                var _entity = GetSingleRecord(model.PKID);
 
                 IList<TblUserLocLnk> userlnk = (from x in __dbContext.TblUserLocLnk
-                                                where x.FKLocationID == model.PKLocationID
+                                                where x.FKLocationID == model.PKID
                                                 select x).ToList();
 
                 if (userlnk.Any())
@@ -256,14 +258,14 @@ namespace SSRepository.Repository.Master
                     DeleteData(userlnk, true);
                 }
             }
-            Tbl.PkLocationID = model.PKLocationID;
+            Tbl.PkLocationID = model.PKID;
             Tbl.Location = model.Location;
             Tbl.Address = model.Address;
             Tbl.Alias = model.Alias;
             Tbl.CreationDate = DateTime.Now;
             Tbl.IsBillingLocation = model.IsBillingLocation;
             Tbl.IsAllProduct = model.IsAllProduct;
-            Tbl.IsAllCustomer =  false;
+            Tbl.IsAllCustomer = false;
             Tbl.IsAllVendor = false;
             Tbl.FkStationID = model.FKStationID;
             Tbl.FkLocalityID = model.FKLocalityID;

@@ -8,7 +8,7 @@ $(document).ready(function () {
     });
 })
 function GenerateAlias() {
-    debugger;
+    
     if ($("#Alias").val() == "") {
         $.ajax({
             type: "POST",

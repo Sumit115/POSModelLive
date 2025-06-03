@@ -20,13 +20,13 @@ $(document).ready(function () {
     Load();
 
     $('#btnServerSave').click(function (e) {
-        debugger;
+        
         e.preventDefault();
         $("form").submit();
     });
 });
 function Load() {
-    debugger;
+    
     var PKID = $("#PKID").val();
    // Model = JSON.parse($("#hdData").val());
     if (PKID > 0) {

@@ -736,7 +736,7 @@ function BindGridReturn(GridId, data) {
                 var LinkSrNo = args.item["LinkSrNo"];
                 if (tranModel.FKSeriesId > 0) {
                     if (Handler.isNullOrEmpty(LinkSrNo) || LinkSrNo <= 0) {
-                        debugger;
+                        
                         if (field != "FKInvoiceID_Text" && field != "Product" && Common.isNullOrEmpty(args.item["Product"])) {
                             alert("Select Product Frist");
                             cgRtn_ClearRow(args)
@@ -1895,7 +1895,7 @@ function setBankThroughBank() {
 }
 
 function trandtldropList(data) {
-    debugger;
+    
     var output = []
     $.ajax({
         url: Handler.currentPath() + 'trandtldropList', data: data, async: false, dataType: 'JSON', success: function (result) {

@@ -12,7 +12,7 @@ namespace SSRepository.Models
         public LocationModel() {
             UserLoclnk = new List<UserLocLnkModel>();
         }
-        public long PKLocationID { get; set; }
+        public long PKID { get; set; }
 
         [Required]
         public string Location { get; set; }

@@ -24,6 +24,8 @@ namespace SSRepository.Data
         public char TaxType { get; set; }  
         public Nullable<long> FKLocationID { get; set; }
  
-        public string? DocumentType { get; set; } 
+        public string? DocumentType { get; set; }
+        public virtual TblLocationMas? FKLocation { get; set; }
+
     }
 }

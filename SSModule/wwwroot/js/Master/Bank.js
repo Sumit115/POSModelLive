@@ -10,7 +10,7 @@ $(document).ready(function () {
 }) 
 
 function GenerateAlias() {
-    debugger;
+    
     if ($("#GroupAlias").val() == "") {
         $.ajax({
             type: "POST",

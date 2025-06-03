@@ -10,6 +10,7 @@ namespace SSRepository.Data
         [Key]
         public long PKAccountLocLnkId { get; set; }
         public long FkAccountId { get; set; }
-        public long FKLocationID { get; set; }
+        public long FKLocationID { get; set; } 
+        public virtual TblLocationMas FKLocation { get; set; }
     }
 }

@@ -22,5 +22,8 @@ namespace SSRepository.Data
         public string? BranchCode { get; set; }
         public string? Location { get; set; } 
         public string? Image1 { get; set; }
+
+        public virtual TblUserMas FKUser { get; set; } 
+        public virtual TblCityMas? FKCity { get; set; }
     }
 }

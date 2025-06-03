@@ -22,7 +22,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.LocalityName))
             {
                 cnt = (from x in __dbContext.TblLocalityMas
-                       where x.LocalityName == model.LocalityName && x.PkLocalityId != model.PkLocalityId
+                       where x.LocalityName == model.LocalityName && x.PkLocalityId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Section Name Already Exits";
@@ -31,24 +31,24 @@ namespace SSRepository.Repository.Master
             return error;
         }
 
-        public List<LocalityModel> GetList(int pageSize, int pageNo = 1, string search = "")
+        public List<LocalityModel> GetList(int pageSize, int pageNo = 1, string search = "",int FkAreaId=0)
         {
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<LocalityModel> data = (from cou in __dbContext.TblLocalityMas
-                                        join catGrp in __dbContext.TblAreaMas on cou.FkAreaId equals catGrp.PkAreaId
-
-                                        // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                        orderby cou.PkLocalityId
+                                        where (EF.Functions.Like(cou.LocalityName.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                     && (FkAreaId == 0 || cou.FkAreaId == FkAreaId)
+                                        orderby cou.LocalityName
                                         select (new LocalityModel
                                         {
-                                            PkLocalityId = cou.PkLocalityId,
+                                            PKID = cou.PkLocalityId,
                                             LocalityName = cou.LocalityName,
                                             Description = cou.Description,
                                             FkAreaId = cou.FkAreaId,
-                                            AreaName = catGrp.AreaName,
+                                            AreaName = cou.FKArea.AreaName,
                                             FKUserID = cou.FKUserID,
-                                            DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                                            DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                            UserName = cou.FKUser.UserId,
                                         }
                                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
@@ -60,17 +60,17 @@ namespace SSRepository.Repository.Master
 
             LocalityModel data = new LocalityModel();
             data = (from cou in __dbContext.TblLocalityMas
-                    join catGrp in __dbContext.TblAreaMas on cou.FkAreaId equals catGrp.PkAreaId
-                    where cou.PkLocalityId == PkLocalityId
+                     where cou.PkLocalityId == PkLocalityId
                     select (new LocalityModel
                     {
-                        PkLocalityId = cou.PkLocalityId,
+                        PKID = cou.PkLocalityId,
                         LocalityName = cou.LocalityName,
                         Description = cou.Description,
                         FkAreaId = cou.FkAreaId,
-                        AreaName = catGrp.AreaName,
+                        AreaName = cou.FKArea.AreaName,
                         FKUserID = cou.FKUserID,
-                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
+                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                        UserName = cou.FKUser.UserId,
                     })).FirstOrDefault();
             return data;
         }
@@ -82,16 +82,15 @@ namespace SSRepository.Repository.Master
                 if (search != null) search = search.ToLower();
                 pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
                 return (from cou in __dbContext.TblLocalityMas
-                                            join catGrp in __dbContext.TblAreaMas on cou.FkAreaId equals catGrp.PkAreaId
-                                            where (AreaId==0 || cou.FkAreaId == AreaId)
-                                            orderby cou.PkLocalityId
+                                             where (AreaId==0 || cou.FkAreaId == AreaId)
+                                            orderby cou.LocalityName
                                             select (new 
                                             {
                                                 cou.PkLocalityId,
                                                 cou.LocalityName,
                                                 cou.Description,
                                                 cou.FkAreaId,
-                                                catGrp.AreaName,
+                                                cou.FKArea.AreaName,
                                                 
                                             }
                                            )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
@@ -133,14 +132,14 @@ namespace SSRepository.Repository.Master
         {
             LocalityModel model = (LocalityModel)objmodel;
             TblLocalityMas Tbl = new TblLocalityMas();
-            if (model.PkLocalityId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblLocalityMas.Find(model.PkLocalityId);
+                var _entity = __dbContext.TblLocalityMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkLocalityId = model.PkLocalityId;
+            Tbl.PkLocalityId = model.PKID;
             Tbl.LocalityName = model.LocalityName;
             Tbl.FkAreaId = model.FkAreaId;
             Tbl.Description = model.Description;
@@ -166,14 +165,17 @@ namespace SSRepository.Repository.Master
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
             var list = new List<ColumnStructure>
             {
-                   new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Area", Fields="AreaName",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Locality", Fields="LocalityName",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Description", Fields="Description",Width=25,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                        };
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Area", Fields="AreaName",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Locality", Fields="LocalityName",Width=30,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Description", Fields="Description",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+          };
+            
             return list;
         }
 

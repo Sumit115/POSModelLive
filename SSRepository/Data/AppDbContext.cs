@@ -602,6 +602,52 @@ namespace SSRepository.Data
                  .HasForeignKey(e => e.FkRegionId)
                  .OnDelete(DeleteBehavior.Restrict);
             });
+
+            modelBuilder.Entity<TblLocalityMas>(entity =>
+            {
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKArea)
+                 .WithMany()
+                 .HasForeignKey(e => e.FkAreaId)
+                 .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TblAccountLocLnk>(entity =>
+            { 
+                entity.Property(e => e.FKLocationID)
+                    .HasColumnType("bigint")
+                    .IsRequired(); 
+            });
+
+            modelBuilder.Entity<TblPromotionLocationLnk>(entity =>
+            { 
+                entity.Property(e => e.FKLocationId)
+                    .HasColumnType("bigint")
+                    .IsRequired(); 
+            });
+
+            modelBuilder.Entity<TblSeriesMas>(entity =>
+            {
+                entity.Property(e => e.FKLocationID)
+                    .HasColumnType("bigint")
+                    .IsRequired();
+            });
+            modelBuilder.Entity<TblBranchMas>(entity =>
+            {
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict); 
+
+                entity.HasOne(e => e.FKCity)
+                      .WithMany()
+                      .HasForeignKey(e => e.FkCityId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
         }
     }
 }

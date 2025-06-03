@@ -130,7 +130,7 @@ function AddLocation() {
 }
 
 function RowAction(obj, index, action) {
-    debugger;
+    
     if (action == 'del') {
         $(obj).attr('onclick', `RowAction(this,${i},\'undo\')`);
         $(obj).html('<i class="bi bi-arrow-counterclockwise"></i>');
@@ -147,7 +147,7 @@ function RowAction(obj, index, action) {
     }
 }
 function GenerateAlias() {
-    debugger;
+    
     if ($("#Alias").val() == "") {
         $.ajax({
             type: "POST",

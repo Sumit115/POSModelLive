@@ -11,5 +11,6 @@ namespace SSRepository.Data
         public long PkId { get; set; }
         public long FkPromotionId { get; set; }
         public long FKLocationId { get; set; }
+        public virtual TblLocationMas FKLocation { get; set; }
     }
 }

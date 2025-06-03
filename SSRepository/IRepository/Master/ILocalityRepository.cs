@@ -9,8 +9,8 @@ namespace SSRepository.IRepository.Master
          List<ColumnStructure> ColumnList(string GridName = "");
 
         string isAlreadyExist(LocalityModel tblBankMas, string Mode);
-        List<LocalityModel> GetList(int pageSize, int pageNo = 1, string search = "");
-        object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", long DistrictId = 0);
+        List<LocalityModel> GetList(int pageSize, int pageNo = 1, string search = "", int FkAreaId = 0);
+        object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", long FkAreaId = 0);
 
         LocalityModel GetSingleRecord(long PkID);
 

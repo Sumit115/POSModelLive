@@ -31,7 +31,7 @@ function DeleteRecord() {
 
 
 function GenerateAlias($id) {
-    debugger;
+    
     if ($("#" + $id).val() == "") {
         $.ajax({
             type: "POST",

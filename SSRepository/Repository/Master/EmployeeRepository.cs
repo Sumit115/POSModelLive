@@ -43,7 +43,7 @@ namespace SSRepository.Repository.Master
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<EmployeeModel> data = (from cou in __dbContext.TblEmployeeMas
                                        where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                       orderby cou.PkEmployeeId
+                                       orderby cou.Name
                                        select (new EmployeeModel
                                        {
                                            PKID = cou.PkEmployeeId,

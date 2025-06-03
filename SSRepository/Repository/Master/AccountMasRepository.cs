@@ -169,13 +169,17 @@ namespace SSRepository.Repository.Master
         {
             if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
             {
-                var result = GetList(pageSize, pageNo, search);
-                return (from r in result
+
+                return (from cou in __dbContext.TblAccountMas
+                        where (EF.Functions.Like(cou.Account.Trim().ToLower(), Convert.ToString(search) + "%"))
+                        orderby cou.Account
                         select new
                         {
-                            r.PKID,
-                            r.Account
+                            cou.PkAccountId,
+                            cou.Account
                         }).ToList();
+
+               
             }
             else
             {

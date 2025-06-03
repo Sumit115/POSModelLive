@@ -506,7 +506,7 @@ function BindGridOut(GridId, GridStructerJson, data) {
         //---------------    ---------------   ---------------   ---------------/
         cgOut.outGrid.onCellChange.subscribe(function (e, args) {
             if (args.cell != undefined) {
-                debugger;
+                
                 var field = cgOut.columns[args.cell].field;
                
                 if (field == "Product") {
@@ -896,7 +896,7 @@ function setGridRowData(args, data, rowIndex, fieldName, IsReturn) {
     }
     else {
         if (data[rowIndex] != undefined) {
-            debugger;
+            
             console.log(data[rowIndex]);
             args.item["SrNo"] = data[rowIndex].SrNo;
             args.item["PkProductId"] = data[rowIndex].PkProductId;

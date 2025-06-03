@@ -99,10 +99,10 @@ namespace SSAdmin.Controllers
         } 
 
         [HttpPost]
-        public object City(int pageSize, int pageNo = 1, string search = "", string StateName = "")
+        public object City(int pageSize, int pageNo = 1, string search = "", string StateName = "", string State  = "")
         {
             CityRepository repository = new CityRepository(_dbContext, _contextAccessor);
-            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, StateName);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, !string.IsNullOrEmpty(StateName)? StateName: State);
         }
         [HttpPost]
         public object District(int pageSize, int pageNo = 1, string search = "", int FkStateId = 0)

@@ -174,7 +174,7 @@ function bindGrid(GridId, data, IdProperty) {
 
             }
             else if (command == "ConvertInvoice") {
-                debugger;
+                
                 var str = UDI.outGrid.getDataItem(row).TrnStatus;
                 var str = str.replace(/ /g, '');
                 var str = str.replace(/\s+/g, '');

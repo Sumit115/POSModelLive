@@ -11,7 +11,7 @@ namespace SSRepository.Models
 {
      public class BranchModel : BaseModel
     {
-        public long PkBranchId { get; set; }
+        public long PKID { get; set; }
         [Required]
         public string BranchName { get; set; }
         public string? ContactPerson { get; set; }

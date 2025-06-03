@@ -1561,7 +1561,7 @@ namespace SSRepository.Repository.Transaction
                 var lst = rep.GetList(pageSize, pageNo, search).ToList()
                     .Select(cou => new PartyModel()
                     {
-                        PKID = cou.PKLocationID,
+                        PKID = cou.PKID,
                         Email = cou.Email,
                         Mobile = cou.Phone1,
                         Address = cou.Address,

@@ -22,7 +22,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.Mobile))
             {
                 cnt = (from x in __dbContext.TblBranchMas
-                       where x.Mobile == model.Mobile && x.PkBranchId != model.PkBranchId
+                       where x.Mobile == model.Mobile && x.PkBranchId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Mobile Already Exits";
@@ -30,7 +30,7 @@ namespace SSRepository.Repository.Master
             else if (!string.IsNullOrEmpty(model.Email))
             {
                 cnt = (from x in __dbContext.TblBranchMas
-                       where x.Email == model.Email && x.PkBranchId != model.PkBranchId
+                       where x.Email == model.Email && x.PkBranchId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Email Already Exits";
@@ -38,7 +38,7 @@ namespace SSRepository.Repository.Master
             else if (!string.IsNullOrEmpty(model.BranchCode))
             {
                 cnt = (from x in __dbContext.TblBranchMas
-                       where x.BranchCode == model.BranchCode && x.PkBranchId != model.PkBranchId
+                       where x.BranchCode == model.BranchCode && x.PkBranchId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "BranchCode Already Exits";
@@ -51,22 +51,18 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<BranchModel> data = (from cou in __dbContext.TblBranchMas
-                                      join _city in __dbContext.TblCityMas
-                                       on new { User = cou.FkCityId } equals new { User = (long?)_city.PkCityId }
-                                       into _citytmp
-                                      from city in _citytmp.DefaultIfEmpty()
-                                          // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                                      orderby cou.PkBranchId
+                                      where (EF.Functions.Like(cou.BranchName.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                      orderby cou.BranchName
                                       select (new BranchModel
                                       {
-                                          PkBranchId = cou.PkBranchId,
+                                          PKID = cou.PkBranchId,
                                           BranchName = cou.BranchName,
                                           ContactPerson = cou.ContactPerson,
                                           Email = cou.Email,
                                           Mobile = cou.Mobile,
                                           Address = cou.Address,
                                           FkCityId = cou.FkCityId,
-                                          City = city.CityName,
+                                          City = cou.FKCity.CityName,
                                           State = cou.State,
                                           Pin = cou.Pin,
                                           Country = cou.Country,
@@ -75,6 +71,7 @@ namespace SSRepository.Repository.Master
                                           Location = cou.Location,
                                           Image1 = cou.Image1,
                                           FKUserID = cou.FKUserID,
+                                          UserName = cou.FKUser.UserId,
                                           DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                       }
                                      )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
@@ -90,13 +87,14 @@ namespace SSRepository.Repository.Master
                     where cou.PkBranchId == PkBranchId
                     select (new BranchModel
                     {
-                        PkBranchId = cou.PkBranchId,
+                        PKID = cou.PkBranchId,
                         BranchName = cou.BranchName,
                         ContactPerson = cou.ContactPerson,
                         Email = cou.Email,
                         Mobile = cou.Mobile,
                         Address = cou.Address,
                         FkCityId = cou.FkCityId,
+                        City = cou.FKCity.CityName,
                         State = cou.State,
                         Pin = cou.Pin,
                         Country = cou.Country,
@@ -105,6 +103,7 @@ namespace SSRepository.Repository.Master
                         Location = cou.Location,
                         Image1 = cou.Image1,
                         FKUserID = cou.FKUserID,
+                        UserName = cou.FKUser.UserId,
                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                     })).FirstOrDefault();
             return data;
@@ -113,12 +112,14 @@ namespace SSRepository.Repository.Master
         {
             if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
             {
-                var result = GetList(pageSize, pageNo, search);
-                return (from r in result
+               
+                return (from cou in __dbContext.TblBranchMas
+                        where (EF.Functions.Like(cou.BranchName.Trim().ToLower(), Convert.ToString(search) + "%"))
+                        orderby cou.BranchName
                         select new
                         {
-                            r.PkBranchId,
-                            r.BranchName
+                            cou.PkBranchId,
+                            cou.BranchName
                         }).ToList();
             }
             else
@@ -130,7 +131,7 @@ namespace SSRepository.Repository.Master
         public string DeleteRecord(long PkBranchId)
         {
             string Error = "";
-            BranchModel obj = GetSingleRecord(PkBranchId);
+            BranchModel oldModel = GetSingleRecord(PkBranchId);
 
             //var Country = (from x in _context.TblStateMas
             //               where x.FkcountryId == PkBranchId
@@ -147,18 +148,7 @@ namespace SSRepository.Repository.Master
                 if (lst.Count > 0)
                     __dbContext.TblBranchMas.RemoveRange(lst);
 
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkBranchId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkBranchId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetBranchID(), PkBranchId, obj.FKBranchID, obj.DATE_MODIFIED, true);
+                AddMasterLog((long)Handler.Form.Branch, PkBranchId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.BranchName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -177,14 +167,14 @@ namespace SSRepository.Repository.Master
         {
             BranchModel model = (BranchModel)objmodel;
             TblBranchMas Tbl = new TblBranchMas();
-            if (model.PkBranchId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblBranchMas.Find(model.PkBranchId);
+                var _entity = __dbContext.TblBranchMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkBranchId = model.PkBranchId;
+            Tbl.PkBranchId = model.PKID;
             Tbl.BranchName = model.BranchName;
             Tbl.ContactPerson = model.ContactPerson;
             Tbl.Email = model.Email;
@@ -220,22 +210,24 @@ namespace SSRepository.Repository.Master
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
+
             var list = new List<ColumnStructure>
             {
-                  new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Date", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Branch Code", Fields="BranchCode",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Branch Name", Fields="BranchName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Contact Person", Fields="ContactPerson",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Email", Fields="Email",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Mobile", Fields="Mobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Location", Fields="Location",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Address", Fields="Address",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="State", Fields="State",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="City", Fields="City",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Pin", Fields="Pin",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                     };
+                  new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Branch Code", Fields="BranchCode",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Branch Name", Fields="BranchName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Contact Person", Fields="ContactPerson",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Email", Fields="Email",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Mobile", Fields="Mobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Location", Fields="Location",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Address", Fields="Address",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="State", Fields="State",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="City", Fields="City",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Pin", Fields="Pin",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+      };
             return list;
         }
 

@@ -36,7 +36,7 @@ function GridLayout(option) {
     }
 
     var Event = () => {
-        debugger;
+        
         var ColCheckLenght = $("#SGLBody table tbody tr input[type='checkbox']:checked:visible").length;
         if ($Scope._Columns.filter(x => x.Name == "PKID").length == 0) {
             if (ColCheckLenght == $Scope._Columns.length) {
@@ -333,7 +333,7 @@ function GridLayout(option) {
 
     var Save = () => {
         $("#txtSGLSearch").val('');
-        debugger;
+        
         var ColArr = JSON.parse(JSON.stringify($Scope._Columns));
         var IsAnySelect = false;
         var SGLSize = parseInt($("#hidSGLSize").val());
@@ -351,7 +351,7 @@ function GridLayout(option) {
                 var isMandatory = $(item).find("input[type=checkbox]").eq(2).prop('checked');
                 ind = $Scope._Columns.map(function (d) { return d['Caption']; }).indexOf(ColName);
             } else {
-                debugger;
+                
                 ind = $Scope._Columns.map(function (d) { return d['Caption']; }).indexOf(ColName);
                 colWidth = $(item).find(".txt-sgl-width").val();
                 if (!colWidth) {
@@ -463,7 +463,7 @@ function GridLayout(option) {
                     beforeSend: Handler.loader,
                     async: false,
                     success: function (result) {
-                        debugger;
+                        
                         Handler.hide()
                         if (result.Status == "success") {
                             Alertdialog('Changes will be reflected after page refresh.', function () {
