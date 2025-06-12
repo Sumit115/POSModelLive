@@ -59,7 +59,7 @@
                 <label class="col-sm-2 col-form-label">State</label>
 
                 <div class="col-md-3">
-                    <select asp-for="CompanyState" asp-items="@(new SelectList(ViewBag.StateList,"Value","Text"))" class="form-control" onchange="BindCity()">
+                <select asp-for="CompanyState" asp-items="@(new SelectList(ViewBag.StateList,"Value","Text"))" class="form-control form-select" onchange="BindCity()">
                     </select>
                     <span asp-validation-for="CompanyState" class="text-danger"></span>
                 </div>
@@ -67,7 +67,7 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">City</label>
                 <div class="col-md-3">
-                    <select asp-for="CompanyCityId" class="form-control">
+                <select asp-for="CompanyCityId" class="form-control form-select">
                         <option value="">-Select-</option>
                     </select>
                     <span asp-validation-for="CompanyCityId" class="text-danger"></span>
@@ -91,7 +91,7 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Coding scheme </label>
                 <div class="col-md-3">
-                    <select asp-for="CodingScheme" class="form-control">
+                <select asp-for="CodingScheme" class="form-control form-select">
                         <option value="Unique">Unique</option>
                         <option value="fixed">fixed</option>
                         <option value="Lot">Lot</option>
@@ -102,7 +102,7 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Hold Location</label>
                 <div class="col-md-3">
-                    <select asp-for="FkHoldLocationId" asp-items="@(new SelectList(ViewBag.LocationList,"PkLocationID","Location"))" class="form-control">
+                <select asp-for="FkHoldLocationId" asp-items="@(new SelectList(ViewBag.LocationList,"PkLocationID","Location"))" class="form-control form-select">
                         <option value="">-Select-</option>
                     </select>
                     <span asp-validation-for="FkHoldLocationId" class="text-danger"></span>
@@ -178,8 +178,9 @@
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Financial Year</label>
             <div class="col-md-3">
-                <select asp-for="FinYear" class="form-control">
+                <select asp-for="FinYear" class="form-control form-select">
                     <option value="2024">2024-25</option> 
+                    <option value="2025">2025-26</option>
                 </select>
                 <span asp-validation-for="FinYear" class="text-danger"></span>
             </div>

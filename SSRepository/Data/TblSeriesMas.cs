@@ -27,5 +27,6 @@ namespace SSRepository.Data
         public string? DocumentType { get; set; }
         public virtual TblLocationMas? FKLocation { get; set; }
 
+
     }
 }

@@ -70,3 +70,20 @@ function RowAction(obj, index, action) {
         $(obj).closest('tr').find(".action-icon").css("pointer-events", "all");
     }
 }
+
+function GenerateAlias() {
+    if ($("#Alias").val() == "") {
+        $.ajax({
+            type: "POST",
+            url: '/Master/Location/GetAlias',
+            data: {},
+            datatype: "json",
+            success: function (res) {
+                if (res != "") {
+                    $("#Alias").val(res);
+                }
+            }
+        });
+    }
+
+}

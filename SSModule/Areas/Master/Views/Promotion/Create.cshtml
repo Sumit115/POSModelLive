@@ -5,9 +5,9 @@
     ViewData["bdClass"] = "page";
 }
 <style>
-    tr.tbl-delete, tr.tbl-delete input {
+   /* tr.tbl-delete, tr.tbl-delete input {
         background: red;
-    }
+    }*/
 
     .shelf-tblCatSize input {
         border: none;
@@ -16,169 +16,146 @@
 <div class="p-3">
     <form asp-action="Create" class="g-3" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkPromotionId" />
+        <input type="hidden" asp-for="PKID" />
         <input type="hidden" asp-for="PromotionDuring" />
 
         <div class="row">
-
             <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label class="control-label">From Date</label>
-                            <input type="date" asp-for="PromotionFromDt" class="form-control" />
-                            <span asp-validation-for="PromotionFromDt" class="text-danger"></span>
+                <div class="form-group row">
+                    <label class="col-sm-2">From Date / Time</label>
+                    <div class="col-md-5">
+                        <input type="date" asp-for="PromotionFromDt" class="form-control" />
+                        <span asp-validation-for="PromotionFromDt" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="time" asp-for="PromotionFromTime" class="form-control" />
+                        <span asp-validation-for="PromotionFromTime" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">To Date / Time</label>
+                    <div class="col-md-5">
+                        <input type="date" asp-for="PromotionToDt" class="form-control" />
+                        <span asp-validation-for="PromotionToDt" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="time" asp-for="PromotionToTime" class="form-control" />
+                        <span asp-validation-for="PromotionToTime" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Name</label>
+                    <div class="col-md-10">
+                        <input type="text" asp-for="PromotionName" class="form-control" />
+                        <span asp-validation-for="PromotionName" class="text-danger"></span>
+                    </div>
+                </div>
+                @if (ViewBag.PromotionDuring == "Purchase")
+                {
+                    <div class="form-group row">
+                        <label class="col-sm-2">Vendor</label>
+                        <div class="col-md-10">
+                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkVendorId" }, { "Class", "val-cus-drp" }, { "event", "" },
+                        { "value", Model.FkVendorId }, { "text", Model.VendorName }, { "uri", "" }})
+
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label class="control-label">To Date</label>
-                            <input type="date" asp-for="PromotionToDt" class="form-control" />
-                            <span asp-validation-for="PromotionToDt" class="text-danger"></span>
+                }
+                else
+                {
+                    <div class="form-group row">
+                        <label class="col-sm-2">Customer</label>
+                        <div class="col-md-10">
+                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkCustomerId" }, { "Class", "val-cus-drp" }, { "event", "" },
+                        { "value", Model.FkCustomerId }, { "text", Model.CustomerName }, { "uri", "" }})
+
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label class="control-label">From Time</label>
-                            <input type="time" asp-for="PromotionFromTime" class="form-control" />
-                            <span asp-validation-for="PromotionFromTime" class="text-danger"></span>
-                        </div>
+                }
+                <div class="form-group row">
+                    <label class="col-sm-2">Sequence No</label>
+                    <div class="col-md-10">
+                        <input type="number" asp-for="SequenceNo" class="form-control" />
+                        <span asp-validation-for="SequenceNo" class="text-danger"></span>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label class="control-label">To Time</label>
-                            <input type="time" asp-for="PromotionToTime" class="form-control" />
-                            <span asp-validation-for="PromotionToTime" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Name</label>
-                            <input type="text" asp-for="PromotionName" class="form-control" />
-                            <span asp-validation-for="PromotionName" class="text-danger"></span>
-                        </div>
-                    </div>
-                    @*  <div class="col-md-4">
-                    <div class="form-group">
-                    <label class="control-label">Location </label>
+                </div>
+                <div class="form-group row border p-3">
+                    <label class="col-sm-2">Location</label>
+                    <div class="col-md-10">
+                        <div class="row">
 
-                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkLocationId" }, { "Class", "val-cus-drp" }, { "event", "" },
-                    { "value", Model.FKLocationId }, { "text", Model.LocationName }, { "uri", "" }})
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkLocationId" }, { "Class", "val-cus-drp" }, { "event", "" },
+                                    { "value", "" }, { "text", "" }, { "uri", "" }})
 
-                    </div>
-                    </div>*@
-
-                    @if (ViewBag.PromotionDuring == "Purchase")
-                    {
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Vendor </label>
-                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkVendorId" }, { "Class", "val-cus-drp" }, { "event", "" },
-                            { "value", Model.FkVendorId }, { "text", Model.VendorName }, { "uri", "" }})
-
-
-                            </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Customer </label>
-
-                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkCustomerId" }, { "Class", "val-cus-drp" }, { "event", "" },
-                            { "value", Model.FkCustomerId }, { "text", Model.CustomerName }, { "uri", "" }})
-
-                            </div>
-                        </div>
-                    }
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Sequence No</label>
-                            <input type="number" asp-for="SequenceNo" class="form-control" />
-                            <span asp-validation-for="SequenceNo" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="border p-2">
-                            <h5>Location</h5>
-                            <div class="row">
-
-                                <div class="col-md-9">
-                                    <div class="form-group">
-                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkLocationId" }, { "Class", "val-cus-drp" }, { "event", "" },
-                                        { "value", "" }, { "text", "" }, { "uri", "" }})
-
-                                    </div>
                                 </div>
+                            </div>
 
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <input type="hidden" id="hidLocationIndex" autocomplete="off" value="">
-                                        <input type="button" class="btn btn-warning" value="Add" onclick="addLocations()" autocomplete="off">
-                                    </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input type="hidden" id="hidLocationIndex" autocomplete="off" value="">
+                                    <input type="button" class="btn btn-warning w-100" value="Add" onclick="addLocations()" autocomplete="off">
                                 </div>
+                            </div>
 
-                                <div class="col-md-12">
-                                    <table id="tblLocation" class="shelf-tblCatSize table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Location</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="md-height">
-                                            @{
-                                                int AcNo = -1;
-                                            }
-                                            @if (Model.PromotionLocation_lst != null)
+                            <div class="col-md-12">
+                                <table id="tblLocation" class="shelf-tblCatSize table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Location</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="md-height">
+                                        @{
+                                            int AcNo = -1;
+                                        }
+                                        @if (Model.PromotionLocation_lst != null)
+                                        {
+                                            for (int i = 0; i < Model.PromotionLocation_lst.Count; i++)
                                             {
-                                                for (int i = 0; i < Model.PromotionLocation_lst.Count; i++)
-                                                {
-                                                    AcNo++;
-                                                    <tr index="0">
+                                                AcNo++;
+                                                <tr index="0">
 
-                                                        <td class="tabel-td-xs">
-                                                            <input readonly="readonly" id="PromotionLocation_lst_@(i)__LocationName" name="PromotionLocation_lst[@i].LocationName" type="text" value="@Model.PromotionLocation_lst[i].LocationName" tabindex="-1">
-                                                        </td>
+                                                    <td class="tabel-td-xs">
+                                                        <input readonly="readonly" id="PromotionLocation_lst_@(i)__LocationName" name="PromotionLocation_lst[@i].LocationName" type="text" value="@Model.PromotionLocation_lst[i].LocationName" tabindex="-1">
+                                                    </td>
 
-                                                        <td class="tabel-td-xs">
-                                                            <input id="PromotionLocation_lst_@(i)__Mode" name="PromotionLocation_lst[@i].Mode" type="hidden" value="1">
-                                                            <input id="PromotionLocation_lst_@(i)__PkId" name="PromotionLocation_lst[@i].PkId" type="hidden" value="@Model.PromotionLocation_lst[i].PkId">
-                                                            <input id="PromotionLocation_lst_@(i)__FkLocationId" name="PromotionLocation_lst[@i].FkLocationId" type="hidden" value="@Model.PromotionLocation_lst[i].FkLocationId">
-                                                            <span class="action-icon" onclick="UpdateLocation(this,@i,'del')">
-                                                                <i class="fa fa-trash"></i>
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-
-                                                }
+                                                    <td class="tabel-td-xs">
+                                                        <input id="PromotionLocation_lst_@(i)__Mode" name="PromotionLocation_lst[@i].Mode" type="hidden" value="1">
+                                                        <input id="PromotionLocation_lst_@(i)__PkId" name="PromotionLocation_lst[@i].PkId" type="hidden" value="@Model.PromotionLocation_lst[i].PkId">
+                                                        <input id="PromotionLocation_lst_@(i)__FkLocationId" name="PromotionLocation_lst[@i].FkLocationId" type="hidden" value="@Model.PromotionLocation_lst[i].FkLocationId">
+                                                        <span class="action-icon" onclick="UpdateLocation(this,@i,'del')">
+                                                            <i class="fa fa-trash"></i>
+                                                        </span>
+                                                    </td>
+                                                </tr>
 
                                             }
-                                        </tbody>
 
-                                    </table>
-                                </div>
+                                        }
+                                    </tbody>
+
+                                </table>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Apply On</label>
-                            <select asp-for="PromotionApplyOn" id="PromotionApplyOn" class="form-control" onchange="hideShow(true)">
-                                <option value="Product">Product</option>
-                                <option value="Category">Category</option>
-                                <option value="Brand">Brand</option>
-                                <option value="Invoice Value">Invoice Value</option>
-                                <option value="XonX">XonX</option>
-                            </select>
-
-                        </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Apply On / Promotion</label>
+                    <div class="col-md-5">
+                        <select asp-for="PromotionApplyOn" id="PromotionApplyOn" class="form-control form-select" onchange="hideShow(true)">
+                            <option value="Product">Product</option>
+                            <option value="Category">Category</option>
+                            <option value="Brand">Brand</option>
+                            <option value="Invoice Value">Invoice Value</option>
+                            <option value="XonX">XonX</option>
+                        </select>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group" id="div_Promotionddl">
-                            <label class="control-label">Promotion</label>
-                            <select asp-for="Promotion" class="form-control" onchange="hideShow(true)">
+                    <div class="col-md-5">
+                        <div id="div_Promotionddl">
+                            <select asp-for="Promotion" class="form-control form-select" onchange="hideShow(true)">
                                 <option value="Free Product">Free Product</option>
                                 <option value="Free Qty">Free Qty</option>
                                 <option value="Trade Discount">Trade Discount (%)</option>
@@ -188,153 +165,153 @@
                                 <option value="Flat Rate">Flat Rate</option>
                                 <option value="Flat Qty">Flat Qty</option>
                             </select>
-
                         </div>
                     </div>
-                    <div class="col-md-12">
-                        <h4>Qualifying</h4>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2"><h6>Qualifying</h6></label>
+                    <div class="col-md-10">
                     </div>
-
-                    <div class=" col-md-3">
-                        <label>Amount</label>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Amount  / To Amount</label>
+                    <div class="col-md-5">
                         <input type="text" asp-for="PromotionApplyAmt" class="form-control" />
                         <span asp-validation-for="PromotionApplyAmt" class="text-danger"></span>
                     </div>
-                    <div class=" col-md-3">
-                        <label>To Amount</label>
+                    <div class="col-md-5">
                         <input type="text" asp-for="PromotionApplyAmt2" class="form-control" />
                         <span asp-validation-for="PromotionApplyAmt2" class="text-danger"></span>
                     </div>
-                    <div class=" col-md-3">
-                        <label>Qty</label>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Qty / To Qty</label>
+                    <div class="col-md-5">
                         <input type="text" asp-for="PromotionApplyQty" class="form-control" />
                         <span asp-validation-for="PromotionApplyQty" class="text-danger"></span>
                     </div>
-                    <div class=" col-md-3">
-                        <label>To Qty</label>
+                    <div class="col-md-5">
                         <input type="text" asp-for="PromotionApplyQty2" class="form-control" />
                         <span asp-validation-for="PromotionApplyQty2" class="text-danger"></span>
                     </div>
-                    @*<div class="col-md-4">
-                    <div class="form-group">
-                    <label>Unit </label>
-                    <select asp-for="FkPromotionApplyUnitId" asp-items="@(new SelectList(ViewBag.UnitList,"Value","Text"))" class="form-control">
-                    </select>
-
-                    </div>
-                    </div>*@
-
-
                 </div>
+
             </div>
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h4 id="divheadingApplyOn">Apply On</h4>
+            <div class="col-md-1"></div>
+            <div class="col-md-5 border p-3">
+                <div class="form-group row">
+                    <label class="col-sm-2">  <h6 id="divheadingApplyOn">Apply On</h6></label>
+                    <div class="col-md-6">
                     </div>
-                    <div class="col-md-12" id="div_PromotionLnk">
-                        <div class="border p-2">
-                            @* <h5>Location</h5>*@
-                            <div class="row">
-
+                </div>
+                <div id="div_PromotionLnk">
+                    <div class="form-group row">
+                        <div class="col-md-8">
+                            <div class="form-group row" id="divCategory">
+                                <label class="col-sm-3">Category </label>
                                 <div class="col-md-9">
-                                    <div class="form-group" id="divCategory">
-                                        <label class="control-label">Category </label>
-                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkCategoryId" }, { "Class", "val-cus-drp" }, { "event", "" },
-                                        { "value", "" }, { "text", "" }, { "uri", "" }})
-
-                                    </div>
-                                    <div class="form-group" id="divProduct">
-                                        <label class="control-label">Product </label>
-                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkProductId" }, { "Class", "val-cus-drp" }, { "event", "" },
-                                        { "value", "" }, { "text", "" }, { "uri", "" }})
-                                    </div>
-                                    <div class="form-group" id="divBrand">
-                                        <label class="control-label">Brand</label>
-                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkBrandId" }, { "Class", "val-cus-drp" }, { "event", "" },
-                                        { "value", Model.FkBrandId }, { "text", Model.BrandName }, { "uri", "" }})
-
-                                    </div>
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkCategoryId" }, { "Class", "val-cus-drp" }, { "event", "" },
+                                    { "value", "" }, { "text", "" }, { "uri", "" }})
                                 </div>
-
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <input type="hidden" id="hidPromotionLnkIndex" autocomplete="off" value="">
-                                        <input type="button" class="btn btn-warning" value="Add" onclick="addPromotionLnk()" autocomplete="off">
-                                    </div>
+                            </div>
+                            <div class="form-group row" id="divProduct">
+                                <label class="col-sm-3"> Product</label>
+                                <div class="col-md-9">
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkProductId" }, { "Class", "val-cus-drp" }, { "event", "" },
+                                    { "value", "" }, { "text", "" }, { "uri", "" }})
                                 </div>
+                            </div>
+                            <div class="form-group row" id="divBrand">
+                                <label class="col-sm-3"> Brand</label>
+                                <div class="col-md-9">
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkBrandId" }, { "Class", "val-cus-drp" }, { "event", "" },
+                                    { "value", Model.FkBrandId }, { "text", Model.BrandName }, { "uri", "" }})
 
-                                <div class="col-md-12">
-                                    <table id="tblPromotionLnk" class="shelf-tblCatSize table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th id="tblPromotionLnkHeading">Category</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="md-height">
-
-                                            @if (Model.PromotionLnk_lst != null)
-                                            {
-                                                for (int i = 0; i < Model.PromotionLnk_lst.Count; i++)
-                                                {
-                                                    <tr index="0">
-                                                        <td class="tabel-td-xs">
-                                                            <input readonly="readonly" id="PromotionLnk_lst_@(i)__LinkName" name="PromotionLnk_lst[@i].LinkName" type="text" value="@Model.PromotionLnk_lst[i].LinkName" tabindex="-1">
-                                                        </td>
-
-                                                        <td class="tabel-td-xs">
-                                                            <input id="PromotionLnk_lst_@(i)__Mode" name="PromotionLnk_lst[@i].Mode" type="hidden" value="1">
-                                                            <input id="PromotionLnk_lst_@(i)__PkId" name="PromotionLnk_lst[@i].PkId" type="hidden" value="@Model.PromotionLnk_lst[i].PkId">
-                                                            <input id="PromotionLnk_lst_@(i)__FkLinkId" name="PromotionLnk_lst[@i].FkLinkId" type="hidden" value="@Model.PromotionLnk_lst[i].FkLinkId">
-                                                            <span class="action-icon" onclick="UpdatePromotionLnk(this,@i,'del')">
-                                                                <i class="fa fa-trash"></i>
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-
-                                                }
-
-                                            }
-                                        </tbody>
-
-                                    </table>
                                 </div>
+                            </div>
 
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <input type="hidden" id="hidPromotionLnkIndex" autocomplete="off" value="">
+                                <input type="button" class="btn btn-warning w-100" value="Add" onclick="addPromotionLnk()" autocomplete="off">
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12" id="div_FreeProductSingle">
-                        <h4 id="divheading" class="mt-4">Free Product</h4>
+                    <div class="form-group row">
+                        <div class="col-md-10">
+                            <table id="tblPromotionLnk" class="shelf-tblCatSize table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th id="tblPromotionLnkHeading">Category</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="md-height">
 
-                        <div class="form-group">
-                            <label class="control-label">Free Product </label>
+                                    @if (Model.PromotionLnk_lst != null)
+                                    {
+                                        for (int i = 0; i < Model.PromotionLnk_lst.Count; i++)
+                                        {
+                                            <tr index="0">
+                                                <td class="tabel-td-xs">
+                                                    <input readonly="readonly" id="PromotionLnk_lst_@(i)__LinkName" name="PromotionLnk_lst[@i].LinkName" type="text" value="@Model.PromotionLnk_lst[i].LinkName" tabindex="-1">
+                                                </td>
 
+                                                <td class="tabel-td-xs">
+                                                    <input id="PromotionLnk_lst_@(i)__Mode" name="PromotionLnk_lst[@i].Mode" type="hidden" value="1">
+                                                    <input id="PromotionLnk_lst_@(i)__PkId" name="PromotionLnk_lst[@i].PkId" type="hidden" value="@Model.PromotionLnk_lst[i].PkId">
+                                                    <input id="PromotionLnk_lst_@(i)__FkLinkId" name="PromotionLnk_lst[@i].FkLinkId" type="hidden" value="@Model.PromotionLnk_lst[i].FkLinkId">
+                                                    <span class="action-icon" onclick="UpdatePromotionLnk(this,@i,'del')">
+                                                        <i class="fa fa-trash"></i>
+                                                    </span>
+                                                </td>
+                                            </tr>
+
+                                        }
+
+                                    }
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div id="div_FreeProductSingle">
+                    <div class="form-group row">
+                        <label class="col-sm-3"> <h6 id="divheading" class="mt-4">Free Product</h6></label>
+                        <div class="col-md-8">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2">Free Product</label>
+                        <div class="col-md-8">
                             @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkPromotionProdId" }, { "Class", "val-cus-drp" }, { "event", "" },
                             { "value", Model.FkPromotionProdId }, { "text", Model.PromotionProductName }, { "uri", "" }})
 
                         </div>
                     </div>
-                    <div class=" col-md-4">
-                        <label>Value</label>
-                        <input type="text" asp-for="PromotionAmt" class="form-control" />
-                        <span asp-validation-for="PromotionAmt" class="text-danger"></span>
+                    <div class="form-group row">
+                        <label class="col-sm-2">Value / Qty</label>
+                        <div class="col-md-4">
+                            <input type="text" asp-for="PromotionAmt" class="form-control" />
+                            <span asp-validation-for="PromotionAmt" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" asp-for="PromotionQty" class="form-control" />
+                            <span asp-validation-for="PromotionQty" class="text-danger"></span>
+                        </div>
                     </div>
-                    <div class=" col-md-4">
-                        <label>Qty</label>
-                        <input type="text" asp-for="PromotionQty" class="form-control" />
-                        <span asp-validation-for="PromotionQty" class="text-danger"></span>
-                    </div>
-                    @* <div class="col-md-4">
-                    <div class="form-group">
-                    <label>Unit </label>
-                    <select asp-for="FkPromotionUnitId" asp-items="@(new SelectList(ViewBag.UnitList,"Value","Text"))" class="form-control">
-                    </select>
 
-                    </div>
-                    </div>*@
                 </div>
             </div>
+           
         </div>
     </form>
 </div>
@@ -364,7 +341,7 @@
 
     <script>
         function hideShow(Ischange) {
-            
+
             var _applyOn = $("#PromotionApplyOn").val();
             var _promotion = $("#Promotion").val();
             $("#div_Promotionddl,#div_FreeProductSingle").show();
@@ -389,8 +366,9 @@
                 $("#Promotion option[value*='Flat Rate'],#Promotion option[value*='Flat Qty']").prop('disabled', true);
                 if (_promotion == 'Flat Rate' || _promotion == 'Flat Qty') {
                     $("#Promotion").val('Free Product');
-                    _promotion='Free Product';
-            }}
+                    _promotion = 'Free Product';
+                }
+            }
             $("#divheading").text(_promotion);
 
             $("#PromotionApplyAmt,#PromotionApplyAmt2,#PromotionApplyQty,#PromotionApplyQty2,#PromotionAmt,#FkPromotionApplyUnitId,#drpFkPromotionProdId,#PromotionQty,#FkPromotionUnitId").attr("readonly", "readonly");

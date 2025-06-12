@@ -208,15 +208,15 @@ namespace SSRepository.Repository.Master
                 if (saleCrNoteExist > 0)
                     Error += "use in other transaction";
             }
-            if (Error == "")
-            {
-                var saleChallanExist = (from cou in __dbContext.TblSalesChallantrn
-                                        join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
-                                        where cou.FkPartyId == PKID && ser.TranAlias == "SPSL"
-                                        select cou).Count();
-                if (saleChallanExist > 0)
-                    Error += "use in other transaction";
-            }
+            //if (Error == "")
+            //{
+            //    var saleChallanExist = (from cou in __dbContext.TblSalesChallantrn
+            //                            join ser in __dbContext.TblSeriesMas on cou.FKSeriesId equals ser.PkSeriesId
+            //                            where cou.FkPartyId == PKID && ser.TranAlias == "SPSL"
+            //                            select cou).Count();
+            //    if (saleChallanExist > 0)
+            //        Error += "use in other transaction";
+            //}
 
             if (Error == "")
             {

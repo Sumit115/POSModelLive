@@ -21,7 +21,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.Promotion))
             {
                 cnt = (from x in __dbContext.TblPromotionMas
-                       where x.PromotionName == model.Promotion && x.PkPromotionId != model.PkPromotionId
+                       where x.PromotionName == model.Promotion && x.PkPromotionId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Name Already Exits";
@@ -40,7 +40,7 @@ namespace SSRepository.Repository.Master
                                          orderby cou.PkPromotionId
                                          select (new PromotionModel
                                          {
-                                             PkPromotionId = cou.PkPromotionId,
+                                             PKID = cou.PkPromotionId,
                                              PromotionDuring = cou.PromotionDuring,
                                              PromotionName = cou.PromotionName,
                                              PromotionFromDt = cou.PromotionFromDt,
@@ -102,7 +102,7 @@ namespace SSRepository.Repository.Master
                     where cou.PkPromotionId == PkPromotionId
                     select (new PromotionModel
                     {
-                        PkPromotionId = cou.PkPromotionId,
+                        PKID = cou.PkPromotionId,
                         PromotionDuring = cou.PromotionDuring,
                         PromotionName = cou.PromotionName,
                         PromotionFromDt = cou.PromotionFromDt,
@@ -157,7 +157,7 @@ namespace SSRepository.Repository.Master
                 {
                     data.PromotionLnk_lst = (from ad in __dbContext.TblPromotionLnk
                                              join cat in __dbContext.TblCategoryMas on ad.FkLinkId equals cat.PkCategoryId
-                                             where (ad.FkPromotionId == data.PkPromotionId)
+                                             where (ad.FkPromotionId == data.PKID)
                                              select (new PromotionLnkModel
                                              {
                                                  PkId = ad.PkId,
@@ -170,7 +170,7 @@ namespace SSRepository.Repository.Master
                 {
                     data.PromotionLnk_lst = (from ad in __dbContext.TblPromotionLnk
                                              join cat in __dbContext.TblProductMas on ad.FkLinkId equals cat.PkProductId
-                                             where (ad.FkPromotionId == data.PkPromotionId)
+                                             where (ad.FkPromotionId == data.PKID)
                                              select (new PromotionLnkModel
                                              {
                                                  PkId = ad.PkId,
@@ -183,7 +183,7 @@ namespace SSRepository.Repository.Master
                 {
                     data.PromotionLnk_lst = (from ad in __dbContext.TblPromotionLnk
                                              join cat in __dbContext.TblBrandMas on ad.FkLinkId equals cat.PkBrandId
-                                             where (ad.FkPromotionId == data.PkPromotionId)
+                                             where (ad.FkPromotionId == data.PKID)
                                              select (new PromotionLnkModel
                                              {
                                                  PkId = ad.PkId,
@@ -199,7 +199,7 @@ namespace SSRepository.Repository.Master
         public string DeleteRecord(long PkPromotionId)
         {
             string Error = "";
-            PromotionModel obj = GetSingleRecord(PkPromotionId);
+            PromotionModel oldModel = GetSingleRecord(PkPromotionId);
 
             //var Country = (from x in _context.TblStateMas
             //               where x.FkcountryId == PkPromotionId
@@ -210,24 +210,20 @@ namespace SSRepository.Repository.Master
 
             if (Error == "")
             {
+                var res1 = (from x in __dbContext.TblPromotionLocationLnk
+                            where x.FkPromotionId == PkPromotionId  
+                            select x).ToList();
+                if (res1.Count > 0)
+                    __dbContext.TblPromotionLocationLnk.RemoveRange(res1);
+
+
                 var lst = (from x in __dbContext.TblPromotionMas
                            where x.PkPromotionId == PkPromotionId
                            select x).ToList();
                 if (lst.Count > 0)
                     __dbContext.TblPromotionMas.RemoveRange(lst);
 
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkPromotionId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkPromotionId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetPromotionID(), PkPromotionId, obj.FKPromotionID, obj.DATE_MODIFIED, true);
+                AddMasterLog((oldModel.PromotionDuring == "Sales" ? (long)Handler.Form.SalesPromotion : (long)Handler.Form.PurchasePromotion), PkPromotionId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.PromotionName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -246,14 +242,14 @@ namespace SSRepository.Repository.Master
         {
             PromotionModel model = (PromotionModel)objmodel;
             TblPromotionMas Tbl = new TblPromotionMas();
-            if (model.PkPromotionId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblPromotionMas.Find(model.PkPromotionId);
+                var _entity = __dbContext.TblPromotionMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkPromotionId = model.PkPromotionId;
+            Tbl.PkPromotionId = model.PKID;
             Tbl.PromotionDuring = model.PromotionDuring;
             Tbl.PromotionName = model.PromotionName;
             Tbl.PromotionFromDt = model.PromotionFromDt;

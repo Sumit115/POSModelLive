@@ -8,7 +8,7 @@
 <div class="master-page-ui">
     <form asp-action="Create" class=" g-3" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkSeriesId" />
+        <input type="hidden" asp-for="PKID" />
         <div class="row">
             <div class="col-md-7">
                 <div class="form-group row">
@@ -48,7 +48,7 @@
                 <div class="form-group row">
                     <label class="col-sm-2">Billing Rate</label>
                     <div class="col-md-6">
-                        <select asp-for="BillingRate" class="form-control">
+                        <select asp-for="BillingRate" class="form-select">
                             <option value="">Select</option>
                             <option value="MRP">MRP</option>
                             <option value="SaleRate">SaleRate</option>
@@ -62,15 +62,15 @@
                 <div class="form-group row">
                     <label class="col-sm-2">Billing Location</label>
                     <div class="col-md-6">
-                        <select asp-for="FKLocationID" asp-items="@(new SelectList(ViewBag.LocationList,"PkLocationID","Location"))" class="form-select">
-                        </select>
-                        <span asp-validation-for="FKLocationID" class="text-danger"></span>
+                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKLocationID" },{"name","Location"}, { "Class", "val-cus-drp" },
+                        { "value", Model.FKLocationID }, { "text", Model.Location }, { "uri", "Location" }, { "required", "required" },{ "placeholder", "Select Location"} })
+
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2">Tax Type</label>
                     <div class="col-md-6">
-                        <select asp-for="TaxType" class="form-control"> 
+                        <select asp-for="TaxType" class="form-control form-select">
                             <option value="I">Inclusive </option>
                             <option value="E">Exclusive</option>
                         </select>
@@ -80,7 +80,7 @@
                 <div class="form-group row" id="div_DocumentType" style="@(Model.TranAlias=="SINV"?"":"display:none")">
                     <label class="col-sm-2">Doc Type</label>
                     <div class="col-md-6">
-                        <select asp-for="DocumentType" class="form-control">
+                        <select asp-for="DocumentType" class="form-control form-Select">
                             <option value="B">B </option>
                             <option value="C">C</option>
                         </select>

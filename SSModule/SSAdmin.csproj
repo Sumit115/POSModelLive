@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <Content Remove="Areas\Master\Views\Company\List.cshtml" />
+    <Content Remove="Areas\Master\Views\Promotion\Create - Copy.cshtml" />
     <Content Remove="wwwroot\js\Master\Recipe.js" />
     <Content Remove="wwwroot\js\Master\User.js" />
   </ItemGroup>

@@ -36,13 +36,13 @@ namespace SSRepository.Repository.Master
         {
             dynamic cnt;
             string error = "";
-            if (model.PkSeriesId > 0)
+            if (model.PKID > 0)
             {
-                if (model.TranAlias == "SORD") { error = __dbContext.TblSalesOrdertrn.Where(x => x.FKSeriesId == model.PkSeriesId).ToList().Count > 0 ? "Update Not Available" : ""; }
-                if (model.TranAlias == "SINV") { error = __dbContext.TblSalesInvoicetrn.Where(x => x.FKSeriesId == model.PkSeriesId).ToList().Count > 0 ? "Update Not Available" : ""; }
-                if (model.TranAlias == "SCHN") { error = __dbContext.TblSalesChallantrn.Where(x => x.FKSeriesId == model.PkSeriesId).ToList().Count > 0 ? "Update Not Available" : ""; }
-                if (model.TranAlias == "PORD") { error = __dbContext.TblPurchaseOrdertrn.Where(x => x.FKSeriesId == model.PkSeriesId).ToList().Count > 0 ? "Update Not Available" : ""; }
-                if (model.TranAlias == "PINV") { error = __dbContext.TblPurchaseInvoicetrn.Where(x => x.FKSeriesId == model.PkSeriesId).ToList().Count > 0 ? "Update Not Available" : ""; }
+                //if (model.TranAlias == "SORD") { error = __dbContext.TblSalesOrdertrn.Where(x => x.FKSeriesId == model.PKID).ToList().Count > 0 ? "Update Not Available" : ""; }
+                //if (model.TranAlias == "SINV") { error = __dbContext.TblSalesInvoicetrn.Where(x => x.FKSeriesId == model.PKID).ToList().Count > 0 ? "Update Not Available" : ""; }
+                //if (model.TranAlias == "SCHN") { error = __dbContext.TblSalesChallantrn.Where(x => x.FKSeriesId == model.PKID).ToList().Count > 0 ? "Update Not Available" : ""; }
+                //if (model.TranAlias == "PORD") { error = __dbContext.TblPurchaseOrdertrn.Where(x => x.FKSeriesId == model.PKID).ToList().Count > 0 ? "Update Not Available" : ""; }
+                //if (model.TranAlias == "PINV") { error = __dbContext.TblPurchaseInvoicetrn.Where(x => x.FKSeriesId == model.PKID).ToList().Count > 0 ? "Update Not Available" : ""; }
             }
 
             return error;
@@ -56,15 +56,13 @@ namespace SSRepository.Repository.Master
                 if (search != null) search = search.ToLower();
                 pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
                 data = (from cou in __dbContext.TblSeriesMas
-                            //join _tranAlias in GetDrpTranAlias().ToList() on cou.TranAlias equals _tranAlias.Value
                         where EF.Functions.Like(cou.Series.Trim().ToLower(), search + "%")
-                        && (TranAlias == "" || cou.TranAlias == TranAlias)
-                        && (DocumentType == "" || cou.DocumentType == DocumentType)
-                        // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
-                        orderby cou.PkSeriesId
+                       && (TranAlias == "" || cou.TranAlias == TranAlias)
+                       && (DocumentType == "" || cou.DocumentType == DocumentType)
+                        orderby cou.Series
                         select (new SeriesModel
                         {
-                            PkSeriesId = cou.PkSeriesId,
+                            PKID = cou.PkSeriesId,
                             Series = cou.Series,
                             SeriesNo = cou.SeriesNo,
                             //FkBranchId = cou.FkBranchId,
@@ -80,8 +78,10 @@ namespace SSRepository.Repository.Master
                             AllowFreeQty = cou.AllowFreeQty,
                             DocumentType = cou.DocumentType ?? "",
                             FKLocationID = cou.FKLocationID,
+                            Location = cou.FKLocation.Location,
                             TaxType = cou.TaxType,
                             FKUserID = cou.FKUserID,
+                            UserName = cou.FKUser.UserId,
                             DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                             //TranAliasName= GetTranAliasName(cou.TranAlias),
                         }
@@ -94,7 +94,7 @@ namespace SSRepository.Repository.Master
             return data.ToList();
         }
 
-       
+
         public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", string TranAlias = "", string DocumentType = "")
         {
             if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
@@ -104,11 +104,10 @@ namespace SSRepository.Repository.Master
                 if (search != null) search = search.ToLower();
                 pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
                 return ((from cou in __dbContext.TblSeriesMas
-                             //join _tranAlias in GetDrpTranAlias().ToList() on cou.TranAlias equals _tranAlias.Value
                          where EF.Functions.Like(cou.Series.Trim().ToLower(), search + "%")
-                         && (TranAlias == "" || cou.TranAlias == TranAlias)
-                         && (DocumentType == "" || cou.DocumentType == DocumentType)
-                         && BillingLocation.Contains(cou.FKLocationID.ToString())
+                        && (TranAlias == "" || cou.TranAlias == TranAlias)
+                        && (DocumentType == "" || cou.DocumentType == DocumentType)
+                        && BillingLocation.Contains(cou.FKLocationID.ToString())
                          orderby cou.PkSeriesId
                          select (new
                          {
@@ -137,7 +136,7 @@ namespace SSRepository.Repository.Master
                          select (new
                          {
                              cou.PkSeriesId,
-                             cou.Series, 
+                             cou.Series,
                          }
                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
             }
@@ -151,17 +150,17 @@ namespace SSRepository.Repository.Master
 
             SeriesModel data = new SeriesModel();
             data = (from cou in __dbContext.TblSeriesMas
-                    join location in __dbContext.TblLocationMas on cou.FKLocationID equals location.PkLocationID
-                    join branch in __dbContext.TblBranchMas on location.FkBranchID equals branch.PkBranchId
+                        //join location in __dbContext.TblLocationMas on cou.FKLocationID equals location.PkLocationID
+                        //join branch in __dbContext.TblBranchMas on location.FkBranchID equals branch.PkBranchId
                     where cou.PkSeriesId == PkSeriesId
                     select (new SeriesModel
                     {
-                        PkSeriesId = cou.PkSeriesId,
+                        PKID = cou.PkSeriesId,
                         Series = cou.Series,
                         SeriesNo = cou.SeriesNo,
-                        // FkBranchId = cou.FkBranchId,
+                        //FkBranchId = cou.FkBranchId,
                         BillingRate = cou.BillingRate,
-                        TranAlias = cou.TranAlias,
+                        TranAlias = cou.TranAlias ?? "",
                         FormatName = cou.FormatName,
                         ResetNoFor = cou.ResetNoFor,
                         AllowWalkIn = cou.AllowWalkIn,
@@ -170,12 +169,12 @@ namespace SSRepository.Repository.Master
                         DefaultQty = cou.DefaultQty,
                         AllowZeroRate = cou.AllowZeroRate,
                         AllowFreeQty = cou.AllowFreeQty,
-                        BranchName = branch.BranchName,
+                        DocumentType = cou.DocumentType ?? "",
                         FKLocationID = cou.FKLocationID,
-                        Location = location.Location,
+                        Location = cou.FKLocation.Location,
                         TaxType = cou.TaxType,
-                        DocumentType = cou.DocumentType,
                         FKUserID = cou.FKUserID,
+                        UserName = cou.FKUser.UserId,
                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                     })).FirstOrDefault();
             return data;
@@ -184,15 +183,55 @@ namespace SSRepository.Repository.Master
         public string DeleteRecord(long PkSeriesId)
         {
             string Error = "";
-            SeriesModel obj = GetSingleRecord(PkSeriesId);
+            SeriesModel oldModel = GetSingleRecord(PkSeriesId);
 
-            //var Country = (from x in _context.TblStateMas
-            //               where x.FkcountryId == PkSeriesId
-            //               select x).Count();
-            //if (Country > 0)
-            //    Error += "Table Name -  StateMas : " + Country + " Records Exist";
+            var saleOrderExist = (from cou in __dbContext.TblSalesOrdertrn
+                                  where cou.FKSeriesId == PkSeriesId
+                                  select cou).Count();
+            if (saleOrderExist > 0)
+                Error += "use in other transaction";
 
+            if (Error == "")
+            {
+                var saleInvoiceExist = (from cou in __dbContext.TblSalesInvoicetrn
+                                        where cou.FKSeriesId == PkSeriesId
+                                        select cou).Count();
+                if (saleInvoiceExist > 0)
+                    Error += "use in other transaction";
+            }
+            if (Error == "")
+            {
+                var saleCrNoteExist = (from cou in __dbContext.TblSalesCrNotetrn
+                                        where cou.FKSeriesId == PkSeriesId
+                                       select cou).Count();
+                if (saleCrNoteExist > 0)
+                    Error += "use in other transaction";
+            }
+            //if (Error == "")
+            //{
+            //    var saleChallanExist = (from cou in __dbContext.TblSalesChallantrn
+            //                             where cou.FKSeriesId == PkSeriesId
+            //                            select cou).Count();
+            //    if (saleChallanExist > 0)
+            //        Error += "use in other transaction";
+            //}
+            if (Error == "")
+            {
 
+                var purchaseOrderExist = (from cou in __dbContext.TblPurchaseOrdertrn
+                                           where cou.FKSeriesId == PkSeriesId
+                                          select cou).Count();
+                if (purchaseOrderExist > 0)
+                    Error += "use in other transaction";
+            }
+            if (Error == "")
+            {
+                var purchaseInvoiceExist = (from cou in __dbContext.TblPurchaseInvoicetrn
+                                             where cou.FKSeriesId == PkSeriesId
+                                            select cou).Count();
+                if (purchaseInvoiceExist > 0)
+                    Error += "use in other transaction";
+            }
             if (Error == "")
             {
                 var lst = (from x in __dbContext.TblSeriesMas
@@ -201,18 +240,7 @@ namespace SSRepository.Repository.Master
                 if (lst.Count > 0)
                     __dbContext.TblSeriesMas.RemoveRange(lst);
 
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkSeriesId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkSeriesId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetSeriesID(), PkSeriesId, obj.FKSeriesID, obj.DATE_MODIFIED, true);
+                AddMasterLog((long)Handler.Form.Series, PkSeriesId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.Series, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -223,7 +251,7 @@ namespace SSRepository.Repository.Master
             SeriesModel model = (SeriesModel)objmodel;
             string error = "";
             error = isAlreadyExist(model, Mode);
-            if (string.IsNullOrEmpty(error) && model.PkSeriesId > 0)
+            if (string.IsNullOrEmpty(error) && model.PKID > 0)
             {
                 // error = isAvailableForEdit(model, Mode);
             }
@@ -234,9 +262,9 @@ namespace SSRepository.Repository.Master
         {
             SeriesModel model = (SeriesModel)objmodel;
             TblSeriesMas Tbl = new TblSeriesMas();
-            if (model.PkSeriesId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblSeriesMas.Find(model.PkSeriesId);
+                var _entity = __dbContext.TblSeriesMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
@@ -279,22 +307,17 @@ namespace SSRepository.Repository.Master
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
             var list = new List<ColumnStructure>
             {
-                    new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Series", Fields="Series",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Series No ", Fields="SeriesNo",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Billing Rate", Fields="BillingRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Transaction", Fields="TranAliasName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    //new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Format Name", Fields="FormatName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    //new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Reset No For", Fields="ResetNoFor",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    //new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Allow WalkIn", Fields="AllowWalkIn",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    //new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="AutoApply Promo", Fields="AutoApplyPromo",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    //new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="Round Off", Fields="RoundOff",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    //new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Default Qty", Fields="DefaultQty",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    //new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Allow Zero Rate", Fields="AllowZeroRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    //new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Allow Free Qty", Fields="AllowFreeQty",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Series", Fields="Series",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="SeriesNo",    Fields="SeriesNo",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Billing Rate",    Fields="BillingRate",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Transaction",    Fields="TranAliasName",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+
             };
             return list;
         }

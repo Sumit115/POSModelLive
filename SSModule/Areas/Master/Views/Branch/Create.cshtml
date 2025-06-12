@@ -20,12 +20,19 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-2">Branch Code  </label>
-                    <div class="col-md-6">
-                        <input asp-for="BranchCode" class="form-control" />
+                    <label class="col-sm-2">Branch Code</label>
+                    <div class="col-md-3">
+                        <input asp-for="BranchCode" class="form-control" maxlength="10" placeholder="Enter BranchCode" />
                         <span asp-validation-for="BranchCode" class="text-danger"></span>
                     </div>
+                    <div class="col-md-3">
+                        <button type="button" onclick="GenerateAlias()" class="btn btn-warning">
+                            <i class="bi bi-gear-fill me-2" style="color: black;"></i>Auto Generate
+
+                        </button>
+                    </div>
                 </div>
+               
                 <div class="form-group row">
                     <label class="col-sm-2"></label>
                     <div class="col-md-6">
@@ -125,29 +132,7 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script>
-        $(document).ready(function () {
-            Common.InputFormat();
-            //BindCity(@Model.FkCityId);
-            $('#btnServerSave').click(function (e) {
-                e.preventDefault();
-                $("form").submit();
-            });
-        })
-        UploadImage = (id) => {
-            var file = document.querySelector('input[id="file_' + id + '"]').files[0];
-            // $("#FileName").val(file.name);
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
-                //console.log(reader.result);
-                $("#" + id).val(reader.result);
-                $("#dummyimage_" + id).attr("src", reader.result);
-                $("#dummyimage_" + id).show();
-                //   $("#myImage").hide();
-
-            };
-        }
-    </script>
+    <script src="~/js/master/branch.js"></script>
+    
  
 }

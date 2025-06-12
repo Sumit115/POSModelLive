@@ -18,7 +18,7 @@ namespace SSRepository.Repository.Master
         {
             dynamic cnt; string error = "";
             cnt = (from x in __dbContext.TblUserMas
-                   where x.UserId == model.UserId && x.Pwd == model.Pwd && x.PkUserId != model.PkUserId
+                   where x.UserId == model.UserId && x.Pwd == model.Pwd && x.PkUserId != model.PKID
                    select x).Count();
             if (cnt > 0)
                 error = "User Already Exits";
@@ -34,15 +34,16 @@ namespace SSRepository.Repository.Master
                                     orderby cou.UserId
                                    select (new UserModel
                                    {
-                                       PkUserId = cou.PkUserId,
+                                       PKID = cou.PkUserId,
                                        FKUserID = cou.FKUserID,
+                                       UserName = cou.FKUser.UserId,
                                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                                        UserId = cou.UserId,
                                        Pwd = cou.Pwd,
                                        FkRegId = cou.FkRegId,
                                        Usertype = cou.Usertype,
                                        FkBranchId = cou.FkBranchId,
-                                 //      BranchName = cou.FkBranch.BranchName,
+                                       BranchName = cou.FkBranch.BranchName,
                                        FkRoleId = cou.FkRoleId,
                                        Role = cou.FkRole.RoleName,
                                        Expiredt = cou.Expiredt,
@@ -63,7 +64,7 @@ namespace SSRepository.Repository.Master
                     where cou.PkUserId == PkUserId
                     select (new UserModel
                     {
-                        PkUserId = cou.PkUserId,
+                        PKID = cou.PkUserId,
                         FKUserID = cou.FKUserID,
                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
                         UserId = cou.UserId,
@@ -71,7 +72,7 @@ namespace SSRepository.Repository.Master
                         FkRegId = cou.FkRegId,
                         Usertype = cou.Usertype,
                         FkBranchId = cou.FkBranchId,
-                        //BranchName = cou.FkBranch.BranchName,
+                        BranchName = cou.FkBranch.BranchName,
                         FkRoleId = cou.FkRoleId,
                         Role = cou.FkRole.RoleName,
                         Expiredt = cou.Expiredt,
@@ -83,7 +84,7 @@ namespace SSRepository.Repository.Master
             if (data != null)
             {
                 data.UserLoclnk = (from ad in __dbContext.TblUserLocLnk
-                                   where (ad.FKUserID == data.PkUserId)
+                                   where (ad.FKUserID == data.PKID)
                                    select (new UserLocLnkModel
                                    {
                                        FkLocationID = ad.FKLocationID,
@@ -103,7 +104,7 @@ namespace SSRepository.Repository.Master
                 return (from r in result
                         select new
                         {
-                            PkId = r.PkUserId,
+                            PkId = r.PKID,
                             Name =r.UserId
                         }).ToList();
             }
@@ -115,35 +116,26 @@ namespace SSRepository.Repository.Master
         public string DeleteRecord(long PkUserId)
         {
             string Error = "";
-            UserModel obj = GetSingleRecord(PkUserId);
+            UserModel oldModel = GetSingleRecord(PkUserId);
 
-            //var Country = (from x in _context.TblStateMas
-            //               where x.FkcountryId == PkUserId
-            //               select x).Count();
-            //if (Country > 0)
-            //    Error += "Table Name -  StateMas : " + Country + " Records Exist";
-
-
+           
             if (Error == "")
             {
+                var lstLoclnk = (from x in __dbContext.TblUserLocLnk
+                           where x.FKUserID == PkUserId
+                           select x).ToList();
+                if (lstLoclnk.Count > 0)
+                    __dbContext.TblUserLocLnk.RemoveRange(lstLoclnk);
+
+
                 var lst = (from x in __dbContext.TblUserMas
                            where x.PkUserId == PkUserId
                            select x).ToList();
                 if (lst.Count > 0)
                     __dbContext.TblUserMas.RemoveRange(lst);
 
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkUserId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkUserId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetUserID(), PkUserId, obj.FKUserID, obj.DATE_MODIFIED, true);
+            
+                  AddMasterLog((long)Handler.Form.User, PkUserId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.UserName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -162,11 +154,11 @@ namespace SSRepository.Repository.Master
         {
             UserModel model = (UserModel)objmodel;
             TblUserMas Tbl = new TblUserMas();
-            if (model.PkUserId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = GetSingleRecord(model.PkUserId);                
+                var _entity = GetSingleRecord(model.PKID);                
                 IList<TblUserLocLnk> userlnk = (from x in __dbContext.TblUserLocLnk
-                                                where x.FKUserID == model.PkUserId
+                                                where x.FKUserID == model.PKID
                                                 select x).ToList();
 
                 if (userlnk.Any())
@@ -174,7 +166,7 @@ namespace SSRepository.Repository.Master
                     DeleteData(userlnk, true);
                 }
             }
-            Tbl.PkUserId = model.PkUserId;
+            Tbl.PkUserId = model.PKID;
             Tbl.UserId = model.UserId;
             Tbl.Pwd = model.Pwd;
             Tbl.FkRegId = model.FkRegId;

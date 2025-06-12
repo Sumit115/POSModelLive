@@ -635,6 +635,16 @@ namespace SSRepository.Data
                 entity.Property(e => e.FKLocationID)
                     .HasColumnType("bigint")
                     .IsRequired();
+
+                entity.HasOne(e => e.FKUser)
+                   .WithMany()
+                   .HasForeignKey(e => e.FKUserID)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKLocation)
+                 .WithMany()
+                 .HasForeignKey(e => e.FKLocationID)
+                 .OnDelete(DeleteBehavior.Restrict);
             });
             modelBuilder.Entity<TblBranchMas>(entity =>
             {

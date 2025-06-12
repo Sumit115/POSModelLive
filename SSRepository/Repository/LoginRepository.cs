@@ -29,7 +29,7 @@ namespace SSRepository.Repository
         {
 
             UserModel data = new UserRepository(__dbContext, _contextAccessor).GetSingleRecord(UserId);
-            if (data != null && data.PkUserId > 0)
+            if (data != null && data.PKID > 0)
             {
                 SysDefaults Sys = GetSysDefaults();
 

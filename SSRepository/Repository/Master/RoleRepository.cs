@@ -27,7 +27,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.RoleName))
             {
                 cnt = (from x in __dbContext.TblRoleMas
-                       where x.RoleName == model.RoleName && x.PkRoleId != model.PkRoleId
+                       where x.RoleName == model.RoleName && x.PkRoleId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Section Name Already Exits";
@@ -50,7 +50,7 @@ namespace SSRepository.Repository.Master
                                     orderby cou.PkRoleId
                                     select (new RoleModel
                                     {
-                                        PkRoleId = cou.PkRoleId,
+                                        PKID = cou.PkRoleId,
                                         RoleName = cou.RoleName,
                                         FKUserID = cou.FKUserID,
                                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
@@ -70,7 +70,7 @@ namespace SSRepository.Repository.Master
                 return (from r in result
                         select new
                         {
-                            r.PkRoleId,
+                            r.PKID,
                             r.RoleName
                         }).ToList();
             }
@@ -79,7 +79,7 @@ namespace SSRepository.Repository.Master
                 return (from r in result
                         select new
                         {
-                            r.PkRoleId,
+                            r.PKID,
                             r.RoleName
                         }).ToList(); ;
             }
@@ -87,7 +87,7 @@ namespace SSRepository.Repository.Master
             {
                 return null;
             }
-            
+
         }
 
         public RoleModel GetSingleRecord(long PkRoleId, bool IsAccess = false)
@@ -96,7 +96,7 @@ namespace SSRepository.Repository.Master
                               where cou.PkRoleId == PkRoleId
                               select (new RoleModel
                               {
-                                  PkRoleId = cou.PkRoleId,
+                                  PKID = cou.PkRoleId,
                                   RoleName = cou.RoleName,
                                   FKUserID = cou.FKUserID,
                                   DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
@@ -106,7 +106,7 @@ namespace SSRepository.Repository.Master
             {
                 data.RoleDtls = (from r in __dbContext.TblRoleDtl
                                  join f in __dbContext.TblFormMas on r.FKFormID equals f.PKFormID
-                                 where r.FkRoleID == data.PkRoleId && (IsAccess == false || r.IsAccess == IsAccess)
+                                 where r.FkRoleID == data.PKID && (IsAccess == false || r.IsAccess == IsAccess)
                                  orderby f.SeqNo
                                  select (new RoleDtlModel
                                  {
@@ -128,6 +128,30 @@ namespace SSRepository.Repository.Master
                                      IsBrowse = r.IsBrowse
                                  })).ToList();
 
+                if (data.RoleDtls.Count <= 0)
+                {
+                    data.RoleDtls = (from f in __dbContext.TblFormMas  
+                                     orderby f.SeqNo
+                                     select (new RoleDtlModel
+                                     {
+                                         PkRoleDtlId = 0,
+                                         FkRoleID = 0,
+                                         FKFormID = f.PKFormID,
+                                         FKMasterFormID = f.FKMasterFormID,
+                                         SeqNo = f.SeqNo,
+                                         FormName = f.FormName,
+                                         ShortName = f.FormName,
+                                         ShortCut = f.ShortCut,
+                                         ToolTip = f.ToolTip,
+                                         Image = f.Image,
+                                         WebURL = f.WebURL,
+                                         IsAccess = true,
+                                         IsEdit = true,
+                                         IsCreate = true,
+                                         IsPrint = true,
+                                         IsBrowse = true
+                                     })).ToList();
+                }
                 data.RoleDtls = BuildMenuTree(data.RoleDtls, null);
             }
             return data;
@@ -172,35 +196,23 @@ namespace SSRepository.Repository.Master
         public string DeleteRecord(long PkRoleId)
         {
             string Error = "";
-            RoleModel obj = GetSingleRecord(PkRoleId);
-
-            //var Country = (from x in _context.TblStateMas
-            //               where x.FkcountryId == PkRoleId
-            //               select x).Count();
-            //if (Country > 0)
-            //    Error += "Table Name -  StateMas : " + Country + " Records Exist";
-
+            RoleModel oldModel = GetSingleRecord(PkRoleId);
 
             if (Error == "")
             {
+                var lstDtl = (from x in __dbContext.TblRoleDtl
+                              where x.FkRoleID == PkRoleId
+                              select x).ToList();
+                if (lstDtl.Count > 0)
+                    __dbContext.TblRoleDtl.RemoveRange(lstDtl);
+
                 var lst = (from x in __dbContext.TblRoleMas
                            where x.PkRoleId == PkRoleId
                            select x).ToList();
                 if (lst.Count > 0)
                     __dbContext.TblRoleMas.RemoveRange(lst);
 
-                //var imglst = (from x in _context.TblImagesDtl
-                //              where x.Fkid == PkRoleId && x.FKSeriesID == __FormID
-                //              select x).ToList();
-                //if (imglst.Count > 0)
-                //    _context.RemoveRange(imglst);
-
-                //var remarklst = (from x in _context.TblRemarksDtl
-                //                 where x.Fkid == PkRoleId && x.FormId == __FormID
-                //                 select x).ToList();
-                //if (remarklst.Count > 0)
-                //    _context.RemoveRange(remarklst);
-                //AddMasterLog(obj, __FormID, GetRoleID(), PkRoleId, obj.FKRoleID, obj.DATE_MODIFIED, true);
+                AddMasterLog((long)Handler.Form.Role, PkRoleId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.RoleName, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
                 __dbContext.SaveChanges();
             }
 
@@ -220,14 +232,14 @@ namespace SSRepository.Repository.Master
         {
             RoleModel model = (RoleModel)objmodel;
             TblRoleMas Tbl = new TblRoleMas();
-            if (model.PkRoleId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblRoleMas.Find(model.PkRoleId);
+                var _entity = __dbContext.TblRoleMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkRoleId = model.PkRoleId;
+            Tbl.PkRoleId = model.PKID;
             Tbl.RoleName = model.RoleName;
 
             Tbl.ModifiedDate = DateTime.Now;

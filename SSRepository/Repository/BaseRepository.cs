@@ -1065,6 +1065,10 @@ namespace SSRepository.Repository
                 {
                     retVal = GetAlias("tblProduct_mas", "Alias");
                 }
+                else if (FormName == "branch")
+                {
+                    retVal = GetAlias("tblBranch_mas", "BranchCode");
+                }
                 else if (FormName == "location")
                 {
                     retVal = GetAlias("tblLocation_mas", "Alias");

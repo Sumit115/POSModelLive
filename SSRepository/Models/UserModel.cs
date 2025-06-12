@@ -14,7 +14,7 @@ namespace SSRepository.Models
         {
             MenuList = new List<MenuModel>(); 
         }
-        public long PkUserId { get; set; }
+        public long PKID { get; set; }
         public string UserId { get; set; } = null!;
 
         public string Pwd { get; set; } = null!;

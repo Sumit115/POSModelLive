@@ -20,7 +20,7 @@ namespace SSRepository.Data
         public DateTime CreationDate { get; set; }
         public long FKCreatedByID { get; set; }
         public long FKUserID { get; set; }
-         public virtual TblUserMas FKUser { get; set; }
+        public virtual TblUserMas FKUser { get; set; }
 
 
     }

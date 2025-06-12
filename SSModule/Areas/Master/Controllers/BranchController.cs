@@ -181,6 +181,20 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             return response;
         }
+        [HttpPost]
+        public string GetAlias()
+        {
+            string Return = string.Empty;
+            try
+            {
+                Return = _repository.GetAlias("branch");
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
+            return Return;
+        }
 
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {

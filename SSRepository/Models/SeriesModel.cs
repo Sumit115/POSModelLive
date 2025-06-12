@@ -10,7 +10,7 @@ namespace SSRepository.Models
 {
     public class SeriesModel : BaseModel
     {
-        public long PkSeriesId { get; set; }
+        public long PKID { get; set; }
         public string Series { get; set; } //=A
         public long SeriesNo { get; set; }// =0  autocalculation
                                           // public long FkBranchId { get; set; }//=ddl

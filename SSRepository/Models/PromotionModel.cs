@@ -12,7 +12,7 @@ namespace SSRepository.Models
     public class PromotionModel : BaseModel
     {
 
-        public long PkPromotionId { get; set; }
+        public long PKID { get; set; }
         public string PromotionDuring { get; set; }//S=Sales,P=Purchase 
 
         [Required(ErrorMessage = "Name Required")]

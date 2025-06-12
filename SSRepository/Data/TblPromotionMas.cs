@@ -7,7 +7,7 @@ namespace SSRepository.Data
     [Table("tblPromotion_mas", Schema = "dbo")]
     public partial class TblPromotionMas : TblBase, IEntity
     {
-       
+
 
         [Key]
         public long PkPromotionId { get; set; }
@@ -27,7 +27,7 @@ namespace SSRepository.Data
         public long? FkCustomerId { get; set; }
         public long? FkReferById { get; set; }
         public string PromotionApplyOn { get; set; }
-        public string  Promotion { get; set; }
+        public string Promotion { get; set; }
         public decimal? PromotionApplyAmt { get; set; }
         public decimal? PromotionApplyAmt2 { get; set; }
         public decimal? PromotionApplyQty { get; set; }
@@ -37,8 +37,8 @@ namespace SSRepository.Data
 
         public long? FkPromotionProdId { get; set; }
         public decimal? PromotionAmt { get; set; }
-        public decimal? PromotionQty { get; set; } 
-        public long? FkPromotionUnitId { get; set; } 
+        public decimal? PromotionQty { get; set; }
+        public long? FkPromotionUnitId { get; set; }
 
 
         public long? FKProdID { get; set; }
@@ -47,8 +47,6 @@ namespace SSRepository.Data
         public long SequenceNo { get; set; }
 
         public virtual TblUserMas FKUser { get; set; }
-        public virtual TblBrandMas? FkBrand { get; set; }
-
-
+          public virtual TblBrandMas? FkBrand { get; set; } 
     }
 }

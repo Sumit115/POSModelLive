@@ -1718,7 +1718,7 @@ namespace SSRepository.Repository.Transaction
                                  where cou.PkSeriesId == FKSeriesId
                                  select (new SeriesModel
                                  {
-                                     PkSeriesId = cou.PkSeriesId,
+                                     PKID = cou.PkSeriesId,
                                      Series = cou.Series,
                                      FKLocationID = cou.FKLocationID,
                                      BillingRate = cou.BillingRate,

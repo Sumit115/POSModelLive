@@ -102,7 +102,7 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             //BindViewBags(0, tblSeriesMas);
             ViewBag.TranAliasList = Handler.GetDrpTranAlias();
-            ViewBag.LocationList = _repositoryLocation.GetDrpLocation(100,1);
+            //ViewBag.LocationList = _repositoryLocation.GetDrpLocation(100,1);
 
             return View(Model);
         }
@@ -116,11 +116,11 @@ namespace SSAdmin.Areas.Master.Controllers
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
-                    if (model.PkSeriesId > 0)
+                    if (model.PKID > 0)
                     {
                         Mode = "Edit";
                     }
-                    Int64 ID = model.PkSeriesId;
+                    Int64 ID = model.PKID;
                     string error = await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {
@@ -147,12 +147,12 @@ namespace SSAdmin.Areas.Master.Controllers
                 ModelState.AddModelError("", ex.Message);
             }
             ViewBag.TranAliasList = Handler.GetDrpTranAlias();
-            ViewBag.LocationList = _repositoryLocation.GetDrpLocation(100, 1);
+           // ViewBag.LocationList = _repositoryLocation.GetDrpLocation(100, 1);
             return View(model);
         }
 
         [HttpPost]
-        public string DeleteRecord(long PKID)
+        public string Delete(long PKID)
         {
             string response = "";
             try
@@ -161,6 +161,7 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             catch (Exception ex)
             {
+                response = ex.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint") ? "use in other transaction" : ex.Message;
                 //CommonCore.WriteLog(ex, "DeleteRecord", ControllerName, GetErrorLogParam());
                 //return CommonCore.SetError(ex.Message);
             }

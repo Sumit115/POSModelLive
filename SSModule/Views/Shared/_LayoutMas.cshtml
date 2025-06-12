@@ -37,16 +37,16 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
-                  
+
                 <li class="nav-item f-status" style="display:none">
                     <a id="btnOpen" class="btn btn-sm btn-key-86" style="background: #288e8b !important;width: 87px;color: #fff;">Open</a>
-                   </li>
+                </li>
                 <li class="nav-item  f-status" style="display:none">
-                     <a id="btnClose" class="btn btn-sm btn-key-87" style="background: #ffa500 !important;width: 87px;color: #fff;">Close</a>
+                    <a id="btnClose" class="btn btn-sm btn-key-87" style="background: #ffa500 !important;width: 87px;color: #fff;">Close</a>
                 </li>
                 <li class="nav-item f-ctrl" style="display:none">
                     <a id="btnApplyPromotion" class="btn btn-sm btn-key-85" style="display:none;background: #288e8b !important;width: 87px;color: #fff;">Apply Offer</a>
-                  </li>
+                </li>
                 <li class="nav-item f-ctrl" style="display:none">
                     <button id="btnServerSave" tabindex="-1" type="button" value="" class="btn btn-primary btn-key-83">
                         <i class="bi bi-floppy"></i>
@@ -73,7 +73,7 @@
                     </div>
                 </li>
                 <li class="nav-item f-year">
-                    2023 - 2024
+                    @(!string.IsNullOrEmpty(ViewBag.FinYear) ? (ViewBag.FinYear + "-" + ((Convert.ToInt32(ViewBag.FinYear)) + 1)) : "2026-2026")
                 </li>
                 <li class="nav-item dropdown user user-menu">
                     <a class="nav-link" href="#" style="padding: 3px 0px 0px 0px;" data-bs-toggle="dropdown" aria-expanded="false">
@@ -97,7 +97,7 @@
             </ul>
         </nav>
         @Html.Partial("~/Views/Shared/_sidebarMenu.cshtml")
-    </div>    
+    </div>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Main content -->
@@ -157,8 +157,9 @@
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
         $(document).ready(function () {
             //SideMenu();
-            
-            if ($('#hdPageType').val() == 'Log') { $("#btnServerSave").remove();
+
+            if ($('#hdPageType').val() == 'Log') {
+                $("#btnServerSave").remove();
                 $("#btnDeleteRecord").parent().remove();
             }
         });

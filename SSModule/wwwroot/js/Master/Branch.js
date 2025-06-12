@@ -21,31 +21,47 @@ UploadImage = (id) => {
 
     };
 }
-function BindCity(CityId) {
-
-    var StateName = $("#State").val();
-    $("#FkCityId").empty();
-    //
-
-    if (StateName != '') {
-
+function GenerateAlias() {
+    if ($("#BranchCode").val() == "") {
         $.ajax({
             type: "POST",
-            url: '/Master/City/GetDrpCityByState',
-            data: { State: StateName },
+            url: '/Master/Branch/GetAlias',
+            data: {},
             datatype: "json",
             success: function (res) {
-                console.log(res);
-                $(res).each(function (i, v) {
-
-                    $("#FkCityId").append("<option value='" + v.PKID + "'>" + v.CityName + "</option>");
-                });
-
-                if (CityId > 0) {
-                    $("#FkCityId").val(CityId);
+                if (res != "") {
+                    $("#BranchCode").val(res);
                 }
             }
-        })
+        });
+    }
 
-    } else { $("#FkCityId").append("<option value=''>-Select-</option>"); }
 }
+//function BindCity(CityId) {
+
+//    var StateName = $("#State").val();
+//    $("#FkCityId").empty();
+//    //
+
+//    if (StateName != '') {
+
+//        $.ajax({
+//            type: "POST",
+//            url: '/Master/City/GetDrpCityByState',
+//            data: { State: StateName },
+//            datatype: "json",
+//            success: function (res) {
+//                console.log(res);
+//                $(res).each(function (i, v) {
+
+//                    $("#FkCityId").append("<option value='" + v.PKID + "'>" + v.CityName + "</option>");
+//                });
+
+//                if (CityId > 0) {
+//                    $("#FkCityId").val(CityId);
+//                }
+//            }
+//        })
+
+//    } else { $("#FkCityId").append("<option value=''>-Select-</option>"); }
+//}

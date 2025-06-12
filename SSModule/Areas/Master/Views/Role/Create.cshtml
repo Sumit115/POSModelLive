@@ -29,7 +29,7 @@
 <div class="master-page-ui">
     <form asp-action="Create" class="g-3" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="PkRoleId" />
+        <input type="hidden" asp-for="PKID" />
         <div class="row">
             <div class="col-md-8">
                 <div class="form-group row">
@@ -64,12 +64,11 @@
                                     <tr class="main">
                                         <td colspan="6">
 
-                                            <span class="btncolaps" style="padding: 9px;cursor: pointer;" onclick="Menucolaps(this,@Model.RoleDtls[i].FKFormID)">
-                                                <i class="right fas fa-angle-right"></i>
-                                            </span>
-                                            <span>
+                                            <div class="btncolaps" style="padding: 0 9px;cursor: pointer;" onclick="Menucolaps(this,@Model.RoleDtls[i].FKFormID)">
+                                                <label><i class="right fas fa-angle-right"></i></label>
+
                                                 @Model.RoleDtls[i].FormName
-                                            </span>
+                                            </div>
                                             @Html.HiddenFor(m => m.RoleDtls[i].FormName)
                                             @Html.HiddenFor(m => m.RoleDtls[i].PkRoleDtlId)
                                             @Html.HiddenFor(m => m.RoleDtls[i].FKFormID)
@@ -84,12 +83,11 @@
                                                 <td colspan="6">
 
 
-                                                    <span class="btncolaps" style="padding: 9px;cursor: pointer;" onclick="Menucolaps(this,@Model.RoleDtls[i].SubMenu[j].FKFormID)">
-                                                        <i class="right fas fa-angle-right"></i>
-                                                    </span>
-                                                    <span>
+                                                    <div class="btncolaps" style="padding:0 9px;cursor: pointer;" onclick="Menucolaps(this,@Model.RoleDtls[i].SubMenu[j].FKFormID)">
+                                                        <label><i class="right fas fa-angle-right"></i></label>
+
                                                         @Model.RoleDtls[i].SubMenu[j].FormName
-                                                    </span>
+                                                    </div>
                                                     @Html.HiddenFor(m => m.RoleDtls[i].FormName)
                                                     @Html.HiddenFor(m => m.RoleDtls[i].SubMenu[j].PkRoleDtlId)
                                                     @Html.HiddenFor(m => m.RoleDtls[i].SubMenu[j].FKFormID)
@@ -193,38 +191,6 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
-    <script>
-        $(document).ready(function () {
-            $('#btnServerSave').click(function (e) {
-                e.preventDefault();
-                $("form").submit();
-            });
-
-        })
-
-        function Menucolaps(ctrl, id) {
-            var flag = $(ctrl).children("i").hasClass("fa-angle-right");
-            if (flag) {
-                $(ctrl).html('<i class="right fas fa-angle-down"> </i>');
-                $('[key="' + id + '"]').show();
-            }
-            else {
-                $('[key="' + id + '"]').hide();
-                
-                $('[key="' + id + '"].main-sub').each(function () {
-                    var chId = $(this).attr("parent");
-                    
-                    $(this).find("i").attr('class',"right fas fa-angle-right");
-                    $('[key="' + chId + '"]').hide();
-                });
-                $(ctrl).html('<i class="right fas fa-angle-right"> </i>');
-            }
-            
-        }
-
-
-    </script>
-
+    <script src="~/js/master/role.js"></script>
 
 }

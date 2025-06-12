@@ -27,7 +27,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         public async Task<JsonResult> List(int pageNo, int pageSize)
-        {            
+        {
             return Json(new
             {
                 status = "success",
@@ -40,7 +40,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
             var _d = _repository.GetList(pageSize, pageNo);
             DataTable dtList = Handler.ToDataTable(_d);
-            var data = _gridLayoutRepository.GetSingleRecord( FKFormID, "", ColumnList());
+            var data = _gridLayoutRepository.GetSingleRecord(FKFormID, "", ColumnList());
             var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
             DataTable _gridColumn = Handler.ToDataTable(model);
 
@@ -81,10 +81,13 @@ namespace SSAdmin.Areas.Master.Controllers
                 {
                     ViewBag.PageType = "Create";
                     long roleId = Convert.ToInt64(HttpContext.Session.GetString("RoleId") ?? "0");
-                    Model = _repository.GetSingleRecord(roleId,true);
-                    Model.PkRoleId = 0;
+                    Model = _repository.GetSingleRecord(roleId, true);
+                    Model.PKID = 0;
                     Model.RoleName = "";
-
+                    if (Model.RoleDtls.Count <= 0)
+                    { 
+                    
+                    }
                 }
             }
             catch (Exception ex)
@@ -104,11 +107,11 @@ namespace SSAdmin.Areas.Master.Controllers
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
-                    if (model.PkRoleId > 0)
+                    if (model.PKID > 0)
                     {
                         Mode = "Edit";
                     }
-                    Int64 ID = model.PkRoleId;
+                    Int64 ID = model.PKID;
                     string error = await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {
@@ -118,7 +121,7 @@ namespace SSAdmin.Areas.Master.Controllers
                     {
                         return RedirectToAction(nameof(List));
                     }
-                }                
+                }
             }
             catch (Exception ex)
             {
@@ -128,7 +131,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
-        public string DeleteRecord(long PKID)
+        public string Delete(long PKID)
         {
             string response = "";
             try
@@ -137,6 +140,7 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             catch (Exception ex)
             {
+                response = ex.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint") ? "use in other transaction" : ex.Message;
                 //CommonCore.WriteLog(ex, "DeleteRecord", ControllerName, GetErrorLogParam());
                 //return CommonCore.SetError(ex.Message);
             }
