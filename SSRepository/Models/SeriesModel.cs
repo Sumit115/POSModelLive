@@ -31,5 +31,6 @@ namespace SSRepository.Models
         public string? TranAliasName { get; set; }//=SORD  ddl
         public long? FKLocationID { get; set; }
         public string? Location { get; set; }
+        public string? PaymentMode { get; set; } =  "Cash";
     }
 }

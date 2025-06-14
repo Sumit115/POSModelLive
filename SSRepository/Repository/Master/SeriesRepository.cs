@@ -80,6 +80,7 @@ namespace SSRepository.Repository.Master
                             FKLocationID = cou.FKLocationID,
                             Location = cou.FKLocation.Location,
                             TaxType = cou.TaxType,
+                            PaymentMode = cou.PaymentMode,
                             FKUserID = cou.FKUserID,
                             UserName = cou.FKUser.UserId,
                             DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
@@ -173,6 +174,7 @@ namespace SSRepository.Repository.Master
                         FKLocationID = cou.FKLocationID,
                         Location = cou.FKLocation.Location,
                         TaxType = cou.TaxType,
+                        PaymentMode = cou.PaymentMode,
                         FKUserID = cou.FKUserID,
                         UserName = cou.FKUser.UserId,
                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
@@ -283,6 +285,7 @@ namespace SSRepository.Repository.Master
             Tbl.TaxType = model.TaxType;
             Tbl.DocumentType = string.IsNullOrEmpty(model.DocumentType) ? "B" : model.DocumentType;
             Tbl.FKLocationID = model.FKLocationID == 0 ? 11 : model.FKLocationID;
+            Tbl.PaymentMode = model.PaymentMode;
 
             Tbl.ModifiedDate = DateTime.Now;
             Tbl.FKUserID = GetUserID();

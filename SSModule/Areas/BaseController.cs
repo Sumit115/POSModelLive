@@ -85,7 +85,7 @@ namespace SSAdmin.Areas
             if (data.FkFormId == 0) data.FkFormId = FKFormID;
             if (data.Modeform == 2)
             {
-                data.JsonData = JsonConvert.SerializeObject(ColumnList(data.GridName));
+                data.JsonData = JsonConvert.SerializeObject(ColumnList(!string.IsNullOrEmpty(data.GridName)? data.GridName:""));
             }
             _gridLayoutRepository.CreateAsync(data, "Edit", data.PkGridId);
             return Json(new

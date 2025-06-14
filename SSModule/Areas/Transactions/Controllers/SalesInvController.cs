@@ -27,20 +27,20 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
 
         [HttpPost]
-        public JsonResult List(string FDate, string TDate, string LocationFilter)
+        public JsonResult List(string FDate, string TDate, string LocationFilter, string StateFilter)
         {
             return Json(new
             {
                 status = "success",
-                data = _repository.GetList(FDate, TDate, TranAlias, DocumentType, LocationFilter)
+                data = _repository.GetList(FDate, TDate, TranAlias, DocumentType, LocationFilter, StateFilter)
             });
         }
 
-         public ActionResult Export(string FDate, string TDate, string LocationFilter)
+        public ActionResult Export(string FDate, string TDate, string LocationFilter, string StateFilter)
         {
 
-            DataTable dtList = _repository.GetList(FDate, TDate, TranAlias, DocumentType, LocationFilter);
-            var data = _gridLayoutRepository.GetSingleRecord( FKFormID, "", ColumnList());
+            DataTable dtList = _repository.GetList(FDate, TDate, TranAlias, DocumentType, LocationFilter, StateFilter);
+           var data = _gridLayoutRepository.GetSingleRecord( FKFormID, "", ColumnList());
             var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
             DataTable _gridColumn = Handler.ToDataTable(model);
 

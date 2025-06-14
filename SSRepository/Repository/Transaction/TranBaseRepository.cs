@@ -515,7 +515,7 @@ namespace SSRepository.Repository.Transaction
                 cmd.Parameters.AddWithValue("@SeriesFilter", SeriesFilter);
                 cmd.Parameters.AddWithValue("@DocumentType", DocumentType);
                 cmd.Parameters.AddWithValue("@LocationFilter", GetFilterData(LocationFilter));
-                if (SeriesFilter == "SORD")
+                if (SeriesFilter == "SORD" || SeriesFilter == "SINV")
                     cmd.Parameters.AddWithValue("@StateFilter", GetFilterData(StateFilter));
                 //Get Output Parametr
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
@@ -767,7 +767,7 @@ namespace SSRepository.Repository.Transaction
                 SqlCommand cmd = new SqlCommand("usp_GetProductDetailReturn", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Barcode", Barcode);
-                cmd.Parameters.AddWithValue("@FKPartyID", FKPartyID); 
+                cmd.Parameters.AddWithValue("@FKPartyID", FKPartyID);
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(dt);
                 con.Close();
@@ -832,7 +832,7 @@ namespace SSRepository.Repository.Transaction
                 detail.Rate = Convert.ToDecimal(dtProduct.Rows[0][model.BillingRate].ToString());
             }
         }
-        public object BarcodeScan(TransactionModel model, string Barcode, bool isCalGridTotal,bool IsReturn)
+        public object BarcodeScan(TransactionModel model, string Barcode, bool isCalGridTotal, bool IsReturn)
         {
             if (IsReturn)
             {
@@ -856,9 +856,9 @@ namespace SSRepository.Repository.Transaction
                     if (drdetail != null)
                     {
                         int rowIndex = model.TranReturnDetails.FindIndex(a => a.FkProductId == FkProductId && a.FkLotId == FkLotId && a.ModeForm != 2);
-                      
+
                         SetProduct(model, drdetail, dtProduct);
-                         
+
 
                         CalculateExe(model, model.TranReturnDetails[rowIndex]);
                         // Check Product UNique/Lot/PRoduct
@@ -875,18 +875,18 @@ namespace SSRepository.Repository.Transaction
                         SetProduct(model, detail, dtProduct);
                         detail.Barcode = "Barcode";
                         detail.BarcodeTest = Barcode;
-                  
+
                         detail.FKInvoiceID = Convert.ToInt64(dtProduct.Rows[0]["FKInvoiceID"].ToString());
                         detail.FKInvoiceSrID = Convert.ToInt64(dtProduct.Rows[0]["FKSeriesId"].ToString());
                         detail.FKInvoiceID_Text = dtProduct.Rows[0]["FKInvoiceID_Text"].ToString();
-                  
+
                         CalculateExe(model, detail);
                         model.TranReturnDetails.Add(detail);
 
                         // Check Product UNique/Lot/PRoduct
                         model.UniqIdReturnDetails.Add(new BarcodeUniqVM() { SrNo = detail.SrNo, Barcode = Barcode });
 
-                    } 
+                    }
                 }
                 else { throw new Exception("Data Not Found"); }
 
@@ -929,7 +929,7 @@ namespace SSRepository.Repository.Transaction
                         // Check Product UNique/Lot/PRoduct
                         model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = detail.SrNo, Barcode = Barcode });
 
-                    } 
+                    }
                 }
                 else { throw new Exception("Data Not Found"); }
             }
@@ -940,7 +940,7 @@ namespace SSRepository.Repository.Transaction
             }
             return model;
         }
-        
+
         public object ProductTouch(TransactionModel model, long PkProductId)
         {
             var detail = new TranDetails();
@@ -1102,7 +1102,7 @@ namespace SSRepository.Repository.Transaction
                                         var dic = item.Rate - itemPromo.PromotionAmt;
                                         if (dic > 0)
                                         {
-                                            item.TradeDisc = (decimal)(dic /item.Rate) * 100;
+                                            item.TradeDisc = (decimal)(dic / item.Rate) * 100;
                                         }
                                         else
                                         {
@@ -1111,7 +1111,7 @@ namespace SSRepository.Repository.Transaction
                                         item.TradeDiscAmt = 0;
                                         CalculateExe(model, item);
                                         if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PFRT"; }
-                                        else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CFRT"; } 
+                                        else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CFRT"; }
 
                                     }
                                     else if (itemPromo.Promotion == "Flat Qty" && item.Qty >= itemPromo.PromotionApplyQty && itemPromo.PromotionApplyQty2 >= item.Qty)
@@ -1412,10 +1412,14 @@ namespace SSRepository.Repository.Transaction
             model.TradeDiscAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2);// + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2);
             model.TotalDiscount = model.CashDiscountAmt + model.TradeDiscAmt;
             decimal NetAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);// + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);
-            model.NetAmt = Math.Round((NetAmt - model.CashDiscountAmt) + model.Shipping + model.OtherCharge - model.RoundOfDiff, 2);
-
-            model.NetAmtIn =  Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);
-            model.NetAmtOut = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2) ;
+            model.NetAmt = Math.Round((NetAmt - model.CashDiscountAmt) + model.Shipping + model.OtherCharge - (model.RoundOfDiff>=1?model.RoundOfDiff:0), 2);
+            if (model.RoundOfDiff < 1)
+            {
+                model.RoundOfDiff = model.NetAmt - Math.Floor(model.NetAmt);
+                model.NetAmt = Math.Round(model.NetAmt - model.RoundOfDiff, 2);
+            }
+            model.NetAmtIn = Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);
+            model.NetAmtOut = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);
 
         }
 
@@ -1496,8 +1500,34 @@ namespace SSRepository.Repository.Transaction
             }
             else
             {
-                model.Cash = true;
-                model.CashAmt = _remAmt;
+                if (!string.IsNullOrEmpty(model.PaymentModeDefault)) {
+                    if (model.PaymentModeDefault == "Cash")
+                    {
+                        model.Cash = true;
+                        model.CashAmt = _remAmt;
+                    }
+                    else if (model.PaymentModeDefault == "Credit")
+                    {
+                        model.Credit = true;
+                        model.CreditAmt = _remAmt;
+                    }
+                    else if (model.PaymentModeDefault == "Cheque")
+                    {
+                        model.Cheque = true;
+                        model.ChequeAmt = _remAmt;
+                    }
+                    else if (model.PaymentModeDefault == "Card")
+                    {
+                        model.CreditCard = true;
+                        model.CreditCardAmt = _remAmt;
+                    }
+
+                }
+                else
+                {
+                    model.Cash = true;
+                    model.CashAmt = _remAmt;
+                }
             }
         }
 
@@ -1595,7 +1625,7 @@ namespace SSRepository.Repository.Transaction
             else if (model.ExtProperties.TranAlias == "PINV" || model.ExtProperties.TranAlias == "PORD" || model.ExtProperties.TranAlias == "PJ_O" || model.ExtProperties.TranAlias == "PJ_R" || model.ExtProperties.TranAlias == "PJ_I")
                 vendor = GetVendor(FkPartyId);
             else
-                vendor = GetCustomer(FkPartyId,"");
+                vendor = GetCustomer(FkPartyId, "");
 
             if (vendor != null)
             {
@@ -1613,7 +1643,7 @@ namespace SSRepository.Repository.Transaction
 
             return model;
         }
-        public object GetParty(TransactionModel model, string  Mobile)
+        public object GetParty(TransactionModel model, string Mobile)
         {
             var vendor = new PartyModel();
             if (model.ExtProperties.TranAlias == "LINV" || model.ExtProperties.TranAlias == "LORD")
@@ -1657,7 +1687,7 @@ namespace SSRepository.Repository.Transaction
                                )).FirstOrDefault();
             return data;
         }
-        public PartyModel? GetCustomer(long PkId,string Mobile)
+        public PartyModel? GetCustomer(long PkId, string Mobile)
         {
             PartyModel? data = (from cou in __dbContext.TblCustomerMas
                                 where (cou.PkCustomerId == PkId || cou.Mobile == Mobile)
@@ -1703,6 +1733,7 @@ namespace SSRepository.Repository.Transaction
                 model.BillingRate = obj.BillingRate;
                 model.BranchStateName = obj.BranchStateName;
                 model.TaxType = obj.TaxType;
+                model.PaymentModeDefault = obj.PaymentMode;
 
             }
             model.IsTranChange = true;
@@ -1724,6 +1755,7 @@ namespace SSRepository.Repository.Transaction
                                      BillingRate = cou.BillingRate,
                                      TaxType = cou.TaxType,
                                      BranchStateName = branch.State,
+                                     PaymentMode = cou.PaymentMode,
 
                                  }
                                 )).FirstOrDefault();
@@ -2398,7 +2430,7 @@ namespace SSRepository.Repository.Transaction
                 adp.Fill(ds);
 
                 JsonData = Convert.ToString(cmd.Parameters["@JsonData"].Value);
-               // ErrMsg = Convert.ToString(cmd.Parameters["@ErrMsg"].Value);
+                // ErrMsg = Convert.ToString(cmd.Parameters["@ErrMsg"].Value);
                 con.Close();
             }
             if (!string.IsNullOrEmpty(JsonData))
@@ -2406,14 +2438,14 @@ namespace SSRepository.Repository.Transaction
                 List<TransactionModel> aa = JsonConvert.DeserializeObject<List<TransactionModel>>(JsonData);
                 if (aa != null)
                 {
-                    data = aa[0]; 
+                    data = aa[0];
                     if (data.EWayDetails != null)
                     {
                         if (data.EWayDetails.Count > 0)
                         {
                             data.EWayDetail = data.EWayDetails.FirstOrDefault();
                         }
-                    } 
+                    }
                     if (data.FKBankThroughBankID > 0)
                         SetBankThroughBank(data, (long)data.FKBankThroughBankID);
                 }

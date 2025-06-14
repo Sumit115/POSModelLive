@@ -25,6 +25,7 @@ namespace SSRepository.Data
         public Nullable<long> FKLocationID { get; set; }
  
         public string? DocumentType { get; set; }
+        public string? PaymentMode { get; set; }
         public virtual TblLocationMas? FKLocation { get; set; }
 
 

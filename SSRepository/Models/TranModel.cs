@@ -138,6 +138,7 @@ namespace SSRepository.Models
         public decimal FreePoint { get; set; }
 
         public char TaxType { get; set; } = 'I';
+        public string PaymentModeDefault{ get; set; } = "Cash";
         public int IsLock { get; set; } = 1;//For Delete 
         public string? BookingStation { get; set; } 
 

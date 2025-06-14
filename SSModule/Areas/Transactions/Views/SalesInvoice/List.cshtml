@@ -14,8 +14,18 @@
                 <span class="field-validation-valid text-danger" data-valmsg-for="TDate"></span>
             </div>
             <div class="col-md-8 text-right">
-                <button class="btn btn-outline-info" onclick="ShowFilter('Location')"><i class="bi bi-funnel"></i></button>                
-                <button class="btn btn-info" onclick="View()"><i class="bi bi-send"></i> &nbsp;View</button>
+            <div class="btn-group">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-funnel"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end" role="menu">
+
+                        <a href="#" class="dropdown-item" onclick="ShowFilter('Location')" title="Location"><i class="bi bi-funnel"></i> Location</a>
+                        <a href="#" class="dropdown-item" onclick="ShowFilter('State')" title="State"><i class="bi bi-funnel"></i> State</a>
+                    </div>
+                </div>
+            </div>   <button class="btn btn-info" onclick="View()"><i class="bi bi-send"></i> &nbsp;View</button>
             </div>
         </div>
 
