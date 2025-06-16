@@ -38,12 +38,12 @@ namespace SSAdmin.Areas.Transactions.Controllers
         }
 
         [HttpPost]
-        public JsonResult List(string FDate, string TDate, string LocationFilter, string StateFilter)
+        public JsonResult List(string FDate, string TDate, string LocationFilter, string StateFilter, string StatusFilter)
         {
             return Json(new
             {
                 status = "success",
-                data = _repository.GetList(FDate, TDate, TranAlias, DocumentType, LocationFilter, StateFilter)
+                data = _repository.GetList(FDate, TDate, TranAlias, DocumentType, LocationFilter, StateFilter, StatusFilter)
             });
         }
 

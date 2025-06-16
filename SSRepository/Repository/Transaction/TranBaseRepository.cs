@@ -502,7 +502,7 @@ namespace SSRepository.Repository.Transaction
             catch (Exception ex) { throw ex; }
         }
 
-        public DataTable GetList(string FromDate, string ToDate, string SeriesFilter, string DocumentType, string LocationFilter, string StateFilter = "")
+        public DataTable GetList(string FromDate, string ToDate, string SeriesFilter, string DocumentType, string LocationFilter, string StateFilter = "", string StatusFilter = "")
         {
             DataTable dt = new DataTable();
             using (SqlConnection con = new SqlConnection(conn))
@@ -517,6 +517,8 @@ namespace SSRepository.Repository.Transaction
                 cmd.Parameters.AddWithValue("@LocationFilter", GetFilterData(LocationFilter));
                 if (SeriesFilter == "SORD" || SeriesFilter == "SINV")
                     cmd.Parameters.AddWithValue("@StateFilter", GetFilterData(StateFilter));
+                if (!string.IsNullOrEmpty(StatusFilter))
+                    cmd.Parameters.AddWithValue("@StatusFilter", StatusFilter); 
                 //Get Output Parametr
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(dt);

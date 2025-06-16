@@ -174,11 +174,11 @@ namespace SSAdmin.Controllers
         }
 
         [HttpPost]
-        public object Account(int pageSize, int pageNo = 1, string search = "")
+        public object Account(int pageSize, int pageNo = 1, string search = "", long  FkAccountGroupId = 0)
         {
 
             AccountMasRepository repository = new AccountMasRepository(_dbContext, _contextAccessor);
-            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, FkAccountGroupId);
         }
 
 

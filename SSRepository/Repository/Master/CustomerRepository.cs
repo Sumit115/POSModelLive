@@ -22,10 +22,10 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<PartyModel> data = (from cou in __dbContext.TblCustomerMas
-                                    // join _city in __dbContext.TblCityMas
-                                    //on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
-                                    //into _citytmp
-                                    // from city in _citytmp.DefaultIfEmpty()
+                                         // join _city in __dbContext.TblCityMas
+                                         //on new { User = cou.FkCityId } equals new { User = (int?)_city.PkCityId }
+                                         //into _citytmp
+                                         // from city in _citytmp.DefaultIfEmpty()
                                      where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
                                      orderby cou.PkCustomerId
                                      select (new PartyModel
@@ -135,8 +135,9 @@ namespace SSRepository.Repository.Master
                                    Pin = cou.Pin,
                                    Disc = cou.Disc,
                                    FKUserID = cou.FKUserID,
-                                   DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
-
+                                   DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                                   FkAccountID = cou.FkAccountID,
+                                   AccountName = cou.FKAccount.Account
                                })).SingleOrDefault();
             return data;
         }
@@ -330,12 +331,12 @@ namespace SSRepository.Repository.Master
                 Tbl.IsPanVerify = 0;
                 Tbl.Status = 1;
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj); 
-                Tbl.FkAccountID = SaveAndGetAccountId(model);
+                Tbl.FkAccountID = model.FkAccountID > 0 ? model.FkAccountID : SaveAndGetAccountId(model);
                 AddData(Tbl, false);
             }
             else
             {
-
+                Tbl.FkAccountID = model.FkAccountID;
                 PartyModel oldModel = GetSingleRecord(Tbl.PkCustomerId);
                 ID = Tbl.PkCustomerId;
                 UpdateData(Tbl, false);

@@ -165,13 +165,14 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             return data;
         }
-        public object CustomList(int EnCustomFlag, int pageNo, int pageSize, string search = "")
+        public object CustomList(int EnCustomFlag, int pageNo, int pageSize, string search = "",long  FkAccountGroupId=0)
         {
             if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
             {
 
                 return (from cou in __dbContext.TblAccountMas
                         where (EF.Functions.Like(cou.Account.Trim().ToLower(), Convert.ToString(search) + "%"))
+                        && (cou.FkAccountGroupId == FkAccountGroupId || FkAccountGroupId == 0 )
                         orderby cou.Account
                         select new
                         {

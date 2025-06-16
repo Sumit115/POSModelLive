@@ -12,7 +12,15 @@
             <input name="TDate" type="date" id="TDate" class="form-control" maxlength="10" placeholder="To Date*" required="" title="To Date*">
             <span class="field-validation-valid text-danger" data-valmsg-for="TDate"></span>
         </div>
-        <div class="col-md-8 text-right">
+        <div class="col-md-2">
+            <select class="form-select form-control" id="StatusFilter" name="StatusFilter">
+                <option value="">All</option>
+                <option value="P">Pending</option>
+                <option value="I">Invoice</option>
+                <option value="C">Close</option>
+            </select>
+        </div>
+        <div class="col-md-6 text-right">
              <div class="btn-group">
                 <div class="dropdown">
                     <button type="button" class="btn btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
