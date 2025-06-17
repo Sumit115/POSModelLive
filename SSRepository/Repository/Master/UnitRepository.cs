@@ -36,7 +36,7 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<UnitModel> data = (from cou in __dbContext.TblUnitMas
-                                          // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                        where (EF.Functions.Like(cou.UnitName.Trim().ToLower(), Convert.ToString(search) + "%"))
                                       orderby cou.PkUnitId
                                       select (new UnitModel
                                       {
@@ -66,21 +66,26 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpUnit(int pageSize, int pageNo = 1, string search = "")
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "")
         {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetList(pageSize, pageNo, search);
-
-         //   result.Insert(0, new UnitModel { PkUnitId = 0, UnitName = "Select" });
-
-            return (from r in result
-                    select new
-                    {
-                        r.PKID,
-                        r.UnitName
-                    }).ToList(); ;
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblUnitMas
+                         where EF.Functions.Like(cou.UnitName.Trim().ToLower(), search + "%")
+                         orderby cou.UnitName
+                         select (new
+                         {
+                             PkUnitId = cou.PkUnitId,
+                             UnitName = cou.UnitName, 
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            } 
+            else
+            {
+                return null;
+            }
         }
 
         public string DeleteRecord(long PkUnitId)

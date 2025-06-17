@@ -209,45 +209,8 @@ namespace SSAdmin.Areas.Master.Controllers
             return _repository.ColumnList(GridName);
         }
 
-        [HttpPost]
-        public object FkCustomerId(int pageSize, int pageNo = 1, string search = "")
-        {
-            return _repositoryCustomer.CustomDropDown(pageSize, pageNo, search);
-        }
-        [HttpPost]
-        public object FkVendorId(int pageSize, int pageNo = 1, string search = "")
-        {
-            return _repositoryVendor.GetDrpVendor(pageSize, pageNo, search);
-        }
-        [HttpPost]
-        public object FkLocationId(int pageSize, int pageNo = 1, string search = "")
-        {
-
-            return _repositoryLocation.GetDrpLocation(pageSize, pageNo, search);
-        }
-
-        [HttpPost]
-        public object FkPromotionProdId(int pageSize, int pageNo = 1, string search = "")
-        {
-            return _repositoryProduct.GetDrpProduct(pageSize, pageNo, search);
-        }
-        [HttpPost]
-        public object FkCategoryId(int pageSize, int pageNo = 1, string search = "")
-        {
-            return _repositoryCategory.GetDrpCategory(pageSize, pageNo, search);
-        }
-        [HttpPost]
-        public object FkBrandId(int pageSize, int pageNo = 1, string search = "")
-        {
-            return _repositoryBrand.GetDrpBrand(pageSize, pageNo, search);
-        }
-
-        [HttpPost]
-        public object FkProductId(int pageSize, int pageNo = 1, string search = "")
-        {
-            return _repositoryProduct.GetDrpProduct(pageSize, pageNo, search);
-        }
-
+      
+      
 
     }
 }

@@ -114,8 +114,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 {
                     ViewBag.PageType = "Create"; 
                 }
-                ViewBag.BrandList = _brandRepository.GetDrpBrand( 1000,1);
-                ViewBag.UnitList = _unitRepository.GetDrpUnit(1000,1); 
+                 
 
             }
             catch (Exception ex)
@@ -142,11 +141,11 @@ namespace SSAdmin.Areas.Master.Controllers
                 if (model.FkUnitId > 0)
                 {
                     string Mode = "Create";
-                    if (model.PkProductId > 0)
+                    if (model.PKID > 0)
                     {
                         Mode = "Edit";
                     }
-                    Int64 ID = model.PkProductId;
+                    Int64 ID = model.PKID;
                     string error = await _repository.CreateAsync(model, Mode, ID);
                     if (error != "" && !error.ToLower().Contains("success"))
                     {
@@ -175,13 +174,12 @@ namespace SSAdmin.Areas.Master.Controllers
                 ModelState.AddModelError("", ex.Message);
             }
 
-            ViewBag.BrandList = _brandRepository.GetDrpBrand(1, 1000);
-            ViewBag.UnitList = _unitRepository.GetDrpUnit(1000, 1);
+             
             return View(model);
         }
 
         [HttpPost]
-        public string DeleteRecord(long PKID)
+        public string Delete(long PKID)
         {
             string response = "";
             try
@@ -190,6 +188,7 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             catch (Exception ex)
             {
+                response = ex.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint") ? "use in other transaction" : ex.Message;
                 //CommonCore.WriteLog(ex, "DeleteRecord", ControllerName, GetErrorLogParam());
                 //return CommonCore.SetError(ex.Message);
             }

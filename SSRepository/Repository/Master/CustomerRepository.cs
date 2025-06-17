@@ -70,7 +70,7 @@ namespace SSRepository.Repository.Master
                          select (new
                          {
                              cou.PkCustomerId,
-                             PkId = cou.PkCustomerId,
+                             //PkId = cou.PkCustomerId,
                              cou.Name,
                              cou.Code,
                              cou.Email,
@@ -91,7 +91,7 @@ namespace SSRepository.Repository.Master
                          select (new
                          {
                              cou.PkCustomerId,
-                             PkId = cou.PkCustomerId,
+                           //  PkId = cou.PkCustomerId,
                              cou.Name,
                          }
                        )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());

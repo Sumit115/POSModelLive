@@ -206,6 +206,32 @@ namespace SSAdmin.Controllers
             return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
         }
 
+        [HttpPost]
+        public object Brand(int pageSize, int pageNo = 1, string search = "")
+        {
+            BrandRepository repository = new BrandRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
+        }
+
+        [HttpPost]
+        public object Unit(int pageSize, int pageNo = 1, string search = "")
+        { 
+            UnitRepository repository = new UnitRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
+        }
+
+        [HttpPost]
+        public object Vendor(int pageSize, int pageNo = 1, string search = "")
+        {
+            VendorRepository repository = new VendorRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
+        }
+        [HttpPost]
+        public object Customer(int pageSize, int pageNo = 1, string search = "")
+        {
+            CustomerRepository repository = new CustomerRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
+        }
     }
 
 

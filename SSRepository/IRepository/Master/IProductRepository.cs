@@ -10,7 +10,6 @@ namespace SSRepository.IRepository.Master
 
         string isAlreadyExist(ProductModel tblBankMas, string Mode);
         List<ProductModel> GetList(int pageSize, int pageNo = 1, string search = "", long FkCatId = 0);
-        object GetDrpProduct(int pageSize, int pageNo = 1, string search = "", long FkCatId = 0);
         ProductModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);

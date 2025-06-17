@@ -11,7 +11,6 @@ namespace SSRepository.IRepository.Master
 
         string isAlreadyExist(UnitModel tblUnitMas, string Mode);
         List<UnitModel> GetList(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpUnit(int pageSize, int pageNo = 1, string search = "");
         UnitModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);

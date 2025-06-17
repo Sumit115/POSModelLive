@@ -11,8 +11,7 @@ namespace SSRepository.IRepository.Master
 
         string isAlreadyExist(BrandModel tblBrandMas, string Mode);
         List<BrandModel> GetList(int pageSize, int pageNo = 1, string search = "");
-        object GetDrpBrand(int pageSize, int pageNo = 1, string search = "");
-        BrandModel GetSingleRecord(long PkID);
+          BrandModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);
     }

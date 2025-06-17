@@ -8,7 +8,7 @@
 <div class="master-page-ui">
 <form asp-action="Create" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="PkProductId" />
+        <input type="hidden" asp-for="PKID" />
 
                 <div class="row">
                     <div class="col-md-8">
@@ -30,11 +30,10 @@
                         <div class="form-group row">
                             <label class="col-sm-2">Brand</label>
                             <div class="col-md-6">
-                        <select asp-for="FkBrandId" asp-items="@(new SelectList(ViewBag.BrandList,"PKID","BrandName"))" class="form-select" id="BrandId">
-                                    <option>Select</option>
-                                </select>
-                                <span asp-validation-for="FkBrandId" class="text-danger"></span>
-                            </div>
+                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkBrandId" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                        { "value", Model.FkBrandId }, { "text", Model.BrandName}, { "uri", "Brand" }, { "required", "required" },{ "placeholder", "Select Section"}
+                        ,{ "parentid", "" }, { "ExtraParam", "" }})
+                    </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-2">Alias</label>
@@ -53,10 +52,9 @@
                         <div class="form-group row">
                             <label class="col-sm-2">Unit</label>
                             <div class="col-md-6">
-                        <select asp-for="FkUnitId" asp-items="@(new SelectList(ViewBag.UnitList,"PKID","UnitName"))" class="form-select" id="UnitId">
-                                    <option>Select</option>
-                                </select>
-                                <span asp-validation-for="FkUnitId" class="text-danger"></span>
+                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkUnitId" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                        { "value", Model.FkUnitId }, { "text", Model.UnitName}, { "uri", "Unit" }, { "required", "required" },{ "placeholder", "Select Section"}
+                        ,{ "parentid", "" }, { "ExtraParam", "" }})
                             </div>
                         </div>
                         <div class="form-group row">

@@ -10,7 +10,7 @@ namespace SSRepository.Models
 {
      public class ProductModel : BaseModel
     {
-         public long PkProductId { get; set; }
+         public long PKID { get; set; }
         public string Product { get; set; }
         public string? NameToDisplay { get; set; }//backend =product
         public string? NameToPrint { get; set; }//backend =product
@@ -55,7 +55,8 @@ namespace SSRepository.Models
         
         public string? CategoryGroupName { get; set; }
         public string? CategoryName { get; set; }// 
-       public string? BrandName { get; set; }//
+        public string? UnitName { get; set; }// 
+        public string? BrandName { get; set; }//
 
         [StringLength(20)]
         public string Genration { get; set; }

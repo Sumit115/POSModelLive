@@ -36,7 +36,7 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<BrandModel> data = (from cou in __dbContext.TblBrandMas
-                                         // where (EF.Functions.Like(cou.Name.Trim().ToLower(), Convert.ToString(search) + "%"))
+                                     where (EF.Functions.Like(cou.BrandName.Trim().ToLower(), Convert.ToString(search) + "%"))
                                      orderby cou.PkBrandId
                                      select (new BrandModel
                                      {
@@ -49,8 +49,6 @@ namespace SSRepository.Repository.Master
                                     )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
-
-
         public BrandModel GetSingleRecord(long PkBrandId)
         {
 
@@ -67,21 +65,26 @@ namespace SSRepository.Repository.Master
                     })).FirstOrDefault();
             return data;
         }
-        public object GetDrpBrand(int pageSize, int pageNo = 1, string search = "")
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "")
         {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetList(pageSize, pageNo, search);
-
-            //   result.Insert(0, new BrandModel { PkBrandId = 0, BrandName = "Select" });
-
-            return (from r in result
-                    select new
-                    {
-                        r.PKID,
-                        r.BrandName
-                    }).ToList(); ;
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblBrandMas
+                         where EF.Functions.Like(cou.BrandName.Trim().ToLower(), search + "%")
+                         orderby cou.BrandName
+                         select (new
+                         {
+                             cou.PkBrandId,
+                             cou.BrandName,
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public string DeleteRecord(long PkBrandId)

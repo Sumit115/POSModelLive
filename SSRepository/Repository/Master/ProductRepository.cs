@@ -8,6 +8,7 @@ using Microsoft.VisualBasic;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Reflection.Metadata;
+using System.Runtime.ConstrainedExecution;
 
 namespace SSRepository.Repository.Master
 {
@@ -24,7 +25,7 @@ namespace SSRepository.Repository.Master
             if (!string.IsNullOrEmpty(model.Product))
             {
                 cnt = (from x in __dbContext.TblProductMas
-                       where x.Product == model.Product && x.PkProductId != model.PkProductId
+                       where x.Product == model.Product && x.PkProductId != model.PKID
                        select x).Count();
                 if (cnt > 0)
                     error = "Already Exits";
@@ -39,16 +40,16 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<ProductModel> data = (from cou in __dbContext.TblProductMas
-                                       join cat in __dbContext.TblCategoryMas on cou.FKProdCatgId equals cat.PkCategoryId
-                                       join Pbrand in __dbContext.TblBrandMas on cou.FkBrandId equals Pbrand.PkBrandId
-                                                             into tembrand
-                                       from brand in tembrand.DefaultIfEmpty()
+                                       //join cat in __dbContext.TblCategoryMas on cou.FKProdCatgId equals cat.PkCategoryId
+                                       //join Pbrand in __dbContext.TblBrandMas on cou.FkBrandId equals Pbrand.PkBrandId
+                                       //                      into tembrand
+                                       //from brand in tembrand.DefaultIfEmpty()
                                        where (EF.Functions.Like(cou.Product.Trim().ToLower(), Convert.ToString(search) + "%"))
                                        && cou.FKProdCatgId == (FkCatId > 0 ? FkCatId : cou.FKProdCatgId)
                                        orderby cou.PkProductId
                                        select (new ProductModel
                                        {
-                                           PkProductId = cou.PkProductId,
+                                           PKID = cou.PkProductId,
                                            Product = cou.Product,
                                            NameToDisplay = cou.NameToDisplay,
                                            NameToPrint = cou.NameToPrint,
@@ -80,9 +81,11 @@ namespace SSRepository.Repository.Master
                                            DistributionRate = cou.DistributionRate,
                                            PurchaseRate = cou.PurchaseRate,
                                            KeepStock = cou.KeepStock,
-                                           CategoryName = cat.CategoryName,
-                                           BrandName = brand.BrandName,
+                                           UnitName = cou.FkUnit.UnitName,
+                                           CategoryName = cou.FkCategory.CategoryName,
+                                           BrandName = cou.FkBrand.BrandName,
                                            FKUserID = cou.FKUserID,
+                                           UserName = cou.FKUser.UserId,
                                            DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                                        }
                                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
@@ -204,7 +207,7 @@ namespace SSRepository.Repository.Master
                                        orderby cou.PkProductId
                                        select (new ProductModel
                                        {
-                                           PkProductId = cou.PkProductId,
+                                           PKID = cou.PkProductId,
                                            Product = cou.Product,
                                            NameToDisplay = cou.NameToDisplay,
                                            NameToPrint = cou.NameToPrint,
@@ -253,11 +256,11 @@ namespace SSRepository.Repository.Master
 
             ProductModel data = new ProductModel();
             data = (from cou in __dbContext.TblProductMas
-                    join cat in __dbContext.TblCategoryMas on cou.FKProdCatgId equals cat.PkCategoryId
+                   // join cat in __dbContext.TblCategoryMas on cou.FKProdCatgId equals cat.PkCategoryId
                     where cou.PkProductId == PkProductId
                     select (new ProductModel
                     {
-                        PkProductId = cou.PkProductId,
+                        PKID = cou.PkProductId,
                         Product = cou.Product,
                         NameToDisplay = cou.NameToDisplay,
                         NameToPrint = cou.NameToPrint,
@@ -293,36 +296,60 @@ namespace SSRepository.Repository.Master
                         Genration = cou.Genration,
                         CodingScheme = cou.CodingScheme,
                         FkUnitId = cou.FkUnitId,
-                        CategoryName = cat.CategoryName,
+                        UnitName = cou.FkUnit.UnitName,
+                        CategoryName = cou.FkCategory.CategoryName,
+                        BrandName = cou.FkBrand.BrandName,
                         FKUserID = cou.FKUserID,
+                        UserName = cou.FKUser.UserId,
                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy")
                     })).FirstOrDefault();
 
             return data;
         }
-        public object GetDrpProduct(int pageSize, int pageNo = 1, string search = "", long FkCatId = 0)
-        {
-            if (search != null) search = search.ToLower();
-            if (search == null) search = "";
-
-            var result = GetList(pageSize, pageNo, search);
-            // result.Insert(0, new ProductModel { PkProductId = 0, Product = "Select" });
-
-
-            return (from r in result
-                    select new
-                    {
-                        r.PkProductId,
-                        r.Product
-                    }).ToList(); ;
-        }
-
+   
         public string DeleteRecord(long PkProductId)
         {
             string Error = "";
             ProductModel oldModel = GetSingleRecord(PkProductId);
-             
 
+            var saleOrderExist = (from cou in __dbContext.TblSalesOrderdtl
+                                   where cou.FkProductId == PkProductId
+                                  select cou).Count();
+            if (saleOrderExist > 0)
+                Error += "use in other transaction";
+
+            if (Error == "")
+            {
+                var saleInvoiceExist = (from cou in __dbContext.TblSalesInvoicedtl
+                                         where cou.FkProductId == PkProductId
+                                        select cou).Count();
+                if (saleInvoiceExist > 0)
+                    Error += "use in other transaction";
+            }
+            if (Error == "")
+            {
+                var saleCrNoteExist = (from cou in __dbContext.TblSalesCrNotedtl
+                                       where cou.FkProductId == PkProductId
+                                       select cou).Count();
+                if (saleCrNoteExist > 0)
+                    Error += "use in other transaction";
+            }
+            if (Error == "")
+            {
+                var saleCrNoteExist = (from cou in __dbContext.TblPurchaseInvoicedtl
+                                       where cou.FkProductId == PkProductId
+                                       select cou).Count();
+                if (saleCrNoteExist > 0)
+                    Error += "use in other transaction";
+            }
+            if (Error == "")
+            {
+                var saleCrNoteExist = (from cou in __dbContext.TblPurchaseOrderdtl
+                                       where cou.FkProductId == PkProductId
+                                       select cou).Count();
+                if (saleCrNoteExist > 0)
+                    Error += "use in other transaction";
+            }
             if (Error == "")
             {
                 var lst = (from x in __dbContext.TblProductMas
@@ -350,14 +377,14 @@ namespace SSRepository.Repository.Master
         {
             ProductModel model = (ProductModel)objmodel;
             TblProductMas Tbl = new TblProductMas();
-            if (model.PkProductId > 0)
+            if (model.PKID > 0)
             {
-                var _entity = __dbContext.TblProductMas.Find(model.PkProductId);
+                var _entity = __dbContext.TblProductMas.Find(model.PKID);
                 if (_entity != null) { Tbl = _entity; }
                 else { throw new Exception("data not found"); }
             }
 
-            Tbl.PkProductId = model.PkProductId;
+            Tbl.PkProductId = model.PKID;
             Tbl.Product = model.Product;
             Tbl.NameToDisplay = model.NameToDisplay;
             Tbl.NameToPrint = model.NameToPrint;
@@ -427,23 +454,25 @@ namespace SSRepository.Repository.Master
         }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
             var list = new List<ColumnStructure>
             {
-                new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="Name", Fields="Product",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Alias", Fields="Alias",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Strength", Fields="Strength",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Barcode", Fields="Barcode",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Status", Fields="Status",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Section", Fields="CategoryName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="HSNCode", Fields="HSNCode",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Brand", Fields="BrandName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="MRP", Fields="MRP",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=13, Orderby =13, Heading ="SaleRate", Fields="SaleRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=14, Orderby =14, Heading ="TradeRate", Fields="TradeRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=15, Orderby =15, Heading ="DistributionRate", Fields="DistributionRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=16, Orderby =16, Heading ="PurchaseRate	", Fields="PurchaseRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                new ColumnStructure{ pk_Id=12, Orderby =17, Heading ="Created", Fields="CreateDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=13, Orderby =18, Heading ="Modified", Fields="ModifiDate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Name", Fields="Product",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Alias", Fields="Alias",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Strength", Fields="Strength",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Barcode", Fields="Barcode",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Status", Fields="Status",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++,  Heading ="Section", Fields="CategoryName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="HSNCode", Fields="HSNCode",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Brand", Fields="BrandName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="MRP", Fields="MRP",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="SaleRate", Fields="SaleRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="TradeRate", Fields="TradeRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="DistributionRate", Fields="DistributionRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="PurchaseRate	", Fields="PurchaseRate",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="User", Fields="UserName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
+                new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Modified", Fields="DATE_MODIFIED",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="" },
 
             };
             return list;
@@ -464,7 +493,7 @@ namespace SSRepository.Repository.Master
                     where cou.Barcode == Barcode
                     select (new ProductModel
                     {
-                        PkProductId = cou.PkProductId,
+                        PKID = cou.PkProductId,
                         Product = cou.Product,
                         NameToDisplay = cou.NameToDisplay,
                         NameToPrint = cou.NameToPrint,
