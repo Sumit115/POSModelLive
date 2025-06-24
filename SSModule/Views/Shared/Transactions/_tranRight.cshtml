@@ -42,4 +42,8 @@
         <input type="file" name="ExcelFile" id="ExcelFile" onchange="UploadFile()" accept=".csv" class="file-input d-none">
 
     }
+    @if (Model.ExtProperties.TranAlias == "PINV" || Model.ExtProperties.TranAlias == "PORD")
+    {
+        <partial name="~/Views/Shared/Transactions/_ImportData.cshtml" />
+    }
 </div>

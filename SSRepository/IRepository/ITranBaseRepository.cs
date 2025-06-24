@@ -60,6 +60,8 @@ namespace SSRepository.IRepository
 
         object GetPrintData(long PkId, long FkSeriesId);
         object ApplyPromotion(TransactionModel model);
-
+        object Get_CategoryList(int pageSize, int pageNo = 1, string search = "");
+        List<TranDetails> Get_ProductInfo_FromFile(List<TranDetails> dtlList);
+        object BindImportData(TransactionModel model, List<TranDetails> details);
     }
 }

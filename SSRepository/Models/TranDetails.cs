@@ -64,6 +64,7 @@ namespace SSRepository.Models
         public decimal GstRate { get; set; }//9
         public decimal GstAmt { get; set; }//9
         public string? Product { get; set; }
+        public string? ProductDisplay { get; set; }
         public string? CodingScheme { get; set; }
 
         public Nullable<long> FKInvoiceID { get; set; }
@@ -92,5 +93,7 @@ namespace SSRepository.Models
         public long LinkSrNo { get; set; }
         public string PromotionType { get; set; } =string.Empty;
         public string? TranType { get; set; }
+       
+
     }
 }

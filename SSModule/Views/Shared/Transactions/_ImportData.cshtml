@@ -1,0 +1,46 @@
+﻿@model SSRepository.Models.TransactionModel
+
+@{
+    Layout = null;
+}
+<button class="icon-button" type="button" onclick="ImportDataPopup()" data-bs-toggle="tooltip" data-bs-placement="left" title="Import Data" >
+    <i class=" bi bi-upload"></i>
+</button>
+
+<div class="modal fade model-importdata" style="z-index: 99999;">
+    <div class="modal-dialog" role="document" style="width: 57% !important;max-width: 100%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Import Data</h5>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-md-10 input-group ">
+                        <input id="ImportDatafile" class="form-control" type="file" accept=".csv" onchange="ImportDataFromFile()" style="display:none;" autocomplete="off">
+                        <button type="button" class="btn btn-secondary" onclick="$('#ImportDatafile').click()">
+                            <i class="bi bi-upload"></i>
+                            &nbsp; Import File
+                        </button>
+                    </div>
+
+                    <div class="col-md-2 input-group ">
+                        <a href="/excelfile/format/demo_importPurchase.csv" class="btn btn-secondary" target="_blank">
+                            <i class="bi bi-download"></i>
+                            &nbsp; Downolad Format
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                
+                    <div class="col-md-12 mt-4" id="DDTImport">
+
+                   </div>
+               </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="BindGrid_ImportedData()">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>

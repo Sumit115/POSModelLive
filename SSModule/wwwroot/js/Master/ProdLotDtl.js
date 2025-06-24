@@ -3,6 +3,9 @@ var GridId = "WUCHM1", GridHeight = "50vh", pageNo = 1, pageSize = 1000, filterc
 var ProdlotData = null;
 
 $(document).ready(function () {
+    $("#btnGridColumn").parent().parent().parent().show();
+    $("#btnExportToExcel").hide();
+
     $('#PkLotId').val('0');
     $('#btnServerSave').click(function (e) {
         e.preventDefault();

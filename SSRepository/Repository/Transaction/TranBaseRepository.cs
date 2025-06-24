@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -518,7 +519,7 @@ namespace SSRepository.Repository.Transaction
                 if (SeriesFilter == "SORD" || SeriesFilter == "SINV")
                     cmd.Parameters.AddWithValue("@StateFilter", GetFilterData(StateFilter));
                 if (!string.IsNullOrEmpty(StatusFilter))
-                    cmd.Parameters.AddWithValue("@StatusFilter", StatusFilter); 
+                    cmd.Parameters.AddWithValue("@StatusFilter", StatusFilter);
                 //Get Output Parametr
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(dt);
@@ -904,17 +905,22 @@ namespace SSRepository.Repository.Transaction
                         .FirstOrDefault();
                     if (drdetail != null)
                     {
-                        int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == FkProductId && a.FkLotId == FkLotId && a.ModeForm != 2);
-                        SetProduct(model, drdetail, dtProduct);
-
-
-                        model.TranDetails[rowIndex].Qty += 1;
-                        CalculateExe(model, model.TranDetails[rowIndex]);
-                        // Check Product UNique/Lot/PRoduct
-                        var _check = model.UniqIdDetails.ToList().Where(x => x.Barcode == Barcode).FirstOrDefault();
-                        if (_check == null)
+                        if (drdetail.CodingScheme == "Unique" && model.UniqIdDetails.ToList().Where(x => x.Barcode == Barcode).ToList().Count > 0)
+                        { }
+                        else
                         {
-                            model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = model.TranDetails[rowIndex].SrNo, Barcode = Barcode });
+                            int rowIndex = model.TranDetails.FindIndex(a => a.FkProductId == FkProductId && a.FkLotId == FkLotId && a.ModeForm != 2);
+                            SetProduct(model, drdetail, dtProduct);
+
+
+                            model.TranDetails[rowIndex].Qty += 1;
+                            CalculateExe(model, model.TranDetails[rowIndex]);
+                            // Check Product UNique/Lot/PRoduct
+                            var _check = model.UniqIdDetails.ToList().Where(x => x.Barcode == Barcode).FirstOrDefault();
+                            if (_check == null)
+                            {
+                                model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = model.TranDetails[rowIndex].SrNo, Barcode = Barcode });
+                            }
                         }
                     }
                     else
@@ -1414,7 +1420,7 @@ namespace SSRepository.Repository.Transaction
             model.TradeDiscAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2);// + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2);
             model.TotalDiscount = model.CashDiscountAmt + model.TradeDiscAmt;
             decimal NetAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);// + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);
-            model.NetAmt = Math.Round((NetAmt - model.CashDiscountAmt) + model.Shipping + model.OtherCharge - (model.RoundOfDiff>=1?model.RoundOfDiff:0), 2);
+            model.NetAmt = Math.Round((NetAmt - model.CashDiscountAmt) + model.Shipping + model.OtherCharge - (model.RoundOfDiff >= 1 ? model.RoundOfDiff : 0), 2);
             if (model.RoundOfDiff < 1)
             {
                 model.RoundOfDiff = model.NetAmt - Math.Floor(model.NetAmt);
@@ -1502,7 +1508,8 @@ namespace SSRepository.Repository.Transaction
             }
             else
             {
-                if (!string.IsNullOrEmpty(model.PaymentModeDefault)) {
+                if (!string.IsNullOrEmpty(model.PaymentModeDefault))
+                {
                     if (model.PaymentModeDefault == "Cash")
                     {
                         model.Cash = true;
@@ -2492,7 +2499,179 @@ namespace SSRepository.Repository.Transaction
 
             return new { model = model, FormatName = FormatName };
         }
+        public object Get_CategoryList(int pageSize, int pageNo = 1, string search = "")
+        {
+            CategoryRepository repository = new CategoryRepository(__dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
+
+        }
+
+        public List<TranDetails> Get_ProductInfo_FromFile(List<TranDetails> dtlList)
+        {
+            foreach (var detail in dtlList)
+            {
+
+                DataTable dtProduct = GetProduct("", 0, 0, 0, detail.Product, false, "");
+                if (dtProduct.Rows.Count > 0)
+                {
+                    detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+
+                    detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
+                    detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
+                    detail.SubCategoryName = dtProduct.Rows[0]["CategoryName"].ToString();
+                    detail.Product = dtProduct.Rows[0]["Product"].ToString();
+                    detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
+                    detail.SaleRate = detail.TradeRate = detail.DistributionRate = detail.MRP;
+                    //detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
+                    //detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
+                    //detail.TradeRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString());
+                    //detail.DistributionRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString());
+
+                    //detail.Rate = Convert.ToDecimal(dtProduct.Rows[0][model.BillingRate].ToString());
+                    detail.FkLotId = 0;
+
+                }
+                else
+                {
+                    var subCat = __dbContext.TblCategoryMas.Where(x => x.CategoryName == detail.SubCategoryName).FirstOrDefault();
+                    if (subCat != null)
+                        detail.FKProdCatgId = subCat.PkCategoryId;
+                    detail.Product = "";
+                }
+
+            }
+            return dtlList;
+        }
+        public object BindImportData(TransactionModel model, List<TranDetails> details)
+        {
+            try
+            {
+
+                model.TranDetails = new List<TranDetails>();
+                if (details != null)
+                {
+                    int SrNo = 0;
+                    foreach (var item in details)
+                    {
+                        SrNo++;
+                        if (item.FkProductId > 0)
+                        {
+                            var detail = item;
+                            detail.SrNo = SrNo;
+                            CalculateExe(model, detail);
+
+                            if (!string.IsNullOrEmpty(detail.Barcode))
+                                model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = detail.SrNo, Barcode = detail.Barcode });
+
+                            detail.Barcode = "Barcode";
+                            model.TranDetails.Add(detail);
+                        }
+                        else
+                        {
+                            InsertProduct(item);
+                            DataTable dtProduct = GetProduct("", model.FKLocationID, 0, 0, item.ProductDisplay, false, model.TranAlias);
+                            if (dtProduct.Rows.Count > 0)
+                            {
+                                var detail = new TranDetails();
+                                TranDetailDefault(model, detail);
+                                SetProduct(model, detail, dtProduct);
+                                detail.SrNo = SrNo;
+                                detail.Qty = item.Qty;
+                                CalculateExe(model, detail);
+
+
+                                if (!string.IsNullOrEmpty(detail.Barcode))
+                                    model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = detail.SrNo, Barcode = detail.Barcode });
+
+                                detail.Barcode = "Barcode";
+                                model.TranDetails.Add(detail);
+                            }
+
+                            // Check Product UNique/Lot/PRoduct
+
+                        }
+                    }
+                }
+                else
+                    throw new Exception("Invalid Request");
+                //TranDetailDefault(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
+                //GetSetProduct(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]), "", 0, model.FKOrderID, model.FKOrderSrID);
+
+                //CalculateExe(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
+                //SetGridTotal(model);
+                //SetPaymentDetail(model);
+                //model.IsTranChange = true;
+            }
+            catch (Exception ex) { }
+            return model;
+        }
+
+        private void InsertProduct(TranDetails detail)
+        {
+            if (__dbContext.TblProductMas.Where(u => u.Product == detail.ProductDisplay).FirstOrDefault() == null)
+            {
+                TblProductMas Tbl = new TblProductMas();
+                var data = __dbContext.TblProductMas.OrderByDescending(u => u.PkProductId).FirstOrDefault();
+                if (data != null)
+                {
+                    Tbl.PkProductId = data.PkProductId + 1;
+                }
+                else
+                {
+                    Tbl.PkProductId = 1;
+                }
+                Tbl.Product = detail.ProductDisplay;
+                Tbl.NameToDisplay = detail.ProductDisplay;
+                Tbl.NameToPrint = detail.ProductDisplay;
+                //Tbl.Image = model.Image;
+                //Tbl.Alias = model.Alias;
+                //Tbl.Strength = model.Strength;
+                //Tbl.Barcode = detail.Barcode;
+                //Tbl.Status = model.Status;
+                Tbl.FKProdCatgId = detail.FKProdCatgId;
+                //Tbl.FKTaxID = model.FKTaxID;
+                //Tbl.HSNCode = model.HSNCode;
+                Tbl.FkBrandId = null;
+                //Tbl.ShelfID = model.ShelfID;
+                //Tbl.TradeDisc = model.TradeDisc;
+                //Tbl.MinStock = model.MinStock;
+                //Tbl.MaxStock = model.MaxStock;
+                //Tbl.MinDays = model.MinDays;
+                //Tbl.MaxDays = model.MaxDays;
+                Tbl.CaseLot = "";
+                //Tbl.BoxSize = model.BoxSize;
+                //Tbl.Description = model.Description;
+                Tbl.Unit1 = "";
+                //Tbl.ProdConv1 = model.ProdConv1;
+                 Tbl.Unit2 = "";
+                //Tbl.ProdConv2 = model.ProdConv2;
+                 Tbl.Unit3 = "";
+                Tbl.MRP = detail.MRP;
+                Tbl.MRPSaleRateUnit = "";
+                Tbl.SaleRate = detail.MRP;
+                Tbl.TradeRate = detail.MRP;
+                Tbl.DistributionRate = detail.MRP;
+                Tbl.PurchaseRate = detail.MRP;
+                Tbl.PurchaseRateUnit = "";
+                //Tbl.KeepStock = model.KeepStock;
+                //Tbl.Genration = model.Genration;
+                 Tbl.CodingScheme =GetSysDefaultsByKey("CodingScheme");
+                Tbl.FkUnitId = null;
+                Tbl.ModifiedDate = DateTime.Now;
+                Tbl.FKUserID = GetUserID();
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate;
+
+
+                //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
+                AddData(Tbl, false);
+                SaveClientData();
+                //AddImagesAndRemark(obj.PkcountryId, obj.FKProductID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
+            }
+        }
+
     }
-
-
 }
+
+
+

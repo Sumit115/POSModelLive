@@ -15,6 +15,8 @@ using Azure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Collections;
 using DocumentFormat.OpenXml.Wordprocessing;
+using ClosedXML.Excel;
+using System.Data;
 
 namespace SSAdmin.Areas.Master.Controllers
 {
@@ -102,8 +104,30 @@ namespace SSAdmin.Areas.Master.Controllers
             return new JsonResult(data);
         }
 
+        public ActionResult Export(int FkProductId,int pageNo, int pageSize)
+        {
+            var _d = _repository.GetListByProduct(FkProductId,pageSize, pageNo);
+            DataTable dtList = Handler.ToDataTable(_d);
+            var data = _gridLayoutRepository.GetSingleRecord(FKFormID, "", ColumnList());
+            var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
+            DataTable _gridColumn = Handler.ToDataTable(model);
 
-     
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                DataTable dt = GenerateExcel(_gridColumn, dtList);
+                wb.Worksheets.Add(dt);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/ms-excel", "ArticleLot-List.xls");// "Purchase-Invoice-List.xls");
+                    // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
+                }
+            }
+
+        }
+
+
 
         [HttpPost]
         public string GetSingleRecord(long fkProdId)
