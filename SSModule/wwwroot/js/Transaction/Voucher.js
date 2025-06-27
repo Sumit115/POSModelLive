@@ -4,6 +4,7 @@ var ControllerName = "";
 var GridName = "dtl";
 var MinRows = 50;
 $(document).ready(function () {
+    $('#btnDeleteRecord').hide();
     $("#btnClose,#btnOpen").hide();
     ControllerName = $("#hdControllerName").val();
 

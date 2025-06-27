@@ -3,7 +3,7 @@ var ControllerName = "";
 var TranAlias = "";
 var ModeFormForEdit = 1;
 $(document).ready(function () {
-
+    $('#btnDeleteRecord').hide();
     Common.InputFormat();
     $('#btnServerSave').click(function (e) {
         if ($("#TranForm").valid()) {

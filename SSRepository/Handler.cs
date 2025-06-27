@@ -29,6 +29,8 @@ public class Handler
     public enum Form
     {
         //MainMenu start from 1000
+        Dashboard = 0,
+
 
         Customer = 1,
         Vendor = 2,

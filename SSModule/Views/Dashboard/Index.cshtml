@@ -2,111 +2,181 @@
 @{
     Layout = "_Layout";
     ViewData["bdClass"] = "summary";
+    List<SSRepository.Models.MenuModel> _menuList = ViewBag.Menulist;
+    int isDashBoardPermission = 0;
+    if (_menuList != null)
+    {
+         isDashBoardPermission = _menuList.ToList().Where(x => x.FormName == "Dashboard" && x.IsAccess).FirstOrDefault() != null ? 1 : 0;
+    }
 }
-<div style="background-color:#fafbfe;overflow: auto;">
-    <div class="row mt-4 pl-3 pr-3 SalesSummary">
-        <div class="col-md-2 box ps-0">
-            <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
-                <div class="p-2">
-                    <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_PurchaseInvoice">@Model.TotalAmount_PurchaseInvoice</span></h5>
-                    <p class="mb-0 pt-1 Name">Purchase</p>
-                    <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Purchase <span id="TotalCount_PurchaseInvoice">@Model.TotalCount_PurchaseInvoice</span></h6>
-                </div>
-                <div class="icon-wrapper mr-2 mt-2">
-                    <i class="fas fa-chart-bar"></i>
+@if (isDashBoardPermission==1)
+{
+    <div style="background-color:#fafbfe;overflow: auto;">
+
+        <div class="row mt-4 pl-3 pr-3 SalesSummary">
+            <div class="col-md-12 box ps-0">
+                <h6> <span id="MonthName_selected"></span> Month Data</h6>
+            </div>
+            <div class="col-md-2 box ps-0">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                    <div class="p-2">
+                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_PurchaseInvoice">@Model.TotalAmount_PurchaseInvoice</span></h5>
+                        <p class="mb-0 pt-1 Name">Purchase</p>
+                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Purchase <span id="TotalCount_PurchaseInvoice">@Model.TotalCount_PurchaseInvoice</span></h6>
+                    </div>
+                    <div class="icon-wrapper mr-2 mt-2">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-2 box">
-            <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
-                <div class="p-2">
-                    <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesOrder">@Model.TotalAmount_SalesOrder</span></h5>
-                    <p class="mb-0 pt-1 Name">Sales Order</p>
-                    <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Order <span id="TotalCount_SalesOrder">@Model.TotalCount_SalesOrder</span></h6>
-                </div>
-                <div class="icon-wrapper mr-2 mt-2">
-                    <i class="fas fa-shopping-bag"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 box">
-            <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
-                <div class="p-2">
-                    <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesInvoice">@Model.TotalAmount_SalesInvoice</span></h5>
-                    <p class="mb-0 pt-1 Name">Sales</p>
-                    <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Sales <span id="TotalCount_SalesInvoice">@Model.TotalCount_SalesInvoice</span></h6>
-                </div>
-                <div class="icon-wrapper mr-2 mt-2">
-                    <i class="fas fa-box"></i>
+            <div class="col-md-2 box">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                    <div class="p-2">
+                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesOrder">@Model.TotalAmount_SalesOrder</span></h5>
+                        <p class="mb-0 pt-1 Name">Sales Order</p>
+                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Order <span id="TotalCount_SalesOrder">@Model.TotalCount_SalesOrder</span></h6>
+                    </div>
+                    <div class="icon-wrapper mr-2 mt-2">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-2 box">
-            <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
-                <div class="p-2">
-                    <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesChallan">@Model.TotalAmount_SalesChallan</span></h5>
-                    <p class="mb-0 pt-1 Name">Sales Challan</p>
-                    <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Challan <span id="TotalCount_SalesChallan">@Model.TotalCount_SalesChallan</span></h6>
-                </div>
-                <div class="icon-wrapper mr-2 mt-2">
-                    <i class="fas fa-user"></i>
+            <div class="col-md-2 box">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                    <div class="p-2">
+                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesInvoice">@Model.TotalAmount_SalesInvoice</span></h5>
+                        <p class="mb-0 pt-1 Name">Sales</p>
+                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Sales <span id="TotalCount_SalesInvoice">@Model.TotalCount_SalesInvoice</span></h6>
+                    </div>
+                    <div class="icon-wrapper mr-2 mt-2">
+                        <i class="fas fa-box"></i>
+                    </div>
                 </div>
             </div>
-        </div>
-
-    </div>
-
-
-    <div class="row mt-4 pl-3 pr-3">
-        <div class="col-md-12">
-            <div class="card" style="height: 495px!important;">
-                <div class="card-header" id="header_graph">
-                    Current Month
-                </div>
-                <div class="card-body">
-
-                    <div id="morris-area-chart"></div>
-
-                </div>
-
-                <div class="card-footer bg-transparent">
-                    <div class="row">
-
-                        <div class="col-3">
-                            <span class="mr-3">
-                                <i class="fa fa-circle m-r-5" style="color:#4a23ad"></i> &nbsp;&nbsp;Purchase Amount&nbsp;&nbsp;
-                                <input type="checkbox" name="MorrisChartKey" value="PurchaseInvoiceAmount" data-label="Purchase Amount" data-linecolor="#4a23ad" onchange="Load_Morris_Area_Chart_Data()" checked />
-                            </span>
-                        </div>
-                        <div class="col-3">
-                            <span class="mr-3">
-                                <i class="fa fa-circle m-r-5" style="color:#00bbd9"></i>
-                                &nbsp;&nbsp;Purchase Count &nbsp;&nbsp;
-                                <input type="checkbox" name="MorrisChartKey" value="PurchaseInvoiceCount" data-label="Purchase Count" data-linecolor="#00bbd9" onchange="Load_Morris_Area_Chart_Data()" checked />
-                            </span>
-                        </div>
-                        <div class="col-3">
-                            <span class="mr-3">
-                                <i class="fa fa-circle m-r-5" style="color:#2ecc71"></i> &nbsp;&nbsp;
-                                Sales Amount&nbsp;&nbsp;
-                                <input type="checkbox" name="MorrisChartKey" value="SalesInvoiceAmount" data-label="Sales Amount" data-linecolor="#2ecc71" onchange="Load_Morris_Area_Chart_Data()" checked />
-                            </span>
-                        </div>
-                        <div class="col-3">
-                            <span class="mr-3">
-                                <i class="fa fa-circle m-r-5" style="color:#fd8a14"></i>
-                                &nbsp;&nbsp;Sales Count&nbsp;&nbsp;
-                                <input type="checkbox" name="MorrisChartKey" value="SalesInvoiceCount" data-label="Sales Count" data-linecolor="#fd8a14" onchange="Load_Morris_Area_Chart_Data()" checked />
-                            </span>
-                        </div>
+            <div class="col-md-2 box">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                    <div class="p-2">
+                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesChallan">@Model.TotalAmount_SalesChallan</span></h5>
+                        <p class="mb-0 pt-1 Name">Sales Challan</p>
+                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Challan <span id="TotalCount_SalesChallan">@Model.TotalCount_SalesChallan</span></h6>
+                    </div>
+                    <div class="icon-wrapper mr-2 mt-2">
+                        <i class="fas fa-user"></i>
                     </div>
                 </div>
             </div>
 
         </div>
+
+        <div class="row mt-4 pl-3 pr-3 SalesSummary">
+            <div class="col-md-12 box ps-0">
+                <h6>
+                    FY <span>@(!string.IsNullOrEmpty(ViewBag.FinYear) ? (ViewBag.FinYear + "-" + ((Convert.ToInt32(ViewBag.FinYear)) + 1)) : "2025-2026")</span>
+                    Data
+                </h6>
+            </div>
+            <div class="col-md-2 box ps-0">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                    <div class="p-2">
+                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_PurchaseInvoice_FY">@Model.TotalAmount_PurchaseInvoice</span></h5>
+                        <p class="mb-0 pt-1 Name">Purchase</p>
+                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Purchase <span id="TotalCount_PurchaseInvoice_FY">@Model.TotalCount_PurchaseInvoice</span></h6>
+                    </div>
+                    <div class="icon-wrapper mr-2 mt-2">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 box">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                    <div class="p-2">
+                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesOrder_FY">@Model.TotalAmount_SalesOrder</span></h5>
+                        <p class="mb-0 pt-1 Name">Sales Order</p>
+                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Order <span id="TotalCount_SalesOrder_FY">@Model.TotalCount_SalesOrder</span></h6>
+                    </div>
+                    <div class="icon-wrapper mr-2 mt-2">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 box">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                    <div class="p-2">
+                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesInvoice_FY">@Model.TotalAmount_SalesInvoice</span></h5>
+                        <p class="mb-0 pt-1 Name">Sales</p>
+                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Sales <span id="TotalCount_SalesInvoice_FY">@Model.TotalCount_SalesInvoice</span></h6>
+                    </div>
+                    <div class="icon-wrapper mr-2 mt-2">
+                        <i class="fas fa-box"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 box">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                    <div class="p-2">
+                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesChallan_FY">@Model.TotalAmount_SalesChallan</span></h5>
+                        <p class="mb-0 pt-1 Name">Sales Challan</p>
+                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Challan <span id="TotalCount_SalesChallan_FY">@Model.TotalCount_SalesChallan</span></h6>
+                    </div>
+                    <div class="icon-wrapper mr-2 mt-2">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row mt-4 pl-3 pr-3">
+            <div class="col-md-12">
+                <div class="card" style="height: 495px!important;">
+                    <div class="card-header" id="header_graph">
+                        Current Month
+                    </div>
+                    <div class="card-body">
+
+                        <div id="morris-area-chart"></div>
+
+                    </div>
+
+                    <div class="card-footer bg-transparent">
+                        <div class="row">
+
+                            <div class="col-3">
+                                <span class="mr-3">
+                                    <i class="fa fa-circle m-r-5" style="color:#4a23ad"></i> &nbsp;&nbsp;Purchase Amount&nbsp;&nbsp;
+                                    <input type="checkbox" name="MorrisChartKey" value="PurchaseInvoiceAmount" data-label="Purchase Amount" data-linecolor="#4a23ad" onchange="Load_Morris_Area_Chart_Data()" checked />
+                                </span>
+                            </div>
+                            <div class="col-3">
+                                <span class="mr-3">
+                                    <i class="fa fa-circle m-r-5" style="color:#00bbd9"></i>
+                                    &nbsp;&nbsp;Purchase Count &nbsp;&nbsp;
+                                    <input type="checkbox" name="MorrisChartKey" value="PurchaseInvoiceCount" data-label="Purchase Count" data-linecolor="#00bbd9" onchange="Load_Morris_Area_Chart_Data()" checked />
+                                </span>
+                            </div>
+                            <div class="col-3">
+                                <span class="mr-3">
+                                    <i class="fa fa-circle m-r-5" style="color:#2ecc71"></i> &nbsp;&nbsp;
+                                    Sales Amount&nbsp;&nbsp;
+                                    <input type="checkbox" name="MorrisChartKey" value="SalesInvoiceAmount" data-label="Sales Amount" data-linecolor="#2ecc71" onchange="Load_Morris_Area_Chart_Data()" checked />
+                                </span>
+                            </div>
+                            <div class="col-3">
+                                <span class="mr-3">
+                                    <i class="fa fa-circle m-r-5" style="color:#fd8a14"></i>
+                                    &nbsp;&nbsp;Sales Count&nbsp;&nbsp;
+                                    <input type="checkbox" name="MorrisChartKey" value="SalesInvoiceCount" data-label="Sales Count" data-linecolor="#fd8a14" onchange="Load_Morris_Area_Chart_Data()" checked />
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
-</div>
-<input type="hidden" id="hdGraphData_MorrisAreaChart" value="@Newtonsoft.Json.JsonConvert.SerializeObject(Model.GraphDataList)" />
+    <input type="hidden" id="hdGraphData_MorrisAreaChart" value="@Newtonsoft.Json.JsonConvert.SerializeObject(Model.GraphDataList)" />
+}
 @section Scripts {
     <link href="~/morris/morris.css" rel="stylesheet" />
     <script src="~/morris/morris.js"></script>
@@ -114,12 +184,16 @@
     <script>
         $(document).ready(function () {
             $("#ddlMonth_Summary").val(@DateTime.Now.Month);
-            DashboardSummary();
+            $("#MonthName_selected").text($("#ddlMonth_Summary option:selected").text());
+            if (@isDashBoardPermission==1) {
+                DashboardSummary();
+            }
             $("#ddlMonth_Summary").on("change", function () {
+                $("#MonthName_selected").text($("#ddlMonth_Summary option:selected").text());
                 DashboardSummary();
             });
-           
-           // Load_Morris_Area_Chart_Data();
+
+            // Load_Morris_Area_Chart_Data();
         });
         var display_date = function (d) {
             var month = d.getMonth() + 1,
@@ -135,7 +209,7 @@
 
             $("#morris-area-chart").html('');
             //  $("#span_graphHeading").text('Last_30_Days_Data');
-            
+
             var ItemList = JSON.parse($("#hdGraphData_MorrisAreaChart").val());
             var xkey = 'Date';
             //console.log(ItemList);
@@ -201,7 +275,7 @@
                 success: function (res) {
                     //console.log(res);
                     if (res.status == "success") {
-                        // console.log(res.data);
+                        console.log(res.data);
                         var _d = res.data;
                         $("#TotalCount_PurchaseInvoice").text(_d.TotalCount_PurchaseInvoice);
                         $("#TotalAmount_PurchaseInvoice").text(_d.TotalAmount_PurchaseInvoice);
@@ -210,7 +284,18 @@
                         $("#TotalCount_SalesInvoice").text(_d.TotalCount_SalesInvoice);
                         $("#TotalAmount_SalesInvoice").text(_d.TotalAmount_SalesInvoice);
                         $("#TotalCount_SalesChallan").text(_d.TotalCount_SalesChallan);
-                        $("#TotalAmount_SalesChallan").text(_d.TotalAmount_SalesChallan) ;
+                        $("#TotalAmount_SalesChallan").text(_d.TotalAmount_SalesChallan);
+
+                        $("#TotalCount_PurchaseInvoice_FY").text(_d.TotalCount_PurchaseInvoice_FY);
+                        $("#TotalAmount_PurchaseInvoice_FY").text(_d.TotalAmount_PurchaseInvoice_FY);
+                        $("#TotalCount_SalesOrder_FY").text(_d.TotalCount_SalesOrder_FY);
+                        $("#TotalAmount_SalesOrder_FY").text(_d.TotalAmount_SalesOrder_FY);
+                        $("#TotalCount_SalesInvoice_FY").text(_d.TotalCount_SalesInvoice_FY);
+                        $("#TotalAmount_SalesInvoice_FY").text(_d.TotalAmount_SalesInvoice_FY);
+                        $("#TotalCount_SalesChallan_FY").text(_d.TotalCount_SalesChallan_FY);
+                        $("#TotalAmount_SalesChallan_FY").text(_d.TotalAmount_SalesChallan_FY);
+
+
                         $("#hdGraphData_MorrisAreaChart").val(JSON.stringify(_d.GraphDataList));
                         Load_Morris_Area_Chart_Data();
                     }

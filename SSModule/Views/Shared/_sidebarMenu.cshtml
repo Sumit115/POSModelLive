@@ -17,7 +17,7 @@
                     List<SSRepository.Models.MenuModel> _menuList = ViewBag.Menulist;
                     if (_menuList != null)
                     {
-                        foreach (var mstrMenu in _menuList)
+                        foreach (var mstrMenu in _menuList.Where(x => x.FormName != "Dashboard").ToList())
                         {
                             if (mstrMenu.SubMenu != null && mstrMenu.SubMenu.Any())
                             {

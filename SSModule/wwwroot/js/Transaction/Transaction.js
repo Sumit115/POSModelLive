@@ -6,7 +6,7 @@ var ModeFormForEdit = 1;
 var cgRtn = null;
 var UDIRtn = null;
 $(document).ready(function () {
-
+    $('#btnDeleteRecord').hide();
     ModeFormForEdit = Handler.isNullOrEmpty($("#hdModeFormForEdit").val()) ? 1 : parseInt($("#hdModeFormForEdit").val());
     Common.InputFormat();
     ControllerName = $("#hdControllerName").val();
