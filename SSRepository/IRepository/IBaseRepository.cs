@@ -29,5 +29,6 @@ namespace SSRepository.IRepository
         T GetMasterLog<T>(long PKMasterLogID);
         string GetAlias(string FormName = "");
         string GenrateTableScript(string ConnectionString,string tableName);
+        string uspGetValueOfId(long PkId, string TableName, string ColumnName, string PkColumnName);
     }
 }

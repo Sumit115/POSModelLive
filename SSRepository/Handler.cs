@@ -65,6 +65,7 @@ public class Handler
         Unit = 31,
         Form = 32,
         ReferBy = 33,
+        CreditCardType = 34,
 
         SalesOrder = 100,
         SalesInvoice = 101,
@@ -88,6 +89,7 @@ public class Handler
         JobWorkIssue = 119,
         JobWorkReceive = 120,
         SalesReplacement = 121,
+        Receipt = 122,
 
         //200-report
         SalesStock = 200,
@@ -425,5 +427,16 @@ public class Handler
         return _state != null ? _state.Value2 : "";
     }
 
+    public static void Log(string title, string Des)
+    { 
+        string path = Path.Combine("wwwroot", "Logs");
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+
+        DateTime CurrentDateTime = DateTime.Now;
+        string sPath = Path.Combine(path, "log_" + CurrentDateTime.ToString("ddMMyy") + ".txt");
+
+        System.IO.File.AppendAllText(sPath, "\r\n\r\n" + CurrentDateTime.ToString("HH:mm:ss fff") + " [" + title + "] : " + Des);
+    }
 }
 

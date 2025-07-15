@@ -95,13 +95,16 @@ namespace SSRepository.Models
         public string? ChequeNo { get; set; }
         public Nullable<System.DateTime> ChequeDate { get; set; }
         public Nullable<long> FKBankChequeID { get; set; }
+        public string?  BankChequeName { get; set; }
         public bool CreditCard { get; set; }
         public Nullable<decimal> CreditCardAmt { get; set; }
         public string? CreditCardNo { get; set; }
         public Nullable<System.DateTime> CreditCardDate { get; set; }
         public Nullable<long> FKBankCreditCardID { get; set; }
+        public string BankCreditCardName { get; set; }
 
         public string? Remark { get; set; }
+        public string? VoucherNarration { get; set; }
 
         public string? InvStatus { get; set; }
         public bool DraftMode { get; set; }
@@ -166,6 +169,18 @@ namespace SSRepository.Models
         public string ReferByName { get; set; }
         public long? FKSalesPerId { get; set; }
         public string SalesPerName { get; set; }
+
+        public string? PayMode { get; set; }
+        public Nullable<long> FkRebateAccId { get; set; }
+        public string? RebateAccount { get; set; }
+
+        public Nullable<long> FkInterestAccId { get; set; }
+        public string? InterestAccount { get; set; }
+
+        public Nullable<long> FKBankPostID { get; set; }
+        public string? BankPostName { get; set; }
+        public decimal? Rebate { get; set; }
+        public decimal? Interest { get; set; }
     }
 
     public class ExtPropertie

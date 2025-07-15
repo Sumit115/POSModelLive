@@ -42,6 +42,7 @@
     <Content Remove="Areas\Master\Views\Promotion\Create - Copy.cshtml" />
     <Content Remove="wwwroot\js\Master\Recipe.js" />
     <Content Remove="wwwroot\js\Master\User.js" />
+    <Content Remove="wwwroot\js\Transaction\Receipt.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -337,6 +338,7 @@
     <None Include="wwwroot\js\Report\Report.js" />
     <None Include="wwwroot\js\site.js" />
     <None Include="wwwroot\js\Transaction\JobWork.js" />
+    <None Include="wwwroot\js\Transaction\Receipt.js" />
     <None Include="wwwroot\js\Transaction\Transaction.js" />
     <None Include="wwwroot\css\bootstrap.css.map" />
     <None Include="wwwroot\css\bootstrap.min.css.map" />

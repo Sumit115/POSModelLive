@@ -177,7 +177,8 @@ namespace SSRepository.Repository.Master
                         select new
                         {
                             cou.PkAccountId,
-                            cou.Account
+                            cou.Account,
+                            cou.FKAccountGroupMas.AccountGroupName
                         }).ToList();
 
                

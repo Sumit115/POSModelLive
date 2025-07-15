@@ -1,0 +1,68 @@
+﻿@model SSRepository.Models.CreditCardTypeModel
+
+@{
+    ViewData["Title"] = "Credit Card Type";
+    ViewData["bdClass"] = "page";
+}
+<div class="p-4">
+    <form asp-action="Create" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PKID" /> 
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group row">
+                    <label class="col-sm-2">Credit Card Type<span class="required">*</span></label>
+                    <div class="col-md-6">
+                        <input asp-for="CreditCardType" class="form-control" placeholder="Enter Name" required />
+                        <span asp-validation-for="CreditCardType" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Account</label>
+
+                    <div class="col-md-6">
+                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkAccountID" }, {"name", ""}, { "Class", "val-cus-drp" },
+                        { "value", Model.FkAccountID }, { "text", Model.AccountName }, { "uri", "Account" },{ "placeholder", "Select Account"}
+                        ,{ "parentid", "" }, { "ExtraParam", "" }})
+
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Assembly</label>
+                    <div class="col-md-6">
+                        <input asp-for="Assembly" class="form-control"   />
+                        <span asp-validation-for="Assembly" class="text-danger"></span>
+                    </div> 
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Class</label>
+                    <div class="col-md-6">
+                        <textarea asp-for="Class" class="form-control" ></textarea>
+                        <span asp-validation-for="Class" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Method</label>
+                    <div class="col-md-6">
+                        <textarea asp-for="Method" class="form-control"></textarea>
+                        <span asp-validation-for="Method" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2">Parameter</label>
+                    <div class="col-md-6">
+                        <textarea asp-for="Parameter" class="form-control"></textarea>
+                        <span asp-validation-for="Parameter" class="text-danger"></span>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </form>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/master/CreditCardType.js"></script>
+
+}

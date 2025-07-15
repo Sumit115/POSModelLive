@@ -11,6 +11,7 @@ namespace SSRepository.IRepository.Master
         string isAlreadyExist(AccountMasModel tblBankMas, string Mode);
         List<AccountMasModel> GetList(int pageSize, int pageNo = 1, string search = "");
         object GetDrpAccountMas(int pageSize, int pageNo = 1, string search = "");
+        object CustomList(int EnCustomFlag, int pageNo, int pageSize, string search = "", long FkAccountGroupId = 0);
         AccountMasModel GetSingleRecord(long PkID);
 
         string DeleteRecord(long PKID);

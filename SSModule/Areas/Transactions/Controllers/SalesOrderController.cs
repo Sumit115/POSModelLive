@@ -181,10 +181,10 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
                     string rn = new Random().Next(0, 9999).ToString("D6");
                     string filename = rn + DateTime.Now.Ticks + file.FileName;
-                    //Handler.Log("UploadFile", "File Name :"+ filename);
+                     //Handler.Log("UploadFile", "File Name :"+ filename);
 
                     string filePath = Path.Combine(path, filename);
-                    //Handler.Log("UploadFile", "File Path :" + filePath);
+                     //Handler.Log("UploadFile", "File Path :" + filePath);
 
                     using (Stream fileStream = new FileStream(filePath, FileMode.Create))
                     {

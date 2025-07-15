@@ -153,5 +153,10 @@ namespace SSAdmin.Areas.Option.Controllers
             return View(model);
 
         }
+
+        public IActionResult UploadFile()
+        {
+            return View();
+        }
     }
 }

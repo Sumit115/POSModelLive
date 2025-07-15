@@ -629,7 +629,8 @@ hr {
 .Tran-page-ui {
     width: calc(100% - 50px);
     padding: 0rem .5rem !important;
-    background-image: url(https://www.shutterstock.com/shutterstock/photos/2281284523/display_1500/stock-vector-abstract-white-background-minimal-geometric-white-light-background-abstract-design-2281284523.jpg);
+    background-image: url('../images/jaipursoft-background.jpg');
+    /*background-image: url(https://www.shutterstock.com/shutterstock/photos/2281284523/display_1500/stock-vector-abstract-white-background-minimal-geometric-white-light-background-abstract-design-2281284523.jpg);*/
 }
 .form-group {
     margin-bottom: .5rem;

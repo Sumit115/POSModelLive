@@ -92,6 +92,9 @@ namespace SSRepository.Data
         public virtual DbSet<TblJobWorkdtl> TblJobWorkdtl { get; set; } = null!;
         public virtual DbSet<TblMasterLogDtl> TblMasterLogDtl { get; set; } = null!;
         public virtual DbSet<TblEWayDtlLnk> TblEWayDtlLnk { get; set; } = null!;
+        public virtual DbSet<TblCreditCardTypeMas> TblCreditCardTypeMas { get; set; } = null!;
+        public virtual DbSet<TblReceipttrn> TblReceipttrn { get; set; } = null!;
+       // public virtual DbSet<TblReceiptdtl> TblReceiptdtl { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -657,6 +660,19 @@ namespace SSRepository.Data
                       .WithMany()
                       .HasForeignKey(e => e.FkCityId)
                       .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TblCreditCardTypeMas>(entity =>
+            {
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.FKAccount)
+                       .WithMany()
+                       .HasForeignKey(e => e.FkAccountID)
+                       .OnDelete(DeleteBehavior.Restrict); 
             });
         }
     }

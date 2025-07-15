@@ -15,10 +15,14 @@ namespace SSAdmin.Areas.Option.Controllers
     public class SysDefaultsController : BaseController
     {
         private readonly ILocationRepository _repositoryLocation;
+        private readonly IAccountMasRepository _repositoryAccountMas;
+        private readonly IAccountGroupRepository _repositoryAccountGroup;
 
-        public SysDefaultsController(ILocationRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
+        public SysDefaultsController(ILocationRepository repository, IAccountMasRepository repositoryAccountMas, IAccountGroupRepository repositoryAccountGroup, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
             _repositoryLocation = repository;
+            _repositoryAccountMas = repositoryAccountMas;
+            _repositoryAccountGroup = repositoryAccountGroup;
 
         }
 
@@ -27,7 +31,10 @@ namespace SSAdmin.Areas.Option.Controllers
             var model = new SysDefaults();
             model = _repositoryLocation.GetSysDefaults();
             ViewBag.StateList = Handler.GetDrpState();
-            ViewBag.LocationList = _repositoryLocation.GetDrpLocation(2000,1);
+            ViewBag.LocationList = _repositoryLocation.GetDrpLocation(2000, 1);
+            ViewBag.AccountList = _repositoryAccountMas.CustomList((int)Handler.en_CustomFlag.CustomDrop, 2000, 1);
+            ViewBag.AccountGroupList = _repositoryAccountGroup.CustomList((int)Handler.en_CustomFlag.CustomDrop, 2000, 1);
+
             return View(model);
         }
         [HttpPost]
@@ -54,7 +61,7 @@ namespace SSAdmin.Areas.Option.Controllers
                         }
 
                         model.CompanyImage1 = "/Data/" + CompFolder + "/" + model.MyCompanyImage1.FileName;
-                        _model.Add(new SysDefaultsModel() { SysDefKey= "CompanyImage1", SysDefValue= model.CompanyImage1 });
+                        _model.Add(new SysDefaultsModel() { SysDefKey = "CompanyImage1", SysDefValue = model.CompanyImage1 });
                     }
                     _model.Add(new SysDefaultsModel() { SysDefKey = "CompanyName", SysDefValue = model.CompanyName });
                     _model.Add(new SysDefaultsModel() { SysDefKey = "CompanyContactPerson", SysDefValue = model.CompanyContactPerson });
@@ -64,7 +71,7 @@ namespace SSAdmin.Areas.Option.Controllers
                     _model.Add(new SysDefaultsModel() { SysDefKey = "CompanyCityId", SysDefValue = Convert.ToString(model.CompanyCityId) });
                     _model.Add(new SysDefaultsModel() { SysDefKey = "CompanyState", SysDefValue = model.CompanyState });
                     _model.Add(new SysDefaultsModel() { SysDefKey = "CompanyPin", SysDefValue = model.CompanyPin });
-                    _model.Add(new SysDefaultsModel() { SysDefKey = "CompanyCountry", SysDefValue = model.CompanyCountry }); 
+                    _model.Add(new SysDefaultsModel() { SysDefKey = "CompanyCountry", SysDefValue = model.CompanyCountry });
                     _model.Add(new SysDefaultsModel() { SysDefKey = "CodingScheme", SysDefValue = model.CodingScheme });
                     _model.Add(new SysDefaultsModel() { SysDefKey = "BarcodePrint_Height", SysDefValue = model.BarcodePrint_Height });
                     _model.Add(new SysDefaultsModel() { SysDefKey = "BarcodePrint_width", SysDefValue = model.BarcodePrint_width });
@@ -78,6 +85,9 @@ namespace SSAdmin.Areas.Option.Controllers
                     _model.Add(new SysDefaultsModel() { SysDefKey = "BarcodePrint_FontSize", SysDefValue = model.BarcodePrint_FontSize });
                     _model.Add(new SysDefaultsModel() { SysDefKey = "FkHoldLocationId", SysDefValue = Convert.ToString(model.FkHoldLocationId) });
                     _model.Add(new SysDefaultsModel() { SysDefKey = "FinYear", SysDefValue = Convert.ToString(model.FinYear) });
+                    _model.Add(new SysDefaultsModel() { SysDefKey = "FkRebateAccId", SysDefValue = Convert.ToString(model.FkRebateAccId) });
+                    _model.Add(new SysDefaultsModel() { SysDefKey = "FkInterestAccId", SysDefValue = Convert.ToString(model.FkInterestAccId) });
+                    _model.Add(new SysDefaultsModel() { SysDefKey = "FkBankGroupId", SysDefValue = Convert.ToString(model.FkBankGroupId) });
 
                     _repositoryLocation.InsertUpdateSysDefaults(_model);
 
@@ -99,7 +109,9 @@ namespace SSAdmin.Areas.Option.Controllers
             }
             //BindViewBags(tblBankMas.PKID, tblBankMas);
             ViewBag.StateList = Handler.GetDrpState();
-            ViewBag.LocationList = _repositoryLocation.GetDrpLocation(2000, 1); 
+            ViewBag.LocationList = _repositoryLocation.GetDrpLocation(2000, 1);
+            ViewBag.AccountList = _repositoryAccountMas.CustomList((int)Handler.en_CustomFlag.CustomDrop, 2000, 1);
+            ViewBag.AccountGroupList = _repositoryAccountGroup.CustomList((int)Handler.en_CustomFlag.CustomDrop, 2000, 1);
             return View(model);
         }
     }

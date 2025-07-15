@@ -19,6 +19,9 @@ $(document).ready(function () {
         $(".trn-barcode").hide();
     } else { $(".trn-barcode").show(); $("#txtSearchBarcode").focus(); }
 
+    if (TranAlias == "PORD" || TranAlias == "PINV") {
+        $("#EntryNo").attr('readonly', 'readonly');
+    }
     if ((TranAlias == "SORD" || TranAlias == "LORD") && tranModel.PkId > 0) {
         if (tranModel.TrnStatus.trim() == 'P' || tranModel.TrnStatus.trim() == 'C') {
             if (tranModel.TrnStatus.trim() == 'C') {
@@ -1729,6 +1732,7 @@ function SaveRecord() {
 
                         var _NotMatch = GetAndCheckBarcodeQty(tranModel.TranDetails);
                         if (_NotMatch.length == 0 || tranModel.TranAlias != "SINV" || tranModel.TranAlias != "LINV") {
+                            $(".loader").show();
                             /* alert('Ok');*/
                             //console.log(tranModel);
                             $.ajax({
@@ -1739,11 +1743,16 @@ function SaveRecord() {
                                 success: function (res) {
 
                                     if (res.status == "success") {
-                                        alert('Save Successfully..');
+                                         
                                         if (ControllerName == 'SalesInvoiceTouch') {
+                                            alert('Save Successfully..');
                                             location.reload();
-                                        } else {
-                                            window.location = Handler.currentPath() + 'List';
+                                        } else if (ControllerName == 'WalkingSalesInvoice') {
+                                            PrintInvoice(res.data.PkId, res.data.FKSeriesId) 
+                                        } 
+                                        else {
+                                            alert('Save Successfully..');
+                                            window.location = Handler.currentPath() + 'List'; 
                                         }
                                     }
                                     else {
@@ -1771,7 +1780,25 @@ function SaveRecord() {
             alert("Some Error found.Please Check");
     });
 }
+function PrintInvoice(pk_Id, FkSeriesId) {
+    $.ajax({
+        type: "POST",
+        url: Handler.currentPath() + 'InvoicePrint_Pdf_Url',
+        data: { PkId: pk_Id, FkSeriesId: FkSeriesId  },
+        datatype: "json",
+        success: function (res) {
 
+            if (res.status == "success") {
+                window.open(res.data.InvoiceUrl, '_blank');
+                window.location = Handler.currentPath() + 'List';
+            }
+            else
+                alert(res);
+            $(".loader").hide();
+            return;
+        }
+    })
+}
 function setdisablecolumn(cg, cc, hash, index, type) {
     var focjson = {};
     var h = (hash[index] = {});

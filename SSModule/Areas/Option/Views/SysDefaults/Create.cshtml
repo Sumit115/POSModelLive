@@ -185,6 +185,33 @@
                 <span asp-validation-for="FinYear" class="text-danger"></span>
             </div>
         </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Rebate Account</label>
+            <div class="col-md-3">
+                <select asp-for="FkRebateAccId" asp-items="@(new SelectList(ViewBag.AccountList,"PkAccountId","Account"))" class="form-control form-select">
+                    <option value="">-Select-</option>
+                </select>
+                <span asp-validation-for="FkRebateAccId" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Interest  Account</label>
+            <div class="col-md-3">
+                <select asp-for="FkInterestAccId" asp-items="@(new SelectList(ViewBag.AccountList,"PkAccountId","Account"))" class="form-control form-select">
+                    <option value="">-Select-</option>
+                </select>
+                <span asp-validation-for="FkInterestAccId" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Bank Group</label>
+            <div class="col-md-3">
+                <select asp-for="FkBankGroupId" asp-items="@(new SelectList(ViewBag.AccountGroupList,"PkAccountGroupId","AccountGroupName"))" class="form-control form-select">
+                    <option value="">-Select-</option>
+                </select>
+                <span asp-validation-for="FkBankGroupId" class="text-danger"></span>
+            </div>
+        </div>
     </form>
 </div>
 
@@ -204,6 +231,7 @@
             Common.InputFormat();
             BindCity(@Model.CompanyCityId);
             $('#btnServerSave').click(function (e) {
+                $(".loader").show();
                 e.preventDefault();
                 $("form").submit();
             });

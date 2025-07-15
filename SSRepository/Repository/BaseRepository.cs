@@ -173,6 +173,10 @@ namespace SSRepository.Repository
                 {
                     MaxID = __dbContext.TblLocationMas.ToList().Count > 0 ? __dbContext.TblLocationMas.ToList().Max(x => x.PkLocationID) : 0;
                 }
+                else if (TableName == "TblCreditCardTypeMas")
+                {
+                    MaxID = __dbContext.TblCreditCardTypeMas.ToList().Count > 0 ? __dbContext.TblCreditCardTypeMas.ToList().Max(x => x.PkCreditCardTypeId) : 0;
+                }
                 return Convert.ToInt64(MaxID) + 1;
             }
             catch (Exception ex)
@@ -1130,26 +1134,26 @@ namespace SSRepository.Repository
             return returnAlias;
         }
 
-        public string GenrateTableScript(string ConnectionString,string tableName)
+        public string GenrateTableScript(string ConnectionString, string tableName)
         {
-             StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             sb.Append("\n\n--Drop Constraint\n");
-            sb.Append(Generate_DropConstraintScript(ConnectionString,tableName));
+            sb.Append(Generate_DropConstraintScript(ConnectionString, tableName));
             sb.Append("\n\n--Add Constraint\n");
             sb.Append(Generate_ConstraintScript(ConnectionString, tableName));
             sb.Append("\n\n--Insert Data\n");
             sb.Append(Generate_InsertData(ConnectionString, tableName));
 
-            string filename = tableName+"_"+DateTime.Now.Ticks + ".txt"; 
+            string filename = tableName + "_" + DateTime.Now.Ticks + ".txt";
 
 
-           // return SaveFile(filename, sb.ToString());//sb.ToString();
+            // return SaveFile(filename, sb.ToString());//sb.ToString();
 
             string path = Path.Combine("wwwroot", "Script");
             if (!Directory.Exists(path))
-                Directory.CreateDirectory(path); 
+                Directory.CreateDirectory(path);
 
-            string filePath = Path.Combine("wwwroot", "Script", filename); 
+            string filePath = Path.Combine("wwwroot", "Script", filename);
 
             FileInfo file = new FileInfo(filePath);
             if (file.Exists)
@@ -1195,7 +1199,7 @@ namespace SSRepository.Repository
         {
             DataTable dt = new DataTable();
             StringBuilder sb = new StringBuilder();
-            using (SqlConnection con = new SqlConnection(string.IsNullOrEmpty(ConnectionString)?conn:ConnectionString))
+            using (SqlConnection con = new SqlConnection(string.IsNullOrEmpty(ConnectionString) ? conn : ConnectionString))
             {
                 con.Open();
                 string query = $"DECLARE @sql NVARCHAR(MAX) = ''; SELECT @sql += 'ALTER TABLE [' + OBJECT_NAME(f.parent_object_id) + '] DROP CONSTRAINT [' + f.name + '];' + CHAR(13) + 'GO ' + CHAR(13) FROM sys.foreign_keys AS f WHERE  f.referenced_object_id = OBJECT_ID('{tableName}'); Select @sql as DropConstraintScript";
@@ -1232,8 +1236,8 @@ namespace SSRepository.Repository
                 }
             }
             if (dt.Rows.Count > 0)
-            { 
-                    sb.Append(dt.Rows[0]["CreateConstraintScript"]); 
+            {
+                sb.Append(dt.Rows[0]["CreateConstraintScript"]);
             }
 
             return sb.ToString();
@@ -1272,7 +1276,7 @@ namespace SSRepository.Repository
                                 sb.Append("NULL");
                             else if (value is string || value is DateTime)
                                 sb.Append($"'{value.ToString().Replace("'", "''")}'");
-                            else if (value is bool )
+                            else if (value is bool)
                                 sb.Append($"{Convert.ToInt32(value)}");
                             else
                                 sb.Append(value);
@@ -1287,7 +1291,31 @@ namespace SSRepository.Repository
             return sb.ToString();
         }
 
-       
+        public string uspGetValueOfId(long PkId, string TableName, string ColumnName, string PkColumnName)
+        {
+            string val = "";
+            using (SqlConnection con = new SqlConnection(conn))
+            {
+                //con.Open();
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd = new SqlCommand("uspGetValueOfId", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@PkId", PkId);
+                cmd.Parameters.AddWithValue("@TableName", TableName);
+                cmd.Parameters.AddWithValue("@ColumnName", ColumnName);
+                cmd.Parameters.AddWithValue("@PkColumnName", PkColumnName);
+                cmd.Parameters.Add(new SqlParameter("@ColumnValue", SqlDbType.NVarChar, int.MaxValue, ParameterDirection.Output, false, 0, 10, "ColumnValue", DataRowVersion.Default, null));
+                cmd.ExecuteNonQuery();
+                val = Convert.ToString(cmd.Parameters["@ColumnValue"].Value);
+                con.Close();
+            }
+            return val;
+        }
+
+
 
     }
 

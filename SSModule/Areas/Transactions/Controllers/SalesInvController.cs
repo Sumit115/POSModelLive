@@ -112,7 +112,8 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 if (string.IsNullOrEmpty(Error))
                 {
                     res.status = "success";
-                 }
+                    res.data = model;
+                }
                 else
                 {
                     res.status = "warr";

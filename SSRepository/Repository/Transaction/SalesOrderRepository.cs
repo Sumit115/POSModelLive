@@ -203,14 +203,12 @@ namespace SSRepository.Repository.Transaction
 
                             CalculateExe(model, model.TranDetails[rowIndex]);
                         }
-
-
-
-                        SetGridTotal(model);
-                        SetPaymentDetail(model);
+                         
                     }
                     else { notFound_List.Add(ProductName); }
                 }
+                SetGridTotal(model);
+                SetPaymentDetail(model);
                 model.NotFound = string.Join(",", notFound_List.ToList());
                 model.IsTranChange = true;
             }

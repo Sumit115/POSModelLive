@@ -21,12 +21,16 @@
             <i class="fas fa-receipt"></i>
         </button>
         <partial name="~/Views/Shared/Transactions/_PaymentInfo.cshtml" />
-        <button class="icon-button" type="button" onclick="showpopupPrintOption()" data-bs-toggle="tooltip" data-bs-placement="left" title="print barcode">
-            <i class="fas fa-barcode"></i>
-        </button>
-
+        @if (Model.ExtProperties.TranAlias == "SINV" && Model.ExtProperties.DocumentType == "C")
+        { }
+        else
+        {
+            <button class="icon-button" type="button" onclick="showpopupPrintOption()" data-bs-toggle="tooltip" data-bs-placement="left" title="print barcode">
+                <i class="fas fa-barcode"></i>
+            </button>
+        }
     }
-    @if (Model.ExtProperties.TranAlias=="SINV")
+    @if (Model.ExtProperties.TranAlias == "SINV")
     {
         <partial name="~/Views/Shared/Transactions/_ShippingDetails.cshtml" />
     }
@@ -35,7 +39,7 @@
         <a href="/excelfile/format/demo_csv_artical.csv" target="_blank" class="icon-button" data-bs-toggle="tooltip" data-bs-placement="left" title="Download CSV Format">
             <i class="bi bi-upload"></i>
         </a>
-        <button class="icon-button" type="button" onclick="$('#ExcelFile').click()" data-bs-toggle="tooltip" data-bs-placement="left" title="Upload CSV File" >
+        <button class="icon-button" type="button" onclick="$('#ExcelFile').click()" data-bs-toggle="tooltip" data-bs-placement="left" title="Upload CSV File">
             <i class="bi bi-download"></i>
         </button>
 

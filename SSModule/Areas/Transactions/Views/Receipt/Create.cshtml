@@ -1,0 +1,289 @@
+﻿@model SSRepository.Models.TransactionModel
+
+@{
+
+    ViewData["Title"] = "Receipt";
+    ViewData["bdClass"] = "Salepage Tran";
+}
+
+<div style="display: flex;justify-content: space-between;overflow: hidden;">
+    <div class="Tran-page-ui">
+        <form id="TranForm" class="form">
+
+            <div class="row trn-header">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-7 row">
+                            <div class="col-md-8 row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Series </label>
+                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKSeriesId" },{"name","Series"}, { "Class", "val-cus-drp" }, { "event", "setSeries()" },
+                                        { "value", Model.FKSeriesId }, { "text", Model.SeriesName }, { "uri", "Series" }, { "required", "required" },{ "placeholder", "Select Series"}
+                                        ,{ "parentid", "TranAlias,DocumentType" }, { "ExtraParam", "" }})
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">*Invoice No</label>
+                                        <input asp-for="EntryNo" class="form-control" />
+                                        <span asp-validation-for="EntryNo" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Entry Date</label>
+                                    @*   @Html.TextBoxFor(m => m.EntryDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" })
+                                    *@
+                                    <input type="Date" asp-for="EntryDate" class="form-control trn" />
+                                    <span asp-validation-for="EntryDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label">GRNo </label>
+                                <input asp-for="GRNo" class="form-control trn" />
+                                <span asp-validation-for="GRNo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label">GR Date </label>
+                                <input type="Date" asp-for="GRDate" class="form-control trn" />
+                                @* @Html.TextBoxFor(m => m.GRDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" }) *@
+                                <span asp-validation-for="GRDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 pd-0 row" style="display:none">
+                            <div class="col-sm-6 form-group row">
+                                <label class="control-label">Balance</label>
+                                <input id="Balance" class="form-control trn" readonly="readonly" tabindex="-1">
+                            </div>
+
+                            <div class="col-sm-6 form-group text-display">
+                                <label class="control-label">
+                                    A/c Balance
+                                </label>
+                                <input id="accbal" class="form-control trn" type="text" readonly="readonly" tabindex="-1">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3" style="display:none">
+                            <div class="form-group">
+                                <label>Account</label>
+                                <input type="hidden" id="FkAccountGroupId" value="2" />
+                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKPostAccID" } , { "Class", "val-cus-drp" }, { "event", "setAccount()" },
+                                { "value", Model.FKPostAccID }, { "text", Model.Account}, { "uri", "Account" }, { "required", "required" },{ "placeholder", "Select Account"}
+                                ,{ "parentid", "FkAccountGroupId" }, { "ExtraParam", "" }})
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Customer</label>
+                                @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkPartyId" } , { "Class", "val-cus-drp" }, { "event", "setParty()" },
+                                { "value", Model.FkPartyId }, { "text", Model.PartyName}, { "uri", "Customer" }, { "required", "required" },{ "placeholder", "Select Customer"}
+                                ,{ "parentid", "" }, { "ExtraParam", "" }})
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Refer By </label>
+                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKReferById" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "setReferBy()" },
+                                        { "value", Model.FKReferById }, { "text", Model.ReferByName}, { "uri", "ReferBy" }, { "required", "" },{ "placeholder", "Select ReferBy"}
+                                        ,{ "parentid", "" }, { "ExtraParam", "" }})
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Sales Person</label>
+                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKSalesPerId" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "setSalesPer()" },
+                                        { "value", Model.FKSalesPerId }, { "text", Model.SalesPerName}, { "uri", "Employee" }, { "required", "" },{ "placeholder", "Select Sales Person"}
+                                        ,{ "parentid", "" }, { "ExtraParam", "" }})
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label">Narration </label>
+                                <input asp-for="VoucherNarration" class="form-control trn" />
+                                <span asp-validation-for="VoucherNarration" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="pmt-mode" style="border: 1px solid;padding: 10px;">
+                        <div class="rcpt-top-overlay"></div>
+                        <div class="row">
+                            <div class="col-sm-2 select-paymentmode row">
+                                <div class="form-group border-textbox col-sm-12 pd-0">
+                                    <label>Payment Mode</label>
+                                    <select asp-for="PayMode" class="form-control form-select trn">
+                                        <option value="Cash" selected="">Cash</option>
+                                        <option value="Cheque">Cheque</option>
+                                        <option value="Card">Card</option>
+                                    </select>
+                                </div>
+
+                                <div class="border-textbox col-sm-8 pd-0 adj-invoice-btn mob-col-6">
+                                    <div>
+                                        <button type="button" class="btn btn-primary btn-key-74 AdjustInvoice-btn" tabindex="23" id="btnInvoice">Adjust Invoice<i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-sm-10">
+
+                                <div class="row cashmode" id="dvsel">
+                                    <div class="col-sm-5 row pd-0">
+                                        <div class="col-sm-5 pd-lr-5">
+                                            <div class="form-group border-textbox col-sm-12 pd-0">
+                                                <label>Amount</label>
+                                                <div id="dvCashTxtbox" style="display: block;"><input type="text" class="form-control  input-number trn" asp-for="CashAmt" /></div>
+                                                <div id="dvChequeTxtbox" style="display: none;"><input type="text" class="form-control  input-number trn" asp-for="ChequeAmt" /></div>
+                                                <div id="dvCreditTxtbox" style="display: none;"><input type="text" class="form-control  input-number trn" asp-for="CreditCardAmt" /></div>
+                                            </div>
+                                            <input type="hidden" id="hdnCashBalAmt">
+                                            <input type="hidden" id="hdnChqBalAmt">
+                                            <input type="hidden" id="hdnCredBalAmt">
+                                            <input type="hidden" id="IsChangeAcc" value="true">
+                                        </div>
+                                        <div class="col-sm-7 pd-0 row">
+                                            <div class="col-sm-6 form-group border-textbox pd-lr-5"> 
+                                                <label>Rebate </label>
+                                                <input type="text" class="form-control  input-number trn" asp-for="Rebate" />
+                                            </div>
+                                            <div class="col-sm-6 form-group border-textbox pd-lr-5">
+                                                <label>Interest </label>
+                                                <input type="text" class="form-control  input-number trn" asp-for="Interest" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 pd-0 row">
+                                        <div class="col-sm-6 form-group border-textbox pd-lr-5">
+                                            <label>Rebate A/C</label>
+                                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkRebateAccId" } , { "Class", "val-cus-drp" }, { "event", "setRebateAcc()" },
+                                            { "value", Model.FkRebateAccId }, { "text", Model.RebateAccount }, { "uri", "Account" }, { "required", "" },{ "placeholder", "Select Rebate Account"}
+                                            ,{ "parentid", "" }, { "ExtraParam", "" }})
+
+
+                                        </div>
+                                        <div class="col-sm-6 form-group border-textbox pd-lr-5">
+                                            <label>Interest A/C </label>
+                                            @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkInterestAccId" } , { "Class", "val-cus-drp" }, { "event", "setInterestAcc()" },
+                                            { "value", Model.FkInterestAccId }, { "text", Model.InterestAccount }, { "uri", "Account" }, { "required", "" },{ "placeholder", "Select Interest Account"}
+                                            ,{ "parentid", "" }, { "ExtraParam", "" }})
+
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 form-group border-textbox pd-lr-5">
+                                        <label class="pd-0 text-center">Total</label>
+                                        <input type="text" class="form-control  input-number" readonly="readonly" asp-for="NetAmt" />
+                                    </div>
+
+
+                                </div>
+                                <div class="row divCheque" style="display: none;">
+                                    <div class="form-group border-textbox col-sm-3 pd-lr-5">
+                                        <label>Cheque No. </label>
+                                        <input type="text" class="form-control trn" asp-for="ChequeNo" />
+                                    </div>
+                                    <div class="form-group border-textbox col-sm-2 pd-lr-5">
+
+                                        <label>Cheque Date </label>
+                                        <input type="date" asp-for="ChequeDate" class="form-control trn" />
+                                    </div>
+                                    <div class="form-group border-textbox col-sm-3 pd-lr-5">
+
+                                        <label> Bank </label>
+                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKBankChequeID" } , { "Class", "val-cus-drp" }, { "event", "setBankCheque()" },
+                                        { "value", Model.FKBankChequeID }, { "text", Model.BankChequeName }, { "uri", "Bank" }, { "required", "" },{ "placeholder", "Select Bank"}
+                                        ,{ "parentid", "" }, { "ExtraParam", "" }})
+
+                                    </div>
+                                    <div class="form-group border-textbox col-sm-4 pd-lr-5">
+
+                                        <label> Bank A/c </label>
+                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKBankPostID" } , { "Class", "val-cus-drp" }, { "event", "setBankPost()" },
+                                        { "value", Model.FKBankPostID }, { "text", Model.BankPostName }, { "uri", "AccountGroup" }, { "required", "" },{ "placeholder", "Select Bank Acc"}
+                                        ,{ "parentid", "" }, { "ExtraParam", "" }})
+
+                                    </div>
+                                </div>
+
+
+                                <div class="row divCard" style="display: none;">
+
+
+                                    <div class="form-group border-textbox col-sm-3 pd-lr-5">
+
+                                        <label>Card No.</label>
+                                        <input type="text" asp-for="CreditCardNo" class="form-control  input-number  trn" />
+                                    </div>
+                                    <div class="form-group form-group border-textbox col-sm-2 pd-lr-5">
+                                        <label>Expiry Date</label>
+                                        <input type="date" asp-for="CreditCardDate" class="form-control trn" />
+                                    </div>
+                                    <div class="form-group border-textbox col-sm-5 pd-lr-5">
+
+                                        <label> Card Type</label>
+                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FKBankCreditCardID" } , { "Class", "val-cus-drp" }, { "event", "setBankCreditCard()" },
+                                        { "value", Model.FKBankCreditCardID }, { "text", Model.BankCreditCardName }, { "uri", "Bank" }, { "required", "" },{ "placeholder", "Select Bank"}
+                                        ,{ "parentid", "" }, { "ExtraParam", "" }})
+
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                        </div>
+                        <div class="col-sm-12">
+                        </div>
+                        <div id="dvLayout" style="display:none;" class="height-auto">
+                            <div class="col-sm-12 heading-background">
+                                <div class=" col-sm-10">
+                                    <div class="search-penal">
+                                        <span>  <input type="text" id="txtSearchCol" onkeyup="FilterColumnList()"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-2 text-right">
+                                    <a id="btnApplyLayout" onclick="ApplyLayout('custom')"><button class="btn btn-primary">Apply</button></a>
+                                    <a class="dropdown-item" id="lnkApplyLayout" onclick="ApplyLayout('default');">Reset to default</a>
+                                </div>
+                            </div>
+                            <div id="dvLayoutInner" class="inner-grid-layout"></div>
+
+                            <input type="hidden" id="hidTranColList">
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <partial name="~/Views/Shared/Transactions/_tranRight.cshtml" />
+</div>
+
+
+<input type="hidden" id="hdControllerName" value="Receipt" />
+<partial name="~/Views/Shared/Transactions/_tranInfo.cshtml" />
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/transaction/Receipt.js"></script>
+}
