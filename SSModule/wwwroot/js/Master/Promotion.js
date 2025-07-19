@@ -18,7 +18,7 @@ function hideShow(Ischange) {
 
     var _applyOn = $("#PromotionApplyOn").val();
     var _promotion = $("#Promotion").val();
-    $("#div_Promotionddl,#div_FreeProductSingle").show();
+    $("#div_Promotionddl,#div_FreeProductSingle,#div_FreeProductList").show();
     $("#div_PromotionLnk,#divCategory,#divBrand,#divProduct").hide();
 
 
@@ -90,9 +90,9 @@ function hideShow(Ischange) {
     }
     else if (_applyOn == "XonX") {
 
-        $("#divProduct,#divBrand,#div_Promotionddl,#div_FreeProductSingle").hide();
+        $("#divProduct,#divBrand,#div_Promotionddl,#div_FreeProductSingle,#div_FreeProductList").hide();
         $("#divheadingApplyOn").text("Add Category");
-        $("#div_PromotionLnk,#divCategory").show();
+        $("#div_PromotionLnk,#divCategory,#div_FreeProductSingle").show();
         $("#PromotionApplyQty,#FkPromotionApplyUnitId,#PromotionQty").removeAttr("readonly");
         $("#tblPromotionLnkHeading").text("Category");
 

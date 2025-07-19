@@ -215,9 +215,10 @@ function Load() {
 }
 
 function BindGrid(GridId, data) {
-
+    debugger;
     $("#" + GridId).empty();
-    Common.Grid(tranModel.ExtProperties.FKFormID, "dtl", function (s) {
+    var GrdiName = (tranModel.ExtProperties.DocumentType == "C" && tranModel.ExtProperties.TranAlias == "SINV") ? "Walkingdtl" : "dtl";
+    Common.Grid(tranModel.ExtProperties.FKFormID, GrdiName, function (s) {
 
 
         if (tranModel.FKOrderID > 0 && tranModel.FKOrderSrID) { s.setCtrlType = s.setCtrlType.replace("CD", "").replace("CD", "") }
@@ -1540,6 +1541,7 @@ function PaymentPopup() {
     $('.model-paymentdetail').modal('toggle');
 }
 function setHeaderData(data) {
+
     Common.Set(".trn-header", data, "");
     return false;
 }
@@ -1716,7 +1718,7 @@ function SaveRecord() {
         if (flag) {
 
             tranModel.PkId = $('#PkId').val();
-            tranModel.FkPartyId = $('#FkPartyId').val();
+            tranModel.FkPartyId = tranModel.FkPartyId > 0 ? tranModel.FkPartyId : $('#FkPartyId').val();
             tranModel.EntryDate = $('#EntryDate').val();
             tranModel.GRDate = $('#GRDate').val();
             tranModel.TranDetails = [];
@@ -1743,16 +1745,16 @@ function SaveRecord() {
                                 success: function (res) {
 
                                     if (res.status == "success") {
-                                         
+
                                         if (ControllerName == 'SalesInvoiceTouch') {
                                             alert('Save Successfully..');
                                             location.reload();
                                         } else if (ControllerName == 'WalkingSalesInvoice') {
-                                            PrintInvoice(res.data.PkId, res.data.FKSeriesId) 
-                                        } 
+                                            PrintInvoice(res.data.PkId, res.data.FKSeriesId)
+                                        }
                                         else {
                                             alert('Save Successfully..');
-                                            window.location = Handler.currentPath() + 'List'; 
+                                            window.location = Handler.currentPath() + 'List';
                                         }
                                     }
                                     else {
@@ -1784,7 +1786,7 @@ function PrintInvoice(pk_Id, FkSeriesId) {
     $.ajax({
         type: "POST",
         url: Handler.currentPath() + 'InvoicePrint_Pdf_Url',
-        data: { PkId: pk_Id, FkSeriesId: FkSeriesId  },
+        data: { PkId: pk_Id, FkSeriesId: FkSeriesId },
         datatype: "json",
         success: function (res) {
 
@@ -2253,7 +2255,7 @@ function ApplyPromotion() {
 var cgImport = null;
 function ImportDataPopup() {
 
-    $('#ImportDatafile').val(''); 
+    $('#ImportDatafile').val('');
     $("#DDTImport").html('');
     $('.model-importdata').modal('toggle');
 }
@@ -2280,7 +2282,7 @@ function ImportDataFromFile() {
         var formData = new FormData();
         var file = $('#ImportDatafile')[0].files[0];
         formData.append("file", file);
-
+        $(".loader").show();
         $.ajax({
             url: Handler.currentPath() + 'ImportDatafile',
             type: 'POST',
@@ -2292,7 +2294,7 @@ function ImportDataFromFile() {
                 if (res.status == 'success') {
                     if (!Handler.isNullOrEmpty(res.msg))
                         alert(res.msg);
-                    
+
                     var data = res.data;
                     var ColumnHeading = "Artical Match~Artical~SubSection~Size~Color~Qty~MRP";
                     var ColumnWidthPer = "10~10~10~10~10~10~10";
@@ -2345,7 +2347,7 @@ function ImportDataFromFile() {
 
                     cgImport.outGrid.onCellChange.subscribe(function (e, args) {
                         if (args.cell != undefined) {
-                            
+
                             var field = cgImport.columns[args.cell].field;
                             //if (field == "Product") {
                             //    var FkProductId = Common.isNullOrEmpty(args.item["Product"]) ? 0 : parseFloat(args.item["Product"]);
@@ -2373,11 +2375,13 @@ function ImportDataFromFile() {
                         }
                     });
 
-
+                    $(".loader").hide();
                     //alert("Upload successful!");
                 }
-                else
+                else {
                     alert(res.msg);
+                    $(".loader").hide();
+                }
             },
             error: function (xhr, status, error) {
                 alert("Upload failed: " + xhr.responseText);
@@ -2390,8 +2394,8 @@ function ImportDataFromFile() {
 }
 
 function BindGrid_ImportedData() {
-    
-    var data = cgImport.getData().filter(function (element) {  return (parseInt(element.FKProdCatgId) <= 0 && !Handler.isNullOrEmpty(element.ProductDisplay)); });
+
+    var data = cgImport.getData().filter(function (element) { return (parseInt(element.FKProdCatgId) <= 0 && !Handler.isNullOrEmpty(element.ProductDisplay)); });
     if (data.length == 0) {
         var TranReturnDetails = [];
         cgImport.getData().filter(function (element) {
@@ -2417,17 +2421,17 @@ function BindGrid_ImportedData() {
                         $('#ImportDatafile').val('');
                         $('.model-importdata').modal('toggle');
                         $("#DDTImport").html('');
-                    } 
+                    }
                     else
                         alert(res.msg);
 
-                $(".loader").hide();
-            }
+                    $(".loader").hide();
+                }
             });
-        // } else { alert('Promotion Artical Not Update'); BindGrid('DDT', tranModel.TranDetails); }
+            // } else { alert('Promotion Artical Not Update'); BindGrid('DDT', tranModel.TranDetails); }
+        } else
+            alert('Please Import Data');
     } else
-        alert('Please Import Data');
-} else
-alert('Please Select SubSection');
+        alert('Please Select SubSection');
     // BindGrid('DDT', tranModel.TranDetails)
 } 

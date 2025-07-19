@@ -653,14 +653,21 @@ namespace SSAdmin.Areas
                         var dublicatebarcodeList = lst.Where(x=>!string.IsNullOrEmpty(x.Barcode)).GroupBy(x => x.Barcode).Where(g => g.Count() > 1).Select(y => y.Key).ToList();
                         if (dublicatebarcodeList.Count == 0)
                         {
-                            var data = _repository.Get_ProductInfo_FromFile(lst);
-                            var _notfound = string.Join(",", data.Where(x => x.FkProductId <= 0).ToList().Select(x => x.ProductDisplay).ToList());
-                            return Json(new
+                            var cs = _repository.GetSysDefaultsByKey("CodingScheme");
+                            if (!string.IsNullOrEmpty(cs))
                             {
-                                status = "success",
-                                msg = !string.IsNullOrEmpty(_notfound) ? "Article Not found:" + _notfound : "",
-                                data = data
-                            });
+
+                                var data = _repository.Get_ProductInfo_FromFile(lst);
+                                var _notfound = string.Join(",", data.Where(x => x.FkProductId <= 0).ToList().Select(x => x.ProductDisplay).ToList());
+                                return Json(new
+                                {
+                                    status = "success",
+                                    msg = !string.IsNullOrEmpty(_notfound) ? "Article Not found:" + _notfound : "",
+                                    data = data
+                                });
+                            }
+                            else
+                                throw new Exception("Please Update CodingScheme From System Default");
                         }
                         else
                             throw new Exception("Dublicate Barcode fond:" + string.Join(",", dublicatebarcodeList));

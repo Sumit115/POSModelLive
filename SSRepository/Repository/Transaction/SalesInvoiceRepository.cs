@@ -99,6 +99,10 @@ namespace SSRepository.Repository.Transaction
             {
                 list = TrandtlColumnList("S");
             }
+            else if (GridName.ToString().ToLower() == "walkingdtl")
+            {
+                list = TrandtlColumnList("Walkingdtl");
+            }
             else
             {
                 int index = 1;

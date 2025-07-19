@@ -906,7 +906,9 @@ namespace SSRepository.Repository.Transaction
                 {
                     long FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
                     long FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
-                    var drdetail = model.TranDetails.Where(x => x.FkProductId == FkProductId && x.FkLotId == FkLotId && x.ModeForm != 2)
+                    var drdetail = model.TranDetails.Where(x => x.FkProductId == FkProductId && x.FkLotId == FkLotId && x.ModeForm != 2
+                    && model.ExtProperties.DocumentType !="C"
+                    )
                         .FirstOrDefault();
                     if (drdetail != null)
                     {
@@ -2347,6 +2349,31 @@ namespace SSRepository.Repository.Transaction
                     new ColumnStructure{ pk_Id=index++,  Orderby =Orderby++, Heading ="Barcode",      Fields="Barcode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
                     new ColumnStructure{ pk_Id=index++,  Orderby =Orderby++, Heading ="Del",          Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" },
               
+                };
+            }
+            else if (TranType == "Walkingdtl")
+            {
+                list = new List<ColumnStructure>
+                {
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="ArticalNo",    Fields="Product",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Size",         Fields="Batch",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="CD"  },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Color",        Fields="Color",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="MRP",          Fields="MRP",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Rate",         Fields="Rate",                Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="QTY",          Fields="Qty",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Free Qty",     Fields="FreeQty",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Due Qty",         Fields="DueQty",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Disc %",       Fields="TradeDisc",           Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Disc Amt",     Fields="TradeDiscAmt",        Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="Disc Type",    Fields="TradeDiscType",       Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="Gross Amt",    Fields="GrossAmt",            Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="GST Rate",     Fields="GstRate",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="GST Amount",   Fields="GstAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="Net Amount",   Fields="NetAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="Barcode",      Fields="Barcode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="PromotionName",      Fields="PromotionName",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="Del",          Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" },
+
                 };
             }
             else
