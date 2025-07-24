@@ -247,6 +247,24 @@ namespace SSRepository.Repository
             }
         }
 
+        public string GetLocationFilter()
+        {
+            var _List = new List<object>();
+
+            if (IsAdmin() == 1)
+            { }
+            else
+            {
+                var Filterlist = ObjSysDefault.BillingLocation.Split(',').ToList();
+
+                foreach (var v in Filterlist)
+                {
+                    _List.Add(new { PKID = v });
+                }
+            }
+            return JsonConvert.SerializeObject(_List);
+        }
+
         #region Add/Update/Delete Data
         public virtual void AddData(object entity, bool IsRange)
         {
@@ -695,17 +713,39 @@ namespace SSRepository.Repository
                     {
                         foreach (PropertyInfo pro in typeof(SysDefaults).GetProperties())
                         {
-                            if (pro.Name == column.ColumnName)
-                                pro.SetValue(model, dr[column.ColumnName], null);
-                            else
-                                continue;
+                            //var aa = pro.Name;
+                            //var ColumnName = column.ColumnName;
+                            try
+                            {
+                                var value = ConvertToType(dr[column.ColumnName], pro.PropertyType);
+                                if (pro.Name == column.ColumnName)
+                                    pro.SetValue(model, value, null);
+                                else
+                                    continue;
+                            }
+                            catch (Exception ex)
+                            {
+                                // var aaaaa = dr[column.ColumnName];
+                            }
                         }
                     }
                 }
             }
             return model;
         }
+        public static object ConvertToType(object value, Type targetType)
+        {
+            if (value == null || targetType == null)
+                return null;
 
+            if (targetType.IsEnum)
+                return Enum.Parse(targetType, value.ToString());
+
+            if (targetType == typeof(Guid))
+                return Guid.Parse(value.ToString());
+
+            return Convert.ChangeType(value, targetType);
+        }
         public void UpdateSysDefaults(object objmodel)
         {
             List<SysDefaultsModel> model = (List<SysDefaultsModel>)objmodel;
@@ -963,6 +1003,7 @@ namespace SSRepository.Repository
 
         public DashboardSummaryModel usp_DashboardSummary(int Month)
         {
+
             DashboardSummaryModel model = new DashboardSummaryModel();
             DataSet ds = new DataSet();
             string data = "";
@@ -972,6 +1013,7 @@ namespace SSRepository.Repository
                 SqlCommand cmd = new SqlCommand("usp_DashboardSummary", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Month", Month);
+                cmd.Parameters.AddWithValue("@LocationFilter", GetFilterData(GetLocationFilter()));
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(ds);
 

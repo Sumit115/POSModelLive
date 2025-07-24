@@ -23,7 +23,7 @@ namespace SSRepository.Models
 
         public int? Usertype { get; set; }
 
-        public  string Mobile { get; set; }
+        public  string? Mobile { get; set; }
 
         [Required(ErrorMessage = "Branch Required")]
         public long? FkBranchId { get; set; }

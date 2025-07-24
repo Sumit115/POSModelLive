@@ -33,7 +33,7 @@ function AddUser() {
                           <input data-val="true" data-val-required="The FkUserID field is required." id="UserLoclnk_${rowCount}__FkUserID" name="UserLoclnk[${rowCount}].FkUserID" type="hidden" value="${FkUserID}" autocomplete="off">
                       </td>
                       <td>
-                          <input data-val="true" data-val-required="The ModeForm field is required." id="UserLoclnk_${rowCount}__ModeForm" name="UserLoclnk[${rowCount}].ModeForm" type="hidden" value="${rowCount}" autocomplete="off">
+                          <input data-val="true" data-val-required="The ModeForm field is required." id="UserLoclnk_${rowCount}__ModeForm" name="UserLoclnk[${rowCount}].ModeForm" type="hidden" value="0" autocomplete="off">
                           <button type="button" class="btn grid-close-btn" onclick="RowAction(this,${rowCount},'del')">
                               <i class="bi bi-x-circle"></i>
                           </button>

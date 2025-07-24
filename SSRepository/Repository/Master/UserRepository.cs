@@ -179,20 +179,7 @@ namespace SSRepository.Repository.Master
             Tbl.IsAdmin = model.IsAdmin;
             Tbl.ModifiedDate= DateTime.Now;
             Tbl.FKUserID = GetUserID();
-            if (model.UserLoclnk != null)
-            {
-                List<TblUserLocLnk> lstAdd = new List<TblUserLocLnk>();
-                foreach (var item in model.UserLoclnk)
-                {
-                    TblUserLocLnk locObj = new TblUserLocLnk();
-                    locObj.FKLocationID = item.FkLocationID;
-                    locObj.FKUserID = Tbl.PkUserId;
-                    if (item.ModeForm == 0)
-                    {
-                        Tbl.LocationUsers.Add(locObj);
-                    }
-                }
-            }
+             
             if (Mode == "Create")
             {
                 Tbl.FKCreatedByID = Tbl.FKUserID;
@@ -210,9 +197,26 @@ namespace SSRepository.Repository.Master
                 UpdateData(Tbl, false);
                 AddMasterLog((long)Handler.Form.User, Tbl.PkUserId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), false, JsonConvert.SerializeObject(oldModel), oldModel.UserName, Tbl.FKUserID, Tbl.ModifiedDate, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
             }
-            //AddImagesAndRemark(obj.PkcountryId, obj.FKUserID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
-            
-        }
+
+            if (model.UserLoclnk != null)
+            {
+                List<TblUserLocLnk> lstAdd = new List<TblUserLocLnk>();
+                foreach (var item in model.UserLoclnk)
+                {
+                    TblUserLocLnk locObj = new TblUserLocLnk();
+                    locObj.FKLocationID = item.FkLocationID;
+                    locObj.FKUserID = Tbl.PkUserId;
+                    if (item.ModeForm == 0)
+                    {
+                        lstAdd.Add(locObj);
+                    }
+                }
+                if (lstAdd.Count > 0)
+                    AddData(lstAdd, true);
+            }
+                //AddImagesAndRemark(obj.PkcountryId, obj.FKUserID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
+
+            }
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
             int index = 1;

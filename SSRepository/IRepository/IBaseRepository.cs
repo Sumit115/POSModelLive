@@ -22,13 +22,13 @@ namespace SSRepository.IRepository
         void InsertUpdateSysDefaults(object objmodel);
         List<BarcodePrintPreviewModel> BarcodePrintList(List<BarcodeDetails> model);
         void UpdatePrintBarcode(object objmodel);
-         public List<FormModel> GetFormList(long? FKMasterFormID = null);
+        public List<FormModel> GetFormList(long? FKMasterFormID = null);
         public int ExecNonQuery(string cmdText);
         DashboardSummaryModel usp_DashboardSummary(int Month);
         MasterLogDtlModel GetMasterLog(long PKMasterLogID);
         T GetMasterLog<T>(long PKMasterLogID);
         string GetAlias(string FormName = "");
-        string GenrateTableScript(string ConnectionString,string tableName);
+        string GenrateTableScript(string ConnectionString, string tableName);
         string uspGetValueOfId(long PkId, string TableName, string ColumnName, string PkColumnName);
     }
 }

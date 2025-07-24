@@ -63,7 +63,7 @@ namespace SSRepository.Repository.Master
                         Fax = Loc.Fax,
                         Email = Loc.Email,
                         Website = Loc.Website,
-                        UserName = Loc.UserMas.UserId,
+                        UserName = Loc.FKUser.UserId,
                         DATE_MODIFIED = Loc.ModifiedDate.ToString("dd-MMM-yyyy")
                     }
                    )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
@@ -173,7 +173,7 @@ namespace SSRepository.Repository.Master
                         FKBranchID = cou.FkBranchID,
                         Branch = cou.branchMas.BranchName,
                         IsAllAccount = cou.IsAllAccount,
-                        UserName = cou.UserMas.UserId,
+                        UserName = cou.FKUser.UserId,
                         DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
 
                     })).FirstOrDefault();

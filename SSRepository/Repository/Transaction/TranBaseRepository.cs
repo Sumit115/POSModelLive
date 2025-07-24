@@ -506,6 +506,7 @@ namespace SSRepository.Repository.Transaction
 
         public DataTable GetList(string FromDate, string ToDate, string SeriesFilter, string DocumentType, string LocationFilter, string StateFilter = "", string StatusFilter = "")
         {
+            LocationFilter = string.IsNullOrEmpty(LocationFilter) ? GetLocationFilter() : LocationFilter;
             DataTable dt = new DataTable();
             using (SqlConnection con = new SqlConnection(conn))
             {

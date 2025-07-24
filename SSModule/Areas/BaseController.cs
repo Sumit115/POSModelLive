@@ -230,6 +230,7 @@ namespace SSAdmin.Areas
         [HttpPost]
         public async Task<JsonResult> DashboardSummary(int Month)
         {
+            //string LocationFilter = _gridLayoutRepository.LocationFilter();
             return Json(new
             {
                 status = "success",

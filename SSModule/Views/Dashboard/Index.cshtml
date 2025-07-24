@@ -6,11 +6,41 @@
     int isDashBoardPermission = 0;
     if (_menuList != null)
     {
-         isDashBoardPermission = _menuList.ToList().Where(x => x.FormName == "Dashboard" && x.IsAccess).FirstOrDefault() != null ? 1 : 0;
+        isDashBoardPermission = _menuList.ToList().Where(x => x.FormName == "Dashboard" && x.IsAccess).FirstOrDefault() != null ? 1 : 0;
     }
 }
-@if (isDashBoardPermission==1)
+@if (isDashBoardPermission == 1)
 {
+    <style>
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: white;
+            width: 600px;
+            padding: 20px;
+            margin: 100px auto;
+            position: relative;
+            border-radius: 10px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: -10px;
+            right: 3px;
+            cursor: pointer;
+            font-size: 25px;
+        }
+
+    </style>
     <div style="background-color:#fafbfe;overflow: auto;">
 
         <div class="row mt-4 pl-3 pr-3 SalesSummary">
@@ -42,7 +72,7 @@
                 </div>
             </div>
             <div class="col-md-2 box">
-                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2 open-popup" data-modal="#myPopup_SalesInvoice">
                     <div class="p-2">
                         <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesInvoice">@Model.TotalAmount_SalesInvoice</span></h5>
                         <p class="mb-0 pt-1 Name">Sales</p>
@@ -50,6 +80,37 @@
                     </div>
                     <div class="icon-wrapper mr-2 mt-2">
                         <i class="fas fa-box"></i>
+                    </div>
+                </div>
+                <div id="myPopup_SalesInvoice" class="popup-overlay" style="display: none;">
+                    <div class="popup-content">
+                        <span class="close-btn">&times;</span>
+                        <div class="row">
+                            <div class="col-md-6 box">
+                                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2" >
+                                    <div class="p-2">
+                                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesInvoiceWholesale">@Model.TotalAmount_SalesInvoiceWholesale</span></h5>
+                                        <p class="mb-0 pt-1 Name">Wholesale</p>
+                                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Sales <span id="TotalCount_SalesInvoiceWholesale">@Model.TotalCount_SalesInvoiceWholesale</span></h6>
+                                    </div>
+                                    <div class="icon-wrapper mr-2 mt-2">
+                                        <i class="fas fa-box"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 box">
+                                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                                    <div class="p-2">
+                                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesInvoiceWalking">@Model.TotalAmount_SalesInvoiceWalking</span></h5>
+                                        <p class="mb-0 pt-1 Name">Walking</p>
+                                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Sales <span id="TotalCount_SalesInvoiceWalking">@Model.TotalCount_SalesInvoiceWalking</span></h6>
+                                    </div>
+                                    <div class="icon-wrapper mr-2 mt-2">
+                                        <i class="fas fa-box"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -100,7 +161,7 @@
                 </div>
             </div>
             <div class="col-md-2 box">
-                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2 open-popup" data-modal="#myPopup_SalesInvoice_FY">
                     <div class="p-2">
                         <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesInvoice_FY">@Model.TotalAmount_SalesInvoice</span></h5>
                         <p class="mb-0 pt-1 Name">Sales</p>
@@ -108,6 +169,37 @@
                     </div>
                     <div class="icon-wrapper mr-2 mt-2">
                         <i class="fas fa-box"></i>
+                    </div>
+                </div>
+                <div id="myPopup_SalesInvoice_FY" class="popup-overlay" style="display: none;">
+                    <div class="popup-content">
+                        <span class="close-btn">&times;</span>
+                        <div class="row">
+                            <div class="col-md-6 box">
+                                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                                    <div class="p-2">
+                                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesInvoiceWholesale_FY">@Model.TotalAmount_SalesInvoiceWholesale_FY</span></h5>
+                                        <p class="mb-0 pt-1 Name">Wholesale</p>
+                                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Sales <span id="TotalCount_SalesInvoiceWholesale_FY">@Model.TotalCount_SalesInvoiceWholesale_FY</span></h6>
+                                    </div>
+                                    <div class="icon-wrapper mr-2 mt-2">
+                                        <i class="fas fa-box"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 box">
+                                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                                    <div class="p-2">
+                                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesInvoiceWalking_FY">@Model.TotalAmount_SalesInvoiceWalking_FY</span></h5>
+                                        <p class="mb-0 pt-1 Name">Walking</p>
+                                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Sales <span id="TotalCount_SalesInvoiceWalking_FY">@Model.TotalCount_SalesInvoiceWalking_FY</span></h6>
+                                    </div>
+                                    <div class="icon-wrapper mr-2 mt-2">
+                                        <i class="fas fa-box"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -185,14 +277,23 @@
         $(document).ready(function () {
             $("#ddlMonth_Summary").val(@DateTime.Now.Month);
             $("#MonthName_selected").text($("#ddlMonth_Summary option:selected").text());
-            if (@isDashBoardPermission==1) {
+            if (@isDashBoardPermission== 1) {
                 DashboardSummary();
             }
             $("#ddlMonth_Summary").on("change", function () {
                 $("#MonthName_selected").text($("#ddlMonth_Summary option:selected").text());
                 DashboardSummary();
             });
+            $(document).on('click', '.open-popup', function (e) {
+                e.preventDefault();
+                const modalId = $(this).data('modal');
+                console.log(modalId);
+                $(modalId).fadeIn();
+            });
 
+            $(document).on('click', '.close-btn', function () {
+                $(this).closest('.popup-overlay').fadeOut();
+            });
             // Load_Morris_Area_Chart_Data();
         });
         var display_date = function (d) {
@@ -283,6 +384,10 @@
                         $("#TotalAmount_SalesOrder").text(_d.TotalAmount_SalesOrder);
                         $("#TotalCount_SalesInvoice").text(_d.TotalCount_SalesInvoice);
                         $("#TotalAmount_SalesInvoice").text(_d.TotalAmount_SalesInvoice);
+                        $("#TotalCount_SalesInvoiceWholesale").text(_d.TotalCount_SalesInvoiceWholesale);
+                        $("#TotalAmount_SalesInvoiceWholesale").text(_d.TotalAmount_SalesInvoiceWholesale);
+                        $("#TotalCount_SalesInvoiceWalking").text(_d.TotalCount_SalesInvoiceWalking);
+                        $("#TotalAmount_SalesInvoiceWalking").text(_d.TotalAmount_SalesInvoiceWalking);
                         $("#TotalCount_SalesChallan").text(_d.TotalCount_SalesChallan);
                         $("#TotalAmount_SalesChallan").text(_d.TotalAmount_SalesChallan);
 
@@ -292,6 +397,10 @@
                         $("#TotalAmount_SalesOrder_FY").text(_d.TotalAmount_SalesOrder_FY);
                         $("#TotalCount_SalesInvoice_FY").text(_d.TotalCount_SalesInvoice_FY);
                         $("#TotalAmount_SalesInvoice_FY").text(_d.TotalAmount_SalesInvoice_FY);
+                        $("#TotalCount_SalesInvoiceWholesale_FY").text(_d.TotalCount_SalesInvoiceWholesale_FY);
+                        $("#TotalAmount_SalesInvoiceWholesale_FY").text(_d.TotalAmount_SalesInvoiceWholesale_FY);
+                        $("#TotalCount_SalesInvoiceWalking_FY").text(_d.TotalCount_SalesInvoiceWalking_FY);
+                        $("#TotalAmount_SalesInvoiceWalking_FY").text(_d.TotalAmount_SalesInvoiceWalking_FY);
                         $("#TotalCount_SalesChallan_FY").text(_d.TotalCount_SalesChallan_FY);
                         $("#TotalAmount_SalesChallan_FY").text(_d.TotalAmount_SalesChallan_FY);
 

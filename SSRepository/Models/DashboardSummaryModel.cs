@@ -18,6 +18,10 @@ namespace SSRepository.Models
         public decimal TotalAmount_SalesOrder { get; set; }
         public Int64 TotalCount_SalesInvoice { get; set; }
         public decimal TotalAmount_SalesInvoice { get; set; }
+        public Int64 TotalCount_SalesInvoiceWholesale { get; set; }
+        public decimal TotalAmount_SalesInvoiceWholesale { get; set; }
+        public Int64 TotalCount_SalesInvoiceWalking { get; set; }
+        public decimal TotalAmount_SalesInvoiceWalking { get; set; }
         public Int64 TotalCount_SalesChallan { get; set; }
         public decimal TotalAmount_SalesChallan { get; set; }
 
@@ -27,6 +31,10 @@ namespace SSRepository.Models
         public decimal TotalAmount_SalesOrder_FY { get; set; }
         public Int64 TotalCount_SalesInvoice_FY { get; set; }
         public decimal TotalAmount_SalesInvoice_FY { get; set; }
+        public Int64 TotalCount_SalesInvoiceWholesale_FY { get; set; }
+        public decimal TotalAmount_SalesInvoiceWholesale_FY { get; set; }
+        public Int64 TotalCount_SalesInvoiceWalking_FY { get; set; }
+        public decimal TotalAmount_SalesInvoiceWalking_FY { get; set; }
         public Int64 TotalCount_SalesChallan_FY { get; set; }
         public decimal TotalAmount_SalesChallan_FY { get; set; }
         public List<GraphDataModel> GraphDataList { get; set; }

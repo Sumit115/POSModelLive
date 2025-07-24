@@ -80,9 +80,9 @@
                 <div class="form-group row" id="div_DocumentType" style="@(Model.TranAlias=="SINV"?"":"display:none")">
                     <label class="col-sm-2">Doc Type</label>
                     <div class="col-md-6">
-                        <select asp-for="DocumentType" class="form-control form-Select">
-                            <option value="B">B </option>
-                            <option value="C">C</option>
+                        <select asp-for="DocumentType" class="form-control form-select">
+                            <option value="B">Wholesale</option>
+                            <option value="C">Walking</option>
                         </select>
                         <span asp-validation-for="DocumentType" class="text-danger"></span>
                     </div>

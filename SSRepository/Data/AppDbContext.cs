@@ -272,7 +272,7 @@ namespace SSRepository.Data
                     .HasForeignKey(e => e.FkLocalityID)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(e => e.UserMas)
+                entity.HasOne(e => e.FKUser)
                     .WithMany()
                     .HasForeignKey(e => e.FKUserID)
                     .OnDelete(DeleteBehavior.Restrict);

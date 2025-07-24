@@ -126,6 +126,7 @@ namespace SSAdmin.Areas.Master.Controllers
                     {
                         foreach (ModelError error in modelState.Errors)
                         {
+                            throw new Exception(error.ErrorMessage);
                             var sdfs = error.ErrorMessage;
                         }
                     }
