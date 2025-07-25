@@ -79,7 +79,7 @@ namespace SSRepository.Repository.Master
                 pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
                 return ((from cou in __dbContext.TblLocationMas
                          where (EF.Functions.Like(cou.Location.Trim().ToLower(), Convert.ToString(search) + "%"))
-                          && BillingLocation.Contains(cou.PkLocationID.ToString())
+                          //&& BillingLocation.Contains(cou.PkLocationID.ToString())
                          orderby cou.Location
                          select (new
                          {

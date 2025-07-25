@@ -7,6 +7,7 @@ using SSRepository.Data;
 using SSRepository.Models;
 using SSRepository.Repository.Master;
 using System.Data;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace SSRepository.Repository.Transaction
@@ -908,7 +909,7 @@ namespace SSRepository.Repository.Transaction
                     long FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
                     long FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
                     var drdetail = model.TranDetails.Where(x => x.FkProductId == FkProductId && x.FkLotId == FkLotId && x.ModeForm != 2
-                    && model.ExtProperties.DocumentType !="C"
+                    && model.ExtProperties.DocumentType != "C"
                     )
                         .FirstOrDefault();
                     if (drdetail != null)
@@ -2566,36 +2567,81 @@ namespace SSRepository.Repository.Transaction
             foreach (var detail in dtlList)
             {
 
-                DataTable dtProduct = GetProduct("", 0, 0, 0, detail.Product, false, "");
-                if (dtProduct.Rows.Count > 0)
+                if (!int.TryParse(dr["Qty"]?.ToString().Trim(), out int qty))
+                    error += $" Qty is zero.";
+
+                if (!decimal.TryParse(dr["MRP"]?.ToString().Trim(), out decimal mrp))
+                    error += $" MRP is zero.";
+
+                
+                if (string.IsNullOrWhiteSpace(dr["Barcode"]?.ToString()))
                 {
-                    detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-
-                    detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
-                    detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
-                    detail.SubCategoryName = dtProduct.Rows[0]["CategoryName"].ToString();
-                    detail.Product = dtProduct.Rows[0]["Product"].ToString();
-                    detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
-                    detail.SaleRate = detail.TradeRate = detail.DistributionRate = detail.MRP;
-                    //detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
-                    //detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
-                    //detail.TradeRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString());
-                    //detail.DistributionRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString());
-
-                    //detail.Rate = Convert.ToDecimal(dtProduct.Rows[0][model.BillingRate].ToString());
-                    detail.FkLotId = 0;
-
+                    error += $" Artical is blank.";
                 }
+                else if (!IsAlphanumeric(dr["Barcode"]?.ToString()))
+                {
+                    error += $"Barcode Must Be Alphanumeric. ";
+                }
+                else if (tranList.Where(x => x.Barcode?.ToString().ToLower() == dr["Barcode"]?.ToString().ToLower().Trim()).Count() > 0)
+                {
+                    error += $" Duplicate Barcode. ";
+                }
+
+                log += "\n Product " + DateTime.Now.ToString("HH:mm:ss");
+
+
+                if (error != "")
+                    validationErrors.Add($"Row {srNo} {error}");
                 else
                 {
-                    var subCat = __dbContext.TblCategoryMas.Where(x => x.CategoryName == detail.SubCategoryName).FirstOrDefault();
-                    if (subCat != null)
-                        detail.FKProdCatgId = subCat.PkCategoryId;
-                    detail.Product = "";
-                }
+                    var item = new TranDetails
+                    {
+                        SrNo = srNo,
+                        Barcode = dr["Barcode"]?.ToString().Trim(),
+                        ProductDisplay = dr["Artical"]?.ToString().Trim(),
+                        Batch = dr["Size"]?.ToString().Trim(),
+                        Color = dr["Color"]?.ToString().Trim(),
+                        Qty = qty,
+                        MRP = mrp,
+                        SaleRate = mrp,
+                        TradeRate = mrp,
+                        DistributionRate = mrp,
+                        FkLotId = 0
+                    };
+                    DataTable dtProduct = GetProduct("", 0, 0, 0, dr["Artical"]?.ToString(), false, "");
+                    if (dtProduct.Rows.Count > 0)
+                    {
 
+                        item.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+                        item.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
+                        item.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
+                        item.SubCategoryName = dtProduct.Rows[0]["CategoryName"].ToString();
+                        item.Product = dtProduct.Rows[0]["Product"].ToString();
+                        item.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
+                    }
+                    else
+                    {
+                        var Category = __dbContext.TblCategoryMas.Where(x => x.CategoryName == dr["SubSection"].ToString()).SingleOrDefault();
+                        if (Category != null)
+                        {
+                            item.FKProdCatgId = Category.PkCategoryId;
+                            item.SubCategoryName = Category.CategoryName;
+                        }
+                        else
+                            validationErrors.Add($"Row {srNo} Category : {dr["SubSection"].ToString()}");
+
+                    }
+                    tranList.Add(item);
+
+                }
             }
-            return dtlList;
+            return tranList;
+
+        }
+
+        public bool IsAlphanumeric(string input)
+        {
+            return Regex.IsMatch(input, @"^[a-zA-Z0-9]+$");
         }
         public object BindImportData(TransactionModel model, List<TranDetails> details)
         {
@@ -2649,13 +2695,7 @@ namespace SSRepository.Repository.Transaction
                 }
                 else
                     throw new Exception("Invalid Request");
-                //TranDetailDefault(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
-                //GetSetProduct(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]), "", 0, model.FKOrderID, model.FKOrderSrID);
 
-                //CalculateExe(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
-                //SetGridTotal(model);
-                //SetPaymentDetail(model);
-                //model.IsTranChange = true;
             }
             catch (Exception ex) { }
             return model;
