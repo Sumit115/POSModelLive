@@ -132,6 +132,13 @@ $(document).ready(function () {
             $("#ShipingAddress").val($("#PartyAddress").val());
         }
     });
+
+    $('#PartyAddress').on('keydown', function (e) {
+        if (e.key === 'Tab') {
+            e.preventDefault(); // prevent default tab behavior
+            $('#txtSearchBarcode').focus(); // jump to input with id="input3"
+        }
+    });
 });
 
 function Load() {

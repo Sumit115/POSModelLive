@@ -23,6 +23,7 @@ namespace SSRepository.Repository.Report
         }
         public DataTable GetList(string Barcode = "", string ProductFilter = "", string SaleSeriesFilter = "", string SaleEntryNoFrom = "", string SaleEntryNoTo = "", string SaleDateFrom = "", string SaleDateTo = "", string PurchaseSeriesFilter = "", string PurchaseEntryNoFrom = "", string PurchaseEntryNoTo = "", string PurchaseDateFrom = "", string PurchaseDateTo = "")
         {
+            string LocationFilter = GetLocationFilter();
             DataTable dt = new DataTable();
             using (SqlConnection con = new SqlConnection(conn))
             {
@@ -77,6 +78,8 @@ namespace SSRepository.Repository.Report
                 {
                     cmd.Parameters.AddWithValue("@PurchaseDateTo", PurchaseDateTo);
                 }
+                cmd.Parameters.AddWithValue("@LocationFilter", GetFilterData(LocationFilter));
+
                 //Get Output Parametr
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(dt);

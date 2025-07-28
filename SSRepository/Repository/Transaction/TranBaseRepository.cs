@@ -2564,78 +2564,80 @@ namespace SSRepository.Repository.Transaction
 
         public List<TranDetails> Get_ProductInfo_FromFile(List<TranDetails> dtlList)
         {
-            foreach (var detail in dtlList)
-            {
+            //foreach (var detail in dtlList)
+            //{
 
-                if (!int.TryParse(dr["Qty"]?.ToString().Trim(), out int qty))
-                    error += $" Qty is zero.";
+            //    if (!int.TryParse(dr["Qty"]?.ToString().Trim(), out int qty))
+            //        error += $" Qty is zero.";
 
-                if (!decimal.TryParse(dr["MRP"]?.ToString().Trim(), out decimal mrp))
-                    error += $" MRP is zero.";
-
-                
-                if (string.IsNullOrWhiteSpace(dr["Barcode"]?.ToString()))
-                {
-                    error += $" Artical is blank.";
-                }
-                else if (!IsAlphanumeric(dr["Barcode"]?.ToString()))
-                {
-                    error += $"Barcode Must Be Alphanumeric. ";
-                }
-                else if (tranList.Where(x => x.Barcode?.ToString().ToLower() == dr["Barcode"]?.ToString().ToLower().Trim()).Count() > 0)
-                {
-                    error += $" Duplicate Barcode. ";
-                }
-
-                log += "\n Product " + DateTime.Now.ToString("HH:mm:ss");
+            //    if (!decimal.TryParse(dr["MRP"]?.ToString().Trim(), out decimal mrp))
+            //        error += $" MRP is zero.";
 
 
-                if (error != "")
-                    validationErrors.Add($"Row {srNo} {error}");
-                else
-                {
-                    var item = new TranDetails
-                    {
-                        SrNo = srNo,
-                        Barcode = dr["Barcode"]?.ToString().Trim(),
-                        ProductDisplay = dr["Artical"]?.ToString().Trim(),
-                        Batch = dr["Size"]?.ToString().Trim(),
-                        Color = dr["Color"]?.ToString().Trim(),
-                        Qty = qty,
-                        MRP = mrp,
-                        SaleRate = mrp,
-                        TradeRate = mrp,
-                        DistributionRate = mrp,
-                        FkLotId = 0
-                    };
-                    DataTable dtProduct = GetProduct("", 0, 0, 0, dr["Artical"]?.ToString(), false, "");
-                    if (dtProduct.Rows.Count > 0)
-                    {
+            //    if (string.IsNullOrWhiteSpace(dr["Barcode"]?.ToString()))
+            //    {
+            //        error += $" Artical is blank.";
+            //    }
+            //    else if (!IsAlphanumeric(dr["Barcode"]?.ToString()))
+            //    {
+            //        error += $"Barcode Must Be Alphanumeric. ";
+            //    }
+            //    else if (tranList.Where(x => x.Barcode?.ToString().ToLower() == dr["Barcode"]?.ToString().ToLower().Trim()).Count() > 0)
+            //    {
+            //        error += $" Duplicate Barcode. ";
+            //    }
 
-                        item.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                        item.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
-                        item.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
-                        item.SubCategoryName = dtProduct.Rows[0]["CategoryName"].ToString();
-                        item.Product = dtProduct.Rows[0]["Product"].ToString();
-                        item.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
-                    }
-                    else
-                    {
-                        var Category = __dbContext.TblCategoryMas.Where(x => x.CategoryName == dr["SubSection"].ToString()).SingleOrDefault();
-                        if (Category != null)
-                        {
-                            item.FKProdCatgId = Category.PkCategoryId;
-                            item.SubCategoryName = Category.CategoryName;
-                        }
-                        else
-                            validationErrors.Add($"Row {srNo} Category : {dr["SubSection"].ToString()}");
+            //    log += "\n Product " + DateTime.Now.ToString("HH:mm:ss");
 
-                    }
-                    tranList.Add(item);
 
-                }
-            }
-            return tranList;
+            //    if (error != "")
+            //        validationErrors.Add($"Row {srNo} {error}");
+            //    else
+            //    {
+            //        var item = new TranDetails
+            //        {
+            //            SrNo = srNo,
+            //            Barcode = dr["Barcode"]?.ToString().Trim(),
+            //            ProductDisplay = dr["Artical"]?.ToString().Trim(),
+            //            Batch = dr["Size"]?.ToString().Trim(),
+            //            Color = dr["Color"]?.ToString().Trim(),
+            //            Qty = qty,
+            //            MRP = mrp,
+            //            SaleRate = mrp,
+            //            TradeRate = mrp,
+            //            DistributionRate = mrp,
+            //            FkLotId = 0
+            //        };
+            //        DataTable dtProduct = GetProduct("", 0, 0, 0, dr["Artical"]?.ToString(), false, "");
+            //        if (dtProduct.Rows.Count > 0)
+            //        {
+
+            //            item.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+            //            item.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
+            //            item.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
+            //            item.SubCategoryName = dtProduct.Rows[0]["CategoryName"].ToString();
+            //            item.Product = dtProduct.Rows[0]["Product"].ToString();
+            //            item.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
+            //        }
+            //        else
+            //        {
+            //            var Category = __dbContext.TblCategoryMas.Where(x => x.CategoryName == dr["SubSection"].ToString()).SingleOrDefault();
+            //            if (Category != null)
+            //            {
+            //                item.FKProdCatgId = Category.PkCategoryId;
+            //                item.SubCategoryName = Category.CategoryName;
+            //            }
+            //            else
+            //                validationErrors.Add($"Row {srNo} Category : {dr["SubSection"].ToString()}");
+
+            //        }
+            //        tranList.Add(item);
+
+            //    }
+            //}
+            //return tranList;
+
+            return null;
 
         }
 

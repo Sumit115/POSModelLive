@@ -54,8 +54,9 @@ namespace SSRepository.Repository.Report
             return list;
         }
 
-        public DataTable ViewData(string ReportType, string ProductFilter, string GroupByColumn)
+        public DataTable ViewData(string ReportType, string ProductFilter,  string GroupByColumn)
         {
+            string LocationFilter = GetLocationFilter();
             DataTable dt = new DataTable();
             using (SqlConnection con = new SqlConnection(conn))
             {
@@ -64,6 +65,7 @@ namespace SSRepository.Repository.Report
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ReportType", ReportType);
                 cmd.Parameters.AddWithValue("@ProductFilter", GetFilterData(ProductFilter));
+                cmd.Parameters.AddWithValue("@LocationFilter", GetFilterData(LocationFilter));
                 cmd.Parameters.AddWithValue("@GroupByColumn", GroupByColumn);
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(dt);

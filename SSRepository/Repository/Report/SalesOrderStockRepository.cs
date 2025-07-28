@@ -50,6 +50,7 @@ namespace SSRepository.Repository.Report
 
         public DataTable ViewData(string ReportType, string StateFilter, string TrnStatusFilter, string GroupByColumn)
         {
+            string LocationFilter = GetLocationFilter();
             DataTable dt = new DataTable();
             using (SqlConnection con = new SqlConnection(conn))
             {
@@ -59,6 +60,7 @@ namespace SSRepository.Repository.Report
                 cmd.Parameters.AddWithValue("@ReportType", ReportType);
                 cmd.Parameters.AddWithValue("@StateFilter", GetFilterDataString(StateFilter));
                 cmd.Parameters.AddWithValue("@TrnStatusFilter", GetFilterDataString(TrnStatusFilter));
+                cmd.Parameters.AddWithValue("@LocationFilter", GetFilterData(LocationFilter));
                 cmd.Parameters.AddWithValue("@GroupByColumn", GroupByColumn);
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(dt);

@@ -146,10 +146,10 @@ namespace SSRepository.Repository.Master
                                          Image = f.Image,
                                          WebURL = f.WebURL,
                                          IsAccess = true,
-                                         IsEdit = true,
-                                         IsCreate = true,
-                                         IsPrint = true,
-                                         IsBrowse = true
+                                         IsEdit = false,
+                                         IsCreate = false,
+                                         IsPrint = false,
+                                         IsBrowse = false
                                      })).ToList();
                 }
                 data.RoleDtls = BuildMenuTree(data.RoleDtls, null);

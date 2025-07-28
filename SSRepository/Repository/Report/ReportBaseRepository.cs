@@ -27,6 +27,7 @@ namespace SSRepository.Repository.Report
 
         public DataTable GetList(string FromDate, string ToDate, string ReportType, string TranAlias, string ProductFilter, string PartyFilter, string LocationFilter, string SeriesFilter)
         {
+            LocationFilter = string.IsNullOrEmpty(LocationFilter) ? GetLocationFilter() : LocationFilter;
             DataTable dt = new DataTable();
             using (SqlConnection con = new SqlConnection(conn))
             {
