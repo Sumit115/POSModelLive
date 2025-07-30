@@ -36,11 +36,15 @@ namespace SSAdmin.Areas
                 var _lst = JsonConvert.DeserializeObject<List<MenuModel>>(menulist);
                 ViewBag.Menulist = _lst;
             }
-             ViewBag.FinYear = _gridLayoutRepository.ObjSysDefault.FinYear;
-
+           
             ViewBag.CompanyName = companyName;
             ViewBag.CompanyImage1 = HttpContext.Session.GetString("CompanyImage1");
-            ViewBag.Date = DateTime.Now; 
+            ViewBag.Date = DateTime.Now;
+
+            var _objSysDefault = _gridLayoutRepository.ObjSysDefault;
+            ViewBag.ObjSysDefault = JsonConvert.SerializeObject(_objSysDefault);
+            ViewBag.FinYear = _objSysDefault.FinYear;
+
         }
 
         public long FKFormID = 0;
@@ -64,9 +68,8 @@ namespace SSAdmin.Areas
         [HttpPost]
         public async Task<JsonResult> GridStrucher(long FormId, string GridName = "")
         {
-            if (FormId == 0) FormId = FKFormID;
-
-
+            if (FormId == 0) FormId = FKFormID; 
+            
             var data = _gridLayoutRepository.GetSingleRecord( FormId, GridName, ColumnList(GridName));
             return new JsonResult(data);
         }

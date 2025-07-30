@@ -47,6 +47,13 @@ namespace SSRepository.Repository
                 Sys.Location = string.Join(",", result.Select(r => r.FKLocationID));
                 Sys.FkRoleId = data.FkRoleId;
                 Sys.IsAdmin = data.IsAdmin;
+                Sys.EditBatch = data.EditBatch;
+                Sys.EditColor = data.EditColor;
+                Sys.EditDiscount = data.EditDiscount;
+                Sys.EditRate = data.EditRate;
+                Sys.EditMRP = data.EditMRP;
+                Sys.EditPurRate = data.EditPurRate;
+                Sys.EditPurDiscount = data.EditPurDiscount;
 
                 SaveFile("sysdefaults.json", JsonConvert.SerializeObject(Sys));
 

@@ -600,7 +600,7 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
                         Common.GetBarcodeSettingData(".barcodesetting", "", function (flag, _d) {
 
                             if (flag) {
-                                
+
                                 var _model = {};
                                 _model.BarcodePrintPreviewModel = _List;
                                 _model.SysDefaults = _d;
@@ -699,7 +699,7 @@ function Handler_BarcodePrint(callBackFun, closeFun) {
 var Handler = {
     CU: "",
     currentUrl: "",
-    nvc: { },
+    nvc: {},
     loader: Handler_showWait,
     hide: Handler_hideWait,
     ajax: Handler_AjaxMethod,
@@ -1253,8 +1253,8 @@ function C_GridStrucher(n, n2, f) {
     Common.ajax(Handler.currentPath() + url, {}, "Please Wait...", function (res) {
         Handler.hide();
 
-        if (res.PkGridId > 0) { 
-            var j = JSON.parse(res.JsonData); 
+        if (res.PkGridId > 0) {
+            var j = JSON.parse(res.JsonData);
             f(j);
         }
         else
@@ -1268,8 +1268,9 @@ function C_Grid(n, n2, f) {
     var url = "GridStrucher?FormId=" + n;
     if (n2 != '' && n2 != undefined && n2 != null) {
         url += "&GridName=" + n2;
-
     }
+     
+
     Common.ajax(Handler.currentPath() + url, {}, "Please Wait...", function (res) {
         Handler.hide();
 
@@ -1292,8 +1293,27 @@ function C_Grid(n, n2, f) {
 
             var filtered = d.filter(function (person) { return person.IsActive === 1 });
             filtered.sort((a, b) => (a.Orderby - b.Orderby));
-
+            //console.log(filtered);
             $(filtered).each(function (i, v) {
+
+                if (!Handler.isNullOrEmpty(n2) && typeof TranAlias !== 'undefined' && $('input#hdObjSysDefault').length) {
+                    var _sysDefault = JSON.parse($("#hdObjSysDefault").val());
+                    //console.log(_sysDefault);
+                  
+                    if (TranAlias == "PORD" || TranAlias == "PINV") {
+                        if (v.Fields == 'TradeDisc' && !_sysDefault.EditPurDiscount) { v.CtrlType = ''; }
+                        if (v.Fields == 'Rate' && !_sysDefault.EditPurRate) { v.CtrlType = ''; } 
+                    }
+                    else {
+                        debugger;
+                        if (v.Fields == 'Batch' && !_sysDefault.EditBatch) { v.CtrlType = ''; }
+                        if (v.Fields == 'Color' && !_sysDefault.EditColor) { v.CtrlType = ''; }
+                        if (v.Fields == 'TradeDisc' && !_sysDefault.EditDiscount) { v.CtrlType = ''; }
+                        if (v.Fields == 'Rate' && !_sysDefault.EditRate) { v.CtrlType = ''; }
+                        if (v.Fields == 'MRP' && !_sysDefault.EditMRP) { v.CtrlType = ''; } 
+                    }
+                }
+
                 j.ColumnHeading += "~" + v.Heading;
                 j.ColumnWidthPer += "~" + v.Width;
                 j.ColumnFields += "~" + v.Fields;
@@ -1381,9 +1401,9 @@ function C_GridColSetup(n, n2, f) {
     var url = "GridStrucher?FormId=" + n;
     if (n2 != '' && n2 != undefined && n2 != null) {
         url += "&GridName=" + n2;
-        $("#hdGridName").val(n2); 
+        $("#hdGridName").val(n2);
     }
-     Common.ajax(Handler.currentPath() + url, {}, "Please Wait...", function (res) {
+    Common.ajax(Handler.currentPath() + url, {}, "Please Wait...", function (res) {
         Handler.hide();
         if (res.PkGridId > 0) {
             var d = JSON.parse(res.JsonData);
@@ -1452,7 +1472,7 @@ function C_GridColSetup(n, n2, f) {
     });
 }
 
-function Savesgl(jsonData, Modeform,Callback) {
+function Savesgl(jsonData, Modeform, Callback) {
     if (confirm("Do you want to save Grid Layout.")) {
 
         var _d = {

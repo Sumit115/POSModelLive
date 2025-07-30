@@ -10,125 +10,230 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="PKID" />
 
-        <div class="row">
-            <div class="col-md-8">
-                <div class="form-group row">
-                    <label class="col-sm-2">User Id(Email)<span class="required">*</span> </label>
-                    <div class="col-md-6">
-                        <input asp-for="UserId" class="form-control" required />
-                        <span asp-validation-for="UserId" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2">Password<span class="required">*</span> </label>
-                    <div class="col-md-6">
-                        <input asp-for="Pwd" class="form-control" required />
-                        <span asp-validation-for="Pwd" class="text-danger"></span>
-                    </div>
-                    @*<div class="col-md-3">
-                        <input asp-for="Mobile" class="form-control" required />
-                        <span asp-validation-for="Mobile" class="text-danger"></span>
-                    </div>*@
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2">Status / Expiry Date<span class="required">*</span> </label>
-                    <div class="col-md-3">
-                        <select class="form-select" asp-for="Status">
-                            <option value="A">Active</option>
-                            <option value="I">InActive</option>
-                        </select>
-                        <span asp-validation-for="Status" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-3">
-                        <input asp-for="Expiredt" class="form-control" required />
-                        <span asp-validation-for="Expiredt" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2">Role<span class="required">*</span></label>
-                    <div class="col-md-6">
-                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkRoleId" },{"name","Role"}, { "Class", "val-cus-drp" },
-                        { "value", Model.FkRoleId }, { "text", Model.Role }, { "uri", "Role" }, { "required", "required" },{ "placeholder", "Select Role"} })
-                        <span asp-validation-for="FkRoleId" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2">Employee<span class="required">*</span> </label>
-                    <div class="col-md-6">
-                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkEmployeeId" },{"name","EmployeeName"}, { "Class", "val-cus-drp" },
-                        { "value", Model.FkEmployeeId }, { "text", Model.EmployeeName }, { "uri", "Employee" }, { "required", "required" },{ "placeholder", "Select Employee"} })
-                        <span asp-validation-for="FkEmployeeId" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2">Branch<span class="required">*</span> </label>
-                    <div class="col-md-6">
-                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkBranchId" },{"name","BranchName"}, { "Class", "val-cus-drp" },
-                        { "value", Model.FkBranchId }, { "text", Model.BranchName }, { "uri", "Branch" }, { "required", "required" },{ "placeholder", "Select Branch"} })
+        <div class="col-sm-12">
+            <div class="tabs-ui-fmt mt-2" id="scrollfixheader">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <button class="nav-link active" id="Info-tab" data-bs-toggle="tab" data-bs-target="#Info" type="button" role="tab" aria-controls="Info" aria-selected="false" fdprocessedid="w66vj" tabindex="-1">Basic Information</button>
+                        <button class="nav-link" id="ApplyFortab-tab" data-bs-toggle="tab" data-bs-target="#ApplyFortab" type="button" role="tab" aria-controls="ApplyFortab" aria-selected="true">Apply For</button>
 
-                        <span asp-validation-for="FkBranchId" class="text-danger"></span>
                     </div>
-                </div>
+                </nav>
             </div>
-            <div class="col-sm-12">
-                <div class="tabs-ui-fmt mt-2" id="scrollfixheader">
-                    <nav>
-                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                            <button class="nav-link active" id="Locationtab-tab" data-bs-toggle="tab" data-bs-target="#Locationtab" type="button" role="tab" aria-controls="Locationtab" aria-selected="false" fdprocessedid="w66vj" tabindex="-1">Location</button>
-
-                        </div>
-                    </nav>
-                </div>
-                <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade active show" id="Locationtab" role="tabpanel" aria-labelledby="Locationtab-tab" tabindex="-1">
-                        <div class="row" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
-                            <div class="col-sm-12 mt-3">
-                                <div class="row form-group">
-                                    <div class="col-sm-4">
-                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkLocationID" }, { "Class", "val-cus-drp" },
-                                        { "value", "" }, { "text", "" }, { "uri", "Location" },{ "placeholder", "Select Location"} })
-
-                                    </div>
-                                    <div class="col-sm-1 ">
-                                        <span class="btn btn-success" onclick="AddLocation();">
-                                            <i class="bi bi-plus-lg"></i>
-                                        </span>
-                                    </div>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade active show mt-4" id="Info" role="tabpanel" aria-labelledby="Info-tab" tabindex="-1">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group row">
+                                <label class="col-sm-2">User Id(Email)<span class="required">*</span> </label>
+                                <div class="col-md-6">
+                                    <input asp-for="UserId" class="form-control" required />
+                                    <span asp-validation-for="UserId" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-sm-5 default-scroll-grid">
-                                <table id="tblUserLoc" class="table border tableheader-fixed">
-                                    <tbody class="md-height">
+                            <div class="form-group row">
+                                <label class="col-sm-2">Password<span class="required">*</span> </label>
+                                <div class="col-md-6">
+                                    <input asp-for="Pwd" class="form-control" required />
+                                    <span asp-validation-for="Pwd" class="text-danger"></span>
+                                </div>
+                                @*<div class="col-md-3">
+                                <input asp-for="Mobile" class="form-control" required />
+                                <span asp-validation-for="Mobile" class="text-danger"></span>
+                                </div>*@
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2">Status / Expiry Date<span class="required">*</span> </label>
+                                <div class="col-md-3">
+                                    <select class="form-select" asp-for="Status">
+                                        <option value="A">Active</option>
+                                        <option value="I">InActive</option>
+                                    </select>
+                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-3">
+                                    <input asp-for="Expiredt" class="form-control" required />
+                                    <span asp-validation-for="Expiredt" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2">Role<span class="required">*</span></label>
+                                <div class="col-md-6">
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkRoleId" },{"name","Role"}, { "Class", "val-cus-drp" },
+                                    { "value", Model.FkRoleId }, { "text", Model.Role }, { "uri", "Role" }, { "required", "required" },{ "placeholder", "Select Role"} })
+                                    <span asp-validation-for="FkRoleId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2">Employee<span class="required">*</span> </label>
+                                <div class="col-md-6">
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkEmployeeId" },{"name","EmployeeName"}, { "Class", "val-cus-drp" },
+                                    { "value", Model.FkEmployeeId }, { "text", Model.EmployeeName }, { "uri", "Employee" }, { "required", "required" },{ "placeholder", "Select Employee"} })
+                                    <span asp-validation-for="FkEmployeeId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2">Branch<span class="required">*</span> </label>
+                                <div class="col-md-6">
+                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkBranchId" },{"name","BranchName"}, { "Class", "val-cus-drp" },
+                                    { "value", Model.FkBranchId }, { "text", Model.BranchName }, { "uri", "Branch" }, { "required", "required" },{ "placeholder", "Select Branch"} })
 
-                                        @if (Model.UserLoclnk != null)
-                                        {
-                                            for (int i = 0; i < Model.UserLoclnk.Count; i++)
-                                            {
-                                                <tr index="@i">
-                                                    <td>
-                                                        @Html.TextBoxFor(m => m.UserLoclnk[i].LocationName, new { @readonly = true, @tabindex = "-1" })
-                                                        @Html.HiddenFor(m => m.UserLoclnk[i].FkLocationID)
-                                                    </td>
-                                                    <td>
-                                                        @Html.HiddenFor(x => x.UserLoclnk[i].ModeForm)
-                                                        <button type="button" class="btn grid-close-btn" onclick="RowAction(this,@i,'del')">
-                                                            <i class="bi bi-x-circle"></i>
-                                                        </button>
-
-                                                    </td>
-                                                </tr>
-                                            }
-                                        }
-                                    </tbody>
-                                </table>
+                                    <span asp-validation-for="FkBranchId" class="text-danger"></span>
+                                </div>
                             </div>
                         </div>
+                        <div class="col-sm-12">
+                            <div class="tabs-ui-fmt mt-2" id="scrollfixheader">
+                                <nav>
+                                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                        <button class="nav-link active" id="Locationtab-tab" data-bs-toggle="tab" data-bs-target="#Locationtab" type="button" role="tab" aria-controls="Locationtab" aria-selected="false" fdprocessedid="w66vj" tabindex="-1">Location</button>
+
+                                    </div>
+                                </nav>
+                            </div>
+                            <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-pane fade active show" id="Locationtab" role="tabpanel" aria-labelledby="Locationtab-tab" tabindex="-1">
+                                    <div class="row" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                                        <div class="col-sm-12 mt-3">
+                                            <div class="row form-group">
+                                                <div class="col-sm-4">
+                                                    @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkLocationID" }, { "Class", "val-cus-drp" },
+                                                    { "value", "" }, { "text", "" }, { "uri", "Location" },{ "placeholder", "Select Location"} })
+
+                                                </div>
+                                                <div class="col-sm-1 ">
+                                                    <span class="btn btn-success" onclick="AddLocation();">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-5 default-scroll-grid">
+                                            <table id="tblUserLoc" class="table border tableheader-fixed">
+                                                <tbody class="md-height">
+
+                                                    @if (Model.UserLoclnk != null)
+                                                    {
+                                                        for (int i = 0; i < Model.UserLoclnk.Count; i++)
+                                                        {
+                                                            <tr index="@i">
+                                                                <td>
+                                                                    @Html.TextBoxFor(m => m.UserLoclnk[i].LocationName, new { @readonly = true, @tabindex = "-1" })
+                                                                    @Html.HiddenFor(m => m.UserLoclnk[i].FkLocationID)
+                                                                </td>
+                                                                <td>
+                                                                    @Html.HiddenFor(x => x.UserLoclnk[i].ModeForm)
+                                                                    <button type="button" class="btn grid-close-btn" onclick="RowAction(this,@i,'del')">
+                                                                        <i class="bi bi-x-circle"></i>
+                                                                    </button>
+
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
                     </div>
-
                 </div>
-            </div>
+                <div class="tab-pane fade mt-4" id="ApplyFortab" role="tabpanel" aria-labelledby="ApplyFortab-tab" tabindex="-1">
+                    <div class="row" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <h6 style="color: #0d6efd !important;font-size: 15px">Sales</h6>
+                                <div class="row mt-1">
+                                    <div class="col-sm-6">
+                                        <div class="row form-group">
+                                            <div class="col-sm-1 offset-sm-1 form-switch">
+                                                <input asp-for="EditBatch" class="form-check-input" role="switch" type="checkbox">
+                                            </div>
+                                            <label class="col-sm-9" for="EditBatch">Edit Batch</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="row form-group">
+                                            <div class="col-sm-1 offset-sm-1 form-switch">
+                                                <input asp-for="EditColor" class="form-check-input" role="switch" type="checkbox">
+                                            </div>
+                                            <label class="col-sm-9" for="EditColor">Edit Color</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="row form-group">
+                                            <div class="col-sm-1 offset-sm-1 form-switch">
+                                                <input asp-for="EditRate" class="form-check-input" role="switch" type="checkbox"  >
+                                            </div>
+                                            <label class="col-sm-9" for="EditRate">Edit Rate</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="row form-group">
+                                            <div class="col-sm-1 offset-sm-1 form-switch">
+                                                <input asp-for="EditMRP" class="form-check-input" role="switch" type="checkbox">
+                                            </div>
+                                            <label class="col-sm-9" for="EditMRP">Edit MRP</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="row form-group">
+                                            <div class="col-sm-1 offset-sm-1 form-switch">
+                                                <input asp-for="EditDiscount" class="form-check-input" role="switch" type="checkbox">
+                                            </div>
+                                            <label class="col-sm-9" for="EditDiscount">Edit Discount</label>
+                                        </div>
+                                    </div>
+                                </div>
 
+
+
+
+                            </div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <h6 style="color: #0d6efd !important;font-size: 15px">Purchase</h6>
+                                <div class="row mt-1">
+                                   
+                                    <div class="col-sm-6">
+                                        <div class="row form-group">
+                                            <div class="col-sm-1 offset-sm-1 form-switch">
+                                                <input asp-for="EditPurRate" class="form-check-input" role="switch" type="checkbox">
+                                            </div>
+                                            <label class="col-sm-9" for="EditPurRate">Edit Rate</label>
+                                        </div>
+                                    </div>
+                                   
+                                    <div class="col-sm-6">
+                                        <div class="row form-group">
+                                            <div class="col-sm-1 offset-sm-1 form-switch">
+                                                <input asp-for="EditPurDiscount" class="form-check-input" role="switch" type="checkbox">
+                                            </div>
+                                            <label class="col-sm-9" for="EditPurDiscount">Edit Discount</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
+
+
+      
     </form>
 </div>
 

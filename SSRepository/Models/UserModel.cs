@@ -38,7 +38,14 @@ namespace SSRepository.Models
         public long FkEmployeeId { get; set; }
 
         public char Status { get; set; }
-        
+
+        public bool  EditBatch { get; set; }
+        public bool  EditColor { get; set; }
+        public bool  EditDiscount { get; set; }
+        public bool  EditRate { get; set; }
+        public bool  EditMRP { get; set; }
+        public bool  EditPurRate { get; set; }
+        public bool  EditPurDiscount { get; set; }
 
         public int IsAdmin { get; set; }
         //public EmployeeModel? EmployeeVM { get; set; }

@@ -51,6 +51,13 @@ namespace SSRepository.Repository.Master
                                        FkEmployeeId = cou.FkEmployeeId,
                                        EmployeeName = cou.FkEmployee.Name,
                                        IsAdmin = cou.IsAdmin,
+                                       EditBatch = cou.EditBatch??false,
+                                       EditColor = cou.EditColor ?? false,
+                                       EditDiscount = cou.EditDiscount ?? false,
+                                       EditRate = cou.EditRate ?? false,
+                                       EditMRP = cou.EditMRP ?? false,
+                                       EditPurRate = cou.EditPurRate ?? false,
+                                       EditPurDiscount = cou.EditPurDiscount ?? false,
                                    })).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
             return data;
         }
@@ -80,6 +87,13 @@ namespace SSRepository.Repository.Master
                         FkEmployeeId = cou.FkEmployeeId,
                         EmployeeName= cou.FkEmployee.Name,
                         IsAdmin = cou.IsAdmin,
+                        EditBatch = cou.EditBatch ?? false,
+                        EditColor = cou.EditColor ?? false,
+                        EditDiscount = cou.EditDiscount ?? false,
+                        EditRate = cou.EditRate ?? false,
+                        EditMRP = cou.EditMRP ?? false,
+                        EditPurRate = cou.EditPurRate ?? false,
+                        EditPurDiscount = cou.EditPurDiscount ?? false,
                     })).FirstOrDefault();
             if (data != null)
             {
@@ -177,6 +191,13 @@ namespace SSRepository.Repository.Master
             Tbl.ExpirePwddt = model.ExpirePwddt;
             Tbl.FkEmployeeId = model.FkEmployeeId;
             Tbl.IsAdmin = model.IsAdmin;
+            Tbl.EditBatch = model.EditBatch;
+            Tbl.EditColor = model.EditColor;
+            Tbl.EditDiscount = model.EditDiscount;
+            Tbl.EditRate = model.EditRate;
+            Tbl.EditMRP = model.EditMRP;
+            Tbl.EditPurRate = model.EditPurRate;
+            Tbl.EditPurDiscount = model.EditPurDiscount;
             Tbl.ModifiedDate= DateTime.Now;
             Tbl.FKUserID = GetUserID();
              

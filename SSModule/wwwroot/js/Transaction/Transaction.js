@@ -5,6 +5,7 @@ var TranAlias = "";
 var ModeFormForEdit = 1;
 var cgRtn = null;
 var UDIRtn = null;
+var GrdName = 'dtl';
 $(document).ready(function () {
     $('#btnDeleteRecord').hide();
     ModeFormForEdit = Handler.isNullOrEmpty($("#hdModeFormForEdit").val()) ? 1 : parseInt($("#hdModeFormForEdit").val());
@@ -14,7 +15,8 @@ $(document).ready(function () {
     tranModel.TrnStatus = Handler.isNullOrEmpty(tranModel.TrnStatus) ? "P" : tranModel.TrnStatus.replace('\u0000', '');
     TranAlias = tranModel.ExtProperties.TranAlias;
     $("#hdFormId").val(tranModel.ExtProperties.FKFormID);
-    $("#hdGridName").val('dtl');
+
+    $("#hdGridName").val(GrdName);
     if ((TranAlias == "SRTN" || TranAlias == "SCRN" || TranAlias == "SORD" || TranAlias == "LORD" || TranAlias == "PORD" || TranAlias == "PINV")) {
         $(".trn-barcode").hide();
     } else { $(".trn-barcode").show(); $("#txtSearchBarcode").focus(); }
@@ -146,6 +148,7 @@ function Load() {
     var PkId = $("#PkId").val();
     tranModel = JSON.parse($("#hdData").val());
     TranAlias = tranModel.ExtProperties.TranAlias;
+    GrdName = (tranModel.ExtProperties.DocumentType == "C" && tranModel.ExtProperties.TranAlias == "SINV") ? "Walkingdtl" : "dtl";
 
     if (PkId > 0 || tranModel.TranDetails.length > 0) {
         console.clear();
@@ -222,10 +225,9 @@ function Load() {
 }
 
 function BindGrid(GridId, data) {
-    debugger;
+    
     $("#" + GridId).empty();
-    var GrdiName = (tranModel.ExtProperties.DocumentType == "C" && tranModel.ExtProperties.TranAlias == "SINV") ? "Walkingdtl" : "dtl";
-    Common.Grid(tranModel.ExtProperties.FKFormID, GrdiName, function (s) {
+    Common.Grid(tranModel.ExtProperties.FKFormID, GrdName, function (s) {
 
 
         if (tranModel.FKOrderID > 0 && tranModel.FKOrderSrID) { s.setCtrlType = s.setCtrlType.replace("CD", "").replace("CD", "") }
@@ -600,7 +602,8 @@ function BindGrid(GridId, data) {
             var row = $(this).data("row");
             var command = $(e.target).attr("data");
             if (command == "EditColumn") {
-                Common.GridColSetup(tranModel.ExtProperties.FKFormID, "dtl", function () {
+
+                Common.GridColSetup(tranModel.ExtProperties.FKFormID, GrdName, function () {
                     var _dtl = GetDataFromGrid(false, false);
                     BindGrid('DDT', _dtl);
                 });

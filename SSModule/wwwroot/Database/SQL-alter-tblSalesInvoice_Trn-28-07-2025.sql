@@ -1,0 +1,8 @@
+IF EXISTS(SELECT CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE 
+WHERE TABLE_NAME = 'tblSalesInvoice_Trn' AND COLUMN_NAME = 'FkPartyId' AND CONSTRAINT_NAME IN ( SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_TYPE = 'FOREIGN KEY'))
+Begin
+
+ 
+ALTER TABLE [dbo].[tblSalesInvoice_Trn] Drop [FK_tblSalesInvoice_trn_tblCustomer_mas]
+ 
+END

@@ -717,9 +717,11 @@ namespace SSRepository.Repository
                             //var ColumnName = column.ColumnName;
                             try
                             {
-                                var value = ConvertToType(dr[column.ColumnName], pro.PropertyType);
                                 if (pro.Name == column.ColumnName)
+                                {
+                                    var value = ConvertToType(dr[column.ColumnName], pro.PropertyType);
                                     pro.SetValue(model, value, null);
+                                }
                                 else
                                     continue;
                             }
