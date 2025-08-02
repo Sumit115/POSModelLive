@@ -60,7 +60,7 @@ namespace SSRepository.Repository.Transaction
                 //
                 setDefaultBeforeSave(objmodel);
 
-                if (objmodel.ExtProperties.TranType == "S" && objmodel.IsTranChange && objmodel.TranAlias != "LINV" && objmodel.TranAlias != "LORD")
+                if (objmodel.PkId <= 0 && objmodel.ExtProperties.TranType == "S" && objmodel.IsTranChange && objmodel.TranAlias != "LINV" && objmodel.TranAlias != "LORD")
                     setPromotion(objmodel);
 
                 //CalculateExe(objmodel);
@@ -177,7 +177,7 @@ namespace SSRepository.Repository.Transaction
                 SetGridTotal(objmodel);
                 SetPaymentDetail(objmodel);
                 //set Promotion Invoice Value
-                if (objmodel.ExtProperties.TranType == "S" && objmodel.IsTranChange && objmodel.TranAlias != "LINV" && objmodel.TranAlias != "LORD")
+                if (objmodel.PkId <= 0 && objmodel.ExtProperties.TranType == "S" && objmodel.IsTranChange && objmodel.TranAlias != "LINV" && objmodel.TranAlias != "LORD")
                     setPromotion_InvoiceValue(objmodel);
                 objmodel.IsTranChange = false;
 
@@ -632,6 +632,14 @@ namespace SSRepository.Repository.Transaction
                         break;
                     case "TradeDisc":
                         model.TranDetails[rowIndex].TradeDiscAmt = 0;
+                        if (!IsReturn)
+                        {
+                            if (!string.IsNullOrEmpty(model.TranDetails[rowIndex].PromotionType) && model.TranDetails[rowIndex].PromotionType.Trim().Length == 4)
+                            {
+                                model.TranDetails[rowIndex].PromotionType = (model.TranDetails[rowIndex].PromotionType.Trim() + "M");
+                                model.TranDetails[rowIndex].PromotionName = (model.TranDetails[rowIndex].PromotionName + " | Manually");
+                            }
+                        }
                         break;
                     case "Delete":
                         if (IsReturn)
@@ -652,7 +660,29 @@ namespace SSRepository.Repository.Transaction
                         setInvoiceinfo(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
                         break;
                     case "Qty":
+                        if (!IsReturn)
+                        {
+                            if (!string.IsNullOrEmpty(model.TranDetails[rowIndex].PromotionType) && model.TranDetails[rowIndex].PromotionType.Trim().Length == 4)
+                            {
+                                model.TranDetails[rowIndex].PromotionType = (model.TranDetails[rowIndex].PromotionType.Trim() + "M");
+                                model.TranDetails[rowIndex].PromotionName = (model.TranDetails[rowIndex].PromotionName + " | Manually");
+                            }
+                        }
+                        break;
                     case "FreeQty":
+                        if (!IsReturn)
+                        {
+                            if (!string.IsNullOrEmpty(model.TranDetails[rowIndex].PromotionType) && model.TranDetails[rowIndex].PromotionType.Trim().Length == 4)
+                            {
+                                model.TranDetails[rowIndex].PromotionType = (model.TranDetails[rowIndex].PromotionType.Trim() + "M");
+                                model.TranDetails[rowIndex].PromotionName = (model.TranDetails[rowIndex].PromotionName + " | Manually");
+                            }
+                        }
+                        //else
+                        //{
+                        //    if (!string.IsNullOrEmpty(model.TranReturnDetails[rowIndex].PromotionType) && model.TranReturnDetails[rowIndex].PromotionType.Trim().Length == 4) { model.TranReturnDetails[rowIndex].PromotionType = (model.TranReturnDetails[rowIndex].PromotionType.Trim() + "M"); }
+                        //}
+                        break;
                     default:
                         break;
                 }
@@ -711,6 +741,12 @@ namespace SSRepository.Repository.Transaction
                 {
                     item.TradeDisc = 0;
                     item.TradeDiscAmt = discount;
+                    if (!string.IsNullOrEmpty(item.PromotionType) && item.PromotionType.Trim().Length == 4)
+                    {
+                        item.PromotionType = (item.PromotionType.Trim() + "M");
+                        item.PromotionName = (item.PromotionName + " | Manually");
+
+                    }
                 }
                 CalculateExe(model);
             }
@@ -720,6 +756,11 @@ namespace SSRepository.Repository.Transaction
                 {
                     item.TradeDisc = discount;
                     item.TradeDiscAmt = 0;
+                    if (!string.IsNullOrEmpty(item.PromotionType) && item.PromotionType.Trim().Length == 4)
+                    {
+                        item.PromotionType = (item.PromotionType.Trim() + "M");
+                        item.PromotionName = (item.PromotionName + " | Manually");
+                    }
                 }
                 CalculateExe(model);
             }
@@ -728,6 +769,11 @@ namespace SSRepository.Repository.Transaction
                 foreach (var item in model.TranDetails.Where(x => x.ModeForm != 2 && x.FkProductId > 0))
                 {
                     item.Rate = discount;
+                    if (!string.IsNullOrEmpty(item.PromotionType) && item.PromotionType.Trim().Length == 4)
+                    {
+                        item.PromotionType = (item.PromotionType.Trim() + "M");
+                        item.PromotionName = (item.PromotionName + " | Manually");
+                    }
                 }
                 CalculateExe(model);
             }
@@ -974,7 +1020,7 @@ namespace SSRepository.Repository.Transaction
 
         public object ApplyPromotion(TransactionModel objmodel)
         {
-            if (objmodel.ExtProperties.TranType == "S" && objmodel.IsTranChange && objmodel.TranAlias != "LINV" && objmodel.TranAlias != "LORD")
+            if (objmodel.PkId <= 0 && objmodel.ExtProperties.TranType == "S" && objmodel.IsTranChange && objmodel.TranAlias != "LINV" && objmodel.TranAlias != "LORD")
             {
                 setPromotion(objmodel);
 
@@ -990,7 +1036,7 @@ namespace SSRepository.Repository.Transaction
         public void removePromotion(TransactionModel model)
         {
             model.TranDetails.Where(x => x.LinkSrNo > 0 || x.PromotionType == "IVFP").ToList().ForEach(x => x.ModeForm = 2);
-            model.TranDetails.Where(x => x.PromotionType == "PFPT" || x.PromotionType == "CFPT" || x.PromotionType == "BFPT" || x.PromotionType == "CFRT" || x.PromotionType == "PFRT" || x.PromotionType == "CFQT" || x.PromotionType == "PFQT").ToList().ForEach(x => { x.PromotionType = "";x.FkPromotionId = null;x.PromotionName = ""; });
+            model.TranDetails.Where(x => x.PromotionType == "PFPT" || x.PromotionType == "CFPT" || x.PromotionType == "BFPT" || x.PromotionType == "CFRT" || x.PromotionType == "PFRT" || x.PromotionType == "CFQT" || x.PromotionType == "PFQT").ToList().ForEach(x => { x.PromotionType = ""; x.FkPromotionId = null; x.PromotionName = ""; });
             model.TranDetails.Where(x => x.PromotionType == "PFQT" || x.PromotionType == "CFQT" || x.PromotionType == "BFQT").ToList().ForEach(x => { x.FreeQty = 0; x.PromotionType = ""; x.FkPromotionId = null; x.PromotionName = ""; });
             model.TranDetails.Where(x => x.PromotionType == "PTDT" || x.PromotionType == "CTDT" || x.PromotionType == "BTDT" || x.PromotionType == "XOXT" || x.PromotionType == "CFRT" || x.PromotionType == "PFRT" || x.PromotionType == "CFQT" || x.PromotionType == "PFQT").ToList().ForEach(x => { x.TradeDisc = 0; x.TradeDiscAmt = 0; x.PromotionType = ""; x.FkPromotionId = null; x.PromotionName = ""; });
             model.TranDetails.Where(x => !string.IsNullOrEmpty(x.PromotionType)).ToList().ForEach(x => { x.PromotionType = ""; x.FkPromotionId = null; x.PromotionName = ""; });
@@ -1090,7 +1136,7 @@ namespace SSRepository.Repository.Transaction
                                             if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PFPT"; }
                                             else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CFPT"; }
                                             else if (itemPromo.PromotionApplyOn == "Brand") { item.PromotionType = "BFPT"; }
-                                          
+
                                             item.FkPromotionId = itemPromo.PkPromotionId;
                                             item.PromotionName = itemPromo.PromotionName;
                                             //break;
@@ -1103,7 +1149,7 @@ namespace SSRepository.Repository.Transaction
                                         if (itemPromo.PromotionApplyOn == "Product") { item.PromotionType = "PFQT"; }
                                         else if (itemPromo.PromotionApplyOn == "Category") { item.PromotionType = "CFQT"; }
                                         else if (itemPromo.PromotionApplyOn == "Brand") { item.PromotionType = "BFQT"; }
-                                       
+
                                         item.FkPromotionId = itemPromo.PkPromotionId;
                                         item.PromotionName = itemPromo.PromotionName;
 
@@ -2350,7 +2396,7 @@ namespace SSRepository.Repository.Transaction
                     new ColumnStructure{ pk_Id=index++,  Orderby =Orderby++, Heading ="Net Amount",   Fields="NetAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
                     new ColumnStructure{ pk_Id=index++,  Orderby =Orderby++, Heading ="Barcode",      Fields="Barcode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
                     new ColumnStructure{ pk_Id=index++,  Orderby =Orderby++, Heading ="Del",          Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" },
-              
+
                 };
             }
             else if (TranType == "Walkingdtl")

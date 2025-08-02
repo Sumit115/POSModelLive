@@ -44,7 +44,7 @@ $(document).ready(function () {
         var $ul = $('#ul_Category li:first');
         BindCategoryProduct_Touch($($ul).find('a'));
     }
-    if (tranModel.ExtProperties.TranType == "S" && TranAlias != "SGRN") {
+    if (tranModel.PkId<=0 && tranModel.ExtProperties.TranType == "S" && TranAlias != "SGRN") {
         $("#btnApplyPromotion").show();
     } else { $("#btnApplyPromotion").hide(); }
     $(document.body).keyup(function (e) {
@@ -1609,6 +1609,8 @@ function setGridRowData(args, data, rowIndex, fieldName, IsReturn) {
         args.item["FKInvoiceSrID"] = data[rowIndex].FKInvoiceSrID;
         args.item["FKLocationID"] = data[rowIndex].FKLocationID;
         args.item["ReturnTypeID"] = data[rowIndex].ReturnTypeID;
+        args.item["PromotionType"] = data[rowIndex].PromotionType;
+        args.item["PromotionName"] = data[rowIndex].PromotionName;
         // args.item["Barcode"] = "Barcode";//data[rowIndex].Barcode;
         args.item["Delete"] = 'Delete';
 
