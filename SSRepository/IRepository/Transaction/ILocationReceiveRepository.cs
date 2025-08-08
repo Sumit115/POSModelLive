@@ -5,9 +5,9 @@ using System.Data;
 
 namespace SSRepository.IRepository.Transaction
 {
-    public interface ILocationReceiveRepository : ISalesInvoiceRepository
+    public interface ILocationReceiveRepository : ITranBaseRepository
     {
-        //List<ColumnStructure> ColumnList(string GridName = "");
+       List<ColumnStructure> ColumnList(string GridName = "");
         //void UpdateTrnSatus(long PkId, long FKSeriesId, string TrnStatus); 
         //object FileUpload(TransactionModel model, DataTable dt);
     }

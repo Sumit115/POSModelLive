@@ -18,5 +18,7 @@ namespace SSRepository.Repository.Transaction
             //SPById = "usp_LocationTransferRequestById";
         }
          
+
+
     }
 }

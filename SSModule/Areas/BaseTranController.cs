@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Presentation;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using iTextSharp.text;
+using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -77,11 +78,25 @@ namespace SSAdmin.Areas
         [RequestFormLimits(ValueCountLimit = int.MaxValue)]
         public JsonResult ColumnChange(TransactionModel model, int rowIndex, string fieldName, bool IsReturn)
         {
-            return Json(new
+            try
             {
-                status = "success",
-                data = _repository.ColumnChange(model, rowIndex, fieldName, IsReturn)
-            });
+                return Json(new
+                {
+                    status = "success",
+                    data = _repository.ColumnChange(model, rowIndex, fieldName, IsReturn)
+                });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = "error",
+                    msg = ex.Message,
+                    data =model,
+                });
+            }
+           
 
         }
         public JsonResult VoucherColumnChange(TransactionModel model, int rowIndex, string fieldName)

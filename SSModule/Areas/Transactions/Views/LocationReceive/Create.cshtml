@@ -1,0 +1,65 @@
+﻿@model SSRepository.Models.TransactionModel
+
+@{
+    ViewData["Title"] = "Location Receive Invoice";
+    ViewData["bdClass"] = "Salepage Tran";
+}
+<div style="display: flex;justify-content: space-between;overflow: hidden;">
+    <div class="Tran-page-ui">
+        <form id="TranForm" class="form">
+            <div class="row trn-header">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>From</label>
+                                <input id="FkPartyId" name="FkPartyId" type="hidden" value="@Model.FkPartyId" autocomplete="off">
+                                <input id="drpFkPartyId" name="drpFkPartyId" class="form-control ui-custom-DropDown-input valid"  type="text" value="@Model.LocationName" readonly="readonly" >
+                            </div>
+
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label">Series </label>
+                                <input id="FkSeriesId" name="FkSeriesId" type="hidden" value="@Model.FKSeriesId" autocomplete="off">
+                                <input id="drpFkSeriesId" name="drpFkSeriesId" class="form-control ui-custom-DropDown-input valid" type="text" value="@Model.SeriesName" readonly="readonly">
+
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label">*Invoice No</label>
+                                <input asp-for="EntryNo" class="form-control" readonly="readonly" />
+                                <span asp-validation-for="EntryNo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label">Entry Date</label>
+                                @*   @Html.TextBoxFor(m => m.EntryDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" })
+                                *@
+                                <input type="Date" asp-for="EntryDate" class="form-control trn" readonly="readonly" />
+                                <span asp-validation-for="EntryDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <partial name="~/Views/Shared/Transactions/_tranGrid.cshtml" />
+            <partial name="~/Views/Shared/Transactions/_tranFooter.cshtml" />
+        </form>
+    </div>
+    <partial name="~/Views/Shared/Transactions/_tranRight.cshtml" />
+</div>
+
+<input type="hidden" id="hdControllerName" value="LocationReceive" />
+<input type="hidden" id="hdModeFormForEdit" value="@(ViewBag.ModeFormForEdit!=null?ViewBag.ModeFormForEdit:"1")" />
+<partial name="~/Views/Shared/Transactions/_tranInfo.cshtml" />
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/js/transaction/transaction.js"></script>
+}

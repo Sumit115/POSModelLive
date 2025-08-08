@@ -36,7 +36,16 @@ $(document).ready(function () {
             }
         }
         else if (tranModel.TrnStatus.trim() == 'I') { $("#btnServerSave").hide(); $("#btnOpen").parent().hide(); }
-    } else { $("#btnClose,#btnOpen").parent().hide(); }
+    }
+    if (TranAlias == "LINV" && tranModel.PkId > 0) {
+        $('.trn-barcode').hide();
+        if (tranModel.TrnStatus.trim() == 'P' ) {
+            $("#btnServerSave").show();
+            $("#btnServerSave").text('Receive');
+        }
+        else   { $("#btnServerSave").hide();  }
+    }
+    else { $("#btnClose,#btnOpen").parent().hide(); }
 
     if (ControllerName == 'SalesInvoiceTouch') {
         $("#btnServerBack").attr('href', 'javascript:void(0)')
@@ -148,8 +157,11 @@ function Load() {
     var PkId = $("#PkId").val();
     tranModel = JSON.parse($("#hdData").val());
     TranAlias = tranModel.ExtProperties.TranAlias;
-    GrdName = (tranModel.ExtProperties.DocumentType == "C" && tranModel.ExtProperties.TranAlias == "SINV") ? "Walkingdtl" : "dtl";
-
+    if (tranModel.ExtProperties.DocumentType == "C" && tranModel.ExtProperties.TranAlias == "SINV") { GrdName = "Walkingdtl"; }
+    if (ControllerName =="LocationReceive") { GrdName = "LocRecdtl"; }
+    else {
+        GrdName =    "dtl";
+    }
     if (PkId > 0 || tranModel.TranDetails.length > 0) {
         console.clear();
         //console.log(tranModel);
@@ -1441,9 +1453,9 @@ function ColumnChange(args, rowIndex, fieldName, IsReturn) {
             data: { model: tranModel, rowIndex: rowIndex, fieldName: fieldName, IsReturn: IsReturn },
             datatype: "json",
             success: function (res) {
-
+                tranModel = res.data; 
                 if (res.status == "success") {
-                    tranModel = res.data;
+
                     if (!IsReturn) {
                         setFooterData(tranModel);
                         setPaymentDetail(tranModel);
@@ -1457,9 +1469,10 @@ function ColumnChange(args, rowIndex, fieldName, IsReturn) {
 
                     // }
                 }
-                else
+                else {
+                    cg_ClearRow(args);
                     alert(res.msg);
-
+                }
                 $(".loader").hide();
             }
         });

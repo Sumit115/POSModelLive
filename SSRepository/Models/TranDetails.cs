@@ -40,6 +40,7 @@ namespace SSRepository.Models
 
         public decimal Rate { get; set; }//=Prodct Price according Series Selection
         public string? RateUnit { get; set; }//=''
+        public decimal CurStock { get; set; }//txt
         public decimal Qty { get; set; }//txt
         public decimal FreeQty { get; set; }//txt No Calculation Only stock Out
         public decimal SchemeDisc { get; set; }//=0

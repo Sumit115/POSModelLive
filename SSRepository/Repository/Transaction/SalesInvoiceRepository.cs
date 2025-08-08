@@ -123,6 +123,7 @@ namespace SSRepository.Repository.Transaction
                  new ColumnStructure{ pk_Id=index++,  Orderby =Orderby++, Heading ="Net Amt", Fields="NetAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=index++,  Orderby =Orderby++, Heading ="Sales Person", Fields="SalesPersonName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
                  new ColumnStructure{ pk_Id=index++,  Orderby =Orderby++, Heading ="ReferBy Name", Fields="ReferByName",Width=10,IsActive=0, SearchType=1,Sortable=1,CtrlType="~" },
+                 new ColumnStructure{ pk_Id=index++,  Orderby =Orderby++,  Heading ="Status", Fields="TranStatus",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
 
             };
             }

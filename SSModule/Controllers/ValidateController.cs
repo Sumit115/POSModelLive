@@ -43,7 +43,9 @@ namespace SSAdmin.Controllers
                     HttpContext.Session.SetString("IsAdmin", _repository.ObjSysDefault.IsAdmin.ToString());
                     HttpContext.Session.SetString("CompanyImage1", _repository.ObjSysDefault.CompanyImage1??"");
 
-                    Response.Redirect("/Dashboard");
+                    // Response.Redirect("/Dashboard");
+                    ViewBag.IsCheckDone = 1;
+                    return View();
                 }
                 else
                 {

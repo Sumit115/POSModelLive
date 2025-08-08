@@ -692,7 +692,7 @@ namespace SSRepository.Repository.Transaction
                 SetPaymentDetail(model);
                 model.IsTranChange = true;
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { throw ex; }
             return model;
         }
 
@@ -807,6 +807,7 @@ namespace SSRepository.Repository.Transaction
                 cmd.Parameters.AddWithValue("@ProductName", ProductName);
                 cmd.Parameters.AddWithValue("@FKOrderID", FKOrderID);
                 cmd.Parameters.AddWithValue("@FKOrderSrID", FKOrderSrID);
+                cmd.Parameters.AddWithValue("@FKLocationID", FKLocationID);
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(dt);
                 con.Close();
@@ -835,36 +836,43 @@ namespace SSRepository.Repository.Transaction
         {
             if (dtProduct.Rows.Count > 0)
             {
-                detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
-                detail.Color = dtProduct.Rows[0]["Color"].ToString();
-                detail.Batch = dtProduct.Rows[0]["Batch"].ToString();
+               var CurStock = Convert.ToDecimal(dtProduct.Rows[0]["CurStock"].ToString());
+                //if (CurStock > 0 || model.ExtProperties.StockFlag != "O")
+                //{
+                    detail.CurStock = CurStock;
+                    detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+                    detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
+                    detail.Color = dtProduct.Rows[0]["Color"].ToString();
+                    detail.Batch = dtProduct.Rows[0]["Batch"].ToString();
 
-                detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
-                detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
-                detail.Product = dtProduct.Rows[0]["Product"].ToString();
-                detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
+                    detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
+                    detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
+                    detail.Product = dtProduct.Rows[0]["Product"].ToString();
+                    detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
 
-                detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
-                detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
-                detail.TradeRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString());
-                detail.DistributionRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString());
+                    detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
+                    detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
+                    detail.TradeRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString());
+                    detail.DistributionRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString());
 
-                detail.Rate = Convert.ToDecimal(dtProduct.Rows[0][model.BillingRate].ToString());
-                detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
-                detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
-                detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
-                if (model.TranAlias == "PORD" || model.TranAlias == "PINV" || (model.TranAlias == "PJ_R" && detail.TranType == "I"))
-                {
-                    detail.FkLotId = 0;
-                }
+                    detail.Rate = Convert.ToDecimal(dtProduct.Rows[0][model.BillingRate].ToString());
+                    detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
+                    detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
+                    detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
+                    if (model.TranAlias == "PORD" || model.TranAlias == "PINV" || (model.TranAlias == "PJ_R" && detail.TranType == "I"))
+                    {
+                        detail.FkLotId = 0;
+                    }
 
-                if (model.FkPartyId > 0 && model.ExtProperties.TranType == "S" && model.TranAlias != "LORD" && model.TranAlias != "LINV")
-                {
-                    var _cust = new CustomerRepository(__dbContext, _contextAccessor).GetSingleRecord(model.FkPartyId);
-                    detail.TradeDisc = _cust.Disc;
-                }
-
+                    if (model.FkPartyId > 0 && model.ExtProperties.TranType == "S" && model.TranAlias != "LORD" && model.TranAlias != "LINV")
+                    {
+                        var _cust = new CustomerRepository(__dbContext, _contextAccessor).GetSingleRecord(model.FkPartyId);
+                        detail.TradeDisc = _cust.Disc;
+                    }
+                //}
+                //else {
+                //    model.TranDetails = model.TranDetails != null ?model.TranDetails.ToList().Where(x=>x.SrNo!=detail.SrNo).ToList(): model.TranDetails;
+                //    throw new Exception("Stock Not Available"); }
             }
             else
             {
@@ -2421,6 +2429,30 @@ namespace SSRepository.Repository.Transaction
                     new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="Barcode",      Fields="Barcode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
                     new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="PromotionName",      Fields="PromotionName",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
                     new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="Del",          Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" },
+
+                };
+            }
+            else if (TranType == "LocRecdtl") {
+                list = new List<ColumnStructure>
+                {
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="ArticalNo",    Fields="Product",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Size",         Fields="Batch",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Color",        Fields="Color",               Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="MRP",          Fields="MRP",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Rate",         Fields="Rate",                Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="QTY",          Fields="Qty",                 Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Free Qty",     Fields="FreeQty",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Due Qty",         Fields="DueQty",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Disc %",       Fields="TradeDisc",           Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Disc Amt",     Fields="TradeDiscAmt",        Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="Disc Type",    Fields="TradeDiscType",       Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="Gross Amt",    Fields="GrossAmt",            Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="GST Rate",     Fields="GstRate",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="GST Amount",   Fields="GstAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="Net Amount",   Fields="NetAmt",              Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="Barcode",      Fields="Barcode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="PromotionName",      Fields="PromotionName",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    //new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++, Heading ="Del",          Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" },
 
                 };
             }

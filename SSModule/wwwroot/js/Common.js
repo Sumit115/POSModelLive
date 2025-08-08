@@ -9,8 +9,30 @@
 $(document).ready(function () {
     Handler.nvc = Handler_NameValueCollection();
     Handler.currentUrl = Handler.ajaxURL();
-    $('form,input').attr('autocomplete', 'off');
+    $('form,input').attr('autocomplete', 'off'); 
+    setInterval(function () {  
+        var token = Handler_getCookie("checkIdentity");
+        if (token) {
+            //console.log("Cookie exists:", token);
+        } else {
+            window.location.href = "/Auth/Logout";
+        }
+    }, 5000);
 });
+
+function Handler_getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i].trim();
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length);
+    }
+    return null;
+}
+
+function Handler_deleteCookie(name) {
+    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
 function Handler_showWait(msg) {
     msg = msg == undefined ? "Please wait ..." : msg;
     if ($(".loader").length == 0) {

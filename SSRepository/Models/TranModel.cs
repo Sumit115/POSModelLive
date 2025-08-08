@@ -46,6 +46,7 @@ namespace SSRepository.Models
         public long FkPartyId { get; set; }
 
         public string PartyName { get; set; }
+        public string LocationName { get; set; }
 
         public string PartyMobile { get; set; }
 
