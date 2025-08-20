@@ -12,6 +12,8 @@ using SSRepository.Repository.Master;
 using System.Xml.Linq;
 using System.Runtime.ConstrainedExecution;
 using System;
+using System.Diagnostics;
+using SSRepository.IRepository;
 
 namespace SSRepository.Repository.Transaction
 {
@@ -30,8 +32,8 @@ namespace SSRepository.Repository.Transaction
             TransactionModel model = (TransactionModel)objmodel;
             string error = "";
 
-           
-             error = isAlreadyExist(model, "");
+
+            error = isAlreadyExist(model, "");
             return error;
 
         }
@@ -50,10 +52,10 @@ namespace SSRepository.Repository.Transaction
                 }
                 else
                 {
-                     var _exists = __dbContext.TblProductQTYBarcode.ToList().Where(x => model.UniqIdDetails.Any(y => y.Barcode == x.Barcode)).ToList();
+                    var _exists = __dbContext.TblProductQTYBarcode.ToList().Where(x => model.UniqIdDetails.Any(y => y.Barcode == x.Barcode)).ToList();
                     if (_exists.Count > 0)
-                    { error = "Barcode Already exists :"+ string.Join(",", _exists.Select(x => x.Barcode).ToList()); }
-                
+                    { error = "Barcode Already exists :" + string.Join(",", _exists.Select(x => x.Barcode).ToList()); }
+
                 }
             }
 
@@ -100,6 +102,153 @@ namespace SSRepository.Repository.Transaction
         {
             var obj = __dbContext.TblPurchaseInvoicetrn.Where(x => x.EntryNo == EntryNo && x.FKSeriesId == FKSeriesId).FirstOrDefault();
             return obj != null ? obj.PkId : 0;
+        }
+
+        public List<TranDetails> Get_ProductInfo_FromFile(string filePath, List<string> validationErrors)
+        {
+            List<TranDetails> tranList = new List<TranDetails>();
+
+            DataTable dt = new DataTable();
+
+            using (StreamReader sr = new StreamReader(filePath))
+            {
+                string[] headers = sr.ReadLine().Split(',');
+                foreach (string header in headers)
+                {
+                    dt.Columns.Add(header.Trim());
+                }
+                while (!sr.EndOfStream)
+                {
+                    string[] rows = sr.ReadLine().Split(',');
+                    DataRow dr = dt.NewRow();
+                    for (int i = 0; i < headers.Length; i++)
+                    {
+                        dr[i] = rows[i].Trim();
+                    }
+                    dt.Rows.Add(dr);
+
+                }
+                sr.Close();
+            }
+
+            if (dt.Rows.Count > 0)
+            {
+                var cs = GetSysDefaultsByKey("CodingScheme");
+                if (!string.IsNullOrEmpty(cs))
+                {
+                    string error = "";
+                    int srNo = 0;
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        srNo++;
+
+                        if (!int.TryParse(dr["Qty"]?.ToString().Trim(), out int qty))
+                            error += $" Qty is zero.";
+
+                        if (!decimal.TryParse(dr["MRP"]?.ToString().Trim(), out decimal mrp))
+                            error += $" MRP is zero.";
+
+
+                        if (string.IsNullOrWhiteSpace(dr["Artical"]?.ToString()))
+                        {
+                            error += $" Artical is blank.";
+                        }
+                        else if (!IsAlphanumeric(dr["Barcode"]?.ToString()))
+                        {
+                            error += $"Barcode Must Be Alphanumeric. ";
+                        }
+                        else if (cs == "Unique" && tranList.Where(x => x.Barcode?.ToString().ToLower() == dr["Barcode"]?.ToString().ToLower().Trim()).Count() > 0)
+                        {
+                            error += $" Duplicate Barcode. ";
+                        }
+
+                        if (error != "")
+                            validationErrors.Add($"Row {srNo} {error}");
+                        else
+                        {
+                            tranList.Add(new TranDetails
+                            {
+                                SrNo = srNo,
+                                Barcode = dr["Barcode"]?.ToString().Trim(),
+                                Product = dr["Artical"]?.ToString(),
+                            });
+                        }
+                    }
+                }
+                else
+                    throw new Exception("Please Update CodingScheme From System Default");
+
+
+                if (validationErrors.Count == 0)
+                {
+                    tranList = new List<TranDetails>();
+                    int srNo = 0;
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        srNo++;
+                        int qty = Convert.ToInt32(dr["Qty"].ToString());
+                        decimal mrp = Convert.ToDecimal(dr["MRP"].ToString());
+                        string Product = dr["Artical"]?.ToString().Trim();
+
+                        var item = new TranDetails
+                        {
+                            SrNo = srNo,
+                            Barcode = dr["Barcode"]?.ToString().Trim(),
+                            Product = Product,
+                            ProductDisplay = Product,
+                            Batch = dr["Size"]?.ToString().Trim(),
+                            Color = dr["Color"]?.ToString().Trim(),
+                            Qty = qty,
+                            MRP = mrp,
+                            SaleRate = mrp,
+                            TradeRate = mrp,
+                            DistributionRate = mrp,
+                            FkLotId = 0
+                        };
+                        var _exists = tranList.Where(x => x.Product == Product && x.FkProductId > 0).FirstOrDefault();
+                        if (_exists != null)
+                        {
+                            item.FkProductId = _exists.FkProductId;
+                            item.FkBrandId = _exists.FkBrandId;
+                            item.FKProdCatgId = _exists.FKProdCatgId;
+                            item.SubCategoryName = _exists.SubCategoryName;
+                            item.Product = item.ProductDisplay = _exists.Product;
+                            item.CodingScheme = _exists.CodingScheme;
+                        }
+                        else
+                        {
+                            DataTable dtProduct = GetProduct("", 0, 0, 0, dr["Artical"]?.ToString(), false, "");
+                            if (dtProduct.Rows.Count > 0)
+                            {
+
+                                item.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+                                item.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
+                                item.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
+                                item.SubCategoryName = dtProduct.Rows[0]["CategoryName"].ToString();
+                                item.Product = dtProduct.Rows[0]["Product"].ToString();
+                                item.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
+                            }
+                            else
+                            {
+                                var Category = __dbContext.TblCategoryMas.Where(x => x.CategoryName == dr["SubSection"].ToString()).SingleOrDefault();
+                                if (Category != null)
+                                {
+                                    item.FKProdCatgId = Category.PkCategoryId;
+                                    item.SubCategoryName = Category.CategoryName;
+                                }
+                                else
+                                    validationErrors.Add($"Row {srNo} Category : {dr["SubSection"].ToString()}");
+
+                            }
+                        }
+                        tranList.Add(item);
+
+                    }
+                }
+            }
+            else
+                throw new Exception("Invalid Data");
+            return tranList;
         }
 
         public List<ColumnStructure> ColumnList(string GridName = "")

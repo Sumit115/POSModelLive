@@ -47,7 +47,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
         {
 
             DataTable dtList = _repository.GetList(FDate, TDate, TranAlias, DocumentType, LocationFilter);
-            var data = _gridLayoutRepository.GetSingleRecord( FKFormID, "", ColumnList());
+            var data = _gridLayoutRepository.GetSingleRecord(FKFormID, "", ColumnList());
             var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
             DataTable _gridColumn = Handler.ToDataTable(model);
 
@@ -72,7 +72,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
         public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();
-             try
+            try
             {
                 if (id != 0 && pageview.ToLower() == "log")
                 {
@@ -142,6 +142,69 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 res.msg = ex.Message;
             }
             return Json(res);
+
+        }
+
+        public JsonResult ImportDatafile(IFormFile file)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                    throw new Exception("No file uploaded.");
+
+                string path = "";
+                path = Path.Combine("wwwroot", "ExcelFile");
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                string rn = new Random().Next(0, 9999).ToString("D6");
+                string filename = "Purchase_" + rn + "_" + DateTime.Now.Ticks + file.FileName;
+                string filePath = Path.Combine(path, filename);
+                using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyToAsync(fileStream);
+                    fileStream.Close();
+                }
+                List<string> validationErrors=new List<string> ();
+                var data = _repository.Get_ProductInfo_FromFile(filePath, validationErrors);
+                if (validationErrors.Count == 0)
+                {
+                    var _notfound = string.Join(",", data.Where(x => x.FkProductId <= 0).ToList().Select(x => x.ProductDisplay).ToList());
+                    return Json(new
+                    {
+                        status = "success",
+                        msg = !string.IsNullOrEmpty(_notfound) ? "Article Not found:" + _notfound : "",
+                        data
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        status = "error",
+                        msg = string.Join(",", validationErrors.ToList()),
+                    });
+                }
+            } 
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = "error",
+                    msg = ex.Message, 
+                });
+            }
+
+        }
+
+        [HttpPost]
+        public JsonResult BindImportData(TransactionModel model, List<TranDetails> details)
+        {
+            return Json(new
+            {
+                status = "success",
+                data = _repository.BindImportData(model, details)
+            });
 
         }
     }
