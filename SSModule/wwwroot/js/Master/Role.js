@@ -12,7 +12,7 @@ $(document).ready(function () {
      
 }) 
 function Menucolaps(ctrl, id) {
-    debugger;
+    
     var flag = $(ctrl).find("i").hasClass("fa-angle-right");
     if (flag) {
         $(ctrl).find('label').html('<i class="right fas fa-angle-down"> </i>');

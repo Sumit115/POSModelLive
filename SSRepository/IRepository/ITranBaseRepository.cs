@@ -48,7 +48,7 @@ namespace SSRepository.IRepository
 
         object Get_CategorySizeList_ByProduct(long PKProductId, string search = "");
         long SaveWalkingCustomer(WalkingCustomerModel model);
-        WalkingCustomerModel GeWalkingCustomer_byMobile(string Mobile);
+        object GeWalkingCustomer_byMobile(string Mobile);
 
         long GetIdbyEntryNo(long EntryNo, long FKSeriesId);
         object BarcodeList(TransactionModel model, int rowIndex, bool IsReturn);

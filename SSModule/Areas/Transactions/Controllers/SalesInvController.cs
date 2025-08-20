@@ -101,7 +101,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
                     //        _md.MarriageDate = model.PartyMarriageDate;
                     //        _md.FKCreatedByID = _md.FKUserId = LoginId;
                     //        _md.FkLocationId = model.FKLocationID;
-                    //        model.FkPartyId = _repository.SaveWalkingCustomer(_md);
+                    //        modhttps://localhost:7264/Transactions/WalkingSalesInvoice/Listel.FkPartyId = _repository.SaveWalkingCustomer(_md);
                     //    }
                     //    else
                     //        model.FkPartyId = _checkMobile.PkId;
@@ -126,6 +126,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
             {
                 res.status = "warr";
                 res.msg = ex.Message;
+                res.data = model;
             }
             return Json(res);
 

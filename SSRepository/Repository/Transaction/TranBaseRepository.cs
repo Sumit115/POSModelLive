@@ -365,15 +365,19 @@ namespace SSRepository.Repository.Transaction
             {
                 if (model.Credit || model.Cheque)
                 {
-                    model.VoucherDetails.Add(new VoucherDetails()
+                    if (model.FKPostAccID > 0)
                     {
-                        FKSeriesId = model.FKSeriesId,
-                        SrNo = 1,
-                        FkAccountId = (int)model.FKPostAccID,
-                        FKLocationID = model.FKLocationID,
-                        DebitAmt = ((decimal)model.CreditAmt + (decimal)model.ChequeAmt),
-                        VoucherAmt = -((decimal)model.CreditAmt + (decimal)model.ChequeAmt),
-                    });
+                        model.VoucherDetails.Add(new VoucherDetails()
+                        {
+                            FKSeriesId = model.FKSeriesId,
+                            SrNo = 1,
+                            FkAccountId = (int)model.FKPostAccID,
+                            FKLocationID = model.FKLocationID,
+                            DebitAmt = ((decimal)model.CreditAmt + (decimal)model.ChequeAmt),
+                            VoucherAmt = -((decimal)model.CreditAmt + (decimal)model.ChequeAmt),
+                        });
+                    }
+                    else throw new Exception("Select Posting A/c");
                 }
 
                 if (model.Cash)
@@ -619,12 +623,17 @@ namespace SSRepository.Repository.Transaction
                 switch (fieldName)
                 {
                     case "Product":
-                        if ((IsReturn ? model.TranReturnDetails[rowIndex].FkId : model.TranDetails[rowIndex].FkId) == 0)
+                        if ( IsReturn && model.TranReturnDetails[rowIndex].FkId  == 0)
                         {
-                            TranDetailDefault(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]));
-                            GetSetProduct(model, (IsReturn ? model.TranReturnDetails[rowIndex] : model.TranDetails[rowIndex]), "", 0, model.FKOrderID, model.FKOrderSrID);
+                            TranDetailDefault(model,  model.TranReturnDetails[rowIndex]);
+                            GetSetProductReturn(model, model.TranReturnDetails[rowIndex] ,"");
                         }
+                        else if (!IsReturn &&  model.TranDetails[rowIndex].FkId == 0)
+                        {
+                            TranDetailDefault(model,  model.TranDetails[rowIndex]);
+                            GetSetProduct(model,  model.TranDetails[rowIndex], "", 0, model.FKOrderID, model.FKOrderSrID);
 
+                        }
                         break;
                     case "Batch":
                     case "Color":
@@ -791,7 +800,27 @@ namespace SSRepository.Repository.Transaction
 
             SetProduct(model, detail, dtProduct);
         }
+        public void GetSetProductReturn(TransactionModel model, TranDetails detail, string Barcode = "")
+        {
 
+            DataTable dtProduct = GetProductReturn(Barcode, detail.FKLocationID, detail.FkProductId, model.FkPartyId, model.FKInvoiceID, model.FKInvoiceSrID);
+
+            SetProduct(model, detail, dtProduct);
+
+
+            detail.FKInvoiceID = Convert.ToInt64(dtProduct.Rows[0]["FKInvoiceID"].ToString());
+            detail.FKInvoiceSrID = Convert.ToInt64(dtProduct.Rows[0]["FKSeriesId"].ToString());
+            detail.InvoiceSrNo = Convert.ToInt64(dtProduct.Rows[0]["InvoiceSrNo"].ToString());
+            detail.FKInvoiceID_Text = dtProduct.Rows[0]["FKInvoiceID_Text"].ToString();
+            Barcode = dtProduct.Rows[0]["Barcode"].ToString();
+
+            CalculateExe(model, detail);
+
+            detail.Barcode = "Barcode";
+            detail.BarcodeTest = Barcode;
+            // Check Product UNique/Lot/PRoduct
+            model.UniqIdReturnDetails.Add(new BarcodeUniqVM() { SrNo = detail.SrNo, Barcode = Barcode });
+        }
         public DataTable GetProduct(string Barcode, Int64 FKLocationID, long ProductId, long LotId, string ProductName, bool ItemByBarcode, String TranAlias, Int64 FKPartyID = 0, long? FKOrderID = 0, long? FKOrderSrID = 0)
         {
 
@@ -814,7 +843,7 @@ namespace SSRepository.Repository.Transaction
             }
             return dt;
         }
-        public DataTable GetProductReturn(string Barcode, Int64 FKLocationID, long ProductId, long LotId, string ProductName, bool ItemByBarcode, String TranAlias, Int64 FKPartyID = 0, long? FKOrderID = 0, long? FKOrderSrID = 0)
+        public DataTable GetProductReturn(string Barcode, Int64 FKLocationID, long ProductId, long FKPartyID, long? FkSalesInvoiceId, long? FKInvoiceSrID)
         {
 
             DataTable dt = new DataTable();
@@ -824,7 +853,10 @@ namespace SSRepository.Repository.Transaction
                 SqlCommand cmd = new SqlCommand("usp_GetProductDetailReturn", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Barcode", Barcode);
+                cmd.Parameters.AddWithValue("@ProductId", ProductId);
                 cmd.Parameters.AddWithValue("@FKPartyID", FKPartyID);
+                cmd.Parameters.AddWithValue("@FkSalesInvoiceId", FkSalesInvoiceId);
+                cmd.Parameters.AddWithValue("@FKInvoiceSrID", FKInvoiceSrID);
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 adp.Fill(dt);
                 con.Close();
@@ -900,7 +932,7 @@ namespace SSRepository.Repository.Transaction
         {
             if (IsReturn)
             {
-                DataTable dtProduct = GetProductReturn(Barcode, model.FKLocationID, 0, 0, "", false, model.TranAlias, model.FkPartyId, model.FKOrderID, model.FKOrderSrID);
+                DataTable dtProduct = GetProductReturn(Barcode, model.FKLocationID,0, model.FkPartyId,   model.FKInvoiceID, model.FKInvoiceSrID);
                 if (dtProduct.Rows.Count > 0)
                 {
                     if (model.FkPartyId <= 0)
@@ -929,7 +961,7 @@ namespace SSRepository.Repository.Transaction
                         var _check = model.UniqIdDetails.ToList().Where(x => x.Barcode == Barcode).FirstOrDefault();
                         if (_check == null)
                         {
-                            model.UniqIdDetails.Add(new BarcodeUniqVM() { SrNo = model.TranReturnDetails[rowIndex].SrNo, Barcode = Barcode });
+                            model.UniqIdReturnDetails.Add(new BarcodeUniqVM() { SrNo = model.TranReturnDetails[rowIndex].SrNo, Barcode = Barcode });
                         }
                     }
                     else
@@ -942,6 +974,7 @@ namespace SSRepository.Repository.Transaction
 
                         detail.FKInvoiceID = Convert.ToInt64(dtProduct.Rows[0]["FKInvoiceID"].ToString());
                         detail.FKInvoiceSrID = Convert.ToInt64(dtProduct.Rows[0]["FKSeriesId"].ToString());
+                        detail.InvoiceSrNo = Convert.ToInt64(dtProduct.Rows[0]["InvoiceSrNo"].ToString());
                         detail.FKInvoiceID_Text = dtProduct.Rows[0]["FKInvoiceID_Text"].ToString();
 
                         CalculateExe(model, detail);
@@ -1513,6 +1546,8 @@ namespace SSRepository.Repository.Transaction
 
         public void SetPaymentDetail(TransactionModel model)
         {
+            
+
             decimal _remAmt = model.NetAmt;
             if (model.CreditCard || model.Cheque || model.Credit || model.Cash)
             {
@@ -1588,6 +1623,22 @@ namespace SSRepository.Repository.Transaction
             }
             else
             {
+                model.CreditCard = false;
+                model.CreditCardAmt = 0;
+                model.CreditCardNo = "";
+                model.CreditCardDate = null;
+                model.FKBankCreditCardID = null;
+                model.Cheque = false;
+                model.ChequeAmt = 0;
+                model.ChequeNo = "";
+                model.ChequeDate = null;
+                model.FKBankChequeID = null;
+                model.Credit = false;
+                model.CreditAmt = 0;
+                //    model.FKPostAccID = null;
+                model.CreditDate = null;
+                model.Cash = false;
+                model.CashAmt = 0;
                 if (!string.IsNullOrEmpty(model.PaymentModeDefault))
                 {
                     if (model.PaymentModeDefault == "Cash")
@@ -2216,23 +2267,35 @@ namespace SSRepository.Repository.Transaction
             //AddImagesAndRemark(obj.PkcountryId, obj.FKCustomerID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
         }
 
-        public WalkingCustomerModel GeWalkingCustomer_byMobile(string Mobile)
+        public object GeWalkingCustomer_byMobile(string Mobile)
         {
 
-            WalkingCustomerModel data = new WalkingCustomerModel();
+            //WalkingCustomerModel data = new WalkingCustomerModel();
 
-            data = (from cou in __dbContext.TblWalkingCustomerMas
-                    where cou.Mobile == Mobile
-                    select (new WalkingCustomerModel
+            //data = (from cou in __dbContext.TblWalkingCustomerMas
+            //        where cou.Mobile == Mobile
+            //        select (new WalkingCustomerModel
+            //        {
+            //            PkId = cou.PkId,
+            //            Name = cou.Name,
+            //            Mobile = cou.Mobile,
+            //            Dob = cou.Dob,
+            //            MarriageDate = cou.MarriageDate,
+            //            Address = cou.Address,
+            //            FKUserID = cou.FKUserID,
+            //            DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+            //        })).FirstOrDefault();
+
+            var        data = (from cou in __dbContext.TblSalesInvoicetrn
+                    where cou.PartyMobile == Mobile
+                    select(new  
                     {
-                        PkId = cou.PkId,
-                        Name = cou.Name,
-                        Mobile = cou.Mobile,
-                        Dob = cou.Dob,
-                        MarriageDate = cou.MarriageDate,
-                        Address = cou.Address,
-                        FKUserID = cou.FKUserID,
-                        DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
+                         cou.FkPartyId,
+                         cou.PartyName,
+                         cou.PartyMobile,
+                         cou.PartyDob,
+                         cou.PartyMarriageDate,
+                         cou.PartyAddress 
                     })).FirstOrDefault();
 
             return data;
@@ -2274,22 +2337,22 @@ namespace SSRepository.Repository.Transaction
             {
                 model.UniqIdReturnDetails = model.UniqIdReturnDetails == null ? new List<BarcodeUniqVM>() : model.UniqIdReturnDetails;// JsonConvert.DeserializeObject<List<BarcodeVM>>(dd);
 
-                var lst = (from cou in __dbContext.TblProductQTYBarcode
-                           where cou.FkLotID == model.TranReturnDetails[rowIndex].FkLotId && cou.FkProductId == model.TranReturnDetails[rowIndex].FkProductId
-                           && ((cou.TranOutId == model.PkId || cou.TranOutId == null)
-                           && (cou.TranOutSeriesId == model.FKSeriesId || cou.TranOutSeriesId == null)
-                           && (cou.TranOutSrNo == model.TranReturnDetails[rowIndex].SrNo || cou.TranOutSrNo == null)
-                           )
-                           select new
-                           {
-                               Barcode = cou.Barcode,
-                               // IsPrint = model.UniqIdReturnDetails.Find(u => u.Barcode == cou.Barcode)?.Name = "CBA";,
-                               IsPrint = false,// (model.UniqIdReturnDetails.ToList().Where(x => x.Barcode == cou.Barcode && x.SrNo == 1).ToList().Count>0) ? true : false,
-                           }).ToList();
+                //var lst = (from cou in __dbContext.TblProductQTYBarcode
+                //           where cou.FkLotID == model.TranReturnDetails[rowIndex].FkLotId && cou.FkProductId == model.TranReturnDetails[rowIndex].FkProductId
+                //           && ((cou.TranOutId == model.FKInvoiceID || cou.TranOutId == null)
+                //           && (cou.TranOutSeriesId == model.FKInvoiceSrID || cou.TranOutSeriesId == null)
+                //      //     && (cou.TranOutSrNo == model.TranReturnDetails[rowIndex].SrNo || cou.TranOutSrNo == null)
+                //           )
+                //           select new
+                //           {
+                //               Barcode = cou.Barcode,
+                //               // IsPrint = model.UniqIdReturnDetails.Find(u => u.Barcode == cou.Barcode)?.Name = "CBA";,
+                //               IsPrint = false,// (model.UniqIdReturnDetails.ToList().Where(x => x.Barcode == cou.Barcode && x.SrNo == 1).ToList().Count>0) ? true : false,
+                //           }).ToList();
                 var data = new List<object>();
-                foreach (var d in lst)
+                foreach (var d in model.UniqIdReturnDetails)
                 {
-                    bool IsPrint = (model.UniqIdReturnDetails.ToList().Where(x => x.Barcode == d.Barcode && x.SrNo == model.TranReturnDetails[rowIndex].SrNo).ToList().Count > 0) ? true : false;
+                    bool IsPrint = true;// (model.UniqIdReturnDetails.ToList().Where(x => x.Barcode == d.Barcode && x.SrNo == model.TranReturnDetails[rowIndex].SrNo).ToList().Count > 0) ? true : false;
                     data.Add(new
                     {
                         Barcode = d.Barcode,

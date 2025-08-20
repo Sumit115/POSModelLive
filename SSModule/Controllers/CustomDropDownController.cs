@@ -5,6 +5,7 @@ using SSRepository.Data;
 using SSRepository.IRepository.Master;
 using SSRepository.Models;
 using SSRepository.Repository.Master;
+using SSRepository.Repository.Transaction;
 using System.Data;
 using System.Text;
 
@@ -139,6 +140,13 @@ namespace SSAdmin.Controllers
         {
             ReferByRepository repository = new ReferByRepository(_dbContext, _contextAccessor);
             return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search);
+        }
+
+        [HttpPost]
+        public object SalesInvoice(int pageSize, int pageNo = 1, string search = "", int FkPartyId = 0)
+        {
+            SalesInvoiceRepository repository = new SalesInvoiceRepository(_dbContext, _contextAccessor);
+            return repository.CustomList((int)Handler.en_CustomFlag.CustomDrop, pageSize, pageNo, search, FkPartyId);
         }
 
         //[HttpPost]

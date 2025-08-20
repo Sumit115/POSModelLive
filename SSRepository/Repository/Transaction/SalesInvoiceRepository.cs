@@ -92,6 +92,33 @@ namespace SSRepository.Repository.Transaction
             var obj = __dbContext.TblSalesInvoicetrn.Where(x => x.EntryNo == EntryNo && x.FKSeriesId == FKSeriesId).FirstOrDefault();
             return obj != null ? obj.PkId : 0;
         }
+        public object CustomList(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", int FkPartyId = 0)
+        {
+            if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
+            {
+                if (search != null) search = search.ToLower();
+                pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
+                return ((from cou in __dbContext.TblSalesInvoicetrn
+                         join series in __dbContext.TblSeriesMas on cou.FKSeriesId equals series.PkSeriesId
+                         where EF.Functions.Like((series.Series + cou.EntryNo.ToString()).Trim().ToLower(), search + "%")
+                         && cou.FkPartyId == FkPartyId && series.TranAlias == "SINV"
+                         orderby cou.EntryNo
+                         select (new
+                         {
+                             cou.PkId,
+                             InvoiceNo = (series.Series + cou.EntryNo.ToString()),
+                             cou.NetAmt,
+                             series.TranAlias,
+                             SeriesId = cou.FKSeriesId,
+                         }
+                       )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public virtual List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>();

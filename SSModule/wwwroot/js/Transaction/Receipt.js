@@ -78,7 +78,7 @@ function setRebateAcc() {
     tranModel.FkRebateAccId = $("#FkRebateAccId").val();
 }
 function setInterestAcc() {
-    debugger;
+    
     tranModel.FkInterestAccId = $("#FkInterestAccId").val();
 }
 function setBankCheque() {

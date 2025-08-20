@@ -182,6 +182,11 @@ namespace SSRepository.Models
         public string? BankPostName { get; set; }
         public decimal? Rebate { get; set; }
         public decimal? Interest { get; set; }
+
+        //For Sales Replacement
+        public Nullable<long> FKInvoiceID { get; set; } 
+        public Nullable<long> FKInvoiceSrID { get; set; }
+        public string? FKInvoiceID_Text { get; set; }
     }
 
     public class ExtPropertie

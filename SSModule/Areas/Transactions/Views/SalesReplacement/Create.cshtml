@@ -91,7 +91,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label class="control-label">*Invoice No</label>
-                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "EntryNo" }, { "Class", "val-cus-drp" }, { "event", "setParty()" },
+                                        @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "EntryNo" }, { "Class", "val-cus-drp" }, { "event", "" },
                                         { "value", Model.EntryNo }, { "text", Model.EntryNo }, { "uri", "" } })
                                         <span asp-validation-for="EntryNo" class="text-danger"></span>
                                     </div>
@@ -105,18 +105,21 @@
                                         <span asp-validation-for="EntryDate" class="text-danger"></span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="control-label">GRNo </label>
-                                        <input asp-for="GRNo" class="form-control trn" />
-                                        <span asp-validation-for="GRNo" class="text-danger"></span>
+                                        <label class="control-label">GR No </label>
+                                          @Html.Partial("_DropDown", new ViewDataDictionary(this.ViewData) { { "ID", "FkSalesInvoiceId" },{"name",""}, { "Class", "val-cus-drp" }, { "event", "" },
+                                        { "value", Model.FKInvoiceID }, { "text", Model.FKInvoiceID_Text}, { "uri", "SalesInvoice" }, { "required", "required" },{ "placeholder", "Select Invoice"}
+                                        ,{ "parentid", "FkPartyId" }, { "ExtraParam", "" }})
+                                        <input asp-for="FKInvoiceSrID" type="hidden" />
+                                        @* <input asp-for="GRNo" class="form-control trn" />
+                                        <span asp-validation-for="GRNo" class="text-danger"></span>*@
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-3" style="display:none">
                                     <div class="form-group">
                                         <label class="control-label">GR Date </label>
                                         <input type="Date" asp-for="GRDate" class="form-control trn" />
-                                        @* @Html.TextBoxFor(m => m.GRDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" }) *@
                                         <span asp-validation-for="GRDate" class="text-danger"></span>
                                     </div>
                                 </div>

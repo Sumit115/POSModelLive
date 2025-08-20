@@ -333,14 +333,17 @@ namespace SSAdmin.Areas
         public object trandtldropList(int pageSize, int pageNo = 1, string search = "", string name = "", string RowParam = "", string ExtraParam = "")
         {
             int value = 0;
-            if (name == "Product" && (RowParam.Contains("undefined") || ExtraParam.Contains("undefined") || string.IsNullOrEmpty(RowParam) || string.IsNullOrEmpty(ExtraParam) || ExtraParam == "0"))
-                return _repository.ProductList(pageSize, pageNo, search);
-            if (name == "Product" && !string.IsNullOrEmpty(RowParam) && !string.IsNullOrEmpty(ExtraParam))
+            //if (name == "Product" && (RowParam.Contains("undefined") || ExtraParam.Contains("undefined") || string.IsNullOrEmpty(RowParam) || string.IsNullOrEmpty(ExtraParam) || ExtraParam == "0"))
+            //    return _repository.ProductList(pageSize, pageNo, search);
+            if (name == "Product")// && !string.IsNullOrEmpty(RowParam) && !string.IsNullOrEmpty(ExtraParam))
             {
-                string[] _r = RowParam.Split("~");
-                string[] _e = ExtraParam.Split("~");
+                // string[] _r = (RowParam ?? "").Split("~");
+                string[] _e = (ExtraParam ?? "").Trim().Split('~');
 
-                return _repository.ProductList(pageSize, pageNo, search, Convert.ToInt64(_e[0]), Convert.ToInt64(_r[0]), null);
+                long FkPartyId = _e.Length > 0 && long.TryParse(_e[0], out var eVal) ? eVal : 0;
+                long FkInvoiceId = _e.Length > 1 && long.TryParse(_e[1], out var rVal) ? rVal : 0;
+
+                return _repository.ProductList(pageSize, pageNo, search, FkPartyId, FkInvoiceId, null);
             }
             else if (name == "Batch" && int.TryParse(RowParam, out value))
                 return _repository.ProductBatchList(pageSize, pageNo, search, Convert.ToInt64(RowParam));

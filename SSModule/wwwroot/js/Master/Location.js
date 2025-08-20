@@ -17,7 +17,7 @@ function AddUser() {
     var UserName = $("#drpFkUserId").val();
     if (UserName != '' && FkUserID > 0) {
         $('#tblUserLoc tr').each(function (ind) {
-            debugger;
+            
            
         //UserLoclnk_0__FkUserID
         if ($("#UserLoclnk_" + ind + "__FkUserID").val() === FkUserID && $("#UserLoclnk_" + ind + "__ModeForm").val() != '2') {

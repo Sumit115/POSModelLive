@@ -1327,7 +1327,7 @@ function C_Grid(n, n2, f) {
                         if (v.Fields == 'Rate' && !_sysDefault.EditPurRate) { v.CtrlType = ''; } 
                     }
                     else {
-                        debugger;
+                        
                         if (v.Fields == 'Batch' && !_sysDefault.EditBatch) { v.CtrlType = ''; }
                         if (v.Fields == 'Color' && !_sysDefault.EditColor) { v.CtrlType = ''; }
                         if (v.Fields == 'TradeDisc' && !_sysDefault.EditDiscount) { v.CtrlType = ''; }

@@ -102,6 +102,12 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 {
                     ViewBag.PageType = "Edit";
                     Trans = _repository.GetSingleRecord(id, FKSeriesID);
+                    if (Trans.TranReturnDetails != null)
+                    {
+                        Trans.FKInvoiceID = Trans.TranReturnDetails.FirstOrDefault().FKInvoiceID;
+                        Trans.FKInvoiceSrID = Trans.TranReturnDetails.FirstOrDefault().FKInvoiceSrID;
+                        Trans.FKInvoiceID_Text = Trans.TranReturnDetails.FirstOrDefault().FKInvoiceID_Text;
+                    }
                 }
                 else
                 {
