@@ -2704,11 +2704,7 @@ namespace SSRepository.Repository.Transaction
         }
 
    
-        public bool IsAlphanumeric(string input)
-        {
-            return Regex.IsMatch(input, @"^[a-zA-Z0-9]+$");
-        }
-        public object BindImportData(TransactionModel model, List<TranDetails> details)
+         public object BindImportData(TransactionModel model, List<TranDetails> details)
         {
             try
             {

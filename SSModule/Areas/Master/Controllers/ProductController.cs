@@ -70,7 +70,7 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             var _d = _repository.GetList(pageSize, pageNo);
             DataTable dtList = Handler.ToDataTable(_d);
-            var data = _gridLayoutRepository.GetSingleRecord( FKFormID, "", ColumnList());
+            var data = _gridLayoutRepository.GetSingleRecord(FKFormID, "", ColumnList());
             var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
             DataTable _gridColumn = Handler.ToDataTable(model);
 
@@ -112,9 +112,9 @@ namespace SSAdmin.Areas.Master.Controllers
                 }
                 else
                 {
-                    ViewBag.PageType = "Create"; 
+                    ViewBag.PageType = "Create";
                 }
-                 
+
 
             }
             catch (Exception ex)
@@ -174,7 +174,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 ModelState.AddModelError("", ex.Message);
             }
 
-             
+
             return View(model);
         }
 
@@ -195,12 +195,6 @@ namespace SSAdmin.Areas.Master.Controllers
             return response;
         }
 
-        public override List<ColumnStructure> ColumnList(string GridName = "")
-        {
-            return _repository.ColumnList(GridName);
-        }
-
-
         [HttpPost]
         public string GetAlias()
         {
@@ -218,14 +212,110 @@ namespace SSAdmin.Areas.Master.Controllers
 
         public string GetBarCode()
         {
-          string Return = _repository.GetBarCode();
+            string Return = _repository.GetBarCode();
 
-          return Return;
+            return Return;
         }
 
-         
+        public JsonResult Importfile(IFormFile file)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                    throw new Exception("No file uploaded.");
 
+                string path = "";
+                path = Path.Combine("wwwroot", "ExcelFile");
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
 
-       
+                string rn = new Random().Next(0, 9999).ToString("D6");
+                string filename = "Purchase_" + rn + "_" + DateTime.Now.Ticks + file.FileName;
+                string filePath = Path.Combine(path, filename);
+                using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyToAsync(fileStream);
+                    fileStream.Close();
+                }
+                List<string> validationErrors = new List<string>();
+                var data = _repository.Get_ProductInfo_FromFile(filePath, validationErrors);
+                if (validationErrors.Count == 0)
+                {
+                    return Json(new
+                    {
+                        status = "success",
+                        msg = "Import Successfully.",
+                        data
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        status = "error",
+                        msg = string.Join(",", validationErrors.ToList()),
+                        IsLoadGrid = true,
+                        data
+                    }); 
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = "error",
+                    msg = ex.Message,
+                    IsLoadGrid = false,
+                });
+            }
+
+        }
+        [HttpPost]
+        public JsonResult SaveBulk(List<ProductModel> modelList)
+        {
+            try
+            {
+                _repository.SaveBulk(modelList);
+                return Json(new
+                {
+                    status = "success",
+                    msg = "Import Successfully.",
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = "error",
+                    msg = ex.Message,
+                });
+            }
+        }
+
+        public override List<ColumnStructure> ColumnList(string GridName = "")
+        {
+            return _repository.ColumnList(GridName);
+        }
+
+        //[HttpGet]
+        //public object trandtldropList(int pageSize, int pageNo = 1, string search = "", string name = "", string RowParam = "", string ExtraParam = "")
+        //{
+        //    int value = 0;
+        //    if (name == "SubCategoryName")
+        //    {
+        //        return _repository.Get_CategoryList(pageSize, pageNo, search);
+        //    }
+        //    if (name == "SubCategoryName")
+        //    {
+        //        return _repository.Get_CategoryList(pageSize, pageNo, search);
+        //    }
+        //    if (name == "SubCategoryName")
+        //    {
+        //        return _repository.Get_CategoryList(pageSize, pageNo, search);
+        //    }
+        //    else
+        //        return null;
+        //}
+
     }
 }

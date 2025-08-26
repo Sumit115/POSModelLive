@@ -145,7 +145,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
         }
 
-        public JsonResult ImportDatafile(IFormFile file)
+        public async Task<JsonResult> ImportDatafile(IFormFile file)
         {
             try
             {
@@ -157,15 +157,16 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);
 
-                string rn = new Random().Next(0, 9999).ToString("D6");
-                string filename = "Purchase_" + rn + "_" + DateTime.Now.Ticks + file.FileName;
+                string rn = DateTime.Now.Ticks.ToString();
+                string filename = $"Purchase__{DateTime.Now.Ticks}_{file.FileName}";
                 string filePath = Path.Combine(path, filename);
-                using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    file.CopyToAsync(fileStream);
+                    await file.CopyToAsync(fileStream); // ✅ Await this
                     fileStream.Close();
                 }
-                List<string> validationErrors=new List<string> ();
+                List<string> validationErrors = new List<string>();
                 var data = _repository.Get_ProductInfo_FromFile(filePath, validationErrors);
                 if (validationErrors.Count == 0)
                 {
@@ -185,13 +186,13 @@ namespace SSAdmin.Areas.Transactions.Controllers
                         msg = string.Join(",", validationErrors.ToList()),
                     });
                 }
-            } 
+            }
             catch (Exception ex)
             {
                 return Json(new
                 {
                     status = "error",
-                    msg = ex.Message, 
+                    msg = ex.Message,
                 });
             }
 

@@ -5,13 +5,51 @@
 }
 
 <partial name="~/Views/Shared/partial/_Grid.cshtml" />
+<style>
+    .Editor_Slick_custdropdown {
+        z-index: 99999999999999999 !important;
+    }
+</style>
+<div class="modal fade model-importdata show" style="z-index: 99999; display: block;display:none;">
+    <div class="modal-dialog" role="document" style="width: 57% !important;max-width: 100%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Import Article</h5>
+            </div>
+            <div class="modal-body">
 
+                <div class="row">
+                    <div class="col-md-10 input-group ">
+                        <input id="ImportDatafile" class="form-control" type="file" accept=".csv" onchange="ImportDataFromFile()" style="display:none;" autocomplete="off">
+                        <button type="button" class="btn btn-secondary" onclick="$('#ImportDatafile').click()">
+                            <i class="bi bi-upload"></i>
+                            &nbsp; Import File
+                        </button>
+                    </div>
+
+                    <div class="col-md-2 input-group ">
+                        <a href="/excelfile/format/demo_importArticle.csv" class="btn btn-secondary" target="_blank">
+                            <i class="bi bi-download"></i>
+                            &nbsp; Downolad Format
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-md-12 mt-4" id="DDTImport">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnSubmit_SaveBulk" style="display:none" class="btn btn-primary" onclick="SaveBulk()">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts {
     <script src="~/js/master/browser.js"></script>
+    <script src="~/js/master/ProductMasList.js"></script>
     <script>
-        $(document).ready(function () {
-            IdProperty = "PKID";
-            View();
-        });
+       
     </script>
 }

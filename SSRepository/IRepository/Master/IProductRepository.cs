@@ -17,5 +17,7 @@ namespace SSRepository.IRepository.Master
         List<CategoryModel> prodCatgList(int pageSize, int pageNo = 1, string search = "");
 
         string GetBarCode();
+        List<ProductModel> Get_ProductInfo_FromFile(string filePath, List<string> validationErrors);
+        public void SaveBulk(List<ProductModel> modelList);
     }
 }

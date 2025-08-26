@@ -40,6 +40,7 @@
   <ItemGroup>
     <Content Remove="Areas\Master\Views\Company\List.cshtml" />
     <Content Remove="Areas\Master\Views\Promotion\Create - Copy.cshtml" />
+    <Content Remove="wwwroot\js\Master\ProductMasList.js" />
     <Content Remove="wwwroot\js\Master\Recipe.js" />
     <Content Remove="wwwroot\js\Master\User.js" />
     <Content Remove="wwwroot\js\Transaction\Receipt.js" />
@@ -332,6 +333,7 @@
     <None Include="wwwroot\js\Master\browser.js" />
     <None Include="wwwroot\js\Master\OpeningStock.js" />
     <None Include="wwwroot\js\Master\ProdLotDtl.js" />
+    <None Include="wwwroot\js\Master\ProductMasList.js" />
     <None Include="wwwroot\js\Master\Recipe.js" />
     <None Include="wwwroot\js\Master\ProductMas.js" />
     <None Include="wwwroot\js\Master\User.js" />

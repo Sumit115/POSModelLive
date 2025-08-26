@@ -9,6 +9,7 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Reflection.Metadata;
 using System.Runtime.ConstrainedExecution;
+using System.Diagnostics;
 
 namespace SSRepository.Repository.Master
 {
@@ -40,10 +41,10 @@ namespace SSRepository.Repository.Master
             if (search != null) search = search.ToLower();
             pageSize = pageSize == 0 ? __PageSize : pageSize == -1 ? __MaxPageSize : pageSize;
             List<ProductModel> data = (from cou in __dbContext.TblProductMas
-                                       //join cat in __dbContext.TblCategoryMas on cou.FKProdCatgId equals cat.PkCategoryId
-                                       //join Pbrand in __dbContext.TblBrandMas on cou.FkBrandId equals Pbrand.PkBrandId
-                                       //                      into tembrand
-                                       //from brand in tembrand.DefaultIfEmpty()
+                                           //join cat in __dbContext.TblCategoryMas on cou.FKProdCatgId equals cat.PkCategoryId
+                                           //join Pbrand in __dbContext.TblBrandMas on cou.FkBrandId equals Pbrand.PkBrandId
+                                           //                      into tembrand
+                                           //from brand in tembrand.DefaultIfEmpty()
                                        where (EF.Functions.Like(cou.Product.Trim().ToLower(), Convert.ToString(search) + "%"))
                                        && cou.FKProdCatgId == (FkCatId > 0 ? FkCatId : cou.FKProdCatgId)
                                        orderby cou.PkProductId
@@ -163,7 +164,7 @@ namespace SSRepository.Repository.Master
             }
         }
 
-        public object CustomList_Color(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", long FKProductId = 0,string Batch="")
+        public object CustomList_Color(int EnCustomFlag, int pageSize, int pageNo = 1, string search = "", long FKProductId = 0, string Batch = "")
         {
             if (EnCustomFlag == (int)Handler.en_CustomFlag.CustomDrop)
             {
@@ -174,11 +175,11 @@ namespace SSRepository.Repository.Master
                         && EF.Functions.Like(cou.Color.Trim().ToLower(), search + "%")
                           && (cou.Batch == Batch || Batch == "")
                          orderby cou.PkLotId
-                         select (new 
+                         select (new
                          {
-                               cou.PkLotId,
-                               cou.Color,
-                               cou.Batch, 
+                             cou.PkLotId,
+                             cou.Color,
+                             cou.Batch,
                          }
                           )).Skip((pageNo - 1) * pageSize).Take(pageSize).ToList());
             }
@@ -256,7 +257,7 @@ namespace SSRepository.Repository.Master
 
             ProductModel data = new ProductModel();
             data = (from cou in __dbContext.TblProductMas
-                   // join cat in __dbContext.TblCategoryMas on cou.FKProdCatgId equals cat.PkCategoryId
+                        // join cat in __dbContext.TblCategoryMas on cou.FKProdCatgId equals cat.PkCategoryId
                     where cou.PkProductId == PkProductId
                     select (new ProductModel
                     {
@@ -306,14 +307,14 @@ namespace SSRepository.Repository.Master
 
             return data;
         }
-   
+
         public string DeleteRecord(long PkProductId)
         {
             string Error = "";
             ProductModel oldModel = GetSingleRecord(PkProductId);
 
             var saleOrderExist = (from cou in __dbContext.TblSalesOrderdtl
-                                   where cou.FkProductId == PkProductId
+                                  where cou.FkProductId == PkProductId
                                   select cou).Count();
             if (saleOrderExist > 0)
                 Error += "use in other transaction";
@@ -321,7 +322,7 @@ namespace SSRepository.Repository.Master
             if (Error == "")
             {
                 var saleInvoiceExist = (from cou in __dbContext.TblSalesInvoicedtl
-                                         where cou.FkProductId == PkProductId
+                                        where cou.FkProductId == PkProductId
                                         select cou).Count();
                 if (saleInvoiceExist > 0)
                     Error += "use in other transaction";
@@ -356,10 +357,10 @@ namespace SSRepository.Repository.Master
                            where x.PkProductId == PkProductId
                            select x).ToList();
                 if (lst.Count > 0)
-                    __dbContext.TblProductMas.RemoveRange(lst); 
+                    __dbContext.TblProductMas.RemoveRange(lst);
 
                 AddMasterLog((long)Handler.Form.Product, PkProductId, -1, Convert.ToDateTime(oldModel.DATE_MODIFIED), true, JsonConvert.SerializeObject(oldModel), oldModel.Product, GetUserID(), DateTime.Now, oldModel.FKUserID, Convert.ToDateTime(oldModel.DATE_MODIFIED));
-                 __dbContext.SaveChanges();
+                __dbContext.SaveChanges();
             }
 
             return Error;
@@ -651,6 +652,273 @@ namespace SSRepository.Repository.Master
 
         }
 
+        public List<ProductModel> Get_ProductInfo_FromFile(string filePath, List<string> validationErrors)
+        {
+            List<ProductModel> prdList = new List<ProductModel>();
+
+            DataTable dt = new DataTable();
+
+            using (StreamReader sr = new StreamReader(filePath))
+            {
+                string[] headers = sr.ReadLine().Split(',');
+                foreach (string header in headers)
+                {
+                    dt.Columns.Add(header.Trim());
+                }
+                while (!sr.EndOfStream)
+                {
+                    string[] rows = sr.ReadLine().Split(',');
+                    DataRow dr = dt.NewRow();
+                    for (int i = 0; i < headers.Length; i++)
+                    {
+                        dr[i] = rows[i].Trim();
+                    }
+                    dt.Rows.Add(dr);
+
+                }
+                sr.Close();
+            }
+
+            if (dt.Rows.Count > 0)
+            {
+                var cs = GetSysDefaultsByKey("CodingScheme");
+                if (!string.IsNullOrEmpty(cs))
+                {
+                    string error = "";
+                    int srNo = 0;
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        srNo++;
+                        if (!decimal.TryParse(dr["MRP"]?.ToString().Trim(), out decimal mrp))
+                            error += $" MRP is zero.";
+
+
+                        if (string.IsNullOrWhiteSpace(dr["Artical"]?.ToString()))
+                        {
+                            error += $" Artical is blank.";
+                        }
+                        else if (prdList.Where(x => x.Product?.ToString().ToLower() == dr["Artical"]?.ToString().ToLower().Trim()).Count() > 0)
+                        {
+                            error += $" Duplicate Artical In File. " + dr["Artical"]?.ToString();
+                        }
+                        //else if (!IsAlphanumeric(dr["Barcode"]?.ToString()))
+                        //{
+                        //    error += $"Barcode Must Be Alphanumeric. ";
+                        //}
+                        //else if (cs == "Unique")
+                        //{
+                        //    if (prdList.Where(x => x.Barcode?.ToString().ToLower() == dr["Barcode"]?.ToString().ToLower().Trim()).Count() > 0)
+                        //    {
+                        //        error += $" Duplicate Barcode. " + dr["Barcode"]?.ToString();
+                        //    }
+                        //}
+                        //else if (cs != "Unique")
+                        //{
+                        //    if (prdList.Where(x => x.Product.ToLower() != dr["Artical"]?.ToString().ToLower().Trim() && x.Barcode?.ToString().ToLower() == dr["Barcode"]?.ToString().ToLower().Trim()).Count() > 0)
+                        //    {
+                        //        error += $" Duplicate Barcode. " + dr["Barcode"]?.ToString();
+                        //    }
+                        //}
+                        if (error != "")
+                            validationErrors.Add($"Row {srNo} {error}");
+                        else
+                        {
+                            prdList.Add(new ProductModel
+                            {
+                                SrNo = srNo,
+                                //Barcode = dr["Barcode"]?.ToString().Trim(),
+                                Product = dr["Artical"]?.ToString(),
+                                CategoryName = dr["SubSection"]?.ToString(),
+                                UnitName = dr["Unit"]?.ToString(),
+                                BrandName = dr["BrandName"]?.ToString(),
+                            });
+                        }
+                    }
+                }
+                else
+                    throw new Exception("Please Update CodingScheme From System Default");
+
+                if (validationErrors.Count == 0)
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        string Product = dr["Artical"]?.ToString().Trim();
+                        var _existsCategory = __dbContext.TblProductMas.Where(x => x.Product == Product).FirstOrDefault();
+                        if (_existsCategory != null)
+                            validationErrors.Add($"Duplicate Artical : {Product} "); 
+                    }
+                }
+
+                if (validationErrors.Count == 0)
+                {
+                    prdList = new List<ProductModel>();
+                    int srNo = 0;
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        srNo++;
+                       decimal mrp = Convert.ToDecimal(dr["MRP"].ToString());
+                        string Product = dr["Artical"]?.ToString().Trim();
+
+                        var item = new ProductModel
+                        {
+                            SrNo = srNo,
+                            // Barcode = dr["Barcode"]?.ToString().Trim(),
+                            Product = Product,
+                            NameToDisplay = Product,
+                            MRP = mrp,
+                            SaleRate = mrp,
+                            TradeRate = mrp,
+                            DistributionRate = mrp,
+                            PurchaseRate = mrp,
+                            CodingScheme = cs,
+                            HSNCode = "621030",
+                            Status = "A",
+                            Genration = "Automatic",
+
+                        }; 
+
+                        var _existsCategory = prdList.Where(x => x.Product == Product && x.FKProdCatgId > 0).FirstOrDefault();
+                        if (_existsCategory != null)
+                        {
+                            item.FKProdCatgId = _existsCategory.FKProdCatgId;
+                            item.CategoryName = _existsCategory.CategoryName;
+                        }
+                        else
+                        {
+                            var Category = __dbContext.TblCategoryMas.Where(x => x.CategoryName == dr["SubSection"].ToString()).SingleOrDefault();
+                            if (Category != null)
+                            {
+                                item.FKProdCatgId = Category.PkCategoryId;
+                                item.CategoryName = Category.CategoryName;
+                            }
+                            else
+                                validationErrors.Add($"Row {srNo} Category : {dr["SubSection"].ToString()} Not Found");
+                        }
+
+                        var _existsBrand = prdList.Where(x => x.Product == Product && x.FkBrandId > 0).FirstOrDefault();
+                        if (_existsBrand != null)
+                        {
+                            item.FkBrandId = _existsBrand.FkBrandId;
+                            item.BrandName = _existsBrand.BrandName;
+                        }
+                        else
+                        {
+                            var Brand = __dbContext.TblBrandMas.Where(x => x.BrandName == dr["BrandName"].ToString()).SingleOrDefault();
+                            if (Brand != null)
+                            {
+                                item.FkBrandId = Brand.PkBrandId;
+                                item.BrandName = Brand.BrandName;
+                            }
+                            else
+                                validationErrors.Add($"Row {srNo} Brand : {dr["BrandName"].ToString()} Not Found");
+                        }
+
+                        var _existsUnit = prdList.Where(x => x.Product == Product && x.FkUnitId > 0).FirstOrDefault();
+                        if (_existsUnit != null)
+                        {
+                            item.FkUnitId = _existsUnit.FkUnitId;
+                            item.UnitName = _existsUnit.UnitName;
+                        }
+                        else
+                        {
+                            var Unit = __dbContext.TblUnitMas.Where(x => x.UnitName == dr["Unit"].ToString()).SingleOrDefault();
+                            if (Unit != null)
+                            {
+                                item.FkUnitId = Unit.PkUnitId;
+                                item.UnitName = Unit.UnitName;
+                            }
+                            else
+                                validationErrors.Add($"Row {srNo} Unit : {dr["Unit"].ToString()} Not Found");
+                        }
+                        prdList.Add(item);
+
+                    }
+                    if (validationErrors.Count == 0)
+                        SaveBulk(prdList);
+                }
+                else
+                    throw new Exception(string.Join(",", validationErrors.ToList()));
+
+            }
+            else
+                throw new Exception("Invalid Data");
+            return prdList;
+        }
+
+        public void SaveBulk(List<ProductModel> modelList)
+        {
+            var lst = new List<TblProductMas>();
+            long PkProductId = 0;
+            var data = __dbContext.TblProductMas.OrderByDescending(u => u.PkProductId).FirstOrDefault();
+            if (data != null)
+            {
+                PkProductId = data.PkProductId;
+            }
+            long FKUserID = GetUserID();
+            foreach (var model in modelList)
+            {
+                model.NameToDisplay = model.NameToPrint = model.Product;
+                model.ShelfID = model.CaseLot = model.Unit1 = model.Unit2 = model.Unit3 = "";
+                model.FKTaxID = model.BoxSize = 0;
+                model.ProdConv1 = 0;
+                model.ProdConv2 = 0;
+                model.KeepStock = true;
+
+                TblProductMas Tbl = new TblProductMas();
+                Tbl.PkProductId = PkProductId + model.SrNo;
+                Tbl.Product = model.Product;
+                Tbl.NameToDisplay = model.NameToDisplay;
+                Tbl.NameToPrint = model.NameToPrint;
+                Tbl.Image = model.Image;
+                Tbl.Alias = model.Alias;
+                Tbl.Strength = model.Strength;
+                Tbl.Barcode = model.Barcode;
+                Tbl.Status = model.Status;
+                Tbl.FKProdCatgId = model.FKProdCatgId;
+                Tbl.FKTaxID = model.FKTaxID;
+                Tbl.HSNCode = model.HSNCode;
+                Tbl.FkBrandId = model.FkBrandId > 0 ? model.FkBrandId : null;
+                Tbl.ShelfID = model.ShelfID;
+                Tbl.TradeDisc = model.TradeDisc;
+                Tbl.MinStock = model.MinStock;
+                Tbl.MaxStock = model.MaxStock;
+                Tbl.MinDays = model.MinDays;
+                Tbl.MaxDays = model.MaxDays;
+                Tbl.CaseLot = model.CaseLot;
+                Tbl.BoxSize = model.BoxSize;
+                Tbl.Description = model.Description;
+                Tbl.Unit1 = model.Unit1;
+                Tbl.ProdConv1 = model.ProdConv1;
+                Tbl.Unit2 = model.Unit2;
+                Tbl.ProdConv2 = model.ProdConv2;
+                Tbl.Unit3 = model.Unit3;
+                Tbl.MRP = model.MRP;
+                Tbl.MRPSaleRateUnit = "";
+                Tbl.SaleRate = model.SaleRate;
+                Tbl.TradeRate = model.TradeRate;
+                Tbl.DistributionRate = model.DistributionRate;
+                Tbl.PurchaseRate = model.PurchaseRate;
+                Tbl.PurchaseRateUnit = "";
+                Tbl.KeepStock = model.KeepStock;
+                Tbl.Genration = model.Genration;
+                Tbl.CodingScheme = model.CodingScheme;
+                Tbl.FkUnitId = model.FkUnitId;
+                Tbl.ModifiedDate = DateTime.Now;
+                Tbl.FKUserID = FKUserID;
+                Tbl.FKCreatedByID = Tbl.FKUserID;
+                Tbl.CreationDate = Tbl.ModifiedDate; 
+
+
+                //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);
+                lst.Add(Tbl);
+
+            }
+            if (lst.Count > 0)
+                AddData(lst, true);
+
+            __dbContext.SaveChanges();
+            //AddImagesAndRemark(obj.PkcountryId, obj.FKProductID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
+        }
 
     }
 }

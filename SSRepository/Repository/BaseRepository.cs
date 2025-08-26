@@ -16,6 +16,7 @@ using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
 using System.Text;
+using System.Text.RegularExpressions;
 using static Handler;
 
 namespace SSRepository.Repository
@@ -651,6 +652,10 @@ namespace SSRepository.Repository
                 Result = string.Empty;
             }
             return Result;
+        }
+        public bool IsAlphanumeric(string input)
+        {
+            return Regex.IsMatch(input, @"^[a-zA-Z0-9]+$");
         }
 
         #endregion

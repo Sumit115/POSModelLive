@@ -67,5 +67,9 @@ namespace SSRepository.Models
         public long? FKInvoiceID { get; set; }// 
         public long? InvoiceSrNo { get; set; }
         public long? FKInvoiceSrID { get; set; }
+
+        //For Import Data
+        public long SrNo { get; set; }
+
     }
 }
