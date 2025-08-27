@@ -8,9 +8,9 @@
     <div class="col-md-12 trn-barcode">
         <div class="form-group row mb-0">
             <div class="col-md-12 input-group ">
-                <input type="text" id="txtSearchBarcode" class="form-control " placeholder="Barcode Search....">
+                <input type="text" id="txtSearchBarcode" class="form-control " placeholder="Barcode Search....( Shift + B )">
                 <input id="Barcodefile" class="form-control" type="file" accept=".txt" onchange="ImportBarcode()" style="display:none;" />
-                <button type="button" class="btn btn-secondary" onclick="$('#Barcodefile').click()">
+                <button type="button" class="btn btn-secondary" onclick="$('#Barcodefile').click()" id="btnImportBarcode" data-bs-toggle="tooltip" data-bs-placement="left" title="Import Barcode ( Shift + I )">
                     <i class="bi bi-download"></i>
                     &nbsp; Import Barcode
                     </button>

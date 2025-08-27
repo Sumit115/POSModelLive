@@ -7,6 +7,7 @@ var cgRtn = null;
 var UDIRtn = null;
 var GrdName = 'dtl';
 $(document).ready(function () {
+    key_shortcut();
     $('#btnDeleteRecord').hide();
     ModeFormForEdit = Handler.isNullOrEmpty($("#hdModeFormForEdit").val()) ? 1 : parseInt($("#hdModeFormForEdit").val());
     Common.InputFormat();
@@ -134,7 +135,7 @@ $(document).ready(function () {
         DatabyEntryNo();
     });
     $("#PartyMobile").change(function () {
-        
+
         GetWalkingCustomerDetail($(this).val());
     });
     $('#btnSaveShippDtl').click(function (e) {
@@ -1006,7 +1007,7 @@ function BindGridReturn(GridId, data) {
                 var SrNo = args.grid.getDataItem(args.row)["SrNo"];
                 var ModeForm = args.grid.getDataItem(args.row)["ModeForm"];
                 var BarcodeText = args.grid.getDataItem(args.row)["Barcode"];
-                
+
                 if (field == "Delete") {
                     ColumnChange(args, args.row, "Delete", true);
                 }
@@ -1312,7 +1313,7 @@ function BarcodeScan(barcode, IsReturn) {
         data: { model: tranModel, barcode: barcode, IsReturn: IsReturn },
         datatype: "json", success: function (res) {
             if (res.status == "success") {
-                
+
                 tranModel = res.data;
                 //$(tranModel.TranDetails).each(function (i, v) {
                 //    v["ProductName"] = parseInt(v.FkProductId);
@@ -1626,7 +1627,7 @@ function setPaymentDetail(data) {
 
 
 function setGridRowData(args, data, rowIndex, fieldName, IsReturn) {
-    
+
     if (fieldName == 'Delete') {
         args.grid.getDataItem(args.row).ModeForm = 2
     }
@@ -1795,7 +1796,7 @@ function SaveRecord() {
             tranModel.PkId = $('#PkId').val();
             tranModel.FkPartyId = tranModel.FkPartyId > 0 ? tranModel.FkPartyId : $('#FkPartyId').val();
             tranModel.EntryDate = $('#EntryDate').val();
-            tranModel.GRDate =  $('#GRDate').val();
+            tranModel.GRDate = $('#GRDate').val();
             tranModel.TranDetails = [];
             if ((tranModel.FkPartyId > 0) || (tranModel.ExtProperties.DocumentType == "C")) {
                 if (tranModel.FKSeriesId > 0) {
@@ -1829,14 +1830,15 @@ function SaveRecord() {
                                         }
                                         else {
                                             alert('Save Successfully..');
-                                            window.location = Handler.currentPath() + 'List';
+                                            //window.location = Handler.currentPath() + 'List';
+                                            window.location.reload();
                                         }
                                     }
                                     else {
                                         $(".loader").hide();
                                         alert(res.msg);
                                         tranModel = res.data;
-                                       $('#PkId').val(tranModel.PkId);
+                                        $('#PkId').val(tranModel.PkId);
                                         BindGrid('DDT', tranModel.TranDetails);
                                         if (TranAlias == 'SGRN')
                                             BindGridReturn('DDTReturn', tranModel.TranReturnDetails);
@@ -2019,10 +2021,10 @@ function trandtldropList(data) {
 }
 
 function GetWalkingCustomerDetail(Mobile) {
-    
+
     if (tranModel.ExtProperties.DocumentType == "C") {
         $("#FkPartyId").val('0');
-        $("#PartyName,#PartyAddress,#PartyDob,#PartyMarriageDate").removeAttr("readonly"); 
+        $("#PartyName,#PartyAddress,#PartyDob,#PartyMarriageDate").removeAttr("readonly");
 
         Common.ajax(Handler.currentPath() + "GeWalkingCustomerbyMobile?Mobile=" + Mobile + "", {}, "Please Wait...", function (res) {
             Handler.hide();
@@ -2031,10 +2033,10 @@ function GetWalkingCustomerDetail(Mobile) {
                 $("#PartyName").val(res.PartyName);
                 $("#PartyAddress").val(res.PartyAddress);
                 $("#PartyDob").val(res.PartyDob);
-                $("#PartyMarriageDate").val(res.PartyMarriageDate); 
+                $("#PartyMarriageDate").val(res.PartyMarriageDate);
 
-                tranModel["PartyName"] = res.PartyName; 
-                tranModel["PartyAddress"] = res.PartyAddress; 
+                tranModel["PartyName"] = res.PartyName;
+                tranModel["PartyAddress"] = res.PartyAddress;
                 tranModel["PartyDob"] = res.PartyDob;
                 tranModel["PartyMarriageDate"] = res.PartyMarriageDate;
                 //$("#PartyName,#PartyAddress,#PartyDob,#PartyMarriageDate").attr("readonly","readonly"); 
@@ -2513,4 +2515,126 @@ function BindGrid_ImportedData() {
     } else
         alert('Please Select SubSection');
     // BindGrid('DDT', tranModel.TranDetails)
-} 
+}
+
+let pressedKeys = new Set(); 
+function key_shortcut() {
+    $(document).on("keydown", function (e) {
+        pressedKeys.add(e.key.toLowerCase());
+
+        if (e.shiftKey) {
+            // --- Shift + C ---
+            if (e.key.toLowerCase() === "c") {
+                e.preventDefault();
+                let $btn = $("#btnServerBack");
+                if ($btn.length && $btn.is(":visible")) {
+                    if ($btn.is("a")) {
+                        window.location = $btn.attr("href");
+                    } else {
+                        $btn.trigger("click");
+                    }
+                }
+            }
+
+            // --- Shift + S ---
+            else if (e.key.toLowerCase() === "s") {
+                e.preventDefault();
+                let $btn = $("#btnServerSave");
+                if ($btn.length && $btn.is(":visible")) {
+                    $btn.trigger("click");
+                }
+            }
+
+            // --- Shift + B ---
+            else if (e.key.toLowerCase() === "b") {
+                e.preventDefault();
+                let $input = $("#txtSearchBarcode");
+                if ($input.length && $input.is(":visible")) {
+                    $input.focus().select();
+                }
+            }
+            // --- Shift +  I ---
+            else if (e.key.toLowerCase() === "i") {
+                e.preventDefault();
+                let $btn = $("#btnImportBarcode");
+                if ($btn.length && $btn.is(":visible")) {
+                    $btn.trigger("click");
+                }
+            }
+            // --- Shift + A + O --- Apply Offer
+            else if (pressedKeys.has("a") && pressedKeys.has("o")) {
+                e.preventDefault();
+                let $btn = $("#btnApplyPromotion");
+                if ($btn.length && $btn.is(":visible")) {
+                    $btn.trigger("click");
+                }
+            }
+
+            // --- Shift + M ---
+            else if (e.key.toLowerCase() === "m") {
+                e.preventDefault();
+                let $btn = $("#btnOpen");
+                if ($btn.length && $btn.is(":visible")) {
+                    $btn.trigger("click");
+                }
+            }
+
+            // --- Shift + N ---
+            else if (e.key.toLowerCase() === "n") {
+                e.preventDefault();
+                let $btn = $("#btnClose");
+                if ($btn.length && $btn.is(":visible")) {
+                    $btn.trigger("click");
+                }
+            }
+
+            // --- Shift +  D ---
+            else if (e.key.toLowerCase() === "d") {
+                 e.preventDefault();
+                let $btn = $("#btnShippingDetails");
+                if ($btn.length && $btn.is(":visible")) {
+                    $btn.trigger("click");
+                }
+            }
+
+            // --- Shift +  R ---
+            else if (e.key.toLowerCase() === "p") {
+                e.preventDefault();
+                let $btn = $("#btnPaymentInfo");
+                if ($btn.length && $btn.is(":visible")) {
+                    $btn.trigger("click");
+                }
+            }
+
+            // --- Shift +  L ---
+            else if (e.key.toLowerCase() === "l") {
+                e.preventDefault();
+                let $btn = $("#btnPrintOption");
+                if ($btn.length && $btn.is(":visible")) {
+                    $btn.trigger("click");
+                }
+            }
+            // --- Shift +  V ---
+            else if (e.key.toLowerCase() === "v") {
+                e.preventDefault();
+                let $btn = $("#btnVoucherDetail");
+                if ($btn.length && $btn.is(":visible")) {
+                    $btn.trigger("click");
+                }
+            }
+            // --- Shift +  R ---
+            else if (e.key.toLowerCase() === "r") {
+                e.preventDefault();
+                let $btn = $("#btnRemark");
+                if ($btn.length && $btn.is(":visible")) {
+                    $btn.trigger("click");
+                }
+            }
+        }
+    });
+
+    $(document).on("keyup", function (e) {
+        pressedKeys.delete(e.key.toLowerCase());
+    });
+}
+

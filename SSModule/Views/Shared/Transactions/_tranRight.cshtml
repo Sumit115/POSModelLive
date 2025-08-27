@@ -17,7 +17,7 @@
 
     @if (Model.ExtProperties.PostInAc || flag == true)
     {
-        <button class="icon-button" type="button" onclick="VoucherDetail()" data-bs-toggle="tooltip" data-bs-placement="left" title="Voucher">
+        <button id="btnVoucherDetail" class="icon-button" type="button" onclick="VoucherDetail()" data-bs-toggle="tooltip" data-bs-placement="left" title="Voucher ( Shift +  V )">
             <i class="fas fa-receipt"></i>
         </button>
         <partial name="~/Views/Shared/Transactions/_PaymentInfo.cshtml" />
@@ -25,7 +25,7 @@
         { }
         else
         {
-            <button class="icon-button" type="button" onclick="showpopupPrintOption()" data-bs-toggle="tooltip" data-bs-placement="left" title="print barcode">
+            <button id="btnPrintOption" class="icon-button" type="button" onclick="showpopupPrintOption()" data-bs-toggle="tooltip" data-bs-placement="left" title="Print Barcode ( Shift +  L )">
                 <i class="fas fa-barcode"></i>
             </button>
         }
