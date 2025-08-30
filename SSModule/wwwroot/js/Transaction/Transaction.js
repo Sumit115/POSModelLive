@@ -7,7 +7,7 @@ var cgRtn = null;
 var UDIRtn = null;
 var GrdName = 'dtl';
 $(document).ready(function () {
-    key_shortcut();
+  
     $('#btnDeleteRecord').hide();
     ModeFormForEdit = Handler.isNullOrEmpty($("#hdModeFormForEdit").val()) ? 1 : parseInt($("#hdModeFormForEdit").val());
     Common.InputFormat();
@@ -2516,125 +2516,5 @@ function BindGrid_ImportedData() {
         alert('Please Select SubSection');
     // BindGrid('DDT', tranModel.TranDetails)
 }
-
-let pressedKeys = new Set(); 
-function key_shortcut() {
-    $(document).on("keydown", function (e) {
-        pressedKeys.add(e.key.toLowerCase());
-
-        if (e.shiftKey) {
-            // --- Shift + C ---
-            if (e.key.toLowerCase() === "c") {
-                e.preventDefault();
-                let $btn = $("#btnServerBack");
-                if ($btn.length && $btn.is(":visible")) {
-                    if ($btn.is("a")) {
-                        window.location = $btn.attr("href");
-                    } else {
-                        $btn.trigger("click");
-                    }
-                }
-            }
-
-            // --- Shift + S ---
-            else if (e.key.toLowerCase() === "s") {
-                e.preventDefault();
-                let $btn = $("#btnServerSave");
-                if ($btn.length && $btn.is(":visible")) {
-                    $btn.trigger("click");
-                }
-            }
-
-            // --- Shift + B ---
-            else if (e.key.toLowerCase() === "b") {
-                e.preventDefault();
-                let $input = $("#txtSearchBarcode");
-                if ($input.length && $input.is(":visible")) {
-                    $input.focus().select();
-                }
-            }
-            // --- Shift +  I ---
-            else if (e.key.toLowerCase() === "i") {
-                e.preventDefault();
-                let $btn = $("#btnImportBarcode");
-                if ($btn.length && $btn.is(":visible")) {
-                    $btn.trigger("click");
-                }
-            }
-            // --- Shift + A + O --- Apply Offer
-            else if (pressedKeys.has("a") && pressedKeys.has("o")) {
-                e.preventDefault();
-                let $btn = $("#btnApplyPromotion");
-                if ($btn.length && $btn.is(":visible")) {
-                    $btn.trigger("click");
-                }
-            }
-
-            // --- Shift + M ---
-            else if (e.key.toLowerCase() === "m") {
-                e.preventDefault();
-                let $btn = $("#btnOpen");
-                if ($btn.length && $btn.is(":visible")) {
-                    $btn.trigger("click");
-                }
-            }
-
-            // --- Shift + N ---
-            else if (e.key.toLowerCase() === "n") {
-                e.preventDefault();
-                let $btn = $("#btnClose");
-                if ($btn.length && $btn.is(":visible")) {
-                    $btn.trigger("click");
-                }
-            }
-
-            // --- Shift +  D ---
-            else if (e.key.toLowerCase() === "d") {
-                 e.preventDefault();
-                let $btn = $("#btnShippingDetails");
-                if ($btn.length && $btn.is(":visible")) {
-                    $btn.trigger("click");
-                }
-            }
-
-            // --- Shift +  R ---
-            else if (e.key.toLowerCase() === "p") {
-                e.preventDefault();
-                let $btn = $("#btnPaymentInfo");
-                if ($btn.length && $btn.is(":visible")) {
-                    $btn.trigger("click");
-                }
-            }
-
-            // --- Shift +  L ---
-            else if (e.key.toLowerCase() === "l") {
-                e.preventDefault();
-                let $btn = $("#btnPrintOption");
-                if ($btn.length && $btn.is(":visible")) {
-                    $btn.trigger("click");
-                }
-            }
-            // --- Shift +  V ---
-            else if (e.key.toLowerCase() === "v") {
-                e.preventDefault();
-                let $btn = $("#btnVoucherDetail");
-                if ($btn.length && $btn.is(":visible")) {
-                    $btn.trigger("click");
-                }
-            }
-            // --- Shift +  R ---
-            else if (e.key.toLowerCase() === "r") {
-                e.preventDefault();
-                let $btn = $("#btnRemark");
-                if ($btn.length && $btn.is(":visible")) {
-                    $btn.trigger("click");
-                }
-            }
-        }
-    });
-
-    $(document).on("keyup", function (e) {
-        pressedKeys.delete(e.key.toLowerCase());
-    });
-}
-
+ 
+ 

@@ -17,7 +17,7 @@
 }
 
 <div>
-    <a href="javascript:void(0)" class="btn btn-success m-2" id="btnPrintBarcode">Print</a>
+    <a href="javascript:void(0)" class="btn btn-success m-2" id="btnPrintBarcode" data-bs-toggle="tooltip" data-bs-placement="down" title="Preview ( Print + O )">Print</a>
     <input type="hidden" id="ColumnInPerRow" value="@ColumnInPerRow" />
 </div>
 <div id="printpage" style="width:@(( Convert.ToInt32(width)* Convert.ToInt32(ColumnInPerRow)+(ColumnInPerRow>1?Convert.ToInt32(MarginBetWeenRowColumn):0))+"px");">

@@ -9,8 +9,8 @@
 $(document).ready(function () {
     Handler.nvc = Handler_NameValueCollection();
     Handler.currentUrl = Handler.ajaxURL();
-    $('form,input').attr('autocomplete', 'off'); 
-    setInterval(function () {  
+    $('form,input').attr('autocomplete', 'off');
+    setInterval(function () {
         var token = Handler_getCookie("checkIdentity");
         if (token) {
             //console.log("Cookie exists:", token);
@@ -18,6 +18,8 @@ $(document).ready(function () {
             window.location.href = "/Auth/Logout";
         }
     }, 5000);
+
+    Handler_keyShortcut();
 });
 
 function Handler_getCookie(name) {
@@ -1291,7 +1293,7 @@ function C_Grid(n, n2, f) {
     if (n2 != '' && n2 != undefined && n2 != null) {
         url += "&GridName=" + n2;
     }
-     
+
 
     Common.ajax(Handler.currentPath() + url, {}, "Please Wait...", function (res) {
         Handler.hide();
@@ -1321,18 +1323,18 @@ function C_Grid(n, n2, f) {
                 if (!Handler.isNullOrEmpty(n2) && typeof TranAlias !== 'undefined' && $('input#hdObjSysDefault').length) {
                     var _sysDefault = JSON.parse($("#hdObjSysDefault").val());
                     //console.log(_sysDefault);
-                  
+
                     if (TranAlias == "PORD" || TranAlias == "PINV") {
                         if (v.Fields == 'TradeDisc' && !_sysDefault.EditPurDiscount) { v.CtrlType = ''; }
-                        if (v.Fields == 'Rate' && !_sysDefault.EditPurRate) { v.CtrlType = ''; } 
+                        if (v.Fields == 'Rate' && !_sysDefault.EditPurRate) { v.CtrlType = ''; }
                     }
                     else {
-                        
+
                         if (v.Fields == 'Batch' && !_sysDefault.EditBatch) { v.CtrlType = ''; }
                         if (v.Fields == 'Color' && !_sysDefault.EditColor) { v.CtrlType = ''; }
                         if (v.Fields == 'TradeDisc' && !_sysDefault.EditDiscount) { v.CtrlType = ''; }
                         if (v.Fields == 'Rate' && !_sysDefault.EditRate) { v.CtrlType = ''; }
-                        if (v.Fields == 'MRP' && !_sysDefault.EditMRP) { v.CtrlType = ''; } 
+                        if (v.Fields == 'MRP' && !_sysDefault.EditMRP) { v.CtrlType = ''; }
                     }
                 }
 
@@ -1572,3 +1574,310 @@ jQuery.fn.extend({
         //return $.filter(v, this, !true);
     }
 });
+
+
+function Handler_keyShortcut() {
+    $(document).on("keydown", function (e) {
+
+        if (e.key === "Escape") {
+            // Get all visible Bootstrap modals and custom popups
+            var $visibleModals = $('.modal.show');      // Bootstrap visible modals
+            var $visiblePopups = $('.popup_d:visible'); // Custom visible popups
+
+            // Combine them and find the top-most
+            var $allVisible = $visibleModals.add($visiblePopups);
+
+            if ($allVisible.length > 0) {
+                var $top = $($allVisible[$allVisible.length - 1]); // Top-most element
+                var topId = $top.attr('class'); // Get ID
+                console.log("Closing:", topId);
+
+                // Hide based on type
+                if ($top.hasClass('modal')) {
+                    $top.modal('hide'); // Bootstrap modal
+                } else {
+                    $top.hide();        // Custom popup
+                }
+            }
+        }
+
+        if (e.shiftKey) {
+
+            //let currentUrl = window.location.href;
+            let path = window.location.pathname.split('/');
+
+            let module = path[1];
+            let subModule = path[2];
+            let action = path[3];
+
+
+            // Check for Shift + O
+            if (e.key.toLowerCase() === 'o') {
+                debugger;
+                e.preventDefault(); // prevent default browser behavior
+
+                // Get all visible modals and popups
+                var $visibleModals = $('.modal.show');
+                var $visiblePopups = $('.popup_d:visible');
+                var $allVisible = $visibleModals.add($visiblePopups);
+
+                if ($allVisible.length > 0) {
+                    var $top = $($allVisible[$allVisible.length - 1]); // top-most element
+
+                    // Example: check if top modal/popup has a child div with class "childDiv"
+                    let $btn = $("#btnPrintBarcode");
+                    if ($btn.length && $btn.is(":visible")) {
+                        $btn.trigger("click");
+
+                    } else {
+                        // Otherwise, find and click first button
+                        var $button = $top.find('button:visible, input[type="button"]:visible, input[type="submit"]:visible').first();
+                        if ($button.length) {
+                            $button.trigger('click');
+                        }
+                    }
+                }
+            }
+
+            //Common For List  Start 
+
+            if (action.toLowerCase() === "list") {
+
+                // --- Shift + L ---
+                if (e.key.toLowerCase() === "g") {
+                    e.preventDefault();
+                    let $btn = $("#btnGridColumn");
+                    if ($btn.length) {
+                        if (!$btn.is(":visible")) {
+                            // Open the dropdown first
+                            $btn.closest(".dropdown").find(".dropdown-toggle").dropdown("toggle");
+                        }
+
+                        setTimeout(() => {
+                            if ($btn.is(":visible")) {
+                                $btn[0].click();
+                            }
+                        }, 150); // small delay for animation
+                    }
+                }
+
+                // --- Shift + S ---
+                if (e.key.toLowerCase() === "s") {
+                    e.preventDefault();
+                    let $btn = $("#btnSaveGridColSetup");
+                    if ($btn.length && $btn.is(":visible")) {
+                        $btn.trigger("click");
+                    }
+                }
+                // --- Shift + R ---
+                if (e.key.toLowerCase() === "r") {
+                    e.preventDefault();
+                    let $btn = $("#btnReSaveGridColSetup");
+                    if ($btn.length && $btn.is(":visible")) {
+                        $btn.trigger("click");
+                    }
+                }
+
+                // --- Shift + N ---
+                if (e.key.toLowerCase() === "n") {
+                    e.preventDefault();
+                    let $btn = $("#create_new");
+                    if ($btn.length && $btn.is(":visible")) {
+                        if ($btn.is("a")) {
+                            window.location = $btn.attr("href");
+                        } else {
+                            $btn.trigger("click");
+                        }
+                    }
+                }
+
+                // --- Shift + V ---
+                if (e.key.toLowerCase() === "v") {
+                    e.preventDefault();
+                    let $btn = $("#btnView");
+                    if ($btn.length && $btn.is(":visible")) {
+                        $btn.trigger("click");
+                    }
+                }
+
+                // --- Shift + E ---
+                if (e.key.toLowerCase() === "e") {
+                    e.preventDefault();
+                    let $btn = $("#btnExportToExcel");
+                    if ($btn.length) {
+                        if (!$btn.is(":visible")) {
+                            // Open the dropdown first
+                            $btn.closest(".dropdown").find(".dropdown-toggle").dropdown("toggle");
+                        }
+
+                        setTimeout(() => {
+                            if ($btn.is(":visible")) {
+                                $btn[0].click();
+                            }
+                        }, 150); // small delay for animation
+                    }
+                }
+            }
+            //Common For List  End
+            //Common For Create  Start 
+            else if (action.toLowerCase() === "create") {
+                // --- Shift + C ---
+                if (e.key.toLowerCase() === "c") {
+                    e.preventDefault();
+                    let $btn = $("#btnServerBack");
+                    if ($btn.length && $btn.is(":visible")) {
+                        if ($btn.is("a")) {
+                            window.location = $btn.attr("href");
+                        } else {
+                            $btn.trigger("click");
+                        }
+                    }
+                }
+
+                // --- Shift + S ---
+                else if (e.key.toLowerCase() === "s") {
+                    e.preventDefault();
+                    let $btn = $("#btnServerSave");
+                    if ($btn.length && $btn.is(":visible")) {
+                        $btn.trigger("click");
+                    }
+                }
+
+                // --- Shift + S ---
+                else if (e.key.toLowerCase() === "d") {
+                    e.preventDefault();
+                    let $btn = $("#btnDeleteRecord");
+                    if ($btn.length && $btn.is(":visible")) {
+                        $btn.trigger("click");
+                    }
+                }
+            }
+            //Common For Create  End 
+
+            if (module.toLowerCase() === "transactions") {
+                if (action.toLowerCase() === "list") {
+
+
+                    //------
+
+                } else if (action.toLowerCase() === "create" || action.toLowerCase() === "convertinvoice") {
+
+
+
+                    // --- Shift + B ---
+                    if (e.key.toLowerCase() === "b") {
+                        e.preventDefault();
+                        let $input = $("#txtSearchBarcode");
+                        if ($input.length && $input.is(":visible")) {
+                            $input.focus().select();
+                        }
+                    }
+                    // --- Shift +  I ---
+                    else if (e.key.toLowerCase() === "i") {
+                        e.preventDefault();
+                        let $btn = $("#btnImportBarcode");
+                        if ($btn.length && $btn.is(":visible")) {
+                            $btn.trigger("click");
+                        }
+                    }
+                    // --- Shift +  O --- Apply Offer
+                    else if (e.key.toLowerCase() === "a") {
+                        e.preventDefault();
+                        let $btn = $("#btnApplyPromotion");
+                        if ($btn.length && $btn.is(":visible")) {
+                            $btn.trigger("click");
+                        }
+                    }
+
+                    // --- Shift + M ---
+                    else if (e.key.toLowerCase() === "m") {
+                        e.preventDefault();
+                        let $btn = $("#btnOpen");
+                        if ($btn.length && $btn.is(":visible")) {
+                            $btn.trigger("click");
+                        }
+                    }
+
+                    // --- Shift + N ---
+                    else if (e.key.toLowerCase() === "n") {
+                        e.preventDefault();
+                        let $btn = $("#btnClose");
+                        if ($btn.length && $btn.is(":visible")) {
+                            $btn.trigger("click");
+                        }
+                    }
+
+                    // --- Shift + T ---
+                    else if (e.key.toLowerCase() === "t") {
+                        e.preventDefault();
+                        let $btn = $("#btnShippingDetails");
+                        if ($btn.length && $btn.is(":visible")) {
+                            $btn.trigger("click");
+                            $("#BiltyNo").focus();
+                        }
+                    }
+
+                    // --- Shift +  P ---
+                    else if (e.key.toLowerCase() === "p") {
+                        e.preventDefault();
+                        let $btn = $("#btnPaymentInfo");
+                        if ($btn.length && $btn.is(":visible")) {
+                            $btn.trigger("click");
+                            $("#CashAmt").focus();
+                        }
+                    }
+
+                    // --- Shift +  L ---
+                    else if (e.key.toLowerCase() === "l") {
+                        e.preventDefault();
+                        let $btn = $("#btnPrintOption");
+                        if ($btn.length && $btn.is(":visible")) {
+                            $btn.trigger("click");
+                        }
+                    }
+                    // --- Shift +  V ---
+                    else if (e.key.toLowerCase() === "v") {
+                        e.preventDefault();
+                        let $btn = $("#btnVoucherDetail");
+                        if ($btn.length && $btn.is(":visible")) {
+                            $btn.trigger("click");
+                        }
+                    }
+                    // --- Shift +  R ---
+                    else if (e.key.toLowerCase() === "r") {
+                        e.preventDefault();
+                        let $btn = $("#btnRemark");
+                        if ($btn.length && $btn.is(":visible")) {
+                            $btn.trigger("click");
+                            setTimeout(function () {
+                                $('#Remark').focus();
+                            }, 100); // 100ms delay ensures it's visible
+                        }
+                    }
+                }
+            }
+            else if (module.toLowerCase() === "master") {
+                if (action.toLowerCase() === "list") {
+
+
+                } else if (action.toLowerCase() === "create") {
+
+                }
+            }
+            else if (module.toLowerCase() === "report") {
+                if (action.toLowerCase() === "list") {
+
+                }
+            }
+            else if (module.toLowerCase() === "option") {
+                if (action.toLowerCase() === "list") {
+
+                } else if (action.toLowerCase() === "create") {
+
+                }
+            }
+        }
+    });
+}
+
+function Handler_keyShortcut_Common() { }

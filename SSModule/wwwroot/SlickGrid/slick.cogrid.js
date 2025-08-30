@@ -863,8 +863,8 @@
 
     this.comparer = function (a, b) {
         var x = a[thisObj.sortcol], y = b[thisObj.sortcol];
-        x = (x === null ? "" : x.toUpperCase());
-        y = (y === null ? "" : y.toUpperCase());
+        x = (x === null ? "" : x);
+        y = (y === null ? "" : y);
         return (x > y ? 1 : -1);
     };
 
