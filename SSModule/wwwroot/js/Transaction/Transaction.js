@@ -20,7 +20,9 @@ $(document).ready(function () {
     $("#hdGridName").val(GrdName);
     if ((TranAlias == "SRTN" || TranAlias == "SCRN" || TranAlias == "SORD" || TranAlias == "LORD" || TranAlias == "PORD" || TranAlias == "PINV")) {
         $(".trn-barcode").hide();
-    } else { $(".trn-barcode").show(); $("#txtSearchBarcode").focus(); }
+    } else {
+        $(".trn-barcode").show(); /*$("#txtSearchBarcode").focus(); */
+    }
 
     if (TranAlias == "PORD" || TranAlias == "PINV") {
         $("#EntryNo").attr('readonly', 'readonly');
@@ -95,6 +97,7 @@ $(document).ready(function () {
         var fieldName = $(this).attr("id");
         tranModel[fieldName] = $(this).val();
     });
+
     $(".EwayDtl").change(function () {
         var fieldName = $(this).attr("id").replace('EWayDetail_', '');
         tranModel.EWayDetail[fieldName] = $(this).val();
@@ -268,7 +271,11 @@ function BindGrid(GridId, data) {
         cg._MinRows = 50;
         cg.setIdProperty("SrNo");
         cg.setCtrlType(s.setCtrlType);
-
+        if (s.TotalOn != '' && s.TotalOn != undefined) {
+            if (s.TotalOn.replace('~') != '') {
+                cg.setTotalOn(s.TotalOn)
+            }
+        }
         var f = s.ColumnFields.split('~');
         var s = s.setCtrlType.split('~');
         var arrmapData = []

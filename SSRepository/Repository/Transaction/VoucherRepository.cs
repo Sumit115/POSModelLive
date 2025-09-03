@@ -102,43 +102,50 @@ namespace SSRepository.Repository.Transaction
             var list = new List<ColumnStructure>();
             if (GridName.ToString().ToLower() == "dtl")
             {
+                int index = 1;
+                int Orderby = 1; 
                 list = new List<ColumnStructure>
                 {
-                    new ColumnStructure{ pk_Id=1,   Orderby =1,  Heading ="Account",            Fields="AccountName_Text",        Width=20,IsActive=1, SearchType=1,  Sortable=1, CtrlType="C"    },
-                    new ColumnStructure{ pk_Id=2,   Orderby =2,  Heading ="Current Balance",    Fields="CurrentBalance",      Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""     },
-                    new ColumnStructure{ pk_Id=3,   Orderby =3,  Heading ="Debit",              Fields="DebitAmt",            Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"  },
-                    new ColumnStructure{ pk_Id=4,   Orderby =4,  Heading ="Credit",             Fields="CreditAmt",           Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"  },
-                    new ColumnStructure{ pk_Id=5,   Orderby =5,  Heading ="Narration",          Fields="VoucherNarration",    Width=25,IsActive=1, SearchType=1,  Sortable=1, CtrlType="T"  },
-                    new ColumnStructure{ pk_Id=6,   Orderby =6,  Heading ="Location",           Fields="Location",            Width=10,IsActive=0, SearchType=1,  Sortable=1, CtrlType=""     },
-                    new ColumnStructure{ pk_Id=7,   Orderby =7,  Heading ="AccountGroupName",   Fields="AccountGroupName",    Width=10,IsActive=0, SearchType=1,  Sortable=1, CtrlType=""     },
-                    new ColumnStructure{ pk_Id=8,   Orderby =8,  Heading ="Cheque No",          Fields="ChequeNo",            Width=10,IsActive=0, SearchType=1,  Sortable=1, CtrlType=""     },
-                    new ColumnStructure{ pk_Id=9,   Orderby =9,  Heading ="Cheque Date",        Fields="ChequeDate",          Width=10,IsActive=0, SearchType=1,  Sortable=1, CtrlType=""     },
-                    new ColumnStructure{ pk_Id=16,  Orderby =16, Heading ="Del",                Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" }
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Account",            Fields="AccountName_Text",        Width=20,IsActive=1, SearchType=1,  Sortable=1, CtrlType="C"    ,TotalOn=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Current Balance",    Fields="CurrentBalance",      Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""     ,TotalOn=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Debit",              Fields="DebitAmt",            Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"  ,TotalOn="DebitAmt"},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Credit",             Fields="CreditAmt",           Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType="F.2"  ,TotalOn="CreditAmt"},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Narration",          Fields="VoucherNarration",    Width=25,IsActive=1, SearchType=1,  Sortable=1, CtrlType="T"  ,TotalOn=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Location",           Fields="Location",            Width=10,IsActive=0, SearchType=1,  Sortable=1, CtrlType=""     ,TotalOn=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="AccountGroupName",   Fields="AccountGroupName",    Width=10,IsActive=0, SearchType=1,  Sortable=1, CtrlType=""     ,TotalOn=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Cheque No",          Fields="ChequeNo",            Width=10,IsActive=0, SearchType=1,  Sortable=1, CtrlType=""     ,TotalOn=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Cheque Date",        Fields="ChequeDate",          Width=10,IsActive=0, SearchType=1,  Sortable=1, CtrlType=""     ,TotalOn=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Del",                Fields="Delete",              Width=5, IsActive=1, SearchType=0,  Sortable=0, CtrlType="BD" }
 
                 };
             }
             else if (GridName.ToString().ToLower() == "viewdtl")
             {
+                int index = 1;
+                int Orderby = 1;
+
                 list = new List<ColumnStructure>
                 {
-                    new ColumnStructure{ pk_Id=1,   Orderby =1,  Heading ="Account",            Fields="AccountName_Text",    Width=20,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""    },
-                    new ColumnStructure{ pk_Id=2,   Orderby =2,  Heading ="Current Balance",    Fields="CurrentBalance",      Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""     },
-                    new ColumnStructure{ pk_Id=3,   Orderby =3,  Heading ="Mode",               Fields="AccMode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""     },
-                    new ColumnStructure{ pk_Id=4,   Orderby =4,  Heading ="Debit",              Fields="DebitAmt",            Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
-                    new ColumnStructure{ pk_Id=5,   Orderby =5,  Heading ="Credit",             Fields="CreditAmt",           Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
-                    new ColumnStructure{ pk_Id=6,   Orderby =6,  Heading ="Narration",          Fields="VoucherNarration",    Width=25,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  },
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Account",            Fields="AccountName_Text",    Width=20,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""    ,TotalOn=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Current Balance",    Fields="CurrentBalance",      Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""     ,TotalOn=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Mode",               Fields="AccMode",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""     ,TotalOn=""},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Debit",              Fields="DebitAmt",            Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  ,TotalOn="DebitAmt"},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Credit",             Fields="CreditAmt",           Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  ,TotalOn="CreditAmt"},
+                    new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="Narration",          Fields="VoucherNarration",    Width=25,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""  ,TotalOn=""},
                     };
             }
             else
             {
+                int index = 1;
+                int Orderby = 1;
                 list = new List<ColumnStructure>
                 {
-                    new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="#", Fields="sno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="Date", Fields="Entrydt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Series", Fields="Series",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Entry No", Fields="EntryNo",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Amount", Fields="VoucherAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                    new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Narration", Fields="VoucherNarration",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                    new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="#", Fields="sno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn=""},
+                    new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Date", Fields="Entrydt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn=""},
+                    new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Series", Fields="Series",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn=""},
+                    new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Entry No", Fields="EntryNo",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn=""},
+                    new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Amount", Fields="VoucherAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn="VoucherAmt"},
+                    new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Narration", Fields="VoucherNarration",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn=""},
 
                 };
             }

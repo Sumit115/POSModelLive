@@ -47,17 +47,17 @@ namespace SSRepository.Repository.Transaction
                        select new
                        {
                            cou,
-                           ser, 
+                           ser,
                        }).FirstOrDefault();
             if (obj != null)
             {
-                model.FKSeriesId = obj.ser.PkSeriesId; 
+                model.FKSeriesId = obj.ser.PkSeriesId;
             }
             if (model.FKSeriesId == 0)
             {
                 var _entity = (from cou in __dbContext.TblSeriesMas
-                                where cou.TranAlias == TranAlias && cou.DocumentType == DocumentType
-                               && BillingLocation.Contains(cou.FKLocationID.ToString())
+                               where cou.TranAlias == TranAlias && cou.DocumentType == DocumentType
+                              && BillingLocation.Contains(cou.FKLocationID.ToString())
                                select new
                                {
                                    cou
@@ -95,30 +95,32 @@ namespace SSRepository.Repository.Transaction
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>();
-            if ( GridName.ToString().ToLower() == "rtn")
+            if (GridName.ToString().ToLower() == "rtn")
             {
                 list = TrandtlColumnList("S");
             }
-            else if (GridName.ToString().ToLower() == "dtl" )
+            else if (GridName.ToString().ToLower() == "dtl")
             {
                 list = TrandtlColumnList("P");
             }
             else
             {
+                int index = 1;
+                int Orderby = 1;
                 list = new List<ColumnStructure>
                 {
-                 new ColumnStructure{ pk_Id=1, Orderby =1, Heading ="", Fields="sno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="P" },
-                 new ColumnStructure{ pk_Id=2, Orderby =2, Heading ="#", Fields="sno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=3, Orderby =3, Heading ="Date", Fields="Entrydt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=4, Orderby =4, Heading ="Party Name", Fields="PartyName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=5, Orderby =5, Heading ="Party Mobile", Fields="PartyMobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=6, Orderby =6, Heading ="Invoice No.", Fields="Inum",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=7, Orderby =7, Heading ="Amt", Fields="GrossAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=8, Orderby =8, Heading ="Tax Amt", Fields="TaxAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=9, Orderby =9, Heading ="Discount Amt", Fields="TotalDiscount",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=10, Orderby =10, Heading ="RoundOf Amt", Fields="RoundOfDiff",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=11, Orderby =11, Heading ="Shipping Amt ", Fields="Shipping",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                 new ColumnStructure{ pk_Id=12, Orderby =12, Heading ="Net Amt", Fields="NetAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
+                 new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="", Fields="sno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="P" ,TotalOn=""},
+                 new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="#", Fields="sno",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn=""},
+                 new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Date", Fields="Entrydt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn=""},
+                 new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Party Name", Fields="PartyName",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn=""},
+                 new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Party Mobile", Fields="PartyMobile",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn=""},
+                 new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Invoice No.", Fields="Inum",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn=""},
+                 new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Amt", Fields="GrossAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn="GrossAmt"},
+                 new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Tax Amt", Fields="TaxAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn="TaxAmt"},
+                 new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Discount Amt", Fields="TotalDiscount",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn="TotalDiscount"},
+                 new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="RoundOf Amt", Fields="RoundOfDiff",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn="RoundOfDiff"},
+                 new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Shipping Amt ", Fields="Shipping",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn="Shipping"},
+                 new ColumnStructure{ pk_Id=index++, Orderby =Orderby++, Heading ="Net Amt", Fields="NetAmt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn="NetAmt"},
 
             };
             }

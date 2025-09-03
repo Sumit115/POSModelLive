@@ -18,7 +18,7 @@ $(document).ready(function () {
             window.location.href = "/Auth/Logout";
         }
     }, 5000);
-
+    Handler_focusFirstField();
     Handler_keyShortcut();
 });
 
@@ -1435,9 +1435,9 @@ function C_GridColSetup(n, n2, f) {
                         <div class="card-header"> 
                     <h3 class="card-title">Set Grid Layout</h3>
                     <div class="card-tools">
-                        <button type="button" id="btnSaveGridColSetup" class="btn btn-outline-secondary" >
+                        <button type="button" id="btnSaveGridColSetup" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-placement="down" title="Save ( Print + S )">
                         <i class="bi bi-floppy"></i> Save</button>
-                            <button type="button" id="btnReSaveGridColSetup" class="btn btn-outline-primary" >
+                            <button type="button" id="btnReSaveGridColSetup" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="down" title="Preview ( Restore + R )">
                         <i class="bi bi-floppy"></i> Restore</button>
                     </div></div>
                     <div class="card-body">
@@ -1575,8 +1575,52 @@ jQuery.fn.extend({
     }
 });
 
+function Handler_focusFirstField() {
+    (function ($) {
+        function focusFirstField(root) {
+            var $scope = root === document ? $(document) : $(root);
 
+            var $field = $scope.find(
+                'input:not([type=hidden]):visible:enabled:not([readonly]):not([tabindex="-1"]),' +
+                'select:visible:enabled:not([readonly]):not([tabindex="-1"]),' +
+                'textarea:visible:enabled:not([readonly]):not([tabindex="-1"])'
+            ).first();
+
+            if (!$field.length || document.activeElement === $field[0]) return;
+
+            // Wait one frame so the element is actually visible/rendered
+            (window.requestAnimationFrame || setTimeout)(function () {
+                $field.trigger('focus');
+
+                // Optional: auto-select text for text inputs/textarea
+                if ($field.is('input[type="text"], input:not([type]), textarea')) {
+                    try { $field[0].select(); } catch (_) { /* ignore */ }
+                }
+
+                // Optional: if the first field is Select2, open it
+                if ($field.is('select') && $field.data('select2')) {
+                    $field.select2('open');
+                }
+            }, 0);
+        }
+
+        // 1) Normal page load
+        $(function () { focusFirstField(document); });
+        $(window).on('load', function () { focusFirstField(document); });
+
+        // 2) Back/forward cache restores (no 'load' fires here)
+        $(window).on('pageshow', function () { focusFirstField(document); });
+
+        // 3) After any jQuery AJAX completes (partial views, PJAX, etc.)
+        $(document).on('ajaxComplete', function () { focusFirstField(document); });
+
+        // 4) When a Bootstrap modal finishes opening
+        $(document).on('shown.bs.modal', function (e) { focusFirstField(e.target); });
+
+    })(jQuery);
+}
 function Handler_keyShortcut() {
+  
     $(document).on("keydown", function (e) {
 
         if (e.key === "Escape") {
@@ -1850,8 +1894,11 @@ function Handler_keyShortcut() {
                         if ($btn.length && $btn.is(":visible")) {
                             $btn.trigger("click");
                             setTimeout(function () {
-                                $('#Remark').focus();
-                            }, 100); // 100ms delay ensures it's visible
+                                var $remark = $('#Remark');
+                                if ($remark.length) {
+                                    $remark.focus().select(); // focus first, then select
+                                }
+                            }, 500); // 500ms works better for modals
                         }
                     }
                 }
@@ -1879,5 +1926,4 @@ function Handler_keyShortcut() {
         }
     });
 }
-
-function Handler_keyShortcut_Common() { }
+ 
