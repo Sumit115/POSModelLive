@@ -7,8 +7,9 @@ var cgRtn = null;
 var UDIRtn = null;
 var GrdName = 'dtl';
 $(document).ready(function () {
-  
+
     $('#btnDeleteRecord').hide();
+    ModeFormForEdit = Handler.isNullOrEmpty($("#hdModeFormForEdit").val()) ? 1 : parseInt($("#hdModeFormForEdit").val());
     ModeFormForEdit = Handler.isNullOrEmpty($("#hdModeFormForEdit").val()) ? 1 : parseInt($("#hdModeFormForEdit").val());
     Common.InputFormat();
     ControllerName = $("#hdControllerName").val();
@@ -1828,8 +1829,12 @@ function SaveRecord() {
                                 success: function (res) {
 
                                     if (res.status == "success") {
+                                        if (ControllerName == 'SalesInvoice' || ControllerName == 'SalesOrder' || ControllerName == 'PurchaseInvoice') {
 
-                                        if (ControllerName == 'SalesInvoiceTouch') {
+                                            alert('Save Successfully..');
+                                            window.location = Handler.currentPath() + 'List';
+                                        }
+                                        else if (ControllerName == 'SalesInvoiceTouch') {
                                             alert('Save Successfully..');
                                             location.reload();
                                         } else if (ControllerName == 'WalkingSalesInvoice') {
@@ -1880,7 +1885,8 @@ function PrintInvoice(pk_Id, FkSeriesId) {
 
             if (res.status == "success") {
                 window.open(res.data.InvoiceUrl, '_blank');
-                window.location = Handler.currentPath() + 'List';
+                window.location.reload();
+                //window.location = Handler.currentPath() + 'List';
             }
             else
                 alert(res);
@@ -2343,8 +2349,10 @@ function ApplyPromotion() {
 var cgImport = null;
 function ImportDataPopup() {
 
+    $('#btnSubmit_BindGrid_ImportedData').hide();
     $('#ImportDatafile').val('');
     $("#DDTImport").html('');
+    $("#DDTImport").removeAttr('style');
     $('.model-importdata').modal('toggle');
 }
 function ImportDataFromFile() {
@@ -2381,7 +2389,7 @@ function ImportDataFromFile() {
                 //console.log(res)
                 if (res.status == 'success') {
                     if (!Handler.isNullOrEmpty(res.msg))
-                        alert(res.msg);
+                        alert(res.msg.replace(/,\s*/g, ",\n")); 
 
                     var data = res.data;
                     var ColumnHeading = "Artical Match~Artical~SubSection~Size~Color~Qty~MRP";
@@ -2464,15 +2472,19 @@ function ImportDataFromFile() {
                     });
 
                     $(".loader").hide();
+                    $('#btnSubmit_BindGrid_ImportedData').show();
                     //alert("Upload successful!");
                 }
                 else {
-                    alert(res.msg);
+                    alert(res.msg.replace(/,\s*/g, ",\n")); 
                     $(".loader").hide();
                 }
             },
             error: function (xhr, status, error) {
                 alert("Upload failed: " + xhr.responseText);
+            },
+            complete: function () {
+                $('#ImportDatafile').val('');
             }
         });
 
@@ -2523,5 +2535,5 @@ function BindGrid_ImportedData() {
         alert('Please Select SubSection');
     // BindGrid('DDT', tranModel.TranDetails)
 }
- 
- 
+
+

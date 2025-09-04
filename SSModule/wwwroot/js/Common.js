@@ -1612,7 +1612,7 @@ function Handler_focusFirstField() {
         $(window).on('pageshow', function () { focusFirstField(document); });
 
         // 3) After any jQuery AJAX completes (partial views, PJAX, etc.)
-        $(document).on('ajaxComplete', function () { focusFirstField(document); });
+       // $(document).on('ajaxComplete', function () { focusFirstField(document); });
 
         // 4) When a Bootstrap modal finishes opening
         $(document).on('shown.bs.modal', function (e) { focusFirstField(e.target); });
@@ -1624,6 +1624,7 @@ function Handler_keyShortcut() {
     $(document).on("keydown", function (e) {
 
         if (e.key === "Escape") {
+            debugger;
             // Get all visible Bootstrap modals and custom popups
             var $visibleModals = $('.modal.show');      // Bootstrap visible modals
             var $visiblePopups = $('.popup_d:visible'); // Custom visible popups
@@ -1637,8 +1638,12 @@ function Handler_keyShortcut() {
                 console.log("Closing:", topId);
 
                 // Hide based on type
-                if ($top.hasClass('modal')) {
-                    $top.modal('hide'); // Bootstrap modal
+                if ($top.hasClass('model-importdata')) { $('.model-importdata').modal('toggle'); } 
+                else if ($top.hasClass('modal')) {
+                    if ($top.css("model-importdata") === "block") { $top.hide(); }
+                    else {
+                        $top.modal('hide'); // Bootstrap modal
+                    }
                 } else {
                     $top.hide();        // Custom popup
                 }

@@ -41,13 +41,13 @@ function ImportDataFromFile() {
             success: function (res) {
                 //console.log(res)
                 if (res.status == 'success') {
-                    clear_ImportFile();
+                    clear_ImportFile(true);
                     View();
                     alert(res.msg);
                 }
                 else {
                     if (!Handler.isNullOrEmpty(res.msg)) {
-                        alert(res.msg);
+                        alert(res.msg.replace(/,\s*/g, ",\n")); 
                     }
                     if (res.IsLoadGrid) {
                         _PrdList = res.data;
@@ -145,7 +145,7 @@ function ImportDataFromFile() {
                         //alert("Upload successful!");
                     }
                     else
-                        clear_ImportFile();
+                        clear_ImportFile(false);
 
                 }
                 $(".loader").hide();
@@ -192,7 +192,7 @@ function SaveBulk() {
                         datatype: "json",
                         success: function (res) {
                             if (res.status == "success") {
-                                clear_ImportFile();
+                                clear_ImportFile(true);
                                 View();
                                 alert(res.msg);
                             }
@@ -214,13 +214,14 @@ function SaveBulk() {
         alert('Please Select SubSection');
     // BindGrid('DDT', tranModel.TranDetails)
 }
-function clear_ImportFile() {
+function clear_ImportFile(ishidePopup) {
     var modelList = [];
-    $('#ImportDatafile').val('');
-    $('.model-importdata').hide();
+    $('#ImportDatafile').val(''); 
     $("#DDTImport").html('');
     $("#DDTImport").hide();
     $(".loader").hide();
+    if (ishidePopup)
+        $('.model-importdata').hide();
 }
 
 function dropListMaster(data) {
