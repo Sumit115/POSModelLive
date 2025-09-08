@@ -33,6 +33,7 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
+        let isAjaxRunning = false;
         $(document).ready(function () {
              $('#btnDeleteRecord').hide();
             $('#btnServerSave').val('Upload');
@@ -41,11 +42,64 @@
                 alert('@ViewBag.Msg');
             }
             $('#btnServerSave').click(function (e) {
-                e.preventDefault();
-                $("form").submit();
+                if (isAjaxRunning) {
+                    return; // 🚫 ignore if already running
+                }
+                isAjaxRunning = true;
+                ImportDataFromFile();
             });
         })
  
-            
+      
+        function ImportDataFromFile() {
+            if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+                alert('The File APIs are not fully supported in this browser.');
+                return;
+            }
+
+            var input = document.getElementById('File');
+            if (!input) {
+                alert("Um, couldn't find the fileinput element.");
+            }
+            else if (!input.files) {
+                alert("This browser doesn't seem to support the `files` property of file inputs.");
+            }
+            else if (!input.files[0]) {
+                alert("Please select a file");
+            }
+            else {
+                var formData = new FormData();
+                var file = $('#File')[0].files[0];
+                formData.append("file", file);
+                $(".loader").show();
+                $.ajax({
+                    url: Handler.currentPath() + 'ImportDatafile',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        //console.log(res)
+                        if (res.status == 'success') {
+                        
+                        }
+                        else {
+                            alert(res.msg.replace(/,\s*/g, ",\n"));
+                            $(".loader").hide();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Upload failed: " + xhr.responseText);
+                    },
+                    complete: function () {
+                        isAjaxRunning = false;
+                        $('#File').val('');
+                    }
+                });
+
+            }
+
+
+        }
     </script>
 }

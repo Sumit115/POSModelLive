@@ -22,31 +22,34 @@ namespace SSRepository.Repository.Report
 
         public List<ColumnStructure> ColumnList(string GridName = "")
         {
+            int index = 1;
+            int Orderby = 1;
+
             var list = new List<ColumnStructure>();
             //S=Summary | M=Month Wise | D=Day Wise | W=Monthly | Q=Quarterly | C=Cumulative
             if (GridName.ToString() == "S")
             {
-                list.Add(new ColumnStructure { pk_Id = 1, Orderby = 1, Heading = "Name To Display", Fields = "CustomerName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
+                list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Name To Display", Fields = "CustomerName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
             }
             else if (GridName.ToString() == "M")
             {
-                list.Add(new ColumnStructure { pk_Id = 1, Orderby = 1, Heading = "Month", Fields = "MonthName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
+                list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Month", Fields = "MonthName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
             }
             else if (GridName.ToString() == "D")
             {
-                list.Add(new ColumnStructure { pk_Id = 1, Orderby = 1, Heading = "Entry Date", Fields = "EntryDate", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
+                list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Entry Date", Fields = "EntryDate", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
             }
             else
             {
 
             }
-            list.Add(new ColumnStructure { pk_Id = 2, Orderby = 2, Heading = "TradeDisc", Fields = "TradeDiscAmt", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = 3, Orderby = 3, Heading = "Tax Amt", Fields = "TaxAmt", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = 4, Orderby = 4, Heading = "Cash Disc Amt", Fields = "CashDiscountAmt", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = 5, Orderby = 5, Heading = "Adj Amt", Fields = "RoundOfDiff", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = 6, Orderby = 6, Heading = "Net Amt", Fields = "NetAmt", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = 7, Orderby = 7, Heading = "Net Amt-Tax Amt", Fields = "GrossAmt", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = 8, Orderby = 8, Heading = "Credit Amt", Fields = "CreditAmt", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "TradeDisc", Fields = "TradeDiscAmt", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "TradeDiscAmt" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Tax Amt", Fields = "TaxAmt", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "TaxAmt" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Cash Disc Amt", Fields = "CashDiscountAmt", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "CashDiscountAmt" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Adj Amt", Fields = "RoundOfDiff", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "RoundOfDiff" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Net Amt", Fields = "NetAmt", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "NetAmt" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Net Amt-Tax Amt", Fields = "GrossAmt", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "GrossAmt" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Credit Amt", Fields = "CreditAmt", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "CreditAmt" });
  
             return list;
         }

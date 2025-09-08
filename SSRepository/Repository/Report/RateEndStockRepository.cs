@@ -39,18 +39,20 @@ namespace SSRepository.Repository.Report
             int index = 1;
             int Orderby = 1;
 
-            var list = new List<ColumnStructure>();
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Section", Fields = "CategoryName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Artical", Fields = "NameToDisplay", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Location", Fields = "Location", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Size", Fields = "Batch", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "MRP", Fields = "MRP", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Stock Days", Fields = "StockDays", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Barcode", Fields = "Barcode", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "purchaseQTY", Fields = "purchaseQTY", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~", TotalOn = "purchaseQTY" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "SaleQTY", Fields = "SaleQTY", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~", TotalOn = "SaleQTY" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "RemainQTY", Fields = "RemainQTY", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~", TotalOn = "RemainQTY" });
+            var list = new List<ColumnStructure>
+            {
 
+              new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Section", Fields = "CategoryName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~",TotalOn=""},
+              new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Artical", Fields = "NameToDisplay", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~",TotalOn=""},
+              new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Location", Fields = "Location", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~",TotalOn=""},
+              new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Size", Fields = "Batch", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~",TotalOn=""},
+              new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "MRP", Fields = "MRP", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~",TotalOn=""},
+              new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Stock Days", Fields = "StockDays", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~",TotalOn=""},
+              new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Barcode", Fields = "Barcode", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~",TotalOn=""},
+              new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "purchaseQTY", Fields = "purchaseQTY", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~", TotalOn = "purchaseQTY" },
+              new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "SaleQTY", Fields = "SaleQTY", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~", TotalOn = "SaleQTY" },
+              new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "RemainQTY", Fields = "RemainQTY", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~", TotalOn = "RemainQTY" },
+          };
             return list;
         }
 

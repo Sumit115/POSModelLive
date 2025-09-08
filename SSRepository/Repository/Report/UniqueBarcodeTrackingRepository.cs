@@ -95,21 +95,21 @@ namespace SSRepository.Repository.Report
             int index = 1;
             int Orderby = 1;
             var list = new List<ColumnStructure>();
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Barcode", Fields = "Barcode", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Product", Fields = "ProductName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Batch", Fields = "Batch", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Purchase Entry No", Fields = "PurchaseEntryNo", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Purchase Date", Fields = "PurchaseDate", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Purchase Time", Fields = "PurchaseTime", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Purchase Location", Fields = "PurchaseLocation", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Barcode", Fields = "Barcode", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Product", Fields = "ProductName", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Batch", Fields = "Batch", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Purchase Entry No", Fields = "PurchaseEntryNo", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Purchase Date", Fields = "PurchaseDate", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Purchase Time", Fields = "PurchaseTime", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Purchase Location", Fields = "PurchaseLocation", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "" });
 
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Sales Entry No", Fields = "SalesEntryNo", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Sales Date", Fields = "SalesDate", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Sales Time", Fields = "SalesTime", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Sales Location", Fields = "SalesLocation", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Sales Entry No", Fields = "SalesEntryNo", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Sales Date", Fields = "SalesDate", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Sales Time", Fields = "SalesTime", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Sales Location", Fields = "SalesLocation", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "" });
 
 
-            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Current Location", Fields = "CurrentLocation", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" });
+            list.Add(new ColumnStructure { pk_Id = index++, Orderby = Orderby++, Heading = "Current Location", Fields = "CurrentLocation", Width = 10, IsActive = 1, SearchType = 1, Sortable = 1, CtrlType = "~" , TotalOn = "" });
 
             return list;
         }

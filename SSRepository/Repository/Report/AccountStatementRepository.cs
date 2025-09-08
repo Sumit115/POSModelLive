@@ -56,10 +56,10 @@ namespace SSRepository.Repository.Report
             int Orderby = 1;
             var list = new List<ColumnStructure>
             {
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Date", Fields="Entrydt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Cr",    Fields="CreditAmt",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Dr",    Fields="DebitAmt",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
-                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Narration",    Fields="VoucherNarration",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="" },
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Date", Fields="Entrydt",Width=10,IsActive=1, SearchType=1,Sortable=1,CtrlType="~" ,TotalOn=""},
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Cr",    Fields="CreditAmt",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="" ,TotalOn="CreditAmt"},
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Dr",    Fields="DebitAmt",Width=20,IsActive=1, SearchType=1,Sortable=1,CtrlType="" ,TotalOn="DebitAmt"},
+                  new ColumnStructure{ pk_Id=index++,Orderby =Orderby++, Heading ="Narration",    Fields="VoucherNarration",Width=50,IsActive=1, SearchType=1,Sortable=1,CtrlType="" ,TotalOn=""},
             };
             return list;
         }

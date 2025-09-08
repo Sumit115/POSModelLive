@@ -9,7 +9,7 @@ namespace SSRepository.IRepository.Option
 {
     public interface IImportRepository:IBaseRepository
     {
-        string SaveData(List<TranDetails> JsonData);
+        List<string> SaveData_FromFile(string filePath);
 
     }
 }
