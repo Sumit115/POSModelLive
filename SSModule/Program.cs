@@ -150,6 +150,7 @@ builder.Services.AddScoped<IGSTReportRepository, GSTReportRepository>();
 builder.Services.AddScoped<IAccountStatementRepository, AccountStatementRepository>();
 builder.Services.AddScoped<ICreditCardTypeRepository, CreditCardTypeRepository>();
 builder.Services.AddScoped<IReceiptRepository, ReceiptRepository>();
+builder.Services.AddScoped<IStockAndSalesAnalysisRepository, StockAndSalesAnalysisRepository>();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();

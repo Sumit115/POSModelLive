@@ -28,6 +28,7 @@ $(document).ready(function () {
     if (TranAlias == "PORD" || TranAlias == "PINV") {
         $("#EntryNo").attr('readonly', 'readonly');
     }
+    $("#btnClose,#btnOpen").parent().hide();
     if ((TranAlias == "SORD" || TranAlias == "LORD") && tranModel.PkId > 0) {
         if (tranModel.TrnStatus.trim() == 'P' || tranModel.TrnStatus.trim() == 'C') {
             if (tranModel.TrnStatus.trim() == 'C') {
@@ -50,7 +51,7 @@ $(document).ready(function () {
         }
         else { $("#btnServerSave").hide(); }
     }
-    else { $("#btnClose,#btnOpen").parent().hide(); }
+    
 
     if (ControllerName == 'SalesInvoiceTouch') {
         $("#btnServerBack").attr('href', 'javascript:void(0)')

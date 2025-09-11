@@ -114,6 +114,7 @@ namespace SSRepository.Repository.Master
                          {
                              cou.PkSeriesId,
                              cou.Series,
+                             Location = cou.FKLocation.Location,
                              cou.SeriesNo,
                              cou.BillingRate,
                              cou.TranAlias,

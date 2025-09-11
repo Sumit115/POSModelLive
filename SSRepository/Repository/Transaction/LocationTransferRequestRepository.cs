@@ -13,6 +13,8 @@ namespace SSRepository.Repository.Transaction
     {
         public LocationTransferRequestRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
+            //ALl Work in SalesOrder SP
+
             //SPAddUpd = "usp_LocationTransferRequestAddUpd";
             //SPList = "usp_LocationTransferRequestList";
             //SPById = "usp_LocationTransferRequestById";

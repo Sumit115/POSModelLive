@@ -102,6 +102,7 @@ public class Handler
         UniqueBarcodeTracking = 208,
         GSTReport = 209,
         AccountStatement = 210,
+        StockAndSalesAnalysis = 211,
 
         //
         ImportStock = 300,
