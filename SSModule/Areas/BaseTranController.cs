@@ -93,10 +93,10 @@ namespace SSAdmin.Areas
                 {
                     status = "error",
                     msg = ex.Message,
-                    data =model,
+                    data = model,
                 });
             }
-           
+
 
         }
         public JsonResult VoucherColumnChange(TransactionModel model, int rowIndex, string fieldName)
@@ -305,7 +305,7 @@ namespace SSAdmin.Areas
 
         }
 
-     
+
 
         //[HttpPost]
         //public async Task<JsonResult> InvoiceProductList(int pageSize, int pageNo = 1, string search = "",long FkPartyId=0, long FKInvoiceID = 0, DateTime? InvoiceDate = null)
@@ -585,6 +585,22 @@ namespace SSAdmin.Areas
 
         }
 
-    
+        [HttpPost]
+        public string Delete(long PkId, long FkSeriesId, string Flag)
+        {
+            string response = "";
+            try
+            {
+                response = _repository.DeleteRecord(PkId, FkSeriesId, Flag);
+            }
+            catch (Exception ex)
+            {
+                response = ex.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint") ? "use in other transaction" : ex.Message;
+                //CommonCore.WriteLog(ex, "DeleteRecord", ControllerName, GetErrorLogParam());
+                //return CommonCore.SetError(ex.Message);
+            }
+            return response;
+        }
+
     }
 }

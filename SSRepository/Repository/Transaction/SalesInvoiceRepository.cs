@@ -22,6 +22,7 @@ namespace SSRepository.Repository.Transaction
             SPAddUpd = "usp_SalesInvoiceAddUpd";
             SPList = "usp_SalesInvoiceList";
             SPById = "usp_SalesInvoiceById";
+            SPDelete = "usp_SalesInvoiceDelete";
         }
 
         public override string ValidData(TransactionModel objmodel)

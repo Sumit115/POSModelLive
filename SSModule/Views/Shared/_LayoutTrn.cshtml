@@ -39,7 +39,11 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
-                  
+                <li class="nav-item f-status" style="display:none">
+                    <button id="btnCancel" onclick="DeleteRecord('C')" tabindex="-1" type="button" value="" class="btn btn-danger btn-key-84" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Cancel">
+                        Cancel <i class="bi bi-x-lg"></i>
+                    </button>
+                </li>
                 <li class="nav-item f-status" style="display:none">
                     <a id="btnOpen" class="btn btn-sm btn-key-86" style="background: #288e8b !important;width: 87px;color: #fff;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Open ( Shift + M )">Open</a>
                    </li>
@@ -54,7 +58,7 @@
                         <i class="bi bi-floppy"></i>
                         &nbsp;Save
                     </button>
-                    <button id="btnDeleteRecord" onclick="DeleteRecord()" tabindex="-1" type="button" value="" class="btn btn-danger btn-key-84" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete ( Shift + D )">
+                    <button id="btnDeleteRecord" onclick="DeleteRecord('D')" tabindex="-1" type="button" value="" class="btn btn-danger btn-key-84" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete ( Shift + D )">
                         <i class="bi bi-trash3-fill"></i>
                     </button>
                     <a id="btnServerBack" asp-action="List" class="btn btn-outline-danger btn-key-65" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Cancel ( Shift + C )"><i class="bi bi-x-lg"></i></a>

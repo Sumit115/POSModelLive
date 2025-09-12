@@ -15,6 +15,7 @@ $(document).ready(function () {
     ControllerName = $("#hdControllerName").val();
     Load();
     tranModel.TrnStatus = Handler.isNullOrEmpty(tranModel.TrnStatus) ? "P" : tranModel.TrnStatus.replace('\u0000', '');
+    tranModel.InvStatus = Handler.isNullOrEmpty(tranModel.InvStatus) ? "" : tranModel.InvStatus.replace('\u0000', '');
     TranAlias = tranModel.ExtProperties.TranAlias;
     $("#hdFormId").val(tranModel.ExtProperties.FKFormID);
 
@@ -28,7 +29,7 @@ $(document).ready(function () {
     if (TranAlias == "PORD" || TranAlias == "PINV") {
         $("#EntryNo").attr('readonly', 'readonly');
     }
-    $("#btnClose,#btnOpen").parent().hide();
+    $("#btnClose,#btnOpen,#btnCancel").parent().hide();
     if ((TranAlias == "SORD" || TranAlias == "LORD") && tranModel.PkId > 0) {
         if (tranModel.TrnStatus.trim() == 'P' || tranModel.TrnStatus.trim() == 'C') {
             if (tranModel.TrnStatus.trim() == 'C') {
@@ -51,7 +52,12 @@ $(document).ready(function () {
         }
         else { $("#btnServerSave").hide(); }
     }
-    
+    if (TranAlias == "SINV" && tranModel.PkId > 0) {
+        if (tranModel.TrnStatus.trim() == 'C' || tranModel.InvStatus.trim() == 'R') {
+            $("#btnServerSave").hide();
+        } else { $("#btnCancel").parent().show(); }
+    }
+
 
     if (ControllerName == 'SalesInvoiceTouch') {
         $("#btnServerBack").attr('href', 'javascript:void(0)')
@@ -2390,7 +2396,7 @@ function ImportDataFromFile() {
                 //console.log(res)
                 if (res.status == 'success') {
                     if (!Handler.isNullOrEmpty(res.msg))
-                        alert(res.msg.replace(/,\s*/g, ",\n")); 
+                        alert(res.msg.replace(/,\s*/g, ",\n"));
 
                     var data = res.data;
                     var ColumnHeading = "Artical Match~Artical~SubSection~Size~Color~Qty~MRP";
@@ -2477,7 +2483,7 @@ function ImportDataFromFile() {
                     //alert("Upload successful!");
                 }
                 else {
-                    alert(res.msg.replace(/,\s*/g, ",\n")); 
+                    alert(res.msg.replace(/,\s*/g, ",\n"));
                     $(".loader").hide();
                 }
             },
@@ -2537,4 +2543,43 @@ function BindGrid_ImportedData() {
     // BindGrid('DDT', tranModel.TranDetails)
 }
 
+function DeleteRecord(Flag) {
+    let PkId = $('#PkId').val();
+    let FkSeriesId = tranModel.FKSeriesId;
+    if (PkId > 0 && FkSeriesId > 0) {
+        $.ajax({
+            type: "POST",
+            url: Handler.currentPath() + 'Delete',
+            data: { PkId, FkSeriesId, Flag },
+            datatype: "json",
+            success: function (res) {
+                console.log(res);
+                if (res == "") {
+
+                    if (Flag == 'C') {
+                        alert('Cancel Successfully..');
+                        location.reload();
+                    }
+                    else {
+                        alert('Delete Successfully..');
+                        window.location.href = Handler.currentPath() + "List";
+                    }
+
+
+                    // 
+
+                }
+                else
+                    alert(res);
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status == 404) { alert('coming soon'); }
+                //console.error('AJAX Error:', status, error);
+                //console.log('Status Code:', xhr.status);
+                //console.log('Response Text:', xhr.responseText);
+
+            }
+        })
+    } else { alert('invalid request'); }
+}
 

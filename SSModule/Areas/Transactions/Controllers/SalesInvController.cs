@@ -131,5 +131,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
             return Json(res);
 
         }
+
+     
     }
 }

@@ -21,6 +21,7 @@ namespace SSRepository.Repository.Transaction
         public string SPAddUpd = "";
         public string SPList = "";
         public string SPById = "";
+        public string SPDelete = "";
 
         public TranBaseRepository(AppDbContext dbContext, IHttpContextAccessor contextAccessor) : base(dbContext, contextAccessor)
         {
@@ -559,6 +560,27 @@ namespace SSRepository.Repository.Transaction
             }
             return data;
         }
+        public string DeleteRecord(long PkId, long FkSeriesId, string Flag)
+        {
+            string ErrMsg = "";
+             using (SqlConnection con = new SqlConnection(conn))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand(SPDelete, con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@PkId", PkId);
+                cmd.Parameters.AddWithValue("@FkSeriesId", FkSeriesId);
+                cmd.Parameters.AddWithValue("@FKUserId", GetUserID());
+                cmd.Parameters.AddWithValue("@Flag ", Flag);
+                cmd.Parameters.Add(new SqlParameter("@ErrMsg", SqlDbType.NVarChar, int.MaxValue, ParameterDirection.Output, false, 0, 10, "ErrMsg", DataRowVersion.Default, null));
+                cmd.ExecuteNonQuery(); 
+
+                ErrMsg = Convert.ToString(cmd.Parameters["@ErrMsg"].Value);
+                con.Close();
+            }
+            return ErrMsg;
+        }
+
         public TransactionModel GetSingleRecord(long PkId, long FkSeriesId)
         {
 
@@ -623,15 +645,15 @@ namespace SSRepository.Repository.Transaction
                 switch (fieldName)
                 {
                     case "Product":
-                        if ( IsReturn && model.TranReturnDetails[rowIndex].FkId  == 0)
+                        if (IsReturn && model.TranReturnDetails[rowIndex].FkId == 0)
                         {
-                            TranDetailDefault(model,  model.TranReturnDetails[rowIndex]);
-                            GetSetProductReturn(model, model.TranReturnDetails[rowIndex] ,"");
+                            TranDetailDefault(model, model.TranReturnDetails[rowIndex]);
+                            GetSetProductReturn(model, model.TranReturnDetails[rowIndex], "");
                         }
-                        else if (!IsReturn &&  model.TranDetails[rowIndex].FkId == 0)
+                        else if (!IsReturn && model.TranDetails[rowIndex].FkId == 0)
                         {
-                            TranDetailDefault(model,  model.TranDetails[rowIndex]);
-                            GetSetProduct(model,  model.TranDetails[rowIndex], "", 0, model.FKOrderID, model.FKOrderSrID);
+                            TranDetailDefault(model, model.TranDetails[rowIndex]);
+                            GetSetProduct(model, model.TranDetails[rowIndex], "", 0, model.FKOrderID, model.FKOrderSrID);
 
                         }
                         break;
@@ -868,39 +890,39 @@ namespace SSRepository.Repository.Transaction
         {
             if (dtProduct.Rows.Count > 0)
             {
-               var CurStock = Convert.ToDecimal(dtProduct.Rows[0]["CurStock"].ToString());
+                var CurStock = Convert.ToDecimal(dtProduct.Rows[0]["CurStock"].ToString());
                 //if (CurStock > 0 || model.ExtProperties.StockFlag != "O")
                 //{
-                    detail.CurStock = CurStock;
-                    detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
-                    detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
-                    detail.Color = dtProduct.Rows[0]["Color"].ToString();
-                    detail.Batch = dtProduct.Rows[0]["Batch"].ToString();
+                detail.CurStock = CurStock;
+                detail.FkProductId = Convert.ToInt64(dtProduct.Rows[0]["PkProductId"].ToString());
+                detail.FkLotId = Convert.ToInt64(dtProduct.Rows[0]["PkLotId"].ToString());
+                detail.Color = dtProduct.Rows[0]["Color"].ToString();
+                detail.Batch = dtProduct.Rows[0]["Batch"].ToString();
 
-                    detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
-                    detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
-                    detail.Product = dtProduct.Rows[0]["Product"].ToString();
-                    detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
+                detail.FkBrandId = Convert.ToInt64(dtProduct.Rows[0]["FkBrandId"].ToString());
+                detail.FKProdCatgId = Convert.ToInt64(dtProduct.Rows[0]["FKProdCatgId"].ToString());
+                detail.Product = dtProduct.Rows[0]["Product"].ToString();
+                detail.CodingScheme = dtProduct.Rows[0]["CodingScheme"].ToString();
 
-                    detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
-                    detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
-                    detail.TradeRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString());
-                    detail.DistributionRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString());
+                detail.MRP = Convert.ToDecimal(dtProduct.Rows[0]["MRP"].ToString());
+                detail.SaleRate = Convert.ToDecimal(dtProduct.Rows[0]["SaleRate"].ToString());
+                detail.TradeRate = Convert.ToDecimal(dtProduct.Rows[0]["TradeRate"].ToString());
+                detail.DistributionRate = Convert.ToDecimal(dtProduct.Rows[0]["DistributionRate"].ToString());
 
-                    detail.Rate = Convert.ToDecimal(dtProduct.Rows[0][model.BillingRate].ToString());
-                    detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
-                    detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
-                    detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
-                    if (model.TranAlias == "PORD" || model.TranAlias == "PINV" || (model.TranAlias == "PJ_R" && detail.TranType == "I"))
-                    {
-                        detail.FkLotId = 0;
-                    }
+                detail.Rate = Convert.ToDecimal(dtProduct.Rows[0][model.BillingRate].ToString());
+                detail.FKOrderID = Convert.ToInt64(dtProduct.Rows[0]["FkOrderId"].ToString()); ;
+                detail.FKOrderSrID = Convert.ToInt64(dtProduct.Rows[0]["FKOrderSrID"].ToString()); ;
+                detail.OrderSrNo = Convert.ToInt64(dtProduct.Rows[0]["OrderSrNo"].ToString()); ;
+                if (model.TranAlias == "PORD" || model.TranAlias == "PINV" || (model.TranAlias == "PJ_R" && detail.TranType == "I"))
+                {
+                    detail.FkLotId = 0;
+                }
 
-                    if (model.FkPartyId > 0 && model.ExtProperties.TranType == "S" && model.TranAlias != "LORD" && model.TranAlias != "LINV")
-                    {
-                        var _cust = new CustomerRepository(__dbContext, _contextAccessor).GetSingleRecord(model.FkPartyId);
-                        detail.TradeDisc = _cust.Disc;
-                    }
+                if (model.FkPartyId > 0 && model.ExtProperties.TranType == "S" && model.TranAlias != "LORD" && model.TranAlias != "LINV")
+                {
+                    var _cust = new CustomerRepository(__dbContext, _contextAccessor).GetSingleRecord(model.FkPartyId);
+                    detail.TradeDisc = _cust.Disc;
+                }
                 //}
                 //else {
                 //    model.TranDetails = model.TranDetails != null ?model.TranDetails.ToList().Where(x=>x.SrNo!=detail.SrNo).ToList(): model.TranDetails;
@@ -932,7 +954,7 @@ namespace SSRepository.Repository.Transaction
         {
             if (IsReturn)
             {
-                DataTable dtProduct = GetProductReturn(Barcode, model.FKLocationID,0, model.FkPartyId,   model.FKInvoiceID, model.FKInvoiceSrID);
+                DataTable dtProduct = GetProductReturn(Barcode, model.FKLocationID, 0, model.FkPartyId, model.FKInvoiceID, model.FKInvoiceSrID);
                 if (dtProduct.Rows.Count > 0)
                 {
                     if (model.FkPartyId <= 0)
@@ -1546,7 +1568,7 @@ namespace SSRepository.Repository.Transaction
 
         public void SetPaymentDetail(TransactionModel model)
         {
-            
+
 
             decimal _remAmt = model.NetAmt;
             if (model.CreditCard || model.Cheque || model.Credit || model.Cash)
@@ -2286,17 +2308,17 @@ namespace SSRepository.Repository.Transaction
             //            DATE_MODIFIED = cou.ModifiedDate.ToString("dd-MMM-yyyy"),
             //        })).FirstOrDefault();
 
-            var        data = (from cou in __dbContext.TblSalesInvoicetrn
-                    where cou.PartyMobile == Mobile
-                    select(new  
-                    {
-                         cou.FkPartyId,
-                         cou.PartyName,
-                         cou.PartyMobile,
-                         cou.PartyDob,
-                         cou.PartyMarriageDate,
-                         cou.PartyAddress 
-                    })).FirstOrDefault();
+            var data = (from cou in __dbContext.TblSalesInvoicetrn
+                        where cou.PartyMobile == Mobile
+                        select (new
+                        {
+                            cou.FkPartyId,
+                            cou.PartyName,
+                            cou.PartyMobile,
+                            cou.PartyDob,
+                            cou.PartyMarriageDate,
+                            cou.PartyAddress
+                        })).FirstOrDefault();
 
             return data;
         }
@@ -2495,7 +2517,8 @@ namespace SSRepository.Repository.Transaction
 
                 };
             }
-            else if (TranType == "LocRecdtl") {
+            else if (TranType == "LocRecdtl")
+            {
                 list = new List<ColumnStructure>
                 {
                     new ColumnStructure{ pk_Id=index++,   Orderby =Orderby++,  Heading ="ArticalNo",    Fields="Product",             Width=10,IsActive=1, SearchType=1,  Sortable=1, CtrlType=""   ,TotalOn=""},
@@ -2703,8 +2726,8 @@ namespace SSRepository.Repository.Transaction
 
         }
 
-   
-         public object BindImportData(TransactionModel model, List<TranDetails> details)
+
+        public object BindImportData(TransactionModel model, List<TranDetails> details)
         {
             try
             {

@@ -62,5 +62,6 @@ namespace SSRepository.IRepository
         object ApplyPromotion(TransactionModel model);
         object Get_CategoryList(int pageSize, int pageNo = 1, string search = "");
         object BindImportData(TransactionModel model, List<TranDetails> details);
+        string DeleteRecord(long PkId, long FkSeriesId, string Flag);
     }
 }
