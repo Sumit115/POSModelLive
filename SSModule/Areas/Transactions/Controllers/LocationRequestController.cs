@@ -67,7 +67,37 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
         }
 
-
+        //Only For View
+        [HttpGet]
+        [Route("Transactions/LocationRequest/Create/{id?}/{FKSeriesID?}/{isPopup?}")]
+        public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
+        {
+            TransactionModel Trans = new TransactionModel();
+            try
+            {
+                if (id != 0 && pageview.ToLower() == "log")
+                {
+                    ViewBag.PageType = "Log";
+                    Trans = _repository.GetMasterLog<TransactionModel>(id);
+                }
+                else if (id != 0)
+                {
+                    ViewBag.PageType = "Edit";
+                    Trans = _repository.GetSingleRecord(id, FKSeriesID);
+                }
+                else
+                {
+                    return RedirectToAction("List");
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+            }
+           // setDefault(Trans);
+            BindViewBags(Trans);
+            return View(Trans);
+        }
 
     }
 }

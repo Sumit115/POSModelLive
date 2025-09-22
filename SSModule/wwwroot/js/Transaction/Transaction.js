@@ -68,6 +68,13 @@ $(document).ready(function () {
     if (tranModel.PkId <= 0 && tranModel.ExtProperties.TranType == "S" && TranAlias != "SGRN") {
         $("#btnApplyPromotion").show();
     } else { $("#btnApplyPromotion").hide(); }
+
+    if (ControllerName == 'LocationRequest') {
+        $("#btnServerSave,#txtSearchBarcode").hide(); 
+        document.querySelectorAll('input, textarea').forEach(el => el.readOnly = true);
+        document.querySelectorAll('select, button').forEach(el => el.disabled = true);
+
+    }
     $(document.body).keyup(function (e) {
         if (e.keyCode == 120 && e.ctrlKey) {
             AutoFillLastRecord();

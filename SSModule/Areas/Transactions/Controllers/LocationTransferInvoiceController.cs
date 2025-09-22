@@ -84,7 +84,8 @@ namespace SSAdmin.Areas.Transactions.Controllers
                     }
                     Trans.PkId = Trans.FKSeriesId = 0;
                     Trans.EntryNo = 0;
-                    //Trans.TranDetails = new List<TranDetails>();
+                    Trans.EntryDate = DateTime.Now;
+                    Trans.TranDetails = new List<TranDetails>();
                 }
             }
             catch (Exception ex)

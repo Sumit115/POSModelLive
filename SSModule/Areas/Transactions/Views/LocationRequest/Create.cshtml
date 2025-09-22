@@ -1,0 +1,54 @@
+﻿@model SSRepository.Models.TransactionModel
+
+@{
+    ViewData["Title"] = "View";
+    ViewData["bdClass"] = "Salepage Tran";
+}
+<div style="display: flex;justify-content: space-between;overflow: hidden;">
+    <div class="Tran-page-ui">
+        <form id="TranForm" class="form">
+            <partial name="~/Views/Shared/Transactions/_tranHeader.cshtml" />
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Order Schedule Date</label>
+                            @*   @Html.TextBoxFor(m => m.EntryDate, "{0:dd/MM/yyyy}", new { @class = "form-control", autocomplete = "off", @type = "Date" })
+                            *@
+                            <input type="Date" asp-for="OrderScheduleDate" class="form-control trn" />
+                            <span asp-validation-for="OrderScheduleDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Concern Person Name </label>
+                            <input asp-for="ConcernPersonName" class="form-control trn" />
+                            <span asp-validation-for="ConcernPersonName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label">Concern Person Mobile </label>
+                            <input asp-for="ConcernPersonMobile" class="form-control input-number trn" maxlength="10" pattern="Mobile" />
+                            <span asp-validation-for="ConcernPersonMobile" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <partial name="~/Views/Shared/Transactions/_tranGrid.cshtml" />
+            <partial name="~/Views/Shared/Transactions/_tranFooter.cshtml" />
+        </form>
+    </div>
+    <partial name="~/Views/Shared/Transactions/_tranRight.cshtml" />
+</div>
+<input type="hidden" id="hdControllerName" value="LocationRequest" />
+<partial name="~/Views/Shared/Transactions/_tranInfo.cshtml" />
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/js/transaction/transaction.js"></script>
+
+}
