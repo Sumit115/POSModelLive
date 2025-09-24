@@ -1522,7 +1522,7 @@ namespace SSRepository.Repository.Transaction
             }
 
             item.GrossAmt = Math.Round((GrossAmt - item.TradeDiscAmt), 2);
-            item.GstRate = (item.GrossAmt / item.Qty) < 1000 ? 5 : 12;
+            item.GstRate = (item.GrossAmt / item.Qty) < 2500 ? 5 : 18;
             if (model.TaxType == 'E')
             {
                 item.TaxableAmt = item.GrossAmt;
@@ -2848,6 +2848,131 @@ namespace SSRepository.Repository.Transaction
                 //AddImagesAndRemark(obj.PkcountryId, obj.FKProductID, tblCountry.Images, tblCountry.Remarks, tblCountry.ImageStatus.ToString().ToLower(), __FormID, Mode.Trim());
             }
         }
+
+
+        public List<ColumnStructure> GetTrandtlExportColumns(string tranAlias)
+        {
+            var sessionKey = $"ExportColumns_{tranAlias}";
+
+            // Try to get from session
+            var cachedJson = _contextAccessor.HttpContext.Session.GetString(sessionKey);
+            if (!string.IsNullOrEmpty(cachedJson))
+            {
+                return JsonConvert.DeserializeObject<List<ColumnStructure>>(cachedJson);
+            }
+
+            int index = 1;
+            int orderBy = 1;
+
+            var list = new List<ColumnStructure>
+            {
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="Section Group",     Fields="CategoryGroupName",      Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="Section",           Fields="SubCategoryName",   Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="Name",              Fields="Product",           Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="T",  TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="Unit",              Fields="Unit",              Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="Barcode",           Fields="Barcode",           Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="HSN",               Fields="HSNCode",           Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="MRP",               Fields="MRP",               Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="Trade Rate",        Fields="TradeRate",         Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="Sale Rate",         Fields="SaleRate",          Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="Distribution Rate", Fields="DistributionRate",  Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="Colour",            Fields="Color",             Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="QTY",               Fields="Qty",               Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="Discount",          Fields="TradeDisc",         Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="Disc Amt",          Fields="TradeDiscAmt",      Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="Gross Amt",         Fields="GrossAmt",          Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="GST Rate",          Fields="GstRate",           Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="GST Amount",        Fields="GstAmt",            Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="Net Amount",        Fields="NetAmt",            Width=10, IsActive=1, SearchType=1, Sortable=1, CtrlType="",   TotalOn="" },
+                new ColumnStructure{ pk_Id=index++,  Orderby =orderBy++,  Heading ="Size",              Fields="Batch",             Width=5,  IsActive=1, SearchType=0, Sortable=0, CtrlType="",   TotalOn="" }
+            };
+
+            var finalList = list.OrderBy(x => x.Orderby).ToList();
+
+            // Save into session
+            var jsonData = JsonConvert.SerializeObject(finalList);
+            _contextAccessor.HttpContext.Session.SetString(sessionKey, jsonData);
+
+            return finalList;
+        }
+
+        public DataTable GetTrandtlForExport(string tranAlias, List<ColumnStructure> structure, List<TranDetails> details)
+        {
+            var sessionKey = $"ExportColumns_{tranAlias}";
+
+            if (structure == null || structure.Count == 0)
+                structure = GetTrandtlExportColumns(tranAlias);
+
+            // Save structure into session
+            var jsonData = JsonConvert.SerializeObject(structure);
+            _contextAccessor.HttpContext.Session.SetString(sessionKey, jsonData);
+
+            // Only active columns
+            var activeColumns = structure.Where(c => c.IsActive == 1).OrderBy(c => c.Orderby).ToList();
+
+            // Create DataTable with correct types
+            DataTable dt = new DataTable("Export");
+            foreach (var col in activeColumns)
+            {
+                dt.Columns.Add(col.Fields, typeof(object)); // object handles numbers, strings, decimals safely
+            }
+
+            // Preload Products in memory for faster lookup
+            var productIds = details.Select(d => d.FkProductId).Distinct().ToList();
+            var products = __dbContext.TblProductMas
+                            .Where(p => productIds.Contains(p.PkProductId))
+                            .Select(p => new
+                            {
+                                p.PkProductId,
+                                CategoryGroupName = p.FkCategory.FKCategoryGroupMas.CategoryGroupName,
+                                SubCategoryName = p.FkCategory.CategoryName,
+                                Product = p.Product,
+                                Unit = p.FkUnit.UnitName, 
+                                HSNCode = p.HSNCode
+                            })
+                            .ToDictionary(p => p.PkProductId);
+
+            // Fill DataTable
+            foreach (var d in details)
+            {
+                DataRow dr = dt.NewRow();
+
+                // Lookup product
+                products.TryGetValue(d.FkProductId, out var p);
+
+                foreach (var col in activeColumns)
+                {
+                    switch (col.Fields)
+                    {
+                        case "CategoryGroupName": dr[col.Fields] = p?.CategoryGroupName ?? ""; break;
+                        case "SubCategoryName": dr[col.Fields] = p?.SubCategoryName ?? ""; break;
+                        case "Product": dr[col.Fields] = p?.Product ?? ""; break;
+                        case "Unit": dr[col.Fields] = p?.Unit ?? ""; break;
+                        case "Barcode": dr[col.Fields] = d.Barcode ?? ""; break;
+                        case "HSNCode": dr[col.Fields] = p?.HSNCode ?? ""; break;
+                        case "MRP": dr[col.Fields] = d.MRP; break;
+                        case "TradeRate": dr[col.Fields] = d.TradeRate; break;
+                        case "SaleRate": dr[col.Fields] = d.SaleRate; break;
+                        case "DistributionRate": dr[col.Fields] = d.DistributionRate; break;
+                        case "Color": dr[col.Fields] = d.Color ?? ""; break;
+                        case "Qty": dr[col.Fields] = d.Qty; break;
+                        case "TradeDisc": dr[col.Fields] = d.TradeDisc; break;
+                        case "TradeDiscAmt": dr[col.Fields] = d.TradeDiscAmt; break;
+                        case "GrossAmt": dr[col.Fields] = d.GrossAmt; break;
+                        case "GstRate": dr[col.Fields] = d.GstRate; break;
+                        case "GstAmt": dr[col.Fields] = d.GstAmt; break;
+                        case "NetAmt": dr[col.Fields] = d.NetAmt; break;
+                        case "Batch": dr[col.Fields] = d.Batch ?? ""; break;
+                        default: dr[col.Fields] = ""; break;
+                    }
+                }
+
+                dt.Rows.Add(dr);
+            }
+
+            return dt;
+        }
+
 
     }
 }

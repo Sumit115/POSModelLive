@@ -50,4 +50,12 @@
     {
         <partial name="~/Views/Shared/Transactions/_ImportData.cshtml" />
     }
+    @if (Model.ExtProperties.TranAlias == "PINV" || Model.ExtProperties.TranAlias == "PORD" || Model.ExtProperties.TranAlias == "SORD" || Model.ExtProperties.TranAlias == "SINV")
+    {
+
+        <button id="btnPrintOption" class="icon-button" type="button" onclick="TrandtlExportPopup()" data-bs-toggle="tooltip" data-bs-placement="left" title="Export Data">
+            <i class="fas fa-download"></i>
+            </button>
+        
+    }
 </div>

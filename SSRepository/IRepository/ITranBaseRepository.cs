@@ -63,5 +63,7 @@ namespace SSRepository.IRepository
         object Get_CategoryList(int pageSize, int pageNo = 1, string search = "");
         object BindImportData(TransactionModel model, List<TranDetails> details);
         string DeleteRecord(long PkId, long FkSeriesId, string Flag);
+         List<ColumnStructure> GetTrandtlExportColumns(string tranAlias);
+        DataTable GetTrandtlForExport(string tranAlias, List<ColumnStructure> structure, List<TranDetails> details);
     }
 }

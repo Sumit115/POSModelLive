@@ -1,4 +1,5 @@
 ﻿
+using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Presentation;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -602,5 +603,54 @@ namespace SSAdmin.Areas
             return response;
         }
 
+        [HttpPost]
+        public JsonResult GetTrandtlExportColumns()
+        {
+            return Json(new
+            {
+                status = "success",
+                data = _repository.GetTrandtlExportColumns(TranAlias)
+            });
+
+        }
+        [HttpPost]
+        public JsonResult TrandtlExport(List<ColumnStructure> structure, List<TranDetails> details)
+        {
+            try
+            {
+                DataTable dtList = _repository.GetTrandtlForExport(TranAlias, structure, details);
+
+                var model = structure.ToList().Where(x => x.IsActive == 1).ToList();
+                DataTable _gridColumn = Handler.ToDataTable(model);
+
+
+                using (XLWorkbook wb = new XLWorkbook())
+                {
+                    DataTable dt = GenerateExcel(_gridColumn, dtList);
+                    wb.Worksheets.Add(dt);
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        wb.SaveAs(stream); 
+                        string base64File = Convert.ToBase64String(stream.ToArray());
+
+                        return Json(new
+                        {
+                            status = "success",
+                            fileName = "detailList.xls",
+                            fileContent = base64File
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = "error",
+                    msg = ex.Message,
+                });
+            }
+
+        }
     }
 }

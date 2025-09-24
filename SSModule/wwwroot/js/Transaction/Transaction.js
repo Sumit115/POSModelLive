@@ -2590,3 +2590,103 @@ function DeleteRecord(Flag) {
     } else { alert('invalid request'); }
 }
 
+
+
+function TrandtlExportPopup() {
+    var TranAlias = tranModel.TranAlias;
+    Common.ajax(Handler.currentPath() + "GetTrandtlExportColumns", {}, "Please Wait...", function (res) {
+        Handler.hide();
+        var d = res.data;
+
+        var htm = `<div class="card card-outline card-primary">
+                        <div class="card-header"> 
+                    <h3 class="card-title">Set Grid Layout</h3>
+                    <div class="card-tools">
+                        <button type="button" id="btnTrandtlExport" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-placement="down" title="Next">
+                        <i class="bi bi-floppy"></i> Next </button>
+                          
+                    </div></div>
+                    <div class="card-body"> 
+                    <div style="height:62vh;overflow: auto;border: solid 1px #efeff6;">
+                    <table class="table">
+                    <thead><tr><th>Column</th><th>Visible</th></thead>
+                    <tbody >`;
+        $(d).each(function (i, v) {
+            htm += '<tr class="trGridColumnw"><td>' + v.Heading + '</td>';
+            htm += ' <td>';
+            htm += '<div class="form-check form-switch">';
+            htm += '<input class="form-check-input" type="checkbox" role="switch" name="chkGridColumnField" ' + (v.IsActive == 1 ? "checked" : "") + ' value="' + v.pk_Id + '" >';
+            htm += '</div>';
+            htm += '  ';
+            htm += '<input type="hidden" name="txtGridColumnHeading"  value="' + v.Heading + '"  /> ';
+            htm += '<input type="hidden" name="txtGridColumnFields"  value="' + v.Fields + '"  /> ';
+            htm += '<input type="hidden" name="txtGridColumnSearchType"  value="' + v.SearchType + '"  /> ';
+            htm += '<input type="hidden" name="txtGridColumnSortable"  value="' + v.Sortable + '"  /> ';
+            htm += '<input type="hidden" name="txtGridColumnCtrlType"  value="' + v.CtrlType + '"  /> ';
+            htm += '<input type="hidden" name="txtGridColumnTotalOn"  value="' + v.TotalOn + '"  /> ';
+            htm += '<input type="hidden" name="txtGridColumnOrderby"  value="' + v.Orderby + '"  /> ';
+            htm += '<input type="hidden" name="txtGridColumnWidth" class="form-control p-1" value="' + v.Width + '"  /> ';
+            htm += '</td></tr>';
+        });
+        htm += ' </tbody></table>';
+        htm += '</div></div></div>';
+        Handler.popUp(htm, { width: "550px", height: "400px" }, function () {
+          
+            $("#btnTrandtlExport").click(function () {
+                var ColList = [];
+                $(".trGridColumnw").each(function () {
+
+                    var chk = $(this).find("[name='chkGridColumnField']");
+                    var wid = $(this).find("[name='txtGridColumnWidth']");
+                    var hding = $(this).find("[name='txtGridColumnHeading']");
+                    var flds = $(this).find("[name='txtGridColumnFields']");
+                    var styp = $(this).find("[name='txtGridColumnSearchType']");
+                    var sotyp = $(this).find("[name='txtGridColumnSortable']");
+                    var ctyp = $(this).find("[name='txtGridColumnCtrlType']");
+                    var odrby = $(this).find("[name='txtGridColumnOrderby']");
+                    var totalon = $(this).find("[name='txtGridColumnTotalOn']");
+                    ColList.push({ pk_Id: chk.val(), Width: wid.val(), Heading: hding.val(), Fields: flds.val(), SearchType: styp.val(), Sortable: sotyp.val(), CtrlType: ctyp.val(), Orderby: odrby.val(), IsActive: (chk.prop("checked") ? 1 : 0), TotalOn: totalon.val() });
+                });
+                var jsonData = JSON.stringify(ColList);
+                TrandtlExport(ColList);
+                return false;
+            });
+
+        });
+    });
+    
+}
+
+function TrandtlExport(structure) {
+   
+        var details = GetDataFromGrid();
+        if (details.length > 0) {
+          
+            //
+            $.ajax({
+                type: "POST",
+                url: Handler.currentPath() + 'TrandtlExport',
+                data: {
+                    structure: structure,
+                    details: details },
+                datatype: "json",
+                success: function (res) {
+                    if (res.status == "success") {
+                        const link = document.createElement("a");
+                        link.href = "data:application/vnd.ms-excel;base64," + res.fileContent;
+                        link.download = res.fileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link); 
+
+                        $(".popup_d").hide();
+                    }
+                    else
+                        alert(res.msg);
+                }
+            })
+        }
+        else { alert('Invalid Request'); }
+    
+}
+
