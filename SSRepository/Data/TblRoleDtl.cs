@@ -14,7 +14,8 @@ namespace SSRepository.Data
         public bool IsEdit { get; set; }
         public bool IsCreate { get; set; }
         public bool IsPrint { get; set; }
-        public bool IsBrowse { get; set; }  
+        public bool IsBrowse { get; set; }
+        public bool IsDelete { get; set; }
         public long FkRoleID { get; set; }
 
     }

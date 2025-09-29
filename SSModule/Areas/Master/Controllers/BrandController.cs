@@ -22,20 +22,24 @@ namespace SSAdmin.Areas.Master.Controllers
     public class BrandController : BaseController
     {
         private readonly IBrandRepository _repository;
-        
-        public BrandController(IBrandRepository repository, IGridLayoutRepository gridLayoutRepository):base(gridLayoutRepository)
+       
+        public BrandController(IBrandRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
             _repository = repository;
             FKFormID = (long)Handler.Form.Brand;
+            PageHeading = "Brand";
         }
-       
+
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         {
             ViewBag.FormId = FKFormID;
+            ViewData["Title"] = PageHeading = "Brand List";
             return View();
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public async Task<JsonResult> List(int pageNo, int pageSize)
         {
             return Json(new
@@ -45,11 +49,12 @@ namespace SSAdmin.Areas.Master.Controllers
             });
         }
 
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(int pageNo, int pageSize)
         {
             var _d = _repository.GetList(pageSize, pageNo);
             DataTable dtList = Handler.ToDataTable(_d);
-            var data = _gridLayoutRepository.GetSingleRecord( FKFormID, "", ColumnList());
+            var data = _gridLayoutRepository.GetSingleRecord(FKFormID, "", ColumnList());
             var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
             DataTable _gridColumn = Handler.ToDataTable(model);
 
@@ -68,8 +73,10 @@ namespace SSAdmin.Areas.Master.Controllers
 
         }
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
+          
             BrandModel Model = new BrandModel();
             try
             {
@@ -86,8 +93,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 }
                 else
                 {
-                    ViewBag.PageType = "Create";
-
+                    ViewBag.PageType = "Create"; 
                 }
             }
             catch (Exception ex)
@@ -101,6 +107,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [FormAuthorize(FormRight.Add,false)]
         public async Task<IActionResult> Create(BrandModel model)
         {
             try

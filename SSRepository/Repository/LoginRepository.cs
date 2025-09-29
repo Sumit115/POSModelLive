@@ -76,19 +76,24 @@ namespace SSRepository.Repository
                 Directory.CreateDirectory(path);
 
 
-            string filePath = Path.Combine("wwwroot", "Data", companyName, userId, FileName);
-            
+            string filePath = Path.Combine(path, FileName);
 
-            FileInfo file = new FileInfo(filePath);
-            if (file.Exists)
-                file.Delete();
-            using (var fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
-            {
-                using (var writer = new StreamWriter(fileStream))
-                {
-                    writer.Write(Data);
-                }
-            }
+            // Always overwrite
+            File.WriteAllText(filePath, Data);
+
+            //string filePath = Path.Combine("wwwroot", "Data", companyName, userId, FileName);
+
+
+            //FileInfo file = new FileInfo(filePath);
+            //if (file.Exists)
+            //    file.Delete();
+            //using (var fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+            //{
+            //    using (var writer = new StreamWriter(fileStream))
+            //    {
+            //        writer.Write(Data);
+            //    }
+            //}
 
         }
 

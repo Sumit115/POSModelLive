@@ -33,6 +33,14 @@ function View() {
                     }
                     else
                         alert(res.msg);
+                }, error: function (xhr, status, error) {
+                    if (xhr.status === 400) {
+                        // Handle Bad Request
+                        let errorMessage = xhr.responseJSON?.message || xhr.responseText || "Bad Request";
+                        alert("Error 400: " + errorMessage);
+                    } else {
+                        alert("Error: " + xhr.status + " - " + error);
+                    }
                 }
             });
 

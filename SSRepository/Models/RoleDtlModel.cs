@@ -30,6 +30,7 @@ namespace SSRepository.Models
         public bool IsCreate { get; set; }
         public bool IsPrint { get; set; }
         public bool IsBrowse { get; set; }
+        public bool IsDelete { get; set; }
         public List<RoleDtlModel>? SubMenu { get; set; }
     }
 

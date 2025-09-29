@@ -125,7 +125,8 @@ namespace SSRepository.Repository.Master
                                      IsEdit = r.IsEdit,
                                      IsCreate = r.IsCreate,
                                      IsPrint = r.IsPrint,
-                                     IsBrowse = r.IsBrowse
+                                     IsBrowse = r.IsBrowse,
+                                     IsDelete = r.IsDelete
                                  })).ToList();
 
                 if (data.RoleDtls.Count <= 0)
@@ -149,7 +150,8 @@ namespace SSRepository.Repository.Master
                                          IsEdit = false,
                                          IsCreate = false,
                                          IsPrint = false,
-                                         IsBrowse = false
+                                         IsBrowse = false,
+                                         IsDelete= false,
                                      })).ToList();
                 }
                 data.RoleDtls = BuildMenuTree(data.RoleDtls, null);
@@ -182,6 +184,7 @@ namespace SSRepository.Repository.Master
                    IsCreate = m.IsCreate,
                    IsPrint = m.IsPrint,
                    IsBrowse = m.IsBrowse,
+                   IsDelete = m.IsDelete,
                    SubMenu = BuildMenuTree(allMenuItems, m.FKFormID) // Recursive call for nested menus
                })
                .ToList();
@@ -282,6 +285,7 @@ namespace SSRepository.Repository.Master
                 tbl.IsCreate = item.IsCreate;
                 tbl.IsPrint = item.IsPrint;
                 tbl.IsBrowse = item.IsBrowse;
+                tbl.IsDelete = item.IsDelete;
                 if (item.SubMenu != null && item.SubMenu.Any())
                 {
                     tbl.IsAccess = MenuAdd(item.SubMenu, PkRoleId);

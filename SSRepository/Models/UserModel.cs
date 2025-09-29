@@ -96,6 +96,7 @@ namespace SSRepository.Models
         public bool IsAccess { get; set; }
         public bool IsEdit { get; set; }
         public bool IsCreate { get; set; }
+        public bool IsDelete { get; set; }
         public bool IsPrint { get; set; }
         public bool IsBrowse { get; set; }
         public List<MenuModel>? SubMenu { get; set; }

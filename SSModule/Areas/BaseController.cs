@@ -48,7 +48,7 @@ namespace SSAdmin.Areas
         }
 
         public long FKFormID = 0;
-
+        public string PageHeading = "";
         public int LoginId
         {
             get
@@ -241,6 +241,13 @@ namespace SSAdmin.Areas
             });
         }
 
+        
+        public IActionResult NoAccess(string error, string title)
+        {
+            ViewBag.Error = error;
+            ViewBag.TitleMessage = title;
+            return View();
+        }
 
     }
 
