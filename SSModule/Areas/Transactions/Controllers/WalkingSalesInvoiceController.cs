@@ -48,7 +48,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 }
                 else
                 {
-                    ViewBag.PageType = id > 0 ? "Edit" : "Create"; 
+                    ViewBag.PageType = id > 0 ? "Edit" : "Create";
                     Trans = _repository.GetSingleRecord(id, FKSeriesID);
                     Trans.FKPostAccID = 12;
                     Trans.Account = "Walking Customer";
@@ -63,6 +63,28 @@ namespace SSAdmin.Areas.Transactions.Controllers
             BindViewBags(Trans);
             return View(Trans);
         }
+
+        [HttpPost]
+        public JsonResult ApplyRemoveCouponCode(TransactionModel model, string forType)
+        {
+            try
+            {
+                return Json(new
+                {
+                    status = "success",
+                    data = _repository.ApplyRemoveCouponCode(model, forType)
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = "error",
+                    msg = ex.Message,
+                });
+            }
+        }
+
 
     }
 }

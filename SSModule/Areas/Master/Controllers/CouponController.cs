@@ -13,33 +13,34 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Azure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using SSRepository.Repository.Master;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Drawing.Printing;
 using ClosedXML.Excel;
 using System.Data;
 
 namespace SSAdmin.Areas.Master.Controllers
 {
     [Area("Master")]
-    public class BrandController : BaseController
+    public class CouponController : BaseController
     {
-        private readonly IBrandRepository _repository;
-       
-        public BrandController(IBrandRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
+        private readonly ICouponRepository _repository; 
+        public CouponController(ICouponRepository repository , IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
-            _repository = repository;
-            FKFormID = (long)Handler.Form.Brand;
-            PageHeading = "Brand";
+            _repository = repository; 
+            FKFormID = (long)Handler.Form.Coupon;
+            PageHeading = "Coupon";
         }
 
         [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         {
             ViewBag.FormId = FKFormID;
-            ViewData["Title"] = PageHeading = "Brand List";
             return View();
         }
 
         [HttpPost]
-        [FormAuthorize(FormRight.Browse,true)]
+        [FormAuthorize(FormRight.Browse, true)]
         public async Task<JsonResult> List(int pageNo, int pageSize)
         {
             return Json(new
@@ -54,7 +55,7 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             var _d = _repository.GetList(pageSize, pageNo);
             DataTable dtList = Handler.ToDataTable(_d);
-            var data = _gridLayoutRepository.GetSingleRecord(FKFormID, "", ColumnList());
+            var data = _gridLayoutRepository.GetSingleRecord( FKFormID, "", ColumnList());
             var model = JsonConvert.DeserializeObject<List<ColumnStructure>>(data.JsonData).ToList().Where(x => x.IsActive == 1).ToList();
             DataTable _gridColumn = Handler.ToDataTable(model);
 
@@ -66,7 +67,7 @@ namespace SSAdmin.Areas.Master.Controllers
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/ms-excel", "Brand-List.xls");// "Purchase-Invoice-List.xls");
+                    return File(stream.ToArray(), "application/ms-excel", "Section-List.xls");// "Purchase-Invoice-List.xls");
                     // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
                 }
             }
@@ -76,15 +77,15 @@ namespace SSAdmin.Areas.Master.Controllers
         [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
-          
-            BrandModel Model = new BrandModel();
+            CouponModel Model = new CouponModel(); 
             try
             {
+              
                 ViewBag.PageType = "";
                 if (id != 0 && pageview.ToLower() == "log")
                 {
                     ViewBag.PageType = "Log";
-                    Model = _repository.GetMasterLog<BrandModel>(id);
+                    Model = _repository.GetMasterLog<CouponModel>(id);
                 }
                 else if (id != 0)
                 {
@@ -93,7 +94,8 @@ namespace SSAdmin.Areas.Master.Controllers
                 }
                 else
                 {
-                    ViewBag.PageType = "Create"; 
+                    ViewBag.PageType = "Create";
+
                 }
             }
             catch (Exception ex)
@@ -101,17 +103,18 @@ namespace SSAdmin.Areas.Master.Controllers
                 //CommonCore.WriteLog(ex, "Create Get ", ControllerName, GetErrorLogParam());
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(0, tblBrandMas);
+            //BindViewBags(0, tblBankMas);
             return View(Model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [FormAuthorize(FormRight.Add,false)]
-        public async Task<IActionResult> Create(BrandModel model)
+        [FormAuthorize(FormRight.Add, false)]
+        public async Task<IActionResult> Create(CouponModel model)
         {
             try
             {
+              
                 if (ModelState.IsValid)
                 {
                     string Mode = "Create";
@@ -145,8 +148,8 @@ namespace SSAdmin.Areas.Master.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
             }
-            //BindViewBags(tblBrandMas.PKID, tblBrandMas);
-            return View(model);
+            //BindViewBags(tblBankMas.PKID, tblBankMas);
+             return View(model);
         }
 
         [HttpPost]
@@ -160,16 +163,19 @@ namespace SSAdmin.Areas.Master.Controllers
             }
             catch (Exception ex)
             {
-                response = ex.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint") ? "use in other transaction" : ex.Message;
+                response = ex.InnerException.Message.Contains("The DELETE statement conflicted") ? "use in other transaction" : ex.Message;
                 //CommonCore.WriteLog(ex, "DeleteRecord", ControllerName, GetErrorLogParam());
                 //return CommonCore.SetError(ex.Message);
             }
             return response;
         }
 
+
         public override List<ColumnStructure> ColumnList(string GridName = "")
         {
             return _repository.ColumnList(GridName);
         }
+
+         
     }
 }

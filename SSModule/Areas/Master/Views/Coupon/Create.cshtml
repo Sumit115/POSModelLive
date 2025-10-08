@@ -1,0 +1,90 @@
+﻿@model SSRepository.Models.CouponModel
+
+@{
+    ViewData["Title"] = "Coupon";
+    ViewData["bdClass"] = "page";
+}
+<style>
+    tr.tbl-delete, tr.tbl-delete input, tr.tbl-delete td {
+        background: red;
+    }
+
+    .shelf-tblCatSize input {
+        border: none;
+    }
+</style>
+<div class="p-3">
+    <form asp-action="Create" class="g-3" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="PKID" />
+
+        <div class="row">
+            <div class="col-md-8">
+                
+                <div class="form-group row">
+                    <label class="col-sm-2">No. Of Coupon</label>
+                    <div class="col-md-6">
+                        <input asp-for="NoOfCoupon" class="form-control" />
+                        <span asp-validation-for="NoOfCoupon" class="text-danger"></span>
+                    </div>
+                </div> 
+            
+                <div class="form-group row">
+                    <label class="col-sm-2">Amount</label>
+                    <div class="col-md-6">
+                        <input asp-for="Amount" class="form-control" />
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+                </div> 
+                
+            </div>
+            <div class="col-md-4">
+                <div class="border p-2">
+                    <h5>Coupon Code</h5>
+                    <div class="row">
+
+                        
+
+                        <div class="col-md-12">
+                            <table id="tblCouponCodes" class="shelf-tblCatSize table table-bordered">
+                               
+                                <tbody class="md-height">
+                                    @{
+                                        int AcNo = -1;
+                                    }
+                                    @if (Model.CouponCodes != null)
+                                    {
+                                        for (int i = 0; i < Model.CouponCodes.Count; i++)
+                                        {
+                                            AcNo++;
+                                            <tr index="0">
+
+                                                <td class="tabel-td-xs">
+                                                    @Model.CouponCodes[i].CouponCode
+                                                </td>
+
+                                                 
+                                            </tr>
+
+                                        }
+
+                                    }
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/master/category.js"></script>
+
+}

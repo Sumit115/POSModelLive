@@ -182,7 +182,10 @@ namespace SSRepository.Repository.Transaction
                     setPromotion_InvoiceValue(objmodel);
                 objmodel.IsTranChange = false;
 
-
+                if (objmodel.NetAmt<0)
+                {
+                    throw new Exception("Invalid Amount");
+                }
             }
             catch (Exception ex) { Error = ex.Message; }
             return Error;
@@ -563,7 +566,7 @@ namespace SSRepository.Repository.Transaction
         public string DeleteRecord(long PkId, long FkSeriesId, string Flag)
         {
             string ErrMsg = "";
-             using (SqlConnection con = new SqlConnection(conn))
+            using (SqlConnection con = new SqlConnection(conn))
             {
                 con.Open();
                 SqlCommand cmd = new SqlCommand(SPDelete, con);
@@ -573,7 +576,7 @@ namespace SSRepository.Repository.Transaction
                 cmd.Parameters.AddWithValue("@FKUserId", GetUserID());
                 cmd.Parameters.AddWithValue("@Flag ", Flag);
                 cmd.Parameters.Add(new SqlParameter("@ErrMsg", SqlDbType.NVarChar, int.MaxValue, ParameterDirection.Output, false, 0, 10, "ErrMsg", DataRowVersion.Default, null));
-                cmd.ExecuteNonQuery(); 
+                cmd.ExecuteNonQuery();
 
                 ErrMsg = Convert.ToString(cmd.Parameters["@ErrMsg"].Value);
                 con.Close();
@@ -1089,7 +1092,7 @@ namespace SSRepository.Repository.Transaction
 
                 SetGridTotal(objmodel);
                 setPromotion_InvoiceValue(objmodel);
-
+                SetPaymentDetail(objmodel);
                 // objmodel.IsTranChange = false;
             }
             return objmodel;
@@ -1555,7 +1558,7 @@ namespace SSRepository.Repository.Transaction
             model.TradeDiscAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2);// + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.TradeDiscAmt), 2);
             model.TotalDiscount = model.CashDiscountAmt + model.TradeDiscAmt;
             decimal NetAmt = Math.Round(model.TranDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);// + Math.Round(model.TranReturnDetails.Where(x => x.ModeForm != 2).Sum(x => x.NetAmt), 2);
-            model.NetAmt = Math.Round((NetAmt - model.CashDiscountAmt) + model.Shipping + model.OtherCharge - (model.RoundOfDiff >= 1 ? model.RoundOfDiff : 0), 2);
+            model.NetAmt = Math.Round((NetAmt - model.CashDiscountAmt) + model.Shipping + model.OtherCharge - (model.RoundOfDiff >= 1 ? model.RoundOfDiff : 0), 2) - model.CouponDiscount;
             if (model.RoundOfDiff < 1)
             {
                 model.RoundOfDiff = model.NetAmt - Math.Floor(model.NetAmt);
@@ -2927,7 +2930,7 @@ namespace SSRepository.Repository.Transaction
                                 CategoryGroupName = p.FkCategory.FKCategoryGroupMas.CategoryGroupName,
                                 SubCategoryName = p.FkCategory.CategoryName,
                                 Product = p.Product,
-                                Unit = p.FkUnit.UnitName, 
+                                Unit = p.FkUnit.UnitName,
                                 HSNCode = p.HSNCode
                             })
                             .ToDictionary(p => p.PkProductId);
@@ -2973,6 +2976,7 @@ namespace SSRepository.Repository.Transaction
             return dt;
         }
 
+      
 
     }
 }

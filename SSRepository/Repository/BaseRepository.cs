@@ -178,6 +178,10 @@ namespace SSRepository.Repository
                 {
                     MaxID = __dbContext.TblCreditCardTypeMas.ToList().Count > 0 ? __dbContext.TblCreditCardTypeMas.ToList().Max(x => x.PkCreditCardTypeId) : 0;
                 }
+                else if (TableName == "TblCouponMas")
+                {
+                    MaxID = __dbContext.TblCouponMas.ToList().Count > 0 ? __dbContext.TblCouponMas.ToList().Max(x => x.PkCouponId) : 0;
+                }
                 return Convert.ToInt64(MaxID) + 1;
             }
             catch (Exception ex)

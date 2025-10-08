@@ -187,6 +187,8 @@ namespace SSRepository.Models
         public Nullable<long> FKInvoiceID { get; set; } 
         public Nullable<long> FKInvoiceSrID { get; set; }
         public string? FKInvoiceID_Text { get; set; }
+        public string? CouponCode { get; set; }
+        public decimal  CouponDiscount { get; set; }
     }
 
     public class ExtPropertie

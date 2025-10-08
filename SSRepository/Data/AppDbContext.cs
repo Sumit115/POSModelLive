@@ -94,7 +94,9 @@ namespace SSRepository.Data
         public virtual DbSet<TblEWayDtlLnk> TblEWayDtlLnk { get; set; } = null!;
         public virtual DbSet<TblCreditCardTypeMas> TblCreditCardTypeMas { get; set; } = null!;
         public virtual DbSet<TblReceipttrn> TblReceipttrn { get; set; } = null!;
-       // public virtual DbSet<TblReceiptdtl> TblReceiptdtl { get; set; } = null!;
+        // public virtual DbSet<TblReceiptdtl> TblReceiptdtl { get; set; } = null!;
+        public virtual DbSet<TblCouponMas> TblCouponMas { get; set; } = null!;
+        public virtual DbSet<TblCouponCodeLnk> TblCouponCodeLnk { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -673,6 +675,21 @@ namespace SSRepository.Data
                        .WithMany()
                        .HasForeignKey(e => e.FkAccountID)
                        .OnDelete(DeleteBehavior.Restrict); 
+            });
+
+            modelBuilder.Entity<TblCouponMas>(entity =>
+            { 
+                entity.HasOne(e => e.FKUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.FKUserID)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<TblCouponCodeLnk>(entity =>
+            {
+                entity.HasOne(e => e.FKCoupon)
+                    .WithMany()
+                    .HasForeignKey(e => e.FkCouponId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

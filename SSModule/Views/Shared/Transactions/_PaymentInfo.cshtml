@@ -12,9 +12,28 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Payment Detail</h5>
+
             </div>
             <div class="modal-body">
+                <div class="row" style=" @(Model.TranAlias=="SINV" && Model.ExtProperties.DocumentType=="C"?"":"display:none")">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <div class="radio-class mr-3 d-flex align-items-center mt-3">
+                                <label>Coupon Code</label>
+                                <input type="text" asp-for="CouponCode" class="form-control" readonly="@(Model != null && !string.IsNullOrEmpty(Model.CouponCode) && Model.PkId > 0)" />
+                            </div>
 
+                        </div>
+                    </div>
+                    <div class="col-md-3" style="@(!string.IsNullOrEmpty(Model.CouponCode)&& Model.PkId>0?"display:none":"")">
+                        <div class="form-group">
+                            <div class="radio-class mr-3 d-flex align-items-center mt-3">
+                                <a href="javascript:void(0)" id="btnCouponCode" onclick="ApplyRemoveCouponCode(this)" class="btn btn-primary mt-2">@(string.IsNullOrEmpty(Model.CouponCode) ? "Apply" : "Remove")</a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">

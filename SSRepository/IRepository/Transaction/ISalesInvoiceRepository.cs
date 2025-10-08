@@ -7,5 +7,6 @@ namespace SSRepository.IRepository.Transaction
 {
     public interface ISalesInvoiceRepository : ITranBaseRepository
     {
+        object ApplyRemoveCouponCode(TransactionModel model, string forType);
     }
 }

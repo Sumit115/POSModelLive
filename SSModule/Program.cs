@@ -151,6 +151,7 @@ builder.Services.AddScoped<IAccountStatementRepository, AccountStatementReposito
 builder.Services.AddScoped<ICreditCardTypeRepository, CreditCardTypeRepository>();
 builder.Services.AddScoped<IReceiptRepository, ReceiptRepository>();
 builder.Services.AddScoped<IStockAndSalesAnalysisRepository, StockAndSalesAnalysisRepository>();
+builder.Services.AddScoped<ICouponRepository, CouponRepository>();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();

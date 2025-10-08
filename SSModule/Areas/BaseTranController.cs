@@ -614,14 +614,25 @@ namespace SSAdmin.Areas
 
         }
         [HttpPost]
-        public JsonResult TrandtlExport(List<ColumnStructure> structure, List<TranDetails> details)
+        public JsonResult TrandtlExport(List<ColumnStructure> structure, TransactionModel model)
         {
             try
             {
-                DataTable dtList = _repository.GetTrandtlForExport(TranAlias, structure, details);
+                if (model.TranDetails == null)
+                    throw new Exception("Invalid Request");
 
-                var model = structure.ToList().Where(x => x.IsActive == 1).ToList();
-                DataTable _gridColumn = Handler.ToDataTable(model);
+                if (model.UniqIdDetails != null)
+                    foreach (var item in model.TranDetails)
+                    {
+                        var barcodes = model.UniqIdDetails.Where(x => x != null && x.SrNo == item.SrNo).Select(x => x.Barcode)
+                                        .Where(b => !string.IsNullOrEmpty(b)).ToList();
+                        item.Barcode = barcodes != null && barcodes.Any() ? string.Join(",", barcodes) : string.Empty;
+                    }
+
+                DataTable dtList = _repository.GetTrandtlForExport(TranAlias, structure, model.TranDetails);
+
+                var modelstructure = structure.ToList().Where(x => x.IsActive == 1).ToList();
+                DataTable _gridColumn = Handler.ToDataTable(modelstructure);
 
 
                 using (XLWorkbook wb = new XLWorkbook())
@@ -630,7 +641,7 @@ namespace SSAdmin.Areas
                     wb.Worksheets.Add(dt);
                     using (MemoryStream stream = new MemoryStream())
                     {
-                        wb.SaveAs(stream); 
+                        wb.SaveAs(stream);
                         string base64File = Convert.ToBase64String(stream.ToArray());
 
                         return Json(new

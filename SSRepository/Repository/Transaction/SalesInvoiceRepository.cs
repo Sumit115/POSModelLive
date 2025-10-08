@@ -130,6 +130,34 @@ namespace SSRepository.Repository.Transaction
             }
         }
 
+        public object ApplyRemoveCouponCode(TransactionModel model, string forType)
+        {
+            if (forType == "Apply" && !string.IsNullOrEmpty(model.CouponCode))
+            {
+                CouponModel? data = (from cou in __dbContext.TblCouponCodeLnk
+                                     where cou.CouponCode == model.CouponCode && cou.FkId == null && cou.FkSeriesId == null
+                                     select (new CouponModel
+                                     {
+                                         Amount = cou.FKCoupon.Amount,
+                                     }
+                             )).FirstOrDefault();
+                if (data == null)
+                    throw new Exception("Invalid Coupon Code!!");
+
+                model.CouponDiscount = data.Amount;
+            }
+            else
+            {
+                model.CouponCode = "";
+                model.CouponDiscount = 0;
+            }
+
+            SetGridTotal(model);
+            SetPaymentDetail(model);
+
+            return model;
+        }
+
         public virtual List<ColumnStructure> ColumnList(string GridName = "")
         {
             var list = new List<ColumnStructure>();

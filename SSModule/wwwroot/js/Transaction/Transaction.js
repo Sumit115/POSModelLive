@@ -70,7 +70,7 @@ $(document).ready(function () {
     } else { $("#btnApplyPromotion").hide(); }
 
     if (ControllerName == 'LocationRequest') {
-        $("#btnServerSave,#txtSearchBarcode").hide(); 
+        $("#btnServerSave,#txtSearchBarcode").hide();
         document.querySelectorAll('input, textarea').forEach(el => el.readOnly = true);
         document.querySelectorAll('select, button').forEach(el => el.disabled = true);
 
@@ -2631,7 +2631,7 @@ function TrandtlExportPopup() {
         htm += ' </tbody></table>';
         htm += '</div></div></div>';
         Handler.popUp(htm, { width: "550px", height: "400px" }, function () {
-          
+
             $("#btnTrandtlExport").click(function () {
                 var ColList = [];
                 $(".trGridColumnw").each(function () {
@@ -2654,39 +2654,77 @@ function TrandtlExportPopup() {
 
         });
     });
-    
+
 }
 
 function TrandtlExport(structure) {
-   
-        var details = GetDataFromGrid();
-        if (details.length > 0) {
-          
-            //
-            $.ajax({
-                type: "POST",
-                url: Handler.currentPath() + 'TrandtlExport',
-                data: {
-                    structure: structure,
-                    details: details },
-                datatype: "json",
-                success: function (res) {
-                    if (res.status == "success") {
-                        const link = document.createElement("a");
-                        link.href = "data:application/vnd.ms-excel;base64," + res.fileContent;
-                        link.download = res.fileName;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link); 
+    tranModel.TranDetails = GetDataFromGrid();
+    if (tranModel.TranDetails.length > 0) {
 
-                        $(".popup_d").hide();
-                    }
-                    else
-                        alert(res.msg);
+        //
+        $.ajax({
+            type: "POST",
+            url: Handler.currentPath() + 'TrandtlExport',
+            data: {
+                structure: structure,
+                model: tranModel
+            },
+            datatype: "json",
+            success: function (res) {
+                if (res.status == "success") {
+                    const link = document.createElement("a");
+                    link.href = "data:application/vnd.ms-excel;base64," + res.fileContent;
+                    link.download = res.fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+
+                    $(".popup_d").hide();
                 }
-            })
-        }
-        else { alert('Invalid Request'); }
-    
+                else
+                    alert(res.msg);
+            }
+        })
+    }
+    else { alert('Invalid Request'); }
+
+}
+
+function ApplyRemoveCouponCode($cntrl) {
+    var forType = $($cntrl).text();
+    var CouponCode = $('#CouponCode').val();
+
+    if ((forType == "Apply" && !Handler.isNullOrEmpty(CouponCode)) || forType == "Remove") {
+        tranModel["CouponCode"] = CouponCode;
+        $(".loader").show();
+        tranModel.TranDetails = GetDataFromGrid();
+
+        $.ajax({
+            type: "POST",
+            url: Handler.currentPath() + 'ApplyRemoveCouponCode',
+            data: { model: tranModel, forType: forType },
+            datatype: "json", success: function (res) {
+                debugger;
+                if (res.status == "success") {
+                    tranModel = res.data;
+                    setFooterData(tranModel);
+                    setPaymentDetail(tranModel);
+                    if (forType == "Apply")
+                        $($cntrl).text('Remove')
+                    else
+                        $($cntrl).text('Apply')
+                }
+                else {
+                    tranModel["CouponCode"] = "";
+                    $('#CouponCode').val('');
+                    alert(res.msg);
+
+                }
+                $(".loader").hide();
+
+            }
+        })
+    }
+    else { alert('Invalid request..!!') }
 }
 

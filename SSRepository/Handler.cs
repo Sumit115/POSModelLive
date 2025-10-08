@@ -66,6 +66,7 @@ public class Handler
         Form = 32,
         ReferBy = 33,
         CreditCardType = 34,
+        Coupon = 35,
 
         SalesOrder = 100,
         SalesInvoice = 101,
