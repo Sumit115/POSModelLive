@@ -40,8 +40,10 @@ namespace SSAdmin.Areas.Master.Controllers
             _unitRepository = unitRepository;
             _VendorRepository = vendorRepository;
             FKFormID = (long)Handler.Form.Product;
+            PageHeading = "Product";
         }
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         {
             ViewBag.FormId = FKFormID;
@@ -49,6 +51,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public async Task<JsonResult> List(int pageNo, int pageSize)
         {
             ResModel res = new ResModel();
@@ -66,6 +69,7 @@ namespace SSAdmin.Areas.Master.Controllers
             return Json(res);
         }
 
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(int pageNo, int pageSize)
         {
             var _d = _repository.GetList(pageSize, pageNo);
@@ -89,6 +93,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         }
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
             ProductModel Model = new ProductModel();
@@ -126,6 +131,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [FormAuthorize(FormRight.Add)]
         public async Task<IActionResult> Create(ProductModel model)
         {
             try
@@ -179,6 +185,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Delete,true)]
         public string Delete(long PKID)
         {
             string response = "";

@@ -26,8 +26,10 @@ namespace SSAdmin.Areas.Master.Controllers
             _branchRepository = BranchRepository;
             _roleRepository = RoleRepository;
             FKFormID = (long)Handler.Form.User;
+            PageHeading = "User";
         }
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         {
             ViewBag.FormId = FKFormID;
@@ -35,6 +37,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public async Task<JsonResult> List(int pageNo, int pageSize)
         {
             return Json(new
@@ -44,6 +47,7 @@ namespace SSAdmin.Areas.Master.Controllers
             });
         }
 
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(int pageNo, int pageSize)
         {
 
@@ -66,6 +70,7 @@ namespace SSAdmin.Areas.Master.Controllers
             }
         }
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
             UserModel Model = new UserModel();
@@ -95,6 +100,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [FormAuthorize(FormRight.Add)]
         public async Task<IActionResult> Create(UserModel model)
         {
             try
@@ -141,6 +147,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Delete,true)]
         public string Delete(long PKID)
         {
             string response = "";

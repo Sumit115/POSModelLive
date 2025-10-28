@@ -25,8 +25,11 @@
                         <a href="#" class="dropdown-item" onclick="ShowFilter('State')" title="State"><i class="bi bi-funnel"></i> State</a>
                     </div>
                 </div>
-            </div>     
-            <button class="btn btn-info" id="btnView" onclick="View()" data-bs-toggle="tooltip" data-bs-placement="bottom" title="View ( Shift + V )"><i class="bi bi-send"></i> &nbsp;View</button>
+            </div>
+            @if (ViewBag.IsBrowse)
+            {
+                <button class="btn btn-info" id="btnView" onclick="View()" data-bs-toggle="tooltip" data-bs-placement="bottom" title="View ( Alt + V )"><i class="bi bi-send"></i> &nbsp;View</button>
+            }
         </div>
     </div>
 

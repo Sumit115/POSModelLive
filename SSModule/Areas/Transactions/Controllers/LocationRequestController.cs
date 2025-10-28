@@ -25,15 +25,19 @@ namespace SSAdmin.Areas.Transactions.Controllers
             FKFormID = (long)Handler.Form.LocationRequest;
             PostInAc = false;
             _repositoryLocation = repositoryLocation;
-        } 
-         
+            PageHeading = "Location Request";
+        }
+
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         {
             ViewBag.LocationList = _repositoryLocation.GetDrpLocation(1000);
             ViewBag.FormId = FKFormID;
             return View();
         }
+       
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public JsonResult List(string FDate, string TDate, string LocationFilter)
         {
             return Json(new
@@ -43,6 +47,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
             });
         }
 
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(string FDate, string TDate, string LocationFilter)
         {
 
@@ -70,6 +75,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
         //Only For View
         [HttpGet]
         [Route("Transactions/LocationRequest/Create/{id?}/{FKSeriesID?}/{isPopup?}")]
+        [FormAuthorize(FormRight.Access)]
         public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();

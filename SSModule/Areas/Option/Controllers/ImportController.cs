@@ -21,13 +21,17 @@ namespace SSAdmin.Areas.Option.Controllers
         {
             _repository = repository;
 
+            FKFormID = (long)Handler.Form.ImportStock;
+            PageHeading = "Import Stock";
         }
 
+        [FormAuthorize(FormRight.Access)]
         public IActionResult Stock()
         {
             return View();
         }
 
+        [FormAuthorize(FormRight.Add,true)]
         public async Task<JsonResult> ImportDatafile(IFormFile file)
         {
             try

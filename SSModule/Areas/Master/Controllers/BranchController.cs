@@ -27,8 +27,10 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             _repository = repository;
             FKFormID = (long)Handler.Form.Branch;
+            PageHeading = "Branch";
         }
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         {
             ViewBag.FormId = FKFormID;
@@ -36,6 +38,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public async Task<JsonResult> List(int pageNo, int pageSize)
         {
             return Json(new
@@ -45,6 +48,7 @@ namespace SSAdmin.Areas.Master.Controllers
             });
         }
 
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(int pageNo, int pageSize)
         {
 
@@ -69,6 +73,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         }
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
             BranchModel Model = new BranchModel();
@@ -109,6 +114,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [FormAuthorize(FormRight.Add)]
         public async Task<IActionResult> Create(BranchModel model)
         {
             try
@@ -166,6 +172,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Delete,true)]
         public string Delete(long PKID)
         {
             string response = "";

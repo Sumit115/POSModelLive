@@ -43,16 +43,24 @@
                     </div>
                 </div>
             </div>
-             <button class="btn btn-info" id="btnView" onclick="Render('')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="View ( Shift + V )"><i class="bi bi-send"></i> &nbsp;View</button>
-
+            @if (ViewBag.IsBrowse)
+            {
+                <button class="btn btn-info" id="btnView" onclick="Render('')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="View ( Alt + V )"><i class="bi bi-send"></i> &nbsp;View</button>
+            }
             <div class="btn-group">
                 <div class="dropdown page-context">
                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" fdprocessedid="etakpo">
                         <i class="bi bi-three-dots-vertical"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end" role="menu">
-                        <a class="dropdown-item" id="btnExportToExcel" onclick="Render('excel')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Export To Excel ( Shift + E )"><i class="bi bi-download"></i>Export To Excel</a>
-                        <a class="dropdown-item" id="btnGridColumn" onclick="ShowGridColumn()" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Set Grid Layout ( Shift + G )"><i class="bi bi-ui-checks-grid"></i>Set Grid Layout</a>
+                        @if (ViewBag.IsPrint)
+                        {
+                            <a class="dropdown-item" id="btnExportToExcel" onclick="Render('excel')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Export To Excel ( Alt + E )"><i class="bi bi-download"></i>Export To Excel</a>
+                        }
+                        @if (ViewBag.IsBrowse)
+                        {
+                            <a class="dropdown-item" id="btnGridColumn" onclick="ShowGridColumn()" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Set Grid Layout ( Alt + G )"><i class="bi bi-ui-checks-grid"></i>Set Grid Layout</a>
+                        }
                     </div>
                 </div>
             </div>

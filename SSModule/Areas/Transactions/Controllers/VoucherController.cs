@@ -20,9 +20,11 @@ namespace SSAdmin.Areas.Transactions.Controllers
             StockFlag = "";
             FKFormID = (long)Handler.Form.Voucher;
             PostInAc = false;
+            PageHeading = "Voucher";
         }
         [HttpGet]
         [Route("Transactions/Voucher/View/{id?}/{FKSeriesID?}/{PageTitle?}")]
+        [FormAuthorize(FormRight.Access)]
         public IActionResult View(long id, long FKSeriesID = 0, string PageTitle = "")
         {
             TransactionModel Trans = new TransactionModel();

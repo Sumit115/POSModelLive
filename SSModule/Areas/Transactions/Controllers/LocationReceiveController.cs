@@ -19,14 +19,19 @@ namespace SSAdmin.Areas.Transactions.Controllers
             FKFormID = (long)Handler.Form.LocationReceive;
             PostInAc = true;
             _repository = repository ;
+            PageHeading = "Location Receive Invoice";
 
         }
+
+        [FormAuthorize(FormRight.Access)]
         public virtual IActionResult List()
         {
             ViewBag.FormId = FKFormID;
             return View();
         }
+       
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public JsonResult List(string FDate, string TDate, string LocationFilter)
         {
             return Json(new
@@ -39,6 +44,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
         [HttpGet]
         [Route("Transactions/LocationReceive/Create/{id?}/{FKSeriesID?}/{isPopup?}")]
+        [FormAuthorize(FormRight.Access)]
         public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();
@@ -86,6 +92,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Add,true)]
         public JsonResult Create(TransactionModel model)
         {
             ResModel res = new ResModel();

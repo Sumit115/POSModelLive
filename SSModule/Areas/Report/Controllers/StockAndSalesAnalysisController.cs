@@ -17,9 +17,13 @@ namespace SSAdmin.Areas.Report.Controllers
         {
             _repository = repository;
             FKFormID = (long)Handler.Form.StockAndSalesAnalysis;
+          
+            PageHeading = "Stock And Sales Analysis Report";
 
             //_repository.SetRootPath(_hostingEnvironment.WebRootPath);
         }
+
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         {
             ViewBag.FormId = FKFormID;
@@ -27,6 +31,7 @@ namespace SSAdmin.Areas.Report.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public JsonResult List(string FromDate, string ToDate,  string ProductFilter, string LocationFilter)
         {
 
@@ -47,6 +52,8 @@ namespace SSAdmin.Areas.Report.Controllers
             return jsonResult;
             //return new JsonResult(data);
         }
+
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(string FromDate, string ToDate, string ProductFilter, string LocationFilter)
         { 
             //_repository.ViewData("L", ProductFilter, "");

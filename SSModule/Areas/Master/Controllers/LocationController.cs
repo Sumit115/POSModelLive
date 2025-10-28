@@ -23,8 +23,10 @@ namespace SSAdmin.Areas.Master.Controllers
             FKFormID = (long)Handler.Form.Location;
             _Vendorrepository = vendorrepository;
             _Userpository = userpository;
+            PageHeading = "Location";
         }
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         {
             ViewBag.FormId = FKFormID;
@@ -32,6 +34,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public async Task<JsonResult> List(int pageNo, int pageSize)
         {
             return Json(new
@@ -41,12 +44,14 @@ namespace SSAdmin.Areas.Master.Controllers
             });
         }
 
+        [FormAuthorize(FormRight.Print)]
         public string Export(string ColumnList, string HeaderList, string Name, string Type)
         {
             string FileName = "";
             return FileName;
         }
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
             LocationModel Model = new LocationModel();
@@ -82,6 +87,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [FormAuthorize(FormRight.Add)]
         public async Task<IActionResult> Create(LocationModel model)
         {
             try
@@ -127,6 +133,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Delete,true)]
         public string Delete(long PKID)
         {
             string response = "";

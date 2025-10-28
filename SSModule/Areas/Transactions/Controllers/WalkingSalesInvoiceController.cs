@@ -24,8 +24,10 @@ namespace SSAdmin.Areas.Transactions.Controllers
             DocumentType = "C";
             FKFormID = (long)Handler.Form.WalkingSalesInvoice;
             PostInAc = true;
+            PageHeading = "Walking Sales Invoice";
         }
 
+        [FormAuthorize(FormRight.Access)]
         public virtual IActionResult List()
         {
             ViewBag.FormId = FKFormID;
@@ -35,6 +37,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
         [HttpGet]
         [Route("Transactions/WalkingSalesInvoice/Create/{id?}/{FKSeriesID?}/{isPopup?}")]
+        [FormAuthorize(FormRight.Access)]
         public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();

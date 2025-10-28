@@ -18,7 +18,10 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             _repository = repository;
             FKFormID = (long)Handler.Form.Form;
+            PageHeading = "Menu";
         }
+
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         {
             ViewBag.FormId = FKFormID;
@@ -26,6 +29,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public ResModel List(int pageNo, int pageSize)
         {
             ResModel responseModel = new ResModel();
@@ -43,6 +47,7 @@ namespace SSAdmin.Areas.Master.Controllers
             return responseModel;
         }
 
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(int pageNo, int pageSize)
         {
             var _d = _repository.GetList(pageSize, pageNo);
@@ -67,6 +72,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpGet]
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
             FormModel Model = new FormModel();
@@ -100,6 +106,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [FormAuthorize(FormRight.Add)]
         public async Task<IActionResult> Create(FormModel model)
         {
             try

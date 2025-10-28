@@ -23,8 +23,10 @@ namespace SSAdmin.Areas.Transactions.Controllers
             StockFlag = "O";
             FKFormID = (long)Handler.Form.SalesCrNote;
             PostInAc = true;
+            PageHeading = "Sales Credit Note";
         }
 
+        [FormAuthorize(FormRight.Access)]
         public virtual IActionResult List()
         {
             ViewBag.FormId = FKFormID;
@@ -34,6 +36,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
         [HttpGet]
         [Route("Transactions/SalesCrNote/Create/{id?}/{FKSeriesID?}/{isPopup?}")]
+        [FormAuthorize(FormRight.Access)]
         public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();

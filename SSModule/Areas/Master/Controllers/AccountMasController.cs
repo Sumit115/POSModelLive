@@ -35,8 +35,10 @@ namespace SSAdmin.Areas.Master.Controllers
             _repositoryBranch = branchRepository;
             _Vendorrepository = vendorrepository;
             FKFormID = (long)Handler.Form.AccountMas;
+            PageHeading = "Account";
         }
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         {
             ViewBag.FormId = FKFormID;
@@ -44,6 +46,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public async Task<JsonResult> List(int pageNo, int pageSize)
         {
             return Json(new
@@ -52,6 +55,8 @@ namespace SSAdmin.Areas.Master.Controllers
                 data = _repository.GetList(pageSize, pageNo)
             });
         }
+       
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(int pageNo, int pageSize)
         {
             var _d = _repository.GetList(pageSize, pageNo);
@@ -76,6 +81,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
             AccountMasModel Model = new AccountMasModel();
@@ -123,6 +129,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [FormAuthorize(FormRight.Add)]
         public async Task<IActionResult> Create(AccountMasModel model)
         {
             try
@@ -173,6 +180,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Delete,true)]
         public string Delete(long PKID)
         {
             string response = "";

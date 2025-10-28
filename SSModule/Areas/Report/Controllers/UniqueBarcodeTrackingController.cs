@@ -30,8 +30,11 @@ namespace SSAdmin.Areas.Report.Controllers
             _repository = repository;
             FKFormID = (long)Handler.Form.UniqueBarcodeTracking;
 
+            PageHeading = "Unique Barcode Tracking";
             //_repository.SetRootPath(_hostingEnvironment.WebRootPath);
         }
+
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         {
 
@@ -39,6 +42,7 @@ namespace SSAdmin.Areas.Report.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public async Task<JsonResult> List(string Barcode = "", string ProductFilter = "", string SaleSeriesFilter = "", string SaleEntryNoFrom = "", string SaleEntryNoTo = "", string SaleDateFrom = "", string SaleDateTo = "", string PurchaseSeriesFilter = "", string PurchaseEntryNoFrom = "", string PurchaseEntryNoTo = "", string PurchaseDateFrom = "", string PurchaseDateTo = "")
         {
 
@@ -59,6 +63,7 @@ namespace SSAdmin.Areas.Report.Controllers
             //return new JsonResult(data);
         }
 
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(string Barcode = "", string ProductFilter = "", string SaleSeriesFilter = "", string SaleEntryNoFrom = "", string SaleEntryNoTo = "", string SaleDateFrom = "", string SaleDateTo = "", string PurchaseSeriesFilter = "", string PurchaseEntryNoFrom = "", string PurchaseEntryNoTo = "", string PurchaseDateFrom = "", string PurchaseDateTo = "")
         {
 

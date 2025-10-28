@@ -25,8 +25,10 @@ namespace SSAdmin.Areas.Transactions.Controllers
             StockFlag = "C";
             FKFormID = (long)Handler.Form.ReceiptVoucher;
             PostInAc = false;
+            PageHeading = "Receipt Voucher";
         }
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         {
             ViewBag.FormId = FKFormID;
@@ -34,6 +36,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public async Task<JsonResult> List(string FDate, string TDate)
         {
             return Json(new
@@ -43,6 +46,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
             });
         }
 
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(string FDate, string TDate)
         {
 
@@ -68,6 +72,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
         [HttpGet]
         [Route("Transactions/ReceiptVoucher/Create/{id?}/{FKSeriesID?}/{isPopup?}")]
+        [FormAuthorize(FormRight.Access)]
         public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();
@@ -124,6 +129,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Add,true)]
         public JsonResult Create(TransactionModel model)
         {
             try

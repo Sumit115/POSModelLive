@@ -31,15 +31,18 @@ namespace SSAdmin.Areas.Master.Controllers
             _repository = repository;
             _productRepository = productRepository;
             FKFormID = (long)Handler.Form.ProductLot;
+            PageHeading = "Product Lot";
         }
 
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> Create()
         {
             var Model = new ProdLotDtlModel();
             return View(Model);
         }
         [HttpPost]
+        [FormAuthorize(FormRight.Add)]
         public async Task<JsonResult> Create(ProdLotDtlModel model)
         {
             try

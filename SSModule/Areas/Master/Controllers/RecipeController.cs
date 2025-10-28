@@ -30,14 +30,17 @@ namespace SSAdmin.Areas.Master.Controllers
             _repository = repository;
             _repositoryProduct =  repositoryProduct;
             FKFormID = (long)Handler.Form.Recipe;
+            PageHeading = "Recipe";
         }
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         {
             return View();
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public async Task<JsonResult> List(int pageNo, int pageSize)
         {
             return Json(new
@@ -47,6 +50,7 @@ namespace SSAdmin.Areas.Master.Controllers
             });
         }
 
+        [FormAuthorize(FormRight.Print)]
         public string Export(string ColumnList, string HeaderList, string Name, string Type)
         {
             string FileName = "";
@@ -76,6 +80,8 @@ namespace SSAdmin.Areas.Master.Controllers
             ViewBag.GridOut = _gridLayoutRepository.GetSingleRecord( FKFormID, "rtn", ColumnList("rtn")).JsonData;
 
         }
+      
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
             RecipeModel model = new RecipeModel();
@@ -110,6 +116,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [FormAuthorize(FormRight.Add)]
         public async Task<IActionResult> Create(RecipeModel model)
         {
             try
@@ -152,6 +159,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Delete,true)]
         public string Delete(long PKID)
         {
             string response = "";

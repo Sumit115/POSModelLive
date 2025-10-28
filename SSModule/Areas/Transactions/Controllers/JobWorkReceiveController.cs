@@ -28,15 +28,18 @@ namespace SSAdmin.Areas.Transactions.Controllers
             FKFormID = (long)Handler.Form.JobWorkReceive;
             PostInAc = false;
             _repository = repository;
+            PageHeading = "Receive Job Order";
 
         }
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         {
             return View();
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public JsonResult List(string FDate, string TDate, string LocationFilter)
         {
             return Json(new
@@ -46,6 +49,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
             });
         }
 
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(string FDate, string TDate, string LocationFilter)
         {
 
@@ -96,6 +100,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
         [HttpGet]
         [Route("Transactions/JobWorkReceive/Create/{id?}/{FKSeriesID?}/{isPopup?}")]
+        [FormAuthorize(FormRight.Access)]
         public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();
@@ -127,6 +132,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Add,true)]
         public JsonResult Create(TransactionModel model)
         {
             ResModel res = new ResModel();

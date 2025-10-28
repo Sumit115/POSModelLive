@@ -26,6 +26,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public JsonResult List(string FDate, string TDate, string LocationFilter)
         {
             return Json(new
@@ -34,6 +35,8 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 data = _repository.GetList(FDate, TDate, TranAlias, DocumentType, LocationFilter)
             });
         }
+
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(string FDate, string TDate, string LocationFilter)
         {
 
@@ -79,6 +82,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Add,true)]
         public JsonResult Create(TransactionModel model)
         {
             ResModel res = new ResModel();

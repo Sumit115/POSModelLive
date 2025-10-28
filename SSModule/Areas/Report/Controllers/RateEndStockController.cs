@@ -18,8 +18,11 @@ namespace SSAdmin.Areas.Report.Controllers
             _repository = repository;
             FKFormID = (long)Handler.Form.RateStock;
 
+            PageHeading = "Rate & Stock Report";
             //_repository.SetRootPath(_hostingEnvironment.WebRootPath);
         }
+
+        [FormAuthorize(FormRight.Access)]
         public IActionResult List()
         {
            
@@ -28,6 +31,7 @@ namespace SSAdmin.Areas.Report.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public JsonResult List( string ProductFilter)
         {
 
@@ -49,6 +53,7 @@ namespace SSAdmin.Areas.Report.Controllers
             //return new JsonResult(data);
         }
 
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(string ProductFilter)
         {
             var GroupByColumn = _repository.GroupByColumn(FKFormID, ""); 

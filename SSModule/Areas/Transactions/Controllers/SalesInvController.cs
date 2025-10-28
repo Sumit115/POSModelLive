@@ -27,6 +27,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public JsonResult List(string FDate, string TDate, string LocationFilter, string StateFilter)
         {
             return Json(new
@@ -36,6 +37,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
             });
         }
 
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(string FDate, string TDate, string LocationFilter, string StateFilter)
         {
 
@@ -81,6 +83,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Add,true)]
         public JsonResult Create(TransactionModel model)
         {
             ResModel res = new ResModel();

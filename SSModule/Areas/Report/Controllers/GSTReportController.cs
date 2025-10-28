@@ -28,13 +28,18 @@ namespace SSAdmin.Areas.Report.Controllers
         public GSTReportController(IGSTReportRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
             _repository = repository;
-            FKFormID = (long)Handler.Form.GSTReport; 
+            FKFormID = (long)Handler.Form.GSTReport;
+            PageHeading = "GST Report";
         }
+
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         { 
             return View();
         }
+        
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public async Task<JsonResult> List(string FromDate, string ToDate, string ReportType, string TranAlias,  string LocationFilter = "" )
         {
 
@@ -54,6 +59,8 @@ namespace SSAdmin.Areas.Report.Controllers
             return jsonResult;
             //return new JsonResult(data);
         }
+
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(string FromDate, string ToDate, string ReportType, string TranAlias, string LocationFilter = "")
         {
 

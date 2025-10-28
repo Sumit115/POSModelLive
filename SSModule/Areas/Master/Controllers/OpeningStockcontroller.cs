@@ -24,9 +24,11 @@ namespace SSAdmin.Areas.Master.Controllers
             _ProductLotrepository = productLotRepository;
             _LocationRepository=locationRepository;
             FKFormID = (long)Handler.Form.OpeningStock;
+            PageHeading = "Opening Stock";
         }
 
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> Create()
         {
             var model = new TblProdStockDtlModel();
@@ -36,6 +38,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [FormAuthorize(FormRight.Add)]
         public async Task<IActionResult> Create(TblProdStockDtlModel tblProdStockDtl)
             {
             try

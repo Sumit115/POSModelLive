@@ -18,10 +18,11 @@ namespace SSAdmin.Areas.Transactions.Controllers
             StockFlag = "O";
             FKFormID = (long)Handler.Form.LocationTransferInvoice;
             PostInAc = true;
-            _repositoryRequest = repositoryRequest;
-
+            _repositoryRequest = repositoryRequest; 
+            PageHeading = "Location Transfer Invoice";
         }
 
+        [FormAuthorize(FormRight.Access)]
         public virtual IActionResult List()
         {
             ViewBag.FormId = FKFormID;
@@ -31,6 +32,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
         [HttpGet]
         [Route("Transactions/LocationTransferInvoice/Create/{id?}/{FKSeriesID?}/{isPopup?}")]
+        [FormAuthorize(FormRight.Access)]
         public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();
@@ -64,6 +66,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
         [HttpGet]
         [Route("Transactions/LocationTransferInvoice/ConvertInvoice/{id?}/{FKSeriesID?}/{isPopup?}")]
+        [FormAuthorize(FormRight.Access)]
         public IActionResult ConvertInvoice(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();

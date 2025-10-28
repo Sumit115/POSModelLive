@@ -1650,7 +1650,7 @@ function Handler_keyShortcut() {
             }
         }
 
-        if (e.shiftKey) {
+        if (e.altKey) {
 
             //let currentUrl = window.location.href;
             let path = window.location.pathname.split('/');
@@ -1660,7 +1660,7 @@ function Handler_keyShortcut() {
             let action = path[3];
 
 
-            // Check for Shift + O
+            // Check for Alt + O
             if (e.key.toLowerCase() === 'o') {
                 debugger;
                 e.preventDefault(); // prevent default browser behavior
@@ -1692,7 +1692,7 @@ function Handler_keyShortcut() {
 
             if (action.toLowerCase() === "list") {
 
-                // --- Shift + L ---
+                // --- Alt + L ---
                 if (e.key.toLowerCase() === "g") {
                     e.preventDefault();
                     let $btn = $("#btnGridColumn");
@@ -1710,7 +1710,7 @@ function Handler_keyShortcut() {
                     }
                 }
 
-                // --- Shift + S ---
+                // --- Alt + S ---
                 if (e.key.toLowerCase() === "s") {
                     e.preventDefault();
                     let $btn = $("#btnSaveGridColSetup");
@@ -1718,7 +1718,7 @@ function Handler_keyShortcut() {
                         $btn.trigger("click");
                     }
                 }
-                // --- Shift + R ---
+                // --- Alt + R ---
                 if (e.key.toLowerCase() === "r") {
                     e.preventDefault();
                     let $btn = $("#btnReSaveGridColSetup");
@@ -1727,7 +1727,7 @@ function Handler_keyShortcut() {
                     }
                 }
 
-                // --- Shift + N ---
+                // --- Alt + N ---
                 if (e.key.toLowerCase() === "n") {
                     e.preventDefault();
                     let $btn = $("#create_new");
@@ -1740,7 +1740,7 @@ function Handler_keyShortcut() {
                     }
                 }
 
-                // --- Shift + V ---
+                // --- Alt + V ---
                 if (e.key.toLowerCase() === "v") {
                     e.preventDefault();
                     let $btn = $("#btnView");
@@ -1749,7 +1749,7 @@ function Handler_keyShortcut() {
                     }
                 }
 
-                // --- Shift + E ---
+                // --- Alt + E ---
                 if (e.key.toLowerCase() === "e") {
                     e.preventDefault();
                     let $btn = $("#btnExportToExcel");
@@ -1770,7 +1770,7 @@ function Handler_keyShortcut() {
             //Common For List  End
             //Common For Create  Start 
             else if (action.toLowerCase() === "create") {
-                // --- Shift + C ---
+                // --- Alt + C ---
                 if (e.key.toLowerCase() === "c") {
                     e.preventDefault();
                     let $btn = $("#btnServerBack");
@@ -1783,7 +1783,7 @@ function Handler_keyShortcut() {
                     }
                 }
 
-                // --- Shift + S ---
+                // --- Alt + S ---
                 else if (e.key.toLowerCase() === "s") {
                     e.preventDefault();
                     let $btn = $("#btnServerSave");
@@ -1792,7 +1792,7 @@ function Handler_keyShortcut() {
                     }
                 }
 
-                // --- Shift + S ---
+                // --- Alt + S ---
                 else if (e.key.toLowerCase() === "d") {
                     e.preventDefault();
                     let $btn = $("#btnDeleteRecord");
@@ -1813,7 +1813,7 @@ function Handler_keyShortcut() {
 
 
 
-                    // --- Shift + B ---
+                    // --- Alt + B ---
                     if (e.key.toLowerCase() === "b") {
                         e.preventDefault();
                         let $input = $("#txtSearchBarcode");
@@ -1821,7 +1821,7 @@ function Handler_keyShortcut() {
                             $input.focus().select();
                         }
                     }
-                    // --- Shift +  I ---
+                    // --- Alt +  I ---
                     else if (e.key.toLowerCase() === "i") {
                         e.preventDefault();
                         let $btn = $("#btnImportBarcode");
@@ -1829,7 +1829,7 @@ function Handler_keyShortcut() {
                             $btn.trigger("click");
                         }
                     }
-                    // --- Shift +  O --- Apply Offer
+                    // --- Alt +  O --- Apply Offer
                     else if (e.key.toLowerCase() === "a") {
                         e.preventDefault();
                         let $btn = $("#btnApplyPromotion");
@@ -1838,7 +1838,7 @@ function Handler_keyShortcut() {
                         }
                     }
 
-                    // --- Shift + M ---
+                    // --- Alt + M ---
                     else if (e.key.toLowerCase() === "m") {
                         e.preventDefault();
                         let $btn = $("#btnOpen");
@@ -1847,7 +1847,7 @@ function Handler_keyShortcut() {
                         }
                     }
 
-                    // --- Shift + N ---
+                    // --- Alt + N ---
                     else if (e.key.toLowerCase() === "n") {
                         e.preventDefault();
                         let $btn = $("#btnClose");
@@ -1856,7 +1856,7 @@ function Handler_keyShortcut() {
                         }
                     }
 
-                    // --- Shift + T ---
+                    // --- Alt + T ---
                     else if (e.key.toLowerCase() === "t") {
                         e.preventDefault();
                         let $btn = $("#btnShippingDetails");
@@ -1866,7 +1866,7 @@ function Handler_keyShortcut() {
                         }
                     }
 
-                    // --- Shift +  P ---
+                    // --- Alt +  P ---
                     else if (e.key.toLowerCase() === "p") {
                         e.preventDefault();
                         let $btn = $("#btnPaymentInfo");
@@ -1876,7 +1876,7 @@ function Handler_keyShortcut() {
                         }
                     }
 
-                    // --- Shift +  L ---
+                    // --- Alt +  L ---
                     else if (e.key.toLowerCase() === "l") {
                         e.preventDefault();
                         let $btn = $("#btnPrintOption");
@@ -1884,7 +1884,7 @@ function Handler_keyShortcut() {
                             $btn.trigger("click");
                         }
                     }
-                    // --- Shift +  V ---
+                    // --- Alt +  V ---
                     else if (e.key.toLowerCase() === "v") {
                         e.preventDefault();
                         let $btn = $("#btnVoucherDetail");
@@ -1892,7 +1892,7 @@ function Handler_keyShortcut() {
                             $btn.trigger("click");
                         }
                     }
-                    // --- Shift +  R ---
+                    // --- Alt +  R ---
                     else if (e.key.toLowerCase() === "r") {
                         e.preventDefault();
                         let $btn = $("#btnRemark");

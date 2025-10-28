@@ -29,14 +29,17 @@ namespace SSAdmin.Areas.Master.Controllers
             _repository = repository;
             _repositoryRegion = repositoryGroupRepository;
             FKFormID = (long)Handler.Form.Area;
+            PageHeading = "Area";
         }
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         {
             return View();
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public async Task<JsonResult> List(int pageNo, int pageSize)
         {
             return Json(new
@@ -46,6 +49,7 @@ namespace SSAdmin.Areas.Master.Controllers
             });
         }
 
+        [FormAuthorize(FormRight.Print)]
         public string Export(string ColumnList, string HeaderList, string Name, string Type)
         {
             string FileName = "";
@@ -69,6 +73,7 @@ namespace SSAdmin.Areas.Master.Controllers
             return FileName;
         }
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
             AreaModel Model = new AreaModel();
@@ -104,6 +109,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [FormAuthorize(FormRight.Add)]
         public async Task<IActionResult> Create(AreaModel model)
         {
             try
@@ -149,6 +155,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Delete,true)]
         public string Delete(long PKID)
         {
             string response = "";

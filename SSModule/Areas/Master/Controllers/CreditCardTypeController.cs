@@ -18,8 +18,10 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             _repository = repository;
             FKFormID = (long)Handler.Form.CreditCardType;
+            PageHeading = "Credit Card Type";
         }
-       
+
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         {
             ViewBag.FormId = FKFormID;
@@ -27,6 +29,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public async Task<JsonResult> List(int pageNo, int pageSize)
         {
             return Json(new
@@ -36,6 +39,7 @@ namespace SSAdmin.Areas.Master.Controllers
             });
         }
 
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(int pageNo, int pageSize)
         {
             var _d = _repository.GetList(pageSize, pageNo);
@@ -59,6 +63,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         }
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
             CreditCardTypeModel Model = new CreditCardTypeModel();
@@ -91,6 +96,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [FormAuthorize(FormRight.Add)]
         public async Task<IActionResult> Create(CreditCardTypeModel model)
         {
             try
@@ -134,6 +140,7 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
+        [FormAuthorize(FormRight.Delete,true)]
         public string Delete(long PKID)
         {
             string response = "";

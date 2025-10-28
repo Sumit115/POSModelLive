@@ -30,9 +30,11 @@ namespace SSAdmin.Areas.Master.Controllers
         {
             _repository = repository;
             FKFormID = (long)Handler.Form.Company;
+            PageHeading = "Company";
         }
 
 
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> Create(long id, string pageview = "")
         {
             CompanyModel Model = new CompanyModel();
@@ -64,6 +66,7 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [FormAuthorize(FormRight.Add)]
         public async Task<IActionResult> Create(CompanyModel model)
         {
             try

@@ -28,13 +28,18 @@ namespace SSAdmin.Areas.Report.Controllers
         public SalesTransactionController(ISalesTransactionRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
             _repository = repository;
-            FKFormID = (long)Handler.Form.SalesTransaction; 
+            FKFormID = (long)Handler.Form.SalesTransaction;
+            PageHeading = "Sales Transaction";
         }
+
+        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List()
         { 
             return View();
         }
+      
         [HttpPost]
+        [FormAuthorize(FormRight.Browse, true)]
         public async Task<JsonResult> List(string FromDate, string ToDate, string ReportType, string TranAlias, string CustomerFilter = "", string LocationFilter = "", string SeriesFilter = "")
         {
 
@@ -54,6 +59,8 @@ namespace SSAdmin.Areas.Report.Controllers
             return jsonResult;
             //return new JsonResult(data);
         }
+
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(string FromDate, string ToDate, string ReportType, string TranAlias, string CustomerFilter = "", string LocationFilter = "", string SeriesFilter = "")
         {
 

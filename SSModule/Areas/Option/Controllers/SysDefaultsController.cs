@@ -24,8 +24,11 @@ namespace SSAdmin.Areas.Option.Controllers
             _repositoryAccountMas = repositoryAccountMas;
             _repositoryAccountGroup = repositoryAccountGroup;
 
+            FKFormID = (long)Handler.Form.sysDefaults;
+            PageHeading = "Profile";
         }
 
+        [FormAuthorize(FormRight.Access)]
         public IActionResult Create()
         {
             var model = new SysDefaults();
@@ -39,6 +42,7 @@ namespace SSAdmin.Areas.Option.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [FormAuthorize(FormRight.Add)]
         public async Task<IActionResult> Create(SysDefaults model)
         {
             try

@@ -15,15 +15,17 @@ namespace SSAdmin.Areas.Option.Controllers
         public EntryLogController(IEntryLogRepository repository, IGridLayoutRepository gridLayoutRepository) : base(gridLayoutRepository)
         {
             _repository = repository;
-            FKFormID = (long)Handler.Form.EntryLog;
-
+            FKFormID = (long)Handler.Form.EntryLog; 
+            PageHeading = "Log";
         }
+        [FormAuthorize(FormRight.Access)]
         public IActionResult List()
         {
             ViewBag.FormId = FKFormID;
             return View();
         }
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public async Task<JsonResult> List(string FromDate, string ToDate)
         {
             var jsonResult = Json(new { });

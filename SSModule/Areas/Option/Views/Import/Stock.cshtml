@@ -35,6 +35,7 @@
     <script>
         let isAjaxRunning = false;
         $(document).ready(function () {
+            debugger;
              $('#btnDeleteRecord').hide();
             $('#btnServerSave').val('Upload');
             $('#btnServerBack').hide();
@@ -52,6 +53,7 @@
  
       
         function ImportDataFromFile() {
+            debugger;
             if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
                 alert('The File APIs are not fully supported in this browser.');
                 return;

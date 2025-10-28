@@ -32,6 +32,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
             PostInAc = true;
             _repositoryCategory = repositoryCategory;
             _repositoryProduct = repositoryProduct;
+            PageHeading = "Sales Invoice Touch";
 
         }
 
@@ -44,6 +45,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
         [HttpGet]
         [Route("Transactions/SalesInvoiceTouch/Create/{id?}/{FKSeriesID?}/{isPopup?}")]
+        [FormAuthorize(FormRight.Access)]
         public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();

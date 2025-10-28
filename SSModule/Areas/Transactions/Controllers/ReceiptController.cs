@@ -28,15 +28,19 @@ namespace SSAdmin.Areas.Transactions.Controllers
             FKFormID = (long)Handler.Form.Receipt;
             PostInAc = true;
             _repository = repository;
+            PageHeading = "Receipt";
 
         }
 
+        [FormAuthorize(FormRight.Access)]
         public virtual IActionResult List()
         {
             ViewBag.FormId = FKFormID;
             return View();
         }
+       
         [HttpPost]
+        [FormAuthorize(FormRight.Browse,true)]
         public JsonResult List(string FDate, string TDate, string LocationFilter, string StateFilter)
         {
             return Json(new
@@ -45,6 +49,8 @@ namespace SSAdmin.Areas.Transactions.Controllers
                 data = _repository.GetList(FDate, TDate, TranAlias, DocumentType, LocationFilter, StateFilter)
             });
         }
+
+        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(string FDate, string TDate, string LocationFilter, string StateFilter)
         {
 
@@ -72,6 +78,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
         [HttpGet]
         [Route("Transactions/Receipt/Create/{id?}/{FKSeriesID?}/{isPopup?}")]
+        [FormAuthorize(FormRight.Access)]
         public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();
@@ -103,6 +110,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
 
         [HttpPost]
+        [FormAuthorize(FormRight.Add,true)]
         public JsonResult Create(TransactionModel model)
         {
             ResModel res = new ResModel();

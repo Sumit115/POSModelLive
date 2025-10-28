@@ -22,8 +22,10 @@ namespace SSAdmin.Areas.Transactions.Controllers
             StockFlag = "O";
             FKFormID = (long)Handler.Form.SalesChallan;
             PostInAc = false;
+            PageHeading = "Sales Challan";
         }
 
+        [FormAuthorize(FormRight.Access)]
         public IActionResult List()
         {
             ViewBag.FormId = FKFormID;
@@ -31,6 +33,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
         }
 
 
+        [FormAuthorize(FormRight.Access)]
         public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();

@@ -19,9 +19,11 @@ namespace SSAdmin.Areas.Transactions.Controllers
             FKFormID = (long)Handler.Form.SalesInvoice;
             PostInAc = true;
             _repositoryOrder = repositoryOrder;
+            PageHeading = "Sales Invoice";
 
         }
 
+        [FormAuthorize(FormRight.Access)]
         public virtual IActionResult List()
         {
             ViewBag.FormId = FKFormID;
@@ -31,6 +33,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
         [HttpGet]
         [Route("Transactions/SalesInvoice/Create/{id?}/{FKSeriesID?}/{isPopup?}")]
+        [FormAuthorize(FormRight.Access)]
         public IActionResult Create(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();
@@ -64,6 +67,7 @@ namespace SSAdmin.Areas.Transactions.Controllers
 
         [HttpGet]
         [Route("Transactions/SalesInvoice/ConvertInvoice/{id?}/{FKSeriesID?}/{isPopup?}")]
+        [FormAuthorize(FormRight.Access)]
         public IActionResult ConvertInvoice(long id, long FKSeriesID = 0, bool isPopup = false, string pageview = "")
         {
             TransactionModel Trans = new TransactionModel();

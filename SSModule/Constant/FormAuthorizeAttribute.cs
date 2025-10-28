@@ -67,11 +67,15 @@ public class FormAuthorizeAttribute : ActionFilterAttribute
                     }
                     else if (context.ActionArguments.TryGetValue("model", out var modelObj) && modelObj is BrandModel model && model.PKID > 0)
                     {
-                        hasAccess = formPermission.IsEdit; 
+                        hasAccess = formPermission.IsEdit;
+                    }
+                    else if (context.ActionArguments.TryGetValue("model", out var modelObj1) && modelObj1 is TransactionModel model1 && model1.PkId > 0)
+                    {
+                        hasAccess = formPermission.IsEdit;
                     }
                     else
                     {
-                        hasAccess = formPermission.IsCreate;
+                        hasAccess = formPermission.IsEdit = formPermission.IsCreate;
                     }
                     break;
                 case FormRight.Delete:
