@@ -50,7 +50,7 @@ namespace SSRepository.Models
 
         public string PartyMobile { get; set; }
 
-        public string PartyAddress { get; set; }
+        public string? PartyAddress { get; set; }
 
         public string PartyGSTN { get; set; }
         public string? PartyDob { get; set; }

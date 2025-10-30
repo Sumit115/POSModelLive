@@ -104,7 +104,7 @@ function ViewData(_d, Export) {
 
 var filterGrid = null;
 function ShowFilter(type) {
-
+   
     if (RPTFilter[type].Data.length > 0) {
 
         showpopupWithData();
@@ -152,13 +152,17 @@ function ShowFilter(type) {
             cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
             filterGrid = cg;
             $("#btnSaveFilter").off("click").on("click", function () {
+                
                 var _List = [];
                 var Filterlist = filterGrid.getData().filter(function (el) { return el.tick })
                 $(Filterlist).each(function (i, v) {
+                    
                     if (RPTFilter[type].IdProperty == "PkProductId")
                         _List.push({ PKID: v.PkProductId });
-                    if (RPTFilter[type].IdProperty == "PKLocationID")
+                    if (RPTFilter[type].IdProperty == "PKLocationID" )
                         _List.push({ PKID: v.PKLocationID });
+                    if ( RPTFilter[type].IdProperty == "PkLocationID")
+                        _List.push({ PKID: v.PkLocationID });
                     if (RPTFilter[type].IdProperty == "PkSeriesId")
                         _List.push({ PKID: v.PkSeriesId });
                     if (RPTFilter[type].IdProperty == "PkId")

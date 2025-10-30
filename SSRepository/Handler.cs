@@ -104,6 +104,7 @@ public class Handler
         GSTReport = 209,
         AccountStatement = 210,
         StockAndSalesAnalysis = 211,
+        WalkingCustomer = 212,
 
         //
         ImportStock = 300,

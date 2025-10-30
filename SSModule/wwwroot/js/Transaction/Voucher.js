@@ -4,6 +4,21 @@ var ControllerName = "";
 var GridName = "dtl";
 var MinRows = 50;
 $(document).ready(function () {
+    document.addEventListener('mousedown', function (e) {
+        if (!cg.outGrid.getEditorLock || !cg.outGrid.getEditorLock().isActive()) return;
+
+        if (e.target.closest('.DDT')) return; // click inside grid -> ignore here
+
+
+        try {
+            cg.outGrid.getEditorLock().cancelCurrentEdit();
+            $(".Editor_Slick_custdropdown").hide()
+        } catch (err) {
+            console.error('cancel error', err);
+        }
+    });
+
+
     $('#btnDeleteRecord').hide();
     $("#btnClose,#btnOpen").hide();
     ControllerName = $("#hdControllerName").val();

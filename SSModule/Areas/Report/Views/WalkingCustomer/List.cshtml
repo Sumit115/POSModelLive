@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "Product Wise Sales";
+    DateTime dt = ViewBag.Date;
+}
+
+<div class="p-1">
+    <div class="form-group row filter m-0 p-2 border-bottom">
+        <div class="col-md-2">
+            <input name="FromDate" type="date" id="FromDate" class="form-control" maxlength="10" placeholder="From Date*" required="" title="From Date*">
+            <span class="field-validation-valid text-danger" data-valmsg-for="FromDate"></span>
+        </div>
+        <div class="col-md-2">
+            <input name="ToDate" type="date" id="ToDate" class="form-control" maxlength="10" placeholder="To Date*" required="" title="To Date*">
+            <span class="field-validation-valid text-danger" data-valmsg-for="ToDate"></span>
+        </div>
+
+        <div class="col-md-4"></div>
+        <div class="col-md-4 text-right">
+            <div class="btn-group">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-funnel"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end" role="menu">
+                        <a href="#" class="dropdown-item" onclick="ShowFilter('Location')" title="Location"><i class="bi bi-funnel"></i> Location</a>
+                    </div>
+                </div>
+            </div>
+            @if (ViewBag.IsBrowse)
+            {
+                <button class="btn btn-info" id="btnView" onclick="Render('')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="View ( Alt + V )"><i class="bi bi-send"></i> &nbsp;View</button>
+            }
+            <div class="btn-group">
+                <div class="dropdown page-context">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" fdprocessedid="etakpo">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end" role="menu">
+                        @if (ViewBag.IsPrint)
+                        {
+                            <a class="dropdown-item" id="btnExportToExcel" onclick="Render('excel')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Export To Excel ( Alt + E )"><i class="bi bi-download"></i>Export To Excel</a>
+                        }
+                        @if (ViewBag.IsBrowse)
+                        {
+                            <a class="dropdown-item" id="btnGridColumn" onclick="ShowGridColumn()" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Set Grid Layout ( Alt + G )"><i class="bi bi-ui-checks-grid"></i>Set Grid Layout</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row m-0">
+        <div id="WUCHM" class="col-12 slick-grid">
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/js/report/report.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            RPTOption.IdProperty = IdProperty = "sno";
+            RPTOption.GridHeight = GridHeight = "85vh";
+            RPTOption.Controller = Controller = 'WalkingCustomer';
+            var dt = new Date(@dt.Year, @dt.Month-1, @dt.Day+1);
+            document.getElementById("FromDate").valueAsDate = dt;
+            document.getElementById("ToDate").valueAsDate = dt;
+            //View();
+        });
+        function Render(Export) {
+            Common.Get(".filter", "", function (flag, _d) {
+                if (flag) {
+                    _d["pageNo"] = RPTOption.pageNo;
+                    _d["pageSize"] = RPTOption.pageSize;
+                    _d["LocationFilter"] = RPTFilter.Location.Filter;
+                    ViewData(_d, Export)
+                }
+            });
+        }
+    </script>
+
+
+}

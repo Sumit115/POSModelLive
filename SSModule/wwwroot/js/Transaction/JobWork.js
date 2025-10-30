@@ -3,6 +3,21 @@ var ControllerName = "";
 var TranAlias = "";
 var ModeFormForEdit = 1;
 $(document).ready(function () {
+    document.addEventListener('mousedown', function (e) {
+        if (!cg.outGrid.getEditorLock || !cg.outGrid.getEditorLock().isActive()) return;
+
+        if (e.target.closest('.DDT')) return; // click inside grid -> ignore here
+
+
+        try {
+            cg.outGrid.getEditorLock().cancelCurrentEdit();
+            $(".Editor_Slick_custdropdown").hide()
+        } catch (err) {
+            console.error('cancel error', err);
+        }
+    });
+
+
     $('#btnDeleteRecord').hide();
     Common.InputFormat();
     $('#btnServerSave').click(function (e) {

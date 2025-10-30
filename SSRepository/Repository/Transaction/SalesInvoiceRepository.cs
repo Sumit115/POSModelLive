@@ -117,6 +117,10 @@ namespace SSRepository.Repository.Transaction
                                cou.NetAmt,
                                series.TranAlias,
                                SeriesId = cou.FKSeriesId,
+                               PartyId=cou.FkPartyId,
+                               cou.PartyName,
+                               cou.PartyMobile,
+                               cou.PartyAddress,
                            })
                           .Skip((pageNo - 1) * pageSize)
                           .Take(pageSize)
