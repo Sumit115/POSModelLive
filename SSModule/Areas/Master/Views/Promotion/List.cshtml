@@ -10,7 +10,7 @@
     <li id="contextDelete" data="Delete">Delete</li>
 </ul>
 @section Scripts {
-    <script src="~/js/master/browser.js"></script>
+    <script src="~/js/master/browser.js?id=@ViewBag.fileverson"></script>
     <script>
         $(document).ready(function () {
             $("#create_new").attr("href", "/Master/Promotion/Create/@ViewBag.PromotionDuring" );

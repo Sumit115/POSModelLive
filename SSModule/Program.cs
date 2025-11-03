@@ -153,6 +153,7 @@ builder.Services.AddScoped<IReceiptRepository, ReceiptRepository>();
 builder.Services.AddScoped<IStockAndSalesAnalysisRepository, StockAndSalesAnalysisRepository>();
 builder.Services.AddScoped<ICouponRepository, CouponRepository>();
 builder.Services.AddScoped<IWalkingCustomerRepository, WalkingCustomerRepository>();
+builder.Services.AddScoped<IWalkingCreditAmtRepository, WalkingCreditAmtRepository>();
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDistributedMemoryCache();

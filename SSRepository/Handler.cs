@@ -105,6 +105,7 @@ public class Handler
         AccountStatement = 210,
         StockAndSalesAnalysis = 211,
         WalkingCustomer = 212,
+        WalkingCreditAmt = 213,
 
         //
         ImportStock = 300,

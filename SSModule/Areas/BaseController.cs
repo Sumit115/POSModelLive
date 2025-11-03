@@ -21,7 +21,7 @@ namespace SSAdmin.Areas
         
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            ViewBag.fileverson = 2;
+            ViewBag.fileverson = 3;
 
             string menulist = ""; 
             string companyName = HttpContext.Session.GetString("CompanyName")??"";

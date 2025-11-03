@@ -1,4 +1,4 @@
-﻿ 
+﻿
 var RPTOption = {
     FormId: parseInt($("#hdFormId").val()),
     GridId: "WUCHM",
@@ -8,7 +8,7 @@ var RPTOption = {
     IdProperty: "",
     ProductFilter: '',
     CustomerFilter: '',
-    Controller: 'SalesStock', 
+    Controller: 'SalesStock',
 };
 var RPTFilter = {
     Vendor: { Data: [], Filter: null, IdProperty: "PkId", Field: "Name" },
@@ -31,18 +31,18 @@ function ShowGridColumn() {
 }
 
 function ViewData(_d, Export) {
-    
+
     $(".loader").show();
     if (Export == "excel") {
         var param = "";
         $.each(_d, function (i, val) {
-            
+
             if (!Common.isNullOrEmpty(val)) {
                 param += i + "=" + val + "&";
             }
         });
-        
-        var downloadUrl = '/Report/' + Controller + '/Export?Type=' + Export +'&' + param + '';
+
+        var downloadUrl = '/Report/' + Controller + '/Export?Type=' + Export + '&' + param + '';
         var a = document.createElement("a");
         a.href = downloadUrl;
         a.download = "ReportFile.xls";
@@ -58,11 +58,11 @@ function ViewData(_d, Export) {
             data: _d,
             datatype: "json",
             success: function (res) {
-                 
+
                 var data = JSON.parse(res.data);
-                
+
                 Common.Grid(parseInt(RPTOption.FormId), $("#ReportType").val(), function (s) {
-                    
+
                     var cg = new coGrid("#" + RPTOption.GridId);
                     UDI = cg;
                     cg.setColumnHeading(s.ColumnHeading);
@@ -75,15 +75,27 @@ function ViewData(_d, Export) {
                     cg.setSortableColumns(s.SortableColumns);
                     cg.setIdProperty(RPTOption.IdProperty);
                     cg.setCtrlType(s.setCtrlType);
-                      if (s.TotalOn != '' && s.TotalOn != undefined) {
+                    if (s.TotalOn != '' && s.TotalOn != undefined) {
                         if (s.TotalOn.replace('~') != '') {
                             cg.setTotalOn(s.TotalOn)
                         }
-                    } 
+                    }
                     cg.bind(data);
                     cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
 
-                   
+                    cg.outGrid.onClick.subscribe(function (e, args) {
+
+                        if (args.cell != undefined) {
+                            var field = cg.columns[args.cell].field;
+                            var PartyMobile = args.grid.getDataItem(args.row)["PartyMobile"];
+                            if (field == "View") {
+                                ViewDetailData(PartyMobile);
+                            }
+
+                        }
+                    });
+
+
                 });
                 $(".loader").hide();
             }
@@ -104,7 +116,7 @@ function ViewData(_d, Export) {
 
 var filterGrid = null;
 function ShowFilter(type) {
-   
+
     if (RPTFilter[type].Data.length > 0) {
 
         showpopupWithData();
@@ -119,14 +131,14 @@ function ShowFilter(type) {
         if (type == 'PurchaseSeries') { _d["TranAlias"] = 'PINV'; action = 'Series' }
         $.ajax({
             type: "POST",
-            url: '/Filter/' + action ,
+            url: '/Filter/' + action,
             data: _d,
             datatype: "json",
             success: function (res) {
 
-            /*    if (res.status == "success") {*/
-                    RPTFilter[type].Data = res;
-                    showpopupWithData();
+                /*    if (res.status == "success") {*/
+                RPTFilter[type].Data = res;
+                showpopupWithData();
                 //}
                 //else
                 //    alert(res.msg);
@@ -152,16 +164,16 @@ function ShowFilter(type) {
             cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
             filterGrid = cg;
             $("#btnSaveFilter").off("click").on("click", function () {
-                
+
                 var _List = [];
                 var Filterlist = filterGrid.getData().filter(function (el) { return el.tick })
                 $(Filterlist).each(function (i, v) {
-                    
+
                     if (RPTFilter[type].IdProperty == "PkProductId")
                         _List.push({ PKID: v.PkProductId });
-                    if (RPTFilter[type].IdProperty == "PKLocationID" )
+                    if (RPTFilter[type].IdProperty == "PKLocationID")
                         _List.push({ PKID: v.PKLocationID });
-                    if ( RPTFilter[type].IdProperty == "PkLocationID")
+                    if (RPTFilter[type].IdProperty == "PkLocationID")
                         _List.push({ PKID: v.PkLocationID });
                     if (RPTFilter[type].IdProperty == "PkSeriesId")
                         _List.push({ PKID: v.PkSeriesId });
@@ -186,7 +198,7 @@ function ShowFilter(type) {
         htm += '<button type="button" id="btnSaveFilter" class="btn btn-outline-secondary" >';
         htm += '<i class="bi bi-send"></i> Done</button></div></div>';
         htm += '<div class="card-body">';
-       
+
         htm += '<div class="row">';
         htm += '<div id="WUCFilter" class="col-12"></div>';
         htm += '</div> ';
@@ -195,4 +207,69 @@ function ShowFilter(type) {
         return htm;
     }
 
+}
+
+function ViewDetailData(PartyMobile) {
+    $.ajax({
+        type: "POST",
+        url: 'List',
+        data: { ReportType: "D", PartyMobile: PartyMobile }
+        ,
+        datatype: "json",
+        success: function (res) {
+
+            var data = JSON.parse(res.data);
+            console.log(data);
+            Common.Grid(parseInt(RPTOption.FormId), "D", function (s) { 
+                var htm = '';
+                htm += '<div class="card card-outline card-primary">';
+                htm += '<div class="card-header">';
+                htm += '<h3 class="card-title">Walking Credit For ' + PartyMobile + '</h3>';
+                htm += '<div class="card-tools">';
+                htm += ' </div></div>';
+                htm += '<div class="card-body">';
+
+                htm += '<div class="row">';
+                htm += '<div id="WUCDetail" class="col-12" style="    height: 50vh;"></div>';
+                htm += '</div> ';
+                htm += '</div></div>';
+
+                Handler.popUp(htm, { width: "800px", height: "500px" }, function () {
+                    var cg = new coGrid("#WUCDetail");
+                    cg.setColumnHeading(s.ColumnHeading);
+                    cg.setColumnWidthPer(s.ColumnWidthPer, 1200);
+                    cg.setColumnFields(s.ColumnFields);
+                    cg.setAlign(s.Align);
+                    cg.defaultHeight =  "450px"   ;
+                    cg.setSearchType(s.SearchType);
+                    cg.setSearchableColumns(s.SearchableColumns);
+                    cg.setSortableColumns(s.SortableColumns);
+                    cg.setIdProperty(RPTOption.IdProperty);
+                    cg.setCtrlType(s.setCtrlType);
+                    if (s.TotalOn != '' && s.TotalOn != undefined) {
+                        if (s.TotalOn.replace('~') != '') {
+                            cg.setTotalOn(s.TotalOn)
+                        }
+                    }
+                    cg.bind(data);
+                    cg.outGrid.setSelectionModel(new Slick.RowSelectionModel());
+
+                });
+
+
+
+            });
+            $(".loader").hide();
+        }
+        , error: function (xhr, status, error) {
+            if (xhr.status === 400) {
+                // Handle Bad Request
+                let errorMessage = xhr.responseJSON?.message || xhr.responseText || "Bad Request";
+                alert("Error 400: " + errorMessage);
+            } else {
+                alert("Error: " + xhr.status + " - " + error);
+            }
+            $(".loader").hide();
+        }
+    });
 }
