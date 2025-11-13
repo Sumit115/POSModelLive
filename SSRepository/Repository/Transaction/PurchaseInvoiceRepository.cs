@@ -153,13 +153,16 @@ namespace SSRepository.Repository.Transaction
                         {
                             error += $" Artical is blank.";
                         }
-                        else if (!IsAlphanumeric(dr["Barcode"]?.ToString()))
+                        else if (!string.IsNullOrWhiteSpace(dr["Barcode"]?.ToString()))
                         {
-                            error += $"Barcode Must Be Alphanumeric. ";
-                        }
-                        else if (cs == "Unique" && tranList.Where(x => x.Barcode?.ToString().ToLower() == dr["Barcode"]?.ToString().ToLower().Trim()).Count() > 0)
-                        {
-                            error += $" Duplicate Barcode. ";
+                            if (!IsAlphanumeric(dr["Barcode"]?.ToString()))
+                            {
+                                error += $"Barcode Must Be Alphanumeric. ";
+                            }
+                            else if (cs == "Unique" && tranList.Where(x => x.Barcode?.ToString().ToLower() == dr["Barcode"]?.ToString().ToLower().Trim()).Count() > 0)
+                            {
+                                error += $" Duplicate Barcode. ";
+                            }
                         }
 
                         if (error != "")

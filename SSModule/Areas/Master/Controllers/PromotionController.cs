@@ -50,7 +50,6 @@ namespace SSAdmin.Areas.Master.Controllers
             PageHeading = "Promotion";
         }
 
-        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> List(string id)
         {
             id = !string.IsNullOrEmpty(id) ? id : "Sales";
@@ -60,7 +59,6 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
-        [FormAuthorize(FormRight.Browse,true)]
         public async Task<JsonResult> List(string PromotionDuring, int pageNo, int pageSize)
         {
             try
@@ -81,7 +79,6 @@ namespace SSAdmin.Areas.Master.Controllers
             }
         }
 
-        [FormAuthorize(FormRight.Print)]
         public ActionResult Export(string PromotionDuring, int pageNo, int pageSize)
         {
             FKFormID = (PromotionDuring == "Sales" ? (long)Handler.Form.SalesPromotion : (long)Handler.Form.PurchasePromotion);
@@ -108,7 +105,6 @@ namespace SSAdmin.Areas.Master.Controllers
 
         }
 
-        [FormAuthorize(FormRight.Access)]
         public async Task<IActionResult> Create(string id, long id2, string pageview = "")
         {
             ViewBag.PromotionDuring = !string.IsNullOrEmpty(id) ? id : "Sales";
@@ -148,7 +144,6 @@ namespace SSAdmin.Areas.Master.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [FormAuthorize(FormRight.Add)]
         public async Task<IActionResult> Create(PromotionModel model)
         {
             try
@@ -193,7 +188,6 @@ namespace SSAdmin.Areas.Master.Controllers
         }
 
         [HttpPost]
-        [FormAuthorize(FormRight.Delete,true)]
         public string Delete(long PKID)
         {
             string response = "";

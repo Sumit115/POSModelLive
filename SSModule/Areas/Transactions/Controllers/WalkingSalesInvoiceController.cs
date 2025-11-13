@@ -1,14 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using SSRepository.IRepository.Transaction;
-using SSRepository.IRepository;
-using SSRepository.Models;
-using SSRepository.IRepository.Master;
-using Newtonsoft.Json;
-using System.Data;
-using SSAdmin.Areas;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+using SSRepository.IRepository;
+using SSRepository.IRepository.Transaction;
+using SSRepository.Models;
 
 namespace SSAdmin.Areas.Transactions.Controllers
 {

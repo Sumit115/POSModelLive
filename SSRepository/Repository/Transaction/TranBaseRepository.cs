@@ -1232,13 +1232,37 @@ namespace SSRepository.Repository.Transaction
                 //&& ((x.PromotionFromDt == null && x.PromotionToDt == null) || ((x.PromotionFromDt != null ? x.PromotionFromDt.Value : Cdt).Date <= Cdt.Date && (x.PromotionToDt != null ? x.PromotionToDt.Value : Cdt).Date >= Cdt.Date))
                 //).ToList().Where(x => ((string.IsNullOrEmpty(x.PromotionFromTime) && string.IsNullOrEmpty(x.PromotionToTime)) || ((!string.IsNullOrEmpty(x.PromotionFromTime) ? TimeSpan.Parse(x.PromotionFromTime) : Cdt.TimeOfDay) <= Cdt.TimeOfDay && (!string.IsNullOrEmpty(x.PromotionToTime) ? TimeSpan.Parse(x.PromotionToTime) : Cdt.TimeOfDay) >= Cdt.TimeOfDay))
                 //).OrderBy(x=>x.SequenceNo).ToList();
-
+                  
                 if (_entityPromotion.Count > 0)
                 {
                     foreach (var _itemPromo in _entityPromotion)
                     {
                         var itemPromo = _itemPromo.cou;
-                        if (itemPromo.PromotionApplyOn == "Product" || itemPromo.PromotionApplyOn == "Category" || itemPromo.PromotionApplyOn == "Brand")
+                        if (itemPromo.PromotionApplyOn == "Category" && itemPromo.Promotion == "Trade Discount")
+                        {
+                            var _lst = (from cou in model.TranDetails
+                                        join promotionLnk in __dbContext.TblPromotionLnk on cou.FKProdCatgId equals (Int64?)promotionLnk.FkLinkId //into _locationmpLnk
+                                        where promotionLnk.FkPromotionId == itemPromo.PkPromotionId && cou.ModeForm != 2
+                                         && (cou.LinkSrNo <= 0 || cou.LinkSrNo == null) && string.IsNullOrEmpty(cou.PromotionType)
+                                        orderby cou.Rate descending
+                                        select cou).ToList();
+
+                            if (_lst.Sum(x => x.Qty) >= itemPromo.PromotionApplyQty)
+                            {
+                                foreach (var item in _lst)
+                                {
+                                    item.TradeDisc = (decimal)itemPromo.PromotionAmt;
+                                    item.TradeDiscAmt = 0;
+                                    CalculateExe(model, item);
+                                    item.PromotionType = "CTDT";
+                                    item.FkPromotionId = itemPromo.PkPromotionId;
+                                    item.PromotionName = itemPromo.PromotionName;
+                                }
+                            }
+
+
+                        }
+                        else if (itemPromo.PromotionApplyOn == "Product" || itemPromo.PromotionApplyOn == "Category" || itemPromo.PromotionApplyOn == "Brand")
                         {
                             var _lst = new List<TranDetails>();
                             if (itemPromo.PromotionApplyOn == "Product")
@@ -2859,6 +2883,8 @@ namespace SSRepository.Repository.Transaction
                                 SetProduct(model, detail, dtProduct);
                                 detail.SrNo = SrNo;
                                 detail.Qty = item.Qty;
+                                detail.Batch = item.Batch;
+                                detail.Color = item.Color;
                                 CalculateExe(model, detail);
 
 

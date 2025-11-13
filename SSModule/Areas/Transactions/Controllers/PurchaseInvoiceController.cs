@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using SSRepository.IRepository.Transaction;
-using SSRepository.IRepository;
-using SSRepository.Models;
-using Newtonsoft.Json;
-using System.Diagnostics;
-using Microsoft.EntityFrameworkCore;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
-using ClosedXML.Excel;
+using Newtonsoft.Json;
+using SSRepository.IRepository;
+using SSRepository.IRepository.Transaction;
+using SSRepository.Models;
 using System.Data;
 
 namespace SSAdmin.Areas.Transactions.Controllers

@@ -50,6 +50,7 @@ namespace SSAdmin.Controllers
                 else
                 {
                     Message = "Invalid User !!";
+                    Response.Redirect("/Auth");
                 }
             }
             else

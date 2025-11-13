@@ -209,6 +209,14 @@ $(document).ready(function () {
         $('#PartyName').val(PartyName);
         $('#PartyAddress').val(PartyAddress);
        }
+    if (_Custdropdown.hasOwnProperty("FkSalesInvoiceId")) {
+        _Custdropdown.FkSalesInvoiceId.onSelect = function (arg) {
+            var FKSeriesId = arg.data.SeriesId;
+            $("#FKInvoiceSrID").val(FKSeriesId);
+            tranModel.FKInvoiceSrID = FKSeriesId;
+            tranModel.FKInvoiceID = $("#FkSalesInvoiceId").val();
+        }
+    }
 });
 
 function Load() {
@@ -428,9 +436,8 @@ function BindGrid(GridId, data) {
                     if (Handler.isNullOrEmpty(LinkSrNo) || LinkSrNo <= 0) {
 
                         if (field != "InvoiceDate" && field != "FKInvoiceID_Text" && field != "Product" && Common.isNullOrEmpty(args.item["Product"])) {
-                            alert("Select Product Frist");
-                            cg_ClearRow(args)
-                            cg.outGrid.gotoCell(args.row, DrpIndex["Product"], true);
+                            cg_ClearRow(args);
+                            return false;
                         }
                         else if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
                             if (tranModel.FkPartyId > 0) {
@@ -458,16 +465,17 @@ function BindGrid(GridId, data) {
                             else {
                                 alert("Select Party Frist");
                                 cg_ClearRow(args)
+                                return false;
                             }
                         }
                         else {
                             if (field == "Batch" || field == "Color" || field == "MRP") {
 
                                 if (tranModel.ExtProperties.StockFlag == "I" || (TranAlias == "SORD" || TranAlias == "LORD" || TranAlias == "PORD")) {
-                                    if (args.item["ModeForm"] != "1" && TranAlias != "SORD" && TranAlias != "LORD") { args.item["FkLotId"] = 0; }
+                                    if (args.item["ModeForm"] != "1" && TranAlias != "SORD" && TranAlias != "LORD") {
+                                        args.item["FkLotId"] = 0;
+                                    }
                                     var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
-                                    //var Batch = args.item["Batch"];
-                                    //var Color = args.item["Color"];
                                     if (field == "Batch") {
                                         Common.ajax(Handler.currentPath() + "CategorySizeListByProduct?FkProductId=" + FkProductId + "", {}, "Please Wait...", function (res) {
                                             Handler.hide();
@@ -484,17 +492,20 @@ function BindGrid(GridId, data) {
                                             }, error: function (request, status, error) {
                                             }
                                         });
-                                        //Common.ajax(Handler.currentPath() + "ProductLotDtlList?FkProductId=" + FkProductId + "&Batch=" + Batch + "&Color=" + Color + "", {}, "Please Wait...", function (res) {
-                                        //    Handler.hide();
-                                        //    cg.setOptionArray(DrpIndex["Color"], res, "Color", false, "Color", "Color", "1");
-                                        //});
                                     }
 
                                 }
                             }
                         }
-                    } else { alert('Promotion Artical Not Update'); args.grid.gotoCell(args.row, '', true); console.clear(); }
-                } else { alert('Select Series'); args.grid.gotoCell(args.row, '', true); console.clear(); }
+                    } else {
+                        alert('Promotion Artical Not Update');
+                        return false;
+                    }
+                } else {
+                    alert('Select Series');
+                    return false;
+
+                }
             }
         });
         //---------------    ---------------   ---------------   ---------------/
@@ -508,38 +519,16 @@ function BindGrid(GridId, data) {
                 //if (Handler.isNullOrEmpty(LinkSrNo) || LinkSrNo <= 0 ) {
 
                 if (field == "Product") {
-                    args.item["SrNo"] = 0;
+                    if (parseInt(args.item["FkProductId"]) != NaN && parseInt(args.item["FkProductId"]) > 0) {
+                        args.item["SrNo"] = 0;
 
-                    if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
-                        var InvoiceSrNo = Common.isNullOrEmpty(args.item["ProductName"]) ? 0 : parseFloat(args.item["ProductName"]);
-                        //var data = ProductList.filter(function (element) { return (element.InvoiceSrNo == InvoiceSrNo); });
-                        //var FkProductId = data.PkProductId;
-                        //var data = cg.getData().filter(function (element) { return (element.FkProductId == FkProductId && element.InvoiceSrNo == InvoiceSrNo && element.mode != 2); });
-                        //if (data.length <= 0) {
-                        args.item["InvoiceSrNo"] = InvoiceSrNo;
-                        ColumnChange(args, args.row, "ProductReturn", false);
-                        //}
-                        //else {
-                        //    alert("Product Already Add In List");
-                        //    cg_ClearRow(args);
-                        //    return false;
-                        //}
-
-                    } else {
-                        // var FkProductId = Common.isNullOrEmpty(args.item["FkProductId"]) ? 0 : parseFloat(args.item["FkProductId"]);
-
-                        //var data = cg.getData().filter(function (element) { return (element.FkProductId == FkProductId && element.ModeForm != 2); });
-                        //if (data.length <= 1) {
-                        //if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
-                        //    args.item["FkLotId"] = FkLotId > 0 ? FkLotId : 0; 
-                        //}
-                        ColumnChange(args, args.row, "Product", false);
-                        //}
-                        //else {
-                        //    alert("Product Already Add In List");
-                        //    cg_ClearRow(args);
-                        //    return false;
-                        //}
+                        if ((ControllerName == "SalesReturn" || ControllerName == "SalesCrNote")) {
+                            var InvoiceSrNo = Common.isNullOrEmpty(args.item["ProductName"]) ? 0 : parseFloat(args.item["ProductName"]);
+                            args.item["InvoiceSrNo"] = InvoiceSrNo;
+                            ColumnChange(args, args.row, "ProductReturn", false);
+                        } else {
+                            ColumnChange(args, args.row, "Product", false);
+                        }
                     }
                 }
                 else if (field == "Qty") {
@@ -1536,7 +1525,7 @@ function handleFileLoad(event) {
 }
 
 function ColumnChange(args, rowIndex, fieldName, IsReturn) {
-    debugger;
+
     tranModel.TranDetails = GetDataFromGrid(false, false);
     tranModel.TranReturnDetails = tranModel.ExtProperties.TranAlias == "SGRN" ? GetDataFromGrid(false, true) : [];
     if ((IsReturn ? tranModel.TranReturnDetails.length : tranModel.TranDetails.length) > 0) {
@@ -1812,7 +1801,7 @@ function GetDataFromGrid(ifForsave, IsReturn) {
             else {
 
 
-                if (!Handler.isNullOrEmpty(element.Product) || !Handler.isNullOrEmpty(element.FKInvoiceID)) {
+                if (!Handler.isNullOrEmpty(element.Product) || (!Handler.isNullOrEmpty(element.FKInvoiceID) && element.FKInvoiceID > 0)) {
 
                     if (element.FkProductId > 0) { element.SrNo = element.SrNo; }
                     else { SrNo++; element.SrNo = SrNo; }
@@ -1929,6 +1918,7 @@ function SaveRecord() {
     });
 }
 function PrintInvoice(pk_Id, FkSeriesId) {
+    
     $.ajax({
         type: "POST",
         url: Handler.currentPath() + 'InvoicePrint_Pdf_Url',
@@ -1937,7 +1927,37 @@ function PrintInvoice(pk_Id, FkSeriesId) {
         success: function (res) {
 
             if (res.status == "success") {
-                window.open(res.data.InvoiceUrl, '_blank');
+                const pdfUrl = res.data.InvoiceUrl;
+
+                // Open popup window with specific size and features
+                const popup = window.open(
+                    '', // empty for now
+                    'InvoicePopup', // window name
+                    'width=1000,height=800,resizable=yes,scrollbars=yes,status=no,toolbar=no'
+                );
+
+                // If popup blocked
+                if (!popup) {
+                    alert('Please allow popups for this site.');
+                    return;
+                }
+
+                // Write content into the popup
+                popup.document.write(`
+        <html>
+        <head>
+            <title>Invoice Preview</title>
+            <style>
+                body { margin: 0; background: #f2f2f2; }
+                iframe { width: 100%; height: 100vh; border: none; }
+            </style>
+        </head>
+        <body>
+            <iframe src="${pdfUrl}"></iframe>
+        </body>
+        </html>
+    `);
+                popup.document.close();
                 window.location.reload();
                 //window.location = Handler.currentPath() + 'List';
             }
