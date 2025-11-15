@@ -41,8 +41,123 @@
         }
 
     </style>
+    <style>
+        #chartContainer {
+            display: inline-flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        #legend {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+    </style>
     <div style="background-color:#fafbfe;overflow: auto;">
 
+        <div class="row mt-4 pl-3 pr-3 SalesSummary">
+            <div class="col-md-12 box ps-0">
+                <h6>
+                    Today
+                </h6>
+            </div>
+            <div class="col-md-2 box ps-0">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                    <div class="p-2">
+                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_PurchaseInvoice_Today">@Model.TotalAmount_PurchaseInvoice</span></h5>
+                        <p class="mb-0 pt-1 Name">Purchase</p>
+                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Purchase <span id="TotalCount_PurchaseInvoice_Today">@Model.TotalCount_PurchaseInvoice</span></h6>
+                    </div>
+                    <div class="icon-wrapper mr-2 mt-2">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 box">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                    <div class="p-2">
+                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesOrder_Today">@Model.TotalAmount_SalesOrder</span></h5>
+                        <p class="mb-0 pt-1 Name">Sales Order</p>
+                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Order <span id="TotalCount_SalesOrder_Today">@Model.TotalCount_SalesOrder</span></h6>
+                    </div>
+                    <div class="icon-wrapper mr-2 mt-2">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 box">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2 open-popup" data-modal="#myPopup_SalesInvoice_Today">
+                    <div class="p-2">
+                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesInvoice_Today">@Model.TotalAmount_SalesInvoice</span></h5>
+                        <p class="mb-0 pt-1 Name">Sales</p>
+                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Sales <span id="TotalCount_SalesInvoice_Today">@Model.TotalCount_SalesInvoice</span></h6>
+                    </div>
+                    <div class="icon-wrapper mr-2 mt-2">
+                        <i class="fas fa-box"></i>
+                    </div>
+                </div>
+                <div id="myPopup_SalesInvoice_Today" class="popup-overlay" style="display: none;">
+                    <div class="popup-content">
+                        <span class="close-btn">&times;</span>
+                        <div class="row">
+                            <div class="col-md-6 box">
+                                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                                    <div class="p-2">
+                                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesInvoiceWholesale_Today">@Model.TotalAmount_SalesInvoiceWholesale_Today</span></h5>
+                                        <p class="mb-0 pt-1 Name">Wholesale</p>
+                                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Sales <span id="TotalCount_SalesInvoiceWholesale_Today">@Model.TotalCount_SalesInvoiceWholesale_Today</span></h6>
+                                    </div>
+                                    <div class="icon-wrapper mr-2 mt-2">
+                                        <i class="fas fa-box"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 box">
+                                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                                    <div class="p-2">
+                                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesInvoiceWalking_Today">@Model.TotalAmount_SalesInvoiceWalking_Today</span></h5>
+                                        <p class="mb-0 pt-1 Name">Walking</p>
+                                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Sales <span id="TotalCount_SalesInvoiceWalking_Today">@Model.TotalCount_SalesInvoiceWalking_Today</span></h6>
+                                    </div>
+                                    <div class="icon-wrapper mr-2 mt-2">
+                                        <i class="fas fa-box"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 box">
+                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
+                    <div class="p-2">
+                        <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesChallan_Today">@Model.TotalAmount_SalesChallan</span></h5>
+                        <p class="mb-0 pt-1 Name">Sales Challan</p>
+                        <h6 class="text-success info-text-sales mb-0 pt-1 UpDown Quantity">No. Of Challan <span id="TotalCount_SalesChallan_Today">@Model.TotalCount_SalesChallan</span></h6>
+                    </div>
+                    <div class="icon-wrapper mr-2 mt-2">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
         <div class="row mt-4 pl-3 pr-3 SalesSummary">
             <div class="col-md-12 box ps-0">
                 <h6> <span id="MonthName_selected"></span> Month Data</h6>
@@ -87,7 +202,7 @@
                         <span class="close-btn">&times;</span>
                         <div class="row">
                             <div class="col-md-6 box">
-                                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2" >
+                                <div class="d-flex flex-row justify-content-between align-items-left mb-3 card card-overview p-2">
                                     <div class="p-2">
                                         <h5 class="mb-0 font-weight-bold Amount" style="font-size:16px;">₹ <span id="TotalAmount_SalesInvoiceWholesale">@Model.TotalAmount_SalesInvoiceWholesale</span></h5>
                                         <p class="mb-0 pt-1 Name">Wholesale</p>
@@ -219,9 +334,9 @@
         </div>
 
         <div class="row mt-4 pl-3 pr-3">
-            <div class="col-md-12">
+            <div class="col-md-8">
                 <div class="card" style="height: 495px!important;">
-                    <div class="card-header" id="header_graph">
+                    <div class="card-header header_graph">
                         Current Month
                     </div>
                     <div class="card-body">
@@ -265,9 +380,99 @@
                 </div>
 
             </div>
+            <div class="col-md-4">
+                <div class="card" style="height: 495px!important;">
+                    <div class="card-header header_graph">
+                        Current Month
+                    </div>
+                    <div class="card-body">
+
+                        <div id="chartContainer">
+                            <canvas id="pieChart" width="300" height="300" style="cursor:pointer;"></canvas>
+                            <div id="legend"></div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+        <div class="row mt-4 pl-3 pr-3">
+            <div class="col-md-4">
+                <div class="card" style="height: 250px!important;">
+                    <div class="card-header">
+                        Top Selling Article
+                    </div>
+                    <div class="card-body">
+                        <table id="tblTopProducts" class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+                <div class="card" style="height: 250px!important;">
+                    <div class="card-header">
+                        Top Customer
+                    </div>
+                    <div class="card-body">
+                        <table id="tblTopCustomers" class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Mobile</th>
+                                    <th>Total Invoice</th>
+                                    <th>Total Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div class="col-md-4">
+                <div class="card" style="height: 250px!important;">
+                    <div class="card-header">
+                        Top Vendor
+                    </div>
+                    <div class="card-body">
+                        <table id="tblTopVendors" class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Mobile</th>
+                                    <th>Total Invoice</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+
+                </div>
+
+            </div>
         </div>
     </div>
     <input type="hidden" id="hdGraphData_MorrisAreaChart" value="@Newtonsoft.Json.JsonConvert.SerializeObject(Model.GraphDataList)" />
+    <input type="hidden" id="hdPieChartData_SaleAmt" value="[]" />
+    <input type="hidden" id="hdTopCustomerList" value="[]" />
+    <input type="hidden" id="hdTopVendorList" value="[]" />
+    <input type="hidden" id="hdTopSellingProductList" value="[]" />
 }
 @section Scripts {
     <link href="~/morris/morris.css" rel="stylesheet" />
@@ -287,7 +492,6 @@
             $(document).on('click', '.open-popup', function (e) {
                 e.preventDefault();
                 const modalId = $(this).data('modal');
-                console.log(modalId);
                 $(modalId).fadeIn();
             });
 
@@ -313,7 +517,6 @@
 
             var ItemList = JSON.parse($("#hdGraphData_MorrisAreaChart").val());
             var xkey = 'Date';
-            //console.log(ItemList);
             var ykeys = [];
             var labels = [];
             var pointStrokeColors = [];
@@ -364,10 +567,119 @@
             //});
         }
 
+        function drawPieChart() {
+            const data = JSON.parse($("#hdPieChartData_SaleAmt").val())[0];
+            if (!data) return;
+
+            const colorMap = {
+                CashAmt: "#4caf50",
+                CreditAmt: "#2196f3",
+                ChequeAmt: "#ff9800",
+                CreditCardAmt: "#9c27b0"
+            };
+
+            const chartData = Object.entries(data).map(([key, value]) => ({
+                label: key.replace("Amt", ""),
+                value: value,
+                color: colorMap[key] || "#ccc"
+            }));
+
+            const canvas = document.getElementById("pieChart");
+            const ctx = canvas.getContext("2d");
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const radius = 120;
+
+            const total = chartData.reduce((sum, d) => sum + d.value, 0);
+            let startAngle = 0;
+            let angles = [];
+
+            // Store start/end angles for hover detection
+            chartData.forEach(d => {
+                const sliceAngle = (d.value / total) * 2 * Math.PI;
+                angles.push({ start: startAngle, end: startAngle + sliceAngle });
+                startAngle += sliceAngle;
+            });
+
+            function render(highlightIndex = -1) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let start = 0;
+
+                chartData.forEach((d, i) => {
+                    const sliceAngle = (d.value / total) * 2 * Math.PI;
+                    const midAngle = start + sliceAngle / 2;
+
+                    // “Pop out” effect for hovered slice
+                    const offset = (i === highlightIndex) ? 10 : 0;
+                    const xOffset = Math.cos(midAngle) * offset;
+                    const yOffset = Math.sin(midAngle) * offset;
+
+                    ctx.beginPath();
+                    ctx.moveTo(cx + xOffset, cy + yOffset);
+                    ctx.arc(cx + xOffset, cy + yOffset, radius, start, start + sliceAngle);
+                    ctx.closePath();
+
+                    // Shadow for 3D look
+                    if (i === highlightIndex) {
+                        ctx.shadowColor = "rgba(0,0,0,0.4)";
+                        ctx.shadowBlur = 10;
+                    } else {
+                        ctx.shadowBlur = 0;
+                    }
+
+                    ctx.fillStyle = d.color;
+                    ctx.fill();
+
+                    // Label
+                    const labelX = cx + Math.cos(midAngle) * (radius * 0.6) + xOffset;
+                    const labelY = cy + Math.sin(midAngle) * (radius * 0.6) + yOffset;
+                    const percent = ((d.value / total) * 100).toFixed(1) + "%";
+                    ctx.fillStyle = "#fff";
+                    ctx.font = "bold 14px Arial";
+                    ctx.textAlign = "center";
+                    ctx.fillText(d.label, labelX, labelY - 8);
+                    ctx.fillText(percent, labelX, labelY + 8);
+
+                    start += sliceAngle;
+                });
+            }
+
+            render();
+
+            // Handle hover
+            canvas.addEventListener("mousemove", (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left - cx;
+                const y = e.clientY - rect.top - cy;
+                const angle = Math.atan2(y, x);
+                const dist = Math.sqrt(x * x + y * y);
+
+                if (dist < radius) {
+                    let hoverIndex = -1;
+                    let a = angle < 0 ? angle + 2 * Math.PI : angle;
+                    for (let i = 0; i < angles.length; i++) {
+                        if (a >= angles[i].start && a < angles[i].end) {
+                            hoverIndex = i;
+                            break;
+                        }
+                    }
+                    render(hoverIndex);
+                } else {
+                    render(-1);
+                }
+            });
+
+            // Legend
+            const legend = $("#legend").empty();
+            chartData.forEach(d => {
+                legend.append(`<div class="legend-item"><div class="legend-color" style="background:${d.color}"></div>${d.label}: ${d.value.toLocaleString()}</div>`);
+            });
+        }
+
 
         function DashboardSummary() {
             var Month = $("#ddlMonth_Summary").val();
-            $("#header_graph").text($("#ddlMonth_Summary option:selected").text() + " Month Data");
+            $(".header_graph").text($("#ddlMonth_Summary option:selected").text() + " Month Data");
             $.ajax({
                 type: "POST",
                 url: '/Transactions/SalesInvoice/DashboardSummary',
@@ -376,8 +688,23 @@
                 success: function (res) {
                     //console.log(res);
                     if (res.status == "success") {
-                        console.log(res.data);
+                        // console.log(res.data);
                         var _d = res.data;
+
+                        $("#TotalCount_PurchaseInvoice_Today").text(_d.TotalCount_PurchaseInvoice_Today);
+                        $("#TotalAmount_PurchaseInvoice_Today").text(_d.TotalAmount_PurchaseInvoice_Today);
+                        $("#TotalCount_SalesOrder_Today").text(_d.TotalCount_SalesOrder_Today);
+                        $("#TotalAmount_SalesOrder_Today").text(_d.TotalAmount_SalesOrder_Today);
+                        $("#TotalCount_SalesInvoice_Today").text(_d.TotalCount_SalesInvoice_Today);
+                        $("#TotalAmount_SalesInvoice_Today").text(_d.TotalAmount_SalesInvoice_Today);
+                        $("#TotalCount_SalesInvoiceWholesale_Today").text(_d.TotalCount_SalesInvoiceWholesale_Today);
+                        $("#TotalAmount_SalesInvoiceWholesale_Today").text(_d.TotalAmount_SalesInvoiceWholesale_Today);
+                        $("#TotalCount_SalesInvoiceWalking_Today").text(_d.TotalCount_SalesInvoiceWalking_Today);
+                        $("#TotalAmount_SalesInvoiceWalking_Today").text(_d.TotalAmount_SalesInvoiceWalking_Today);
+                        $("#TotalCount_SalesChallan_Today").text(_d.TotalCount_SalesChallan_Today);
+                        $("#TotalAmount_SalesChallan_Today").text(_d.TotalAmount_SalesChallan_Today);
+
+
                         $("#TotalCount_PurchaseInvoice").text(_d.TotalCount_PurchaseInvoice);
                         $("#TotalAmount_PurchaseInvoice").text(_d.TotalAmount_PurchaseInvoice);
                         $("#TotalCount_SalesOrder").text(_d.TotalCount_SalesOrder);
@@ -406,7 +733,15 @@
 
 
                         $("#hdGraphData_MorrisAreaChart").val(JSON.stringify(_d.GraphDataList));
+                        $("#hdPieChartData_SaleAmt").val(JSON.stringify(_d.PieChartData_SaleAmt));
+                        $("#hdTopCustomerList").val(JSON.stringify(_d.TopCustomerList));
+                        $("#hdTopVendorList").val(JSON.stringify(_d.TopVendorList));
+                        $("#hdTopSellingProductList").val(JSON.stringify(_d.TopSellingProductList));
                         Load_Morris_Area_Chart_Data();
+                        drawPieChart();
+                        BindTopProduct();
+                        BindTopCustomer();
+                        BindTopVendor();
                     }
                     else
                         alert(res.msg);
@@ -414,5 +749,61 @@
             })
 
         };
+        function BindTopProduct() {
+            var data = $("#hdTopSellingProductList").val();
+            if (data) {
+                var list = JSON.parse(data);
+                var $tbody = $("#tblTopProducts tbody");
+                $tbody.empty();
+
+                $.each(list, function (i, item) {
+                    var row = `
+                                                        <tr>
+                                                                    <td>${item.Product}</td>
+                                                                    <td>${item.TotalCount}</td>
+                                                        </tr>`;
+                    $tbody.append(row);
+                });
+            }
+        }
+
+        function BindTopCustomer() {
+            var data = $("#hdTopCustomerList").val();
+            if (data) {
+                var list = JSON.parse(data);
+                var $tbody = $("#tblTopCustomers tbody");
+                $tbody.empty();
+
+                $.each(list, function (i, item) {
+                    var row = `
+                                                <tr>
+                                                    <td>${item.Name}</td>
+                                                    <td>${item.Mobile}</td>
+                                                    <td>${item.TotalCount}</td>
+                                                                    <td>${item.TotalAmount}</td>
+                                                        </tr>`;
+                    $tbody.append(row);
+                });
+            }
+        }
+        function BindTopVendor() {
+            var data = $("#hdTopVendorList").val();
+            if (data) {
+                var list = JSON.parse(data);
+                var $tbody = $("#tblTopVendors tbody");
+                $tbody.empty();
+
+                $.each(list, function (i, item) {
+                    var row = `
+                                                        <tr>
+                                                            <td>${item.Name}</td>
+                                                            <td>${item.Mobile}</td>
+                                                            <td>${item.TotalCount}</td>
+                                                        </tr>`;
+                    $tbody.append(row);
+                });
+            }
+        }
+
     </script>
 }

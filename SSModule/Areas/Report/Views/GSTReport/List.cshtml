@@ -6,11 +6,11 @@
 <div class="p-1">
     <div class="form-group row filter m-0 p-2 border-bottom">
         <div class="col-md-2">
-            <input name="FromDate" type="date" id="FromDate" class="form-control" maxlength="10" placeholder="From Date*" required="" title="From Date*">
+            <input name="FromDate" type="text" id="FromDate" readonly="readonly" class="form-control daterangepicker-fromDate" maxlength="10" placeholder="From Date*" required="" title="From Date*">
             <span class="field-validation-valid text-danger" data-valmsg-for="FromDate"></span>
         </div>
         <div class="col-md-2">
-            <input name="ToDate" type="date" id="ToDate" class="form-control" maxlength="10" placeholder="To Date*" required="" title="To Date*">
+            <input name="ToDate" type="text" id="ToDate" readonly="readonly" class="form-control daterangepicker-toDate" maxlength="10" placeholder="To Date*" required="" title="To Date*">
             <span class="field-validation-valid text-danger" data-valmsg-for="ToDate"></span>
         </div>
         <div class="col-md-2">
@@ -72,8 +72,8 @@
             RPTOption.Controller = Controller = 'GSTReport';
 
             var dt = new Date(@dt.Year, @dt.Month-1, @dt.Day+1);
-            document.getElementById("FromDate").valueAsDate = dt;
-            document.getElementById("ToDate").valueAsDate = dt;
+            document.getElementById("FromDate").value = formatDate(dt);
+            document.getElementById("ToDate").value = formatDate(dt);
             //View();
         });
         function Render(Export) {

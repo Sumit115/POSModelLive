@@ -12,6 +12,20 @@ namespace SSRepository.Models
         {
             GraphDataList = new List<GraphDataModel>();
         }
+
+        public Int64 TotalCount_PurchaseInvoice_Today { get; set; }
+        public decimal TotalAmount_PurchaseInvoice_Today { get; set; }
+        public Int64 TotalCount_SalesOrder_Today { get; set; }
+        public decimal TotalAmount_SalesOrder_Today { get; set; }
+        public Int64 TotalCount_SalesInvoice_Today { get; set; }
+        public decimal TotalAmount_SalesInvoice_Today { get; set; }
+        public Int64 TotalCount_SalesInvoiceWholesale_Today { get; set; }
+        public decimal TotalAmount_SalesInvoiceWholesale_Today { get; set; }
+        public Int64 TotalCount_SalesInvoiceWalking_Today { get; set; }
+        public decimal TotalAmount_SalesInvoiceWalking_Today { get; set; }
+        public Int64 TotalCount_SalesChallan_Today { get; set; }
+        public decimal TotalAmount_SalesChallan_Today { get; set; }
+
         public Int64 TotalCount_PurchaseInvoice { get; set; }
         public decimal TotalAmount_PurchaseInvoice { get; set; }
         public Int64 TotalCount_SalesOrder { get; set; }
@@ -38,6 +52,11 @@ namespace SSRepository.Models
         public Int64 TotalCount_SalesChallan_FY { get; set; }
         public decimal TotalAmount_SalesChallan_FY { get; set; }
         public List<GraphDataModel> GraphDataList { get; set; }
+        public List<PieChartDataSaleAmtModel> PieChartData_SaleAmt { get; set; }
+         public List<TopCustomerModel> TopCustomerList { get; set; }
+        public List<TopVendorModel> TopVendorList { get; set; }
+        public List<TopSellingProductModel> TopSellingProductList { get; set; }
+
     }
     public class GraphDataModel
     {
@@ -48,5 +67,35 @@ namespace SSRepository.Models
         public decimal PurchaseInvoiceAmount { get; set; }
         public Int64 SalesInvoiceCount { get; set; }
         public decimal SalesInvoiceAmount { get; set; }
+    }
+    public class PieChartDataSaleAmtModel
+    {
+        public double CashAmt { get; set; }
+        public double CreditAmt { get; set; }
+        public double ChequeAmt { get; set; }
+        public double CreditCardAmt { get; set; }
+    }
+    public class TopCustomerModel
+    {
+        public int FkPartyId { get; set; }
+        public string Mobile { get; set; }
+        public string Name { get; set; }
+        public int TotalCount { get; set; }
+        public decimal TotalAmount { get; set; }
+    }
+
+    public class TopSellingProductModel
+    {
+        public int FkProductId { get; set; }
+        public string Product { get; set; }
+        public int TotalCount { get; set; }
+    }
+
+    public class TopVendorModel
+    {
+        public int FkPartyId { get; set; }
+        public string Mobile { get; set; }
+        public string Name { get; set; }
+        public int TotalCount { get; set; }
     }
 }

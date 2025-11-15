@@ -542,56 +542,63 @@ namespace SSRepository.Repository.Master
         public string GetBarCode()
         {
             Int64 ProdBarcode;
-            Int64 InitBarcode = 99900000000000;
+            Int64 InitBarcode = 11100000000000;
             Int32 DefBarcodeLen;
             Int64 DefBarcode = 0;
             Int64 BranchNo = 0;
             Int64 MaxDefBarcode;
             string SKUDef = "";
 
-            var lstSysDef = (from x in __dbContext.TblSysDefaults
-                             where (x.SysDefKey.Contains("InitialProdBarcode") || x.SysDefKey.Contains("BranchNo") || x.SysDefKey.Contains("SKUDefinition"))
-                             select x).ToList();
+            //var lstSysDef = (from x in __dbContext.TblSysDefaults
+            //                 where (x.SysDefKey.Contains("InitialProdBarcode") || x.SysDefKey.Contains("BranchNo") || x.SysDefKey.Contains("SKUDefinition"))
+            //                 select x).ToList();
 
-            foreach (var item in lstSysDef)
-            {
-                if (item.SysDefKey == "InitialProdBarcode")
-                {
-                    if (item.SysDefValue != null && item.SysDefValue != "")
-                    {
-                        InitBarcode = Convert.ToInt64(item.SysDefValue);
-                    }
-                }
-                else if (item.SysDefKey == "BranchNo")
-                {
-                    if (item.SysDefValue != null && item.SysDefValue != "")
-                    {
-                        BranchNo = Convert.ToInt64(item.SysDefValue);
-                    }
-                }
-                else if (item.SysDefKey == "SKUDefinition")
-                {
-                    if (item.SysDefValue != null && item.SysDefValue != "")
-                    {
-                        SKUDef = item.SysDefValue;
-                    }
-                }
-            }
-            DefBarcodeLen = InitBarcode.ToString().Length;
+            //foreach (var item in lstSysDef)
+            //{
+            //    if (item.SysDefKey == "InitialProdBarcode")
+            //    {
+            //        if (item.SysDefValue != null && item.SysDefValue != "")
+            //        {
+            //            InitBarcode = Convert.ToInt64(item.SysDefValue);
+            //        }
+            //    }
+            //    else if (item.SysDefKey == "BranchNo")
+            //    {
+            //        if (item.SysDefValue != null && item.SysDefValue != "")
+            //        {
+            //            BranchNo = Convert.ToInt64(item.SysDefValue);
+            //        }
+            //    }
+            //    else if (item.SysDefKey == "SKUDefinition")
+            //    {
+            //        if (item.SysDefValue != null && item.SysDefValue != "")
+            //        {
+            //            SKUDef = item.SysDefValue;
+            //        }
+            //    }
+            //}
+            //DefBarcodeLen = InitBarcode.ToString().Length;
 
-            if (BranchNo > 0)
-            {
-                DefBarcode = Convert.ToInt64(InitBarcode.ToString().Substring(0, 5));
-            }
+            //if (BranchNo > 0)
+            //{
+            //    DefBarcode = Convert.ToInt64(InitBarcode.ToString().Substring(0, 5));
+            //}
 
-            string result = new String('9', DefBarcodeLen - DefBarcode.ToString().Length);
-            MaxDefBarcode = Convert.ToInt64(DefBarcode.ToString() + result);
+            //string result = new String('9', DefBarcodeLen - DefBarcode.ToString().Length);
+            //MaxDefBarcode = Convert.ToInt64(DefBarcode.ToString() + result);
 
             dynamic OutParam;
-            dynamic OutParam1;
+            // dynamic OutParam1;
 
             try
             {
+                long maxBarcode = __dbContext.TblProductMas
+                        .Where(x => x.Barcode.StartsWith("111"))
+                        .AsEnumerable() // <-- brings data into memory safely
+                        .Select(x => long.Parse(x.Barcode))
+                        .DefaultIfEmpty(InitBarcode)
+                        .Max();
+                OutParam = maxBarcode + 1;
                 //if (BranchNo > 0)
                 //{
                 //    OutParam = (from b in __dbContext.TblProdLotDtl where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 5)) == DefBarcode select b.Barcode).Max();
@@ -607,25 +614,25 @@ namespace SSRepository.Repository.Master
             }
 
             //if (OutParam == null)
-            OutParam = Convert.ToInt64(InitBarcode);
+            //      OutParam = Convert.ToInt64(InitBarcode);
 
-            try
-            {
-                //if (BranchNo > 0)
-                //{
-                //    ProdBarcode = (from b in __dbContext.TblProductMas where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 5)) == DefBarcode select (long)b.Barcode).Max();
-                //}
-                //else
-                //{
+            //try
+            //{
+            //    //if (BranchNo > 0)
+            //    //{
+            //    //    ProdBarcode = (from b in __dbContext.TblProductMas where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 5)) == DefBarcode select (long)b.Barcode).Max();
+            //    //}
+            //    //else
+            //    //{
 
-                //    ProdBarcode = (from b in __dbContext.TblProductMas where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 1)) == DefBarcode select (long)b.Barcode).Max();
-                //}
+            //    //    ProdBarcode = (from b in __dbContext.TblProductMas where b.Barcode >= InitBarcode && b.Barcode <= Convert.ToInt64(b.Barcode.ToString().Substring(0, DefBarcodeLen)) && Convert.ToInt64(b.Barcode.ToString().Substring(0, 1)) == DefBarcode select (long)b.Barcode).Max();
+            //    //}
 
-            }
-            catch (Exception ex)
-            {
-                ProdBarcode = InitBarcode;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    ProdBarcode = InitBarcode;
+            //}
 
             //if (InitBarcode > OutParam && InitBarcode > ProdBarcode)
             //{
@@ -745,7 +752,7 @@ namespace SSRepository.Repository.Master
                         string Product = dr["Artical"]?.ToString().Trim();
                         var _existsCategory = __dbContext.TblProductMas.Where(x => x.Product == Product).FirstOrDefault();
                         if (_existsCategory != null)
-                            validationErrors.Add($"Duplicate Artical : {Product} "); 
+                            validationErrors.Add($"Duplicate Artical : {Product} ");
                     }
                 }
 
@@ -756,7 +763,7 @@ namespace SSRepository.Repository.Master
                     foreach (DataRow dr in dt.Rows)
                     {
                         srNo++;
-                       decimal mrp = Convert.ToDecimal(dr["MRP"].ToString());
+                        decimal mrp = Convert.ToDecimal(dr["MRP"].ToString());
                         string Product = dr["Artical"]?.ToString().Trim();
 
                         var item = new ProductModel
@@ -775,7 +782,7 @@ namespace SSRepository.Repository.Master
                             Status = "A",
                             Genration = "Automatic",
 
-                        }; 
+                        };
 
                         var _existsCategory = prdList.Where(x => x.Product == Product && x.FKProdCatgId > 0).FirstOrDefault();
                         if (_existsCategory != null)
@@ -906,7 +913,7 @@ namespace SSRepository.Repository.Master
                 Tbl.ModifiedDate = DateTime.Now;
                 Tbl.FKUserID = FKUserID;
                 Tbl.FKCreatedByID = Tbl.FKUserID;
-                Tbl.CreationDate = Tbl.ModifiedDate; 
+                Tbl.CreationDate = Tbl.ModifiedDate;
 
 
                 //obj.PkcountryId = ID = getIdOfSeriesByEntity("PkcountryId", null, obj);

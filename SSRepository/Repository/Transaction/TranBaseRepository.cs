@@ -182,7 +182,7 @@ namespace SSRepository.Repository.Transaction
                     setPromotion_InvoiceValue(objmodel);
                 objmodel.IsTranChange = false;
 
-                if (objmodel.NetAmt<0)
+                if (objmodel.NetAmt < 0)
                 {
                     throw new Exception("Invalid Amount");
                 }
@@ -696,16 +696,25 @@ namespace SSRepository.Repository.Transaction
                     case "Qty":
                         if (!IsReturn)
                         {
+                            if (model.TranAlias == "SINV")
+                            {
+                                setQty(model, model.TranDetails[rowIndex],"Qty");
+                            }
                             if (!string.IsNullOrEmpty(model.TranDetails[rowIndex].PromotionType) && model.TranDetails[rowIndex].PromotionType.Trim().Length == 4)
                             {
                                 model.TranDetails[rowIndex].PromotionType = (model.TranDetails[rowIndex].PromotionType.Trim() + "M");
                                 model.TranDetails[rowIndex].PromotionName = (model.TranDetails[rowIndex].PromotionName + " | Manually");
                             }
+
                         }
                         break;
                     case "FreeQty":
                         if (!IsReturn)
                         {
+                            if (model.TranAlias == "SINV" || model.ExtProperties.StockFlag=="O")
+                            {
+                                setQty(model, model.TranDetails[rowIndex],"FreeQty");
+                            }
                             if (!string.IsNullOrEmpty(model.TranDetails[rowIndex].PromotionType) && model.TranDetails[rowIndex].PromotionType.Trim().Length == 4)
                             {
                                 model.TranDetails[rowIndex].PromotionType = (model.TranDetails[rowIndex].PromotionType.Trim() + "M");
@@ -953,6 +962,91 @@ namespace SSRepository.Repository.Transaction
                 detail.Rate = Convert.ToDecimal(dtProduct.Rows[0][model.BillingRate].ToString());
             }
         }
+        private void setQty(TransactionModel model, TranDetails detail, string Type)
+        {
+            var stock = __dbContext.TblProdStockDtl
+                .Where(x => x.FKProductId == detail.FkProductId
+                    && x.FKLotID == detail.FkLotId
+                    && x.FKLocationId == model.FKLocationID
+                    && x.CurStock > 0)
+                .FirstOrDefault();
+
+            if (stock == null)
+            {
+                detail.Qty = 0;
+                detail.FreeQty = 0;
+                CalculateExe(model, detail);
+                SetGridTotal(model);
+                SetPaymentDetail(model);
+                model.IsTranChange = true;
+                throw new Exception("Invalid stock");
+            }
+
+            decimal balStock = stock.CurStock;
+
+            // --- When Qty is changed ---
+            if (Type == "Qty")
+            {
+                if (detail.Qty > balStock)
+                    detail.Qty = balStock; // cap Qty
+
+                decimal remaining = balStock - detail.Qty;
+
+                // Adjust FreeQty
+                if (detail.FreeQty > remaining)
+                    detail.FreeQty = remaining;
+            }
+
+            // --- When FreeQty is changed ---
+            else if (Type == "FreeQty")
+            {
+                if (detail.FreeQty > balStock)
+                    detail.FreeQty = balStock; // cap FreeQty
+
+                decimal remaining = balStock - detail.FreeQty;
+
+                // Adjust Qty
+                if (detail.Qty > remaining)
+                    detail.Qty = remaining;
+
+                // Ensure Qty is not zero if possible
+                if (detail.Qty <= 0 && remaining > 0)
+                {
+                    detail.Qty = 1;
+                    if (detail.FreeQty + detail.Qty > balStock)
+                        detail.FreeQty = balStock - detail.Qty;
+                }
+            }
+
+            // --- Final safety check ---
+            if (detail.Qty + detail.FreeQty > balStock)
+            {
+                decimal total = detail.Qty + detail.FreeQty;
+                decimal diff = total - balStock;
+
+                // reduce FreeQty first
+                if (detail.FreeQty >= diff)
+                    detail.FreeQty -= diff;
+                else
+                    detail.Qty -= diff;
+            }
+
+            // --- Qty must never be negative or zero (if stock > 0) ---
+            if (balStock > 0 && detail.Qty <= 0)
+            {
+                detail.Qty = 1;
+                if (detail.FreeQty + detail.Qty > balStock)
+                    detail.FreeQty = balStock - detail.Qty;
+            }
+
+            // --- Trigger recalculations ---
+            CalculateExe(model, detail);
+            SetGridTotal(model);
+            SetPaymentDetail(model);
+            model.IsTranChange = true;
+        }
+
+
         public object BarcodeScan(TransactionModel model, string Barcode, bool isCalGridTotal, bool IsReturn)
         {
             if (IsReturn)
@@ -2976,7 +3070,7 @@ namespace SSRepository.Repository.Transaction
             return dt;
         }
 
-      
+
 
     }
 }
